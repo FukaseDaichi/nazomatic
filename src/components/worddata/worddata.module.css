@@ -1,0 +1,30 @@
+.worddata {
+  cursor: pointer;
+  position: relative;
+}
+
+.worddata > .word {
+  text-align: center;
+  color: white;
+  height: 40px;
+  width: 32px;
+  line-height: 32px;
+}
+
+.worddata.active > .word {
+  background-color: rgb(67 142 243);
+}
+
+.worddata > .count {
+  font-size: 0.7rem;
+  display: block;
+  position: absolute;
+  right: 3px;
+  bottom: 4px;
+  color: rgb(157, 157, 157);
+  text-align: right;
+}
+
+.worddata.active > .count {
+  color: white;
+}
