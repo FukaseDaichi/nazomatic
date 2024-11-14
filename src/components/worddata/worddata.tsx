@@ -24,7 +24,9 @@ const WordData: FC<WordInfoProps> = ({
       }`}
       onClick={onClickHandler}
     >
-      <div className={`bg-blue-100 rounded-lg ${styles.word}`}>{word}</div>
+      <div className={`bg-purple-100 rounded-lg ${styles.word} text-gray-500`}>
+        {word}
+      </div>
       <div className={styles.count}>{count}</div>
     </div>
   ) : (

@@ -5,14 +5,14 @@
 
 .worddata > .word {
   text-align: center;
-  color: white;
   height: 40px;
   width: 32px;
   line-height: 32px;
 }
 
 .worddata.active > .word {
-  background-color: rgb(67 142 243);
+  color: white;
+  background-color: rgb(147 51 234);
 }
 
 .worddata > .count {

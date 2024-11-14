@@ -40,13 +40,8 @@ export function ShiritoriResultComponent({
   return (
     <div className="container mx-auto p-4 max-w-4xl">
       <Card className="bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900 dark:to-pink-900">
-        <CardHeader>
-          <CardTitle className="text-3xl font-bold text-center text-purple-800 dark:text-purple-200">
-            しりとり結果
-          </CardTitle>
-        </CardHeader>
         <CardContent>
-          <div className="flex flex-wrap justify-center gap-2 mb-8">
+          <div className="flex flex-wrap justify-center gap-2 mb-8 mt-8">
             {displayedWords.map((word, index) => (
               <motion.div
                 key={index}
@@ -70,6 +65,7 @@ export function ShiritoriResultComponent({
             使用されなかった単語
           </h3>
           <div className="flex flex-wrap justify-center gap-2">
+            {!unusedWords.length && "なし"}
             {unusedWords.map((word, index) => (
               <motion.div
                 key={index}

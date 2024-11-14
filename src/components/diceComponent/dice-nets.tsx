@@ -5,6 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DiceNetIcon } from "./dice-net-icon";
 
+export const DICE_COLORS = [
+  "#4169E1",
+  "#4169E1",
+  "#DC2626",
+  "#22C55E",
+  "#22C55E",
+  "#DC2626",
+];
+
 // サイコロの展開図のデータ
 const diceNets = [
   {
@@ -143,18 +152,22 @@ const diceNets = [
 
 // サイコロの背景色を決定する関数
 const getBackgroundColor = (id: number) => {
-  const colors = ["blue", "blue", "red", "green", "green", "red"];
-  return colors[id % colors.length];
+  return DICE_COLORS[id % DICE_COLORS.length];
 };
+
+export interface FaceData {
+  text: string;
+  rotation: number;
+}
 
 const DiceNet = ({
   net,
-  faceTexts,
-  onFaceTextChange,
+  faceData,
+  onFaceDataChange,
 }: {
   net: (typeof diceNets)[0];
-  faceTexts: Record<number, string>;
-  onFaceTextChange: (faceId: number, text: string) => void;
+  faceData: Record<number, FaceData>;
+  onFaceDataChange: (faceId: number, data: Partial<FaceData>) => void;
 }) => {
   return (
     <svg width="600" height="300" viewBox="0 0 600 300">
@@ -170,12 +183,38 @@ const DiceNet = ({
             stroke="black"
           />
           <foreignObject x={face.x} y={face.y} width="100" height="100">
-            <div className="h-full flex items-center justify-center">
+            <div className="h-full flex items-center justify-center relative">
               <Input
-                value={faceTexts[face.id] || ""}
-                onChange={(e) => onFaceTextChange(face.id, e.target.value)}
+                value={faceData[face.id]?.text || ""}
+                onChange={(e) =>
+                  onFaceDataChange(face.id, { text: e.target.value })
+                }
                 className="w-16 h-16 text-center text-2xl"
+                style={{
+                  transform: `rotate(${faceData[face.id]?.rotation || 0}deg)`,
+                  transition: "transform 0.3s ease",
+                }}
               />
+              <button
+                tabIndex={-1}
+                onClick={() =>
+                  onFaceDataChange(face.id, {
+                    rotation: ((faceData[face.id]?.rotation || 0) + 90) % 360,
+                  })
+                }
+                className="absolute top-0 right-0 p-1 hover:bg-gray-100 rounded-full transition-all duration-100 ease-in-out active:scale-90 hover:shadow-sm"
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+                </svg>
+              </button>
             </div>
           </foreignObject>
         </g>
@@ -184,14 +223,14 @@ const DiceNet = ({
   );
 };
 
-export function DiceNets() {
+export function DiceNets({
+  faceData,
+  onFaceDataChange,
+}: {
+  faceData: Record<number, FaceData>;
+  onFaceDataChange: (faceId: number, data: Partial<FaceData>) => void;
+}) {
   const [selectedNet, setSelectedNet] = useState(diceNets[0]);
-  const [faceTexts, setFaceTexts] = useState({});
-
-  const handleFaceTextChange = (faceId: number, text: string) => {
-    setFaceTexts((prev) => ({ ...prev, [faceId]: text }));
-  };
-
   return (
     <div className="container mx-auto p-4 flex flex-col items-center">
       <h1 className="text-2xl font-bold mb-4">サイコロの展開図選択</h1>
@@ -201,6 +240,7 @@ export function DiceNets() {
             key={net.id}
             onClick={() => setSelectedNet(net)}
             variant={selectedNet.id === net.id ? "default" : "outline"}
+            tabIndex={-1}
           >
             <DiceNetIcon
               className={`w-full h-full stroke-current ${
@@ -215,8 +255,8 @@ export function DiceNets() {
         <h2 className="text-xl font-semibold mb-2">{selectedNet.name}</h2>
         <DiceNet
           net={selectedNet}
-          faceTexts={faceTexts}
-          onFaceTextChange={handleFaceTextChange}
+          faceData={faceData}
+          onFaceDataChange={onFaceDataChange}
         />
       </div>
     </div>
