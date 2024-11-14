@@ -1,5 +1,6 @@
 "use client";
 
+import { FaceData } from "@/components/diceComponent/dice-nets";
 import dynamic from "next/dynamic";
 import { useState, useCallback } from "react";
 
