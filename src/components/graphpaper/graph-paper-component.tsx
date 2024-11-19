@@ -18,6 +18,7 @@ export default function GraphPaperComponent() {
   const [currentCell, setCurrentCell] = useState({ row: 0, col: 0 });
   const [isComposing, setIsComposing] = useState(false);
   const inputRefs = useRef<Record<string, HTMLInputElement | null>>({});
+  const [isAutoFill, setIsAutoFill] = useState(false);
 
   useEffect(() => {
     setGrid((prevGrid) => {
@@ -92,6 +93,14 @@ export default function GraphPaperComponent() {
       });
     }
   }, [currentCell]);
+
+  useEffect(() => {
+    if (isAutoFill) {
+      fillCellsWithHash();
+    } else {
+      removeHash();
+    }
+  }, [isAutoFill]);
 
   const nextCell = () => {
     setCurrentCell((prev) => {
@@ -192,53 +201,81 @@ export default function GraphPaperComponent() {
     }
   };
 
+  const fillCellsWithHash = () => {
+    setGrid((prevGrid) =>
+      prevGrid.map((row) => row.map((cell) => cell || "＃"))
+    );
+  };
+
+  const removeHash = () => {
+    setGrid((prevGrid) =>
+      prevGrid.map((row) =>
+        row.map((cell) => (cell === "＃" || cell === "#" ? "" : cell))
+      )
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 flex items-center justify-center">
-      <div className="p-8 bg-gray-800 rounded-lg shadow-xl">
+      <div className="p-8 bg-gray-800 rounded-lg shadow-xl relative">
         <h1 className="text-3xl font-bold mb-6 text-center text-purple-400">
           方眼紙
         </h1>
         <p className="text-gray-400 text-xs mb-2 text-center">
           ＃を入力すると、マスが黒く塗りつぶされます
         </p>
-        <div className="mb-3 flex justify-end gap-1 text-xs">
-          <div className="flex items-center">
-            <label className="text-gray-400 mr-1">行数:</label>
-            <input
-              id="rows"
-              type="number"
-              min="1"
-              max="20"
-              value={rows}
-              onChange={(e) =>
-                setRows(
-                  Math.min(20, Math.max(1, parseInt(e.target.value) || 1))
-                )
-              }
-              className="w-10 px-1 py-0.5 text-black rounded text-xs"
-            />
-          </div>
-          <div className="flex items-center">
-            <label className="text-gray-400 mr-1">列数:</label>
-            <input
-              id="cols"
-              type="number"
-              min="1"
-              max="20"
-              value={cols}
-              onChange={(e) =>
-                setCols(
-                  Math.min(20, Math.max(1, parseInt(e.target.value) || 1))
-                )
-              }
-              className="w-10 px-1 py-0.5 text-black rounded text-xs"
-            />
-          </div>
-          <span className="text-gray-500 text-xs self-center ml-1">
-            (最大20)
-          </span>
-        </div>
 
+        <div className="mb-3 flex justify-between gap-1 text-xs">
+          <div>
+            <input
+              type="checkbox"
+              id="autoFill"
+              checked={isAutoFill}
+              onChange={(e) => setIsAutoFill(e.target.checked)}
+              className="w-4 h-4 text-purple-600 rounded focus:ring-purple-500 text-xs"
+            />
+            <label htmlFor="autoFill" className="text-gray-400 text-xs">
+              黒(＃)埋め
+            </label>
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="flex items-center">
+              <label className="text-gray-400 mr-1">行数:</label>
+              <input
+                id="rows"
+                type="number"
+                min="1"
+                max="20"
+                value={rows}
+                onChange={(e) =>
+                  setRows(
+                    Math.min(20, Math.max(1, parseInt(e.target.value) || 1))
+                  )
+                }
+                className="w-10 px-1 py-0.5 text-black rounded text-xs"
+              />
+            </div>
+            <div className="flex items-center">
+              <label className="text-gray-400 mr-1">列数:</label>
+              <input
+                id="cols"
+                type="number"
+                min="1"
+                max="20"
+                value={cols}
+                onChange={(e) =>
+                  setCols(
+                    Math.min(20, Math.max(1, parseInt(e.target.value) || 1))
+                  )
+                }
+                className="w-10 px-1 py-0.5 text-black rounded text-xs"
+              />
+            </div>
+            <span className="text-gray-500 text-xs self-center ml-1">
+              (最大20)
+            </span>
+          </div>
+        </div>
         <div
           className="grid gap-1 mx-auto"
           style={{
