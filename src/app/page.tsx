@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Lightbulb, Puzzle, Users } from "lucide-react";
+import * as LucideIcons from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { HeaderComponent } from "@/components/common/header-component";
 import { FooterComponent } from "@/components/common/footer-component";
+import featuresData from "@/lib/json/features.json";
 
 export default function Home() {
   const [hintRevealed, setHintRevealed] = useState(false);
@@ -27,53 +28,32 @@ export default function Home() {
         </motion.section>
 
         <section className="grid md:grid-cols-3 gap-8 mb-16">
-          {[
-            {
-              icon: Lightbulb,
-              title: "しりとりシステム",
-              description: "あいうえお表と自動でしりとりをするシステム！",
-              path: "/shiritori",
-            },
-            {
-              icon: Puzzle,
-              title: "サイコロシステム",
-              description: "展開図が苦手なあなたも安心！",
-              path: "/dice",
-            },
-            {
-              icon: Users,
-              title: "コミュニティ",
-              description: "謎解き仲間と交流し、スキルを高め合おう",
-              path: "/",
-            },
-          ].map((feature, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.1,
-              }}
-              // ホバー時のアニメーション
-              whileHover={{
-                scale: 1.05,
-              }}
-              // クリック時のアニメーション
-              whileTap={{
-                scale: 1.0,
-              }}
-              onClick={() => {
-                window.location.href = feature.path;
-              }}
-              className="bg-gray-800 p-6 rounded-lg shadow-lg hover:shadow-xl transition-all cursor-pointer"
-            >
-              <div className="flex items-center gap-3 mb-4">
-                <feature.icon className="h-12 w-12 text-purple-400" />
-                <h3 className="text-xl font-semibold">{feature.title}</h3>
-              </div>
-              <p className="text-gray-400">{feature.description}</p>
-            </motion.div>
-          ))}
+          {featuresData.features.map((feature, index) => {
+            const IconComponent = LucideIcons[
+              feature.iconName as keyof typeof LucideIcons
+            ] as LucideIcons.LucideIcon;
+
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.1 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 1.0 }}
+                onClick={() => {
+                  window.location.href = feature.path;
+                }}
+                className="bg-gray-800 p-6 rounded-lg shadow-lg hover:shadow-xl transition-all cursor-pointer"
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <IconComponent className="h-12 w-12 text-purple-400" />
+                  <h3 className="text-xl font-semibold">{feature.title}</h3>
+                </div>
+                <p className="text-gray-400">{feature.description}</p>
+              </motion.div>
+            );
+          })}
         </section>
 
         <motion.section

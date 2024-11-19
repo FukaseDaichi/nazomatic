@@ -14,6 +14,7 @@ export default function WordList({ wordInfos }: WordListProps) {
           word={wordInfo.word}
           count={wordInfo.count}
           onClickHandler={wordInfo.onClickHandler}
+          number={wordInfo.number}
         />
       ))}
     </div>

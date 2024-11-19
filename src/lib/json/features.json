@@ -1,0 +1,34 @@
+{
+  "features": [
+    {
+      "iconName": "Link",
+      "title": "しりとりシステム",
+      "description": "あいうえお表と自動でしりとりをするシステム！",
+      "path": "/shiritori"
+    },
+    {
+      "iconName": "Dices",
+      "title": "サイコロシステム",
+      "description": "展開図が苦手なあなたも安心！",
+      "path": "/dice"
+    },
+    {
+      "iconName": "CaseUpper",
+      "title": "アルファベットシステム",
+      "description": "アルファベットと数字を相互変換するシステム！",
+      "path": "/alphabet"
+    },
+    {
+      "iconName": "Map",
+      "title": "都道府県システム",
+      "description": "都道府県をひらがなで検索できるシステム！",
+      "path": "/prefectures"
+    },
+    {
+      "iconName": "Frame",
+      "title": "方眼紙",
+      "description": "クロスワードや穴埋め形式の問題に最適なメモ用紙！",
+      "path": "/graphpaper"
+    }
+  ]
+}

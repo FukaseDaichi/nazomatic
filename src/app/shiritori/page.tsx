@@ -40,7 +40,8 @@ export default function Comprehensive() {
         const data: WordInfoProps = {
           word: hiragana.value,
           count: 0,
-          onClickHandler: () => alert(`Word: ${hiragana}`),
+          number: hiragana.number ?? 0,
+          onClickHandler: () => console.log(`Word: ${hiragana.value}`),
         };
         return data;
       })
@@ -53,7 +54,8 @@ export default function Comprehensive() {
         const data: WordInfoProps = {
           word: hiragana.value,
           count: countHiragana(hiragana, text),
-          onClickHandler: () => alert(`Word: ${hiragana.value}`),
+          number: hiragana.number ?? 0,
+          onClickHandler: () => console.log(`Word: ${hiragana.value}`),
         };
         return data;
       })

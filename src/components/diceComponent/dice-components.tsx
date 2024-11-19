@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useMemo, useCallback } from "react";
+import { useRef, useState, useMemo } from "react";
 import {
   Canvas,
   useFrame,
@@ -15,6 +15,8 @@ import { DICE_COLORS, FaceData } from "./dice-nets";
 type DiceProps = ThreeElements["mesh"] & {
   isActive: boolean;
   faceData: Record<number, FaceData>;
+  dragging: boolean;
+  setDragging: (dragging: boolean) => void;
 };
 //角度から回転情報を取得する
 const getRotationFromAngle = (angle: number) => {
@@ -23,11 +25,9 @@ const getRotationFromAngle = (angle: number) => {
 
 function Dice(props: DiceProps) {
   const meshRef = useRef<THREE.Mesh>(null!);
-  const [hovered, setHover] = useState(false);
-  const [dragging, setDragging] = useState(false);
 
   useFrame((state, delta) => {
-    if (props.isActive && !dragging) {
+    if (props.isActive && !props.dragging) {
       meshRef.current.rotation.x += delta / 2;
       meshRef.current.rotation.y += delta / 2;
     }
@@ -83,27 +83,11 @@ function Dice(props: DiceProps) {
     <mesh
       {...props}
       ref={meshRef}
-      onPointerOver={(event) => {
-        setHover(true);
-        if (!dragging) {
-          document.body.style.cursor = "grab";
-        }
-      }}
-      onPointerOut={(event) => {
-        setHover(false);
-        if (!dragging) {
-          document.body.style.cursor = "default";
-        }
-      }}
       onPointerDown={(event: ThreeEvent<PointerEvent>) => {
-        setDragging(true);
-        document.body.style.cursor = "grabbing";
-        console.log("pointer down");
+        props.setDragging(true);
       }}
       onPointerUp={(event: ThreeEvent<PointerEvent>) => {
-        setDragging(false);
-        document.body.style.cursor = "grab";
-        console.log("pointer up");
+        props.setDragging(false);
       }}
     >
       <boxGeometry args={[2, 2, 2]} />
@@ -141,18 +125,28 @@ export default function DiceComponent({
   faceData: Record<number, FaceData>;
 }) {
   const [isActive, setIsActive] = useState(false);
+  const [dragging, setDragging] = useState(false);
   const controlsRef = useRef(null!);
   return (
-    <div className="relative w-full h-screen bg-gray-100 shadow-lg">
-      <Canvas>
+    <div className="relative w-full h-screen max-h-[600px]">
+      <Canvas className="cursor-grab active:cursor-grabbing">
         <ambientLight intensity={0.5} />
         <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
-        <Dice position={[0, 0, 0]} isActive={isActive} faceData={faceData} />
+        <Dice
+          position={[0, 0, 0]}
+          isActive={isActive}
+          dragging={dragging}
+          setDragging={setDragging}
+          faceData={faceData}
+        />
         <OrbitControls ref={controlsRef} enablePan={false} />
       </Canvas>
       <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-10">
         <button
-          onClick={() => setIsActive(!isActive)}
+          onClick={() => {
+            setDragging(false);
+            return setIsActive(!isActive);
+          }}
           className="bg-white p-2 rounded-full shadow-md hover:bg-gray-100 active:scale-95 transition-transform duration-150 ease-in-out"
         >
           {isActive ? (
