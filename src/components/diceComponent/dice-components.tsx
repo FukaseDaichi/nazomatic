@@ -97,7 +97,7 @@ function Dice(props: DiceProps) {
           attach={`material-${index}`}
           color={color}
           transparent
-          opacity={0.7}
+          opacity={0.8}
           clearcoat={1}
           clearcoatRoughness={0}
           metalness={0.1}
@@ -147,7 +147,7 @@ export default function DiceComponent({
             setDragging(false);
             return setIsActive(!isActive);
           }}
-          className="bg-white p-2 rounded-full shadow-md hover:bg-gray-100 active:scale-95 transition-transform duration-150 ease-in-out"
+          className="bg-white p-2 rounded-full shadow-md shadow-blue-500 hover:bg-gray-100 active:scale-95 transition-transform duration-100 ease-in-out"
         >
           {isActive ? (
             <Pause className="h-6 w-6" />

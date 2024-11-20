@@ -44,7 +44,7 @@ export default function Dice() {
   );
 
   return (
-    <main className="flex min-h-screen flex-col md:flex-row items-center justify-center">
+    <main className="flex min-h-screen flex-col md:flex-row items-center justify-center bg-gradient-to-b from-gray-900 to-gray-800">
       <div className="flex-1 flex items-center justify-center max-w-[600px]">
         <DiceNets faceData={faceData} onFaceDataChange={handleFaceDataChange} />
       </div>

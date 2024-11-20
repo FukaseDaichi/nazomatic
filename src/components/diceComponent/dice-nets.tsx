@@ -4,14 +4,15 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DiceNetIcon } from "./dice-net-icon";
+import { Card } from "../ui/card";
 
 export const DICE_COLORS = [
-  "#4169E1",
-  "#4169E1",
-  "#DC2626",
-  "#22C55E",
-  "#22C55E",
-  "#DC2626",
+  "#A0C4FF",
+  "#A0C4FF",
+  "#FFABAB",
+  "#B9FBC0",
+  "#B9FBC0",
+  "#FFABAB",
 ];
 
 // サイコロの展開図のデータ
@@ -179,7 +180,7 @@ const DiceNet = ({
             width="100"
             height="100"
             fill={getBackgroundColor(face.id)}
-            fill-opacity="0.1"
+            fill-opacity="0.5"
             stroke="black"
           />
           <foreignObject x={face.x} y={face.y} width="100" height="100">
@@ -232,18 +233,25 @@ export function DiceNets({
 }) {
   const [selectedNet, setSelectedNet] = useState(diceNets[0]);
   return (
-    <div className="container mx-auto p-4 flex flex-col items-center">
-      <h1 className="text-2xl font-bold mb-4">サイコロの展開図選択</h1>
+    <Card className="container mx-auto p-4 flex flex-col items-center bg-gray-800 border-gray-700">
+      <h1 className="text-2xl font-bold mb-4 text-white">
+        サイコロの展開図選択
+      </h1>
       <div className="grid grid-rows-2 grid-flow-col gap-2 mb-4 overflow-x-auto pb-2 max-h-[200px] max-w-[600px] justify-center">
         {diceNets.map((net) => (
           <Button
             key={net.id}
             onClick={() => setSelectedNet(net)}
-            variant={selectedNet.id === net.id ? "default" : "outline"}
+            variant={selectedNet.id !== net.id ? "default" : "outline"}
             tabIndex={-1}
+            className={`${
+              selectedNet.id !== net.id
+                ? "bg-gray-300 hover:bg-purple-500"
+                : "bg-purple-500 hover:bg-purple-500"
+            }`}
           >
             <DiceNetIcon
-              className={`w-full h-full stroke-current ${
+              className={`w-full h-full ${
                 selectedNet.id === net.id ? "stroke-white" : "stroke-black"
               }`}
               faces={net.faces}
@@ -251,14 +259,16 @@ export function DiceNets({
           </Button>
         ))}
       </div>
-      <div className="border p-4 rounded-lg w-full max-w-[600px]">
-        <h2 className="text-xl font-semibold mb-2">{selectedNet.name}</h2>
+      <Card className="border p-4 rounded-lg w-full max-w-[600px] bg-gray-700 border-gray-500">
+        <h2 className="text-xl font-semibold mb-2 text-white">
+          {selectedNet.name}
+        </h2>
         <DiceNet
           net={selectedNet}
           faceData={faceData}
           onFaceDataChange={onFaceDataChange}
         />
-      </div>
-    </div>
+      </Card>
+    </Card>
   );
 }
