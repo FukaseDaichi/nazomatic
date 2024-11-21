@@ -69,7 +69,7 @@ export const AlphabetConverter = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white p-8">
+    <main className="p-8">
       <TooltipProvider>
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl font-bold mb-8 text-center">
@@ -219,6 +219,6 @@ export const AlphabetConverter = () => {
           </div>
         </div>
       </TooltipProvider>
-    </div>
+    </main>
   );
 };

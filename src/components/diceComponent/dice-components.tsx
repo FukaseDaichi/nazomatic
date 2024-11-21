@@ -124,7 +124,7 @@ export default function DiceComponent({
 }: {
   faceData: Record<number, FaceData>;
 }) {
-  const [isActive, setIsActive] = useState(false);
+  const [isActive, setIsActive] = useState(true);
   const [dragging, setDragging] = useState(false);
   const controlsRef = useRef(null!);
   return (
@@ -147,7 +147,7 @@ export default function DiceComponent({
             setDragging(false);
             return setIsActive(!isActive);
           }}
-          className="bg-white p-2 rounded-full shadow-md shadow-blue-500 hover:bg-gray-100 active:scale-95 transition-transform duration-100 ease-in-out"
+          className="bg-white p-2 rounded-full shadow-md shadow-blue-500 hover:bg-gray-100 active:scale-95 transition-transform duration-100 ease-in-out text-gray-700"
         >
           {isActive ? (
             <Pause className="h-6 w-6" />

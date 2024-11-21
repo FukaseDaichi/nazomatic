@@ -12,7 +12,7 @@ export default function Home() {
   const [hintRevealed, setHintRevealed] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
+    <>
       <HeaderComponent />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <motion.section
@@ -21,7 +21,9 @@ export default function Home() {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <h2 className="text-5xl font-extrabold mb-4">謎を解き明かそう</h2>
+          <h2 className="text-4xl sm:text-5xl font-extrabold mb-4">
+            謎を解き明かそう
+          </h2>
           <p className="text-xl text-gray-300 mb-8">
             NAZOMATICで、あなたの謎解き力を極限まで高めよう
           </p>
@@ -50,7 +52,9 @@ export default function Home() {
                   <IconComponent className="h-12 w-12 text-purple-400" />
                   <h3 className="text-xl font-semibold">{feature.title}</h3>
                 </div>
-                <p className="text-gray-400">{feature.description}</p>
+                <p className="text-gray-400 text-sm sm:text-base">
+                  {feature.description}
+                </p>
               </motion.div>
             );
           })}
@@ -88,6 +92,6 @@ export default function Home() {
         </motion.section>
       </main>
       <FooterComponent />
-    </div>
+    </>
   );
 }

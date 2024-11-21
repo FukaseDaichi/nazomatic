@@ -21,7 +21,7 @@ const WordData: FC<WordInfoProps> = ({
   const isActive = count > 0;
   return word ? (
     <div
-      className={`w-1/12 h-1/5 relative group ${styles.worddata} ${
+      className={`w-9 h-1/5 relative group ${styles.worddata} ${
         isActive ? styles.active : ""
       } relative`}
       onClick={onClickHandler}
@@ -39,7 +39,7 @@ const WordData: FC<WordInfoProps> = ({
       <div className={styles.count}>{count}</div>
     </div>
   ) : (
-    <div className={`w-1/12 h-1/5`}></div>
+    <div className={`w-1/10 h-1/5`}></div>
   );
 };
 

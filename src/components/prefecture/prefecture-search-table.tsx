@@ -394,7 +394,7 @@ export function PrefectureSearchTableComponent() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white p-8">
+    <main className="p-8">
       <div className="max-w-[700px] mx-auto">
         <h1 className="text-3xl font-bold mb-8 text-center">
           都道府県検索システム
@@ -450,6 +450,6 @@ export function PrefectureSearchTableComponent() {
           </Table>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

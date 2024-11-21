@@ -190,7 +190,7 @@ const DiceNet = ({
                 onChange={(e) =>
                   onFaceDataChange(face.id, { text: e.target.value })
                 }
-                className="w-16 h-16 text-center text-2xl"
+                className="w-16 h-16 text-center text-2xl [touch-action:manipulation]"
                 style={{
                   transform: `rotate(${faceData[face.id]?.rotation || 0}deg)`,
                   transition: "transform 0.3s ease",

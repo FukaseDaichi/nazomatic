@@ -36,9 +36,9 @@ export function StylishAutoResizeTextareaComponent({
   }, [value]);
 
   return (
-    <div className="w-full max-w-md mx-auto">
+    <div className="w-full mx-auto px-4 sm:px-0">
       <div
-        className={`relative rounded-lg transition-all duration-300 ease-in-out
+        className={`relative rounded-lg transition-all duration-300 ease-in-out 
         ${isFocused ? "shadow-lg" : "shadow-md"}
         ${
           isFocused
@@ -57,10 +57,11 @@ export function StylishAutoResizeTextareaComponent({
             onBlur={() => setIsFocused(false)}
             maxLength={MAX_LENGTH}
             placeholder=""
+            // [touch-action:manipulation]はスマートフォンのズーム操作の無効化
             className="min-h-[100px] resize-none transition-all duration-300 ease-in-out bg-transparent
                         border-2 border-transparent focus:border-gray-900/50 rounded-lg p-4 text-foreground
                        placeholder-transparent focus:ring-0 focus:outline-none focus-visible:ring-0 dark:focus:border-gray-50/50
-                       bg-gray-700"
+                       bg-gray-700 [touch-action:manipulation]"
           />
           <Label
             htmlFor="stylish-textarea"

@@ -216,7 +216,7 @@ export default function GraphPaperComponent() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 flex items-center justify-center">
+    <main className="flex items-center justify-center">
       <div className="p-8 bg-gray-800 rounded-lg shadow-xl relative">
         <h1 className="text-3xl font-bold mb-6 text-center text-purple-400">
           方眼紙
@@ -309,6 +309,6 @@ export default function GraphPaperComponent() {
           )}
         </div>
       </div>
-    </div>
+    </main>
   );
 }
