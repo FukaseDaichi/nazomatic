@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,63 +10,86 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { CaseUpper, ArrowLeftRight } from "lucide-react";
 
 const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
+const getCorrespondingNumber = (str: string) => {
+  const value = str
+    .replace(/[Ａ-Ｚａ-ｚ]/g, (s) =>
+      String.fromCharCode(s.charCodeAt(0) - 0xfee0)
+    )
+    .toUpperCase();
+
+  if (value) {
+    return value
+      .split("")
+      .map((letter) => {
+        const index = alphabet.indexOf(letter);
+        return index !== -1 ? index + 1 : "?";
+      })
+      .join(" ");
+  }
+  return "";
+};
+
+const getViewWordByStr = (str: string) => {
+  const n = parseInt(str);
+  return n >= 1 && n <= 26 ? alphabet[n - 1] : getCorrespondingNumber(str);
+};
+
+const getRegexAlphabet = (letter: string) => {
+  const lowerLetter = letter.toLowerCase();
+  const fullWidthUpperLetter = String.fromCharCode(
+    letter.charCodeAt(0) + 0xfee0
+  );
+  const fullWidthLowerLetter = String.fromCharCode(
+    lowerLetter.charCodeAt(0) + 0xfee0
+  );
+  const regex = new RegExp(
+    `[${letter}${lowerLetter}${fullWidthUpperLetter}${fullWidthLowerLetter}]`,
+    "g"
+  );
+  return regex;
+};
+
 export const AlphabetConverter = () => {
-  const [inputNumber, setInputNumber] = useState("");
-  const [inputLetter, setInputLetter] = useState("");
+  const [inputText, setInputText] = useState("");
   const [selectedLetters, setSelectedLetters] = useState<string[]>([]);
 
   const handleNumberInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setInputNumber(value);
+    setInputText(value);
   };
 
-  const handleLetterInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-      .replace(/[Ａ-Ｚａ-ｚ]/g, (s) =>
-        String.fromCharCode(s.charCodeAt(0) - 0xfee0)
-      )
-      .toUpperCase();
-    setInputLetter(value);
-  };
   const getCorrespondingLetter = () => {
-    if (!inputNumber) {
+    if (!inputText) {
       return "";
     }
-    const normalizedInput = inputNumber
+    const normalizedInput = inputText
       .replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
       .replace(/[ー−\s　]/g, "-");
 
     if (normalizedInput.includes("-")) {
       return normalizedInput
         .split("-")
-        .map((num) => {
-          const n = parseInt(num);
-          return n >= 1 && n <= 26 ? alphabet[n - 1] : "?";
-        })
-        .join("");
-    }
-    const num = parseInt(normalizedInput);
-    if (num >= 1 && num <= 26) {
-      return alphabet[num - 1];
-    }
-    return "?";
-  };
-
-  const getCorrespondingNumber = () => {
-    if (inputLetter) {
-      return inputLetter
-        .split("")
-        .map((letter) => {
-          const index = alphabet.indexOf(letter);
-          return index !== -1 ? index + 1 : "?";
-        })
+        .map((str) => getViewWordByStr(str))
         .join(" ");
     }
-    return "";
+    return getViewWordByStr(inputText);
   };
+
+  // inputTextを監視してselectedLettersを更新
+  useEffect(() => {
+    const value = inputText
+      .replace(/[Ａ-Ｚａ-ｚ]/g, (s) =>
+        String.fromCharCode(s.charCodeAt(0) - 0xfee0)
+      )
+      .toUpperCase();
+    setSelectedLetters(
+      value.split("").filter((char) => alphabet.includes(char))
+    );
+  }, [inputText]);
 
   return (
     <main className="p-8">
@@ -81,34 +104,9 @@ export const AlphabetConverter = () => {
                 <CardTitle className="text-purple-400">
                   アルファベット表
                 </CardTitle>
-                <div className="flex items-center gap-2 flex-1 max-w-xs">
-                  <Label
-                    htmlFor="selectedLetters"
-                    className="text-sm font-medium text-gray-300 whitespace-nowrap"
-                  >
-                    選択された文字:
-                  </Label>
-                  <Input
-                    id="selectedLetters"
-                    type="text"
-                    value={selectedLetters.join("")}
-                    onChange={(e) => {
-                      const value = e.target.value
-                        .replace(/[Ａ-Ｚａ-ｚ]/g, (s) =>
-                          String.fromCharCode(s.charCodeAt(0) - 0xfee0)
-                        )
-                        .toUpperCase();
-                      setSelectedLetters(
-                        value
-                          .split("")
-                          .filter((char) => alphabet.includes(char))
-                      );
-                    }}
-                    className="bg-gray-700 border-gray-600 text-white uppercase"
-                  />
-                </div>
               </div>
             </CardHeader>
+
             <CardContent>
               <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-13 gap-2">
                 {alphabet.split("").map((letter, index) => (
@@ -118,11 +116,11 @@ export const AlphabetConverter = () => {
                         className="relative group"
                         onClick={() => {
                           if (selectedLetters.includes(letter)) {
-                            setSelectedLetters(
-                              selectedLetters.filter((l) => l !== letter)
+                            setInputText((pre) =>
+                              pre.replace(getRegexAlphabet(letter), "")
                             );
                           } else {
-                            setSelectedLetters([...selectedLetters, letter]);
+                            setInputText((pre) => pre + ` ${letter}`);
                           }
                         }}
                       >
@@ -154,69 +152,38 @@ export const AlphabetConverter = () => {
             </CardContent>
           </Card>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Card className="bg-gray-800 border-gray-700">
-              <CardHeader>
-                <CardTitle className="text-purple-400">
-                  数字からアルファベットへの変換
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Label
-                  htmlFor="numberInput"
-                  className="text-sm font-medium text-gray-300"
-                >
-                  数字をスペース区切りで入力
-                </Label>
-                <Input
-                  id="numberInput"
-                  type="text"
-                  value={inputNumber}
-                  onChange={handleNumberInputChange}
-                  className="mt-1 bg-gray-700 border-gray-600 text-white"
-                />
-                <div className="mt-4">
-                  <span className="text-sm font-semibold text-purple-300">
-                    対応するアルファベット:{" "}
-                  </span>
-                  <span className="text-lg text-purple-400">
-                    {getCorrespondingLetter()}
-                  </span>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gray-800 border-gray-700">
-              <CardHeader>
-                <CardTitle className="text-purple-400">
-                  アルファベットから数字への変換
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Label
-                  htmlFor="letterInput"
-                  className="text-sm font-medium text-gray-300"
-                >
-                  アルファベットを入力 (A-Z):
-                </Label>
-                <Input
-                  id="letterInput"
-                  type="text"
-                  value={inputLetter}
-                  onChange={handleLetterInputChange}
-                  className="mt-1 bg-gray-700 border-gray-600 text-white uppercase"
-                />
-                <div className="mt-4">
-                  <span className="text-sm font-semibold text-purple-300">
-                    対応する数字:{" "}
-                  </span>
-                  <span className="text-lg text-purple-400">
-                    {getCorrespondingNumber()}
-                  </span>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <Card className="bg-gray-800 border-gray-700 mt-2">
+            <CardContent className="relative">
+              <Label
+                htmlFor="numberInput"
+                className="text-sm font-medium text-gray-300"
+              >
+                <span className="text-purple-400 text-lg">
+                  <CaseUpper className="h-10 w-10 text-purple-400 inline" />
+                  <ArrowLeftRight className="h-3 w-3 text-purple-400 inline" />
+                  Number
+                </span>
+                <span className="ml-5 text-xs text-gray-400 mt-1">
+                  ※スペース区切りで入力
+                </span>
+              </Label>
+              <Input
+                id="numberInput"
+                type="text"
+                value={inputText}
+                onChange={handleNumberInputChange}
+                className="-mt-2 bg-gray-700 border-gray-600 text-white"
+              />
+              <div className="mt-4">
+                <span className="text-sm font-semibold text-purple-300">
+                  対応するアルファベット:{" "}
+                </span>
+                <span className="text-lg text-purple-400">
+                  {getCorrespondingLetter()}
+                </span>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </TooltipProvider>
     </main>

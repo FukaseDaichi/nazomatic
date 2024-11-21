@@ -180,7 +180,7 @@ const DiceNet = ({
             width="100"
             height="100"
             fill={getBackgroundColor(face.id)}
-            fill-opacity="0.5"
+            fillOpacity="0.5"
             stroke="black"
           />
           <foreignObject x={face.x} y={face.y} width="100" height="100">

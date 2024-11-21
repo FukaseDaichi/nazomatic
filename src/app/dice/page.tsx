@@ -45,25 +45,14 @@ export default function Dice() {
 
   return (
     <>
-      <style jsx>{`
-        @media only screen and (orientation: portrait) {
-          body {
-            transform: rotate(90deg);
-            transform-origin: left top;
-            width: 100vh; /* 高さを幅に設定 */
-            height: 100vw; /* 幅を高さに設定 */
-            overflow: hidden; /* スクロールを隠す */
-          }
-        }
-      `}</style>
       <main className="flex min-h-screen flex-col md:flex-row items-center justify-center">
-        <div className="flex-1 flex items-center justify-center max-w-[600px]">
+        <div className="flex-1 flex items-center justify-center w-full sm:max-w-[600px]">
           <DiceNets
             faceData={faceData}
             onFaceDataChange={handleFaceDataChange}
           />
         </div>
-        <div className="flex-1 flex items-center justify-center max-w-[300px]">
+        <div className="flex-1 flex items-center justify-center w-90 sm:max-w-[300px]">
           <DiceComponent faceData={faceData} />
         </div>
       </main>
