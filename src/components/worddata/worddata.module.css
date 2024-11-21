@@ -1,6 +1,12 @@
 .worddata {
   cursor: pointer;
-  position: relative;
+  border-radius: 8px;
+
+  background: #000000;
+  border-radius: 10px;
+  box-shadow: 0 2px 2px rgb(0, 0, 0), 0 2px 2px rgb(0, 0, 0);
+  transform: translateY(-2px); /* 背景から少し浮かせる */
+  transition: transform 0.1s ease, box-shadow 0.3s ease;
 }
 
 .worddata > .word {
@@ -10,21 +16,21 @@
   line-height: 40px;
 }
 
+.worddata > .number {
+  font-size: 0.5rem;
+  line-height: 0.7rem;
+}
+
 .worddata.active > .word {
-  color: white;
-  background-color: rgb(147 51 234);
+  background-color: #a654fa;
 }
 
 .worddata > .count {
-  font-size: 0.7rem;
+  font-size: 0.6rem;
   display: block;
   position: absolute;
   right: 3px;
-  bottom: 4px;
-  color: rgb(157, 157, 157);
+  bottom: -1px;
   text-align: right;
-}
-
-.worddata.active > .count {
-  color: white;
+  color: rgb(227, 227, 227);
 }

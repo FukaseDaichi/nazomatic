@@ -21,15 +21,19 @@ const WordData: FC<WordInfoProps> = ({
   const isActive = count > 0;
   return word ? (
     <div
-      className={`w-1/12 h-1/5 ${styles.worddata} ${
+      className={`w-1/12 h-1/5 relative group ${styles.worddata} ${
         isActive ? styles.active : ""
       } relative`}
       onClick={onClickHandler}
     >
-      <div className="absolute -top-1 -left-2 text-[0.6rem] text-gray-400 px-1 m-0.5 leading-3 min-w-[1.2rem] text-center">
+      <span
+        className={`absolute top-0 left-0 bg-gray-900 text-gray-400 px-1 rounded-tl-lg rounded-br-lg opacity-75 transition-opacity duration-300 group-hover:opacity-100 text-white ${styles.number}`}
+      >
         {number}
-      </div>
-      <div className={`bg-purple-100 rounded-lg ${styles.word} text-gray-500`}>
+      </span>
+      <div
+        className={`rounded-lg ${styles.word} bg-gray-500 group-hover:bg-purple-500 text-white`}
+      >
         {word}
       </div>
       <div className={styles.count}>{count}</div>

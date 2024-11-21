@@ -13,7 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { CardTitle } from "@/components/ui/card";
+import { Card, CardTitle } from "@/components/ui/card";
 
 const hiraganaList = hiragana.list;
 
@@ -68,17 +68,19 @@ export default function Comprehensive() {
   }, [text]);
 
   return (
-    <main className="flex min-h-screen flex-col items-center">
-      <WordList wordInfos={wordInfos} />
-      <StylishAutoResizeTextareaComponent value={text} setValue={setText} />
-      <Button
-        onClick={generateShiritori}
-        className="bg-purple-600 hover:bg-purple-700 text-white mb-4"
-      >
-        ✨しりとり生成 ✨
-      </Button>
+    <main className="flex min-h-screen flex-col items-center bg-gradient-to-b from-gray-900 to-gray-800">
+      <Card className="bg-gray-800 border-gray-700 flex flex-col items-center mx-auto text-white p-4 md:p-8 mt-5">
+        <WordList wordInfos={wordInfos} />
+        <StylishAutoResizeTextareaComponent value={text} setValue={setText} />
+        <Button
+          onClick={generateShiritori}
+          className="bg-purple-600 hover:bg-purple-700 text-white mb-4"
+        >
+          ✨しりとり生成 ✨
+        </Button>
+      </Card>
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[1000px]">
+        <DialogContent className="sm:max-w-[1000px] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-center text-xl font-bold">
               <CardTitle className="text-2xl font-bold text-center text-purple-800 dark:text-purple-200">

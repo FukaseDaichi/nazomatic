@@ -25,7 +25,7 @@ export function HeaderComponent() {
                   <Tooltip.Trigger asChild>
                     <a
                       href="/"
-                      className="text-gray-300 hover:text-purple-400 transition-colors p-2 rounded-full hover:bg-gray-800/50"
+                      className="text-gray-300 hover:text-purple-400 transition-colors p-2 rounded-full"
                     >
                       <LucideIcons.Home size={20} />
                     </a>
@@ -33,7 +33,7 @@ export function HeaderComponent() {
                   <Tooltip.Portal>
                     <Tooltip.Content
                       className="bg-gray-800 text-gray-100 px-3 py-1.5 rounded-md text-sm animate-in fade-in-0 zoom-in-95"
-                      sideOffset={5}
+                      sideOffset={-15}
                     >
                       ホーム
                       <Tooltip.Arrow className="fill-gray-800" />
@@ -52,7 +52,7 @@ export function HeaderComponent() {
                       <Tooltip.Trigger asChild>
                         <a
                           href={feature.path}
-                          className="text-gray-300 hover:text-purple-400 transition-colors p-2 rounded-full hover:bg-gray-800/50"
+                          className="text-gray-300 hover:text-purple-400 transition-colors p-2 rounded-full"
                         >
                           <IconComponent size={20} />
                         </a>
@@ -60,7 +60,7 @@ export function HeaderComponent() {
                       <Tooltip.Portal>
                         <Tooltip.Content
                           className="bg-gray-800 text-gray-100 px-3 py-1.5 rounded-md text-sm animate-in fade-in-0 zoom-in-95"
-                          sideOffset={5}
+                          sideOffset={-15}
                         >
                           {feature.title}
                           <Tooltip.Arrow className="fill-gray-800" />

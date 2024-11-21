@@ -1,4 +1,5 @@
 "use client";
+import { Card } from "../ui/card";
 import WordData, { WordInfoProps } from "../worddata/worddata";
 
 type WordListProps = {
@@ -7,7 +8,7 @@ type WordListProps = {
 
 export default function WordList({ wordInfos }: WordListProps) {
   return (
-    <div className="flex flex-col flex-wrap-reverse w-96 h-64 mx-auto my-8 text-lg">
+    <Card className="flex flex-col flex-wrap-reverse w-96 h-64 mx-auto my-8 text-lg p-3 bg-gray-700 border-gray-600">
       {wordInfos.map((wordInfo, index) => (
         <WordData
           key={index}
@@ -17,6 +18,6 @@ export default function WordList({ wordInfos }: WordListProps) {
           number={wordInfo.number}
         />
       ))}
-    </div>
+    </Card>
   );
 }

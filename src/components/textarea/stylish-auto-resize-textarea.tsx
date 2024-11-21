@@ -59,7 +59,8 @@ export function StylishAutoResizeTextareaComponent({
             placeholder=""
             className="min-h-[100px] resize-none transition-all duration-300 ease-in-out bg-transparent
                         border-2 border-transparent focus:border-gray-900/50 rounded-lg p-4 text-foreground
-                       placeholder-transparent focus:ring-0 focus:outline-none focus-visible:ring-0 dark:focus:border-gray-50/50"
+                       placeholder-transparent focus:ring-0 focus:outline-none focus-visible:ring-0 dark:focus:border-gray-50/50
+                       bg-gray-700"
           />
           <Label
             htmlFor="stylish-textarea"
