@@ -19,7 +19,6 @@ const jsonLd = {
   description:
     "ナゾマティック(NAZOMARICE)は、謎解きやパズルを解くためのお助けツールを詰め合わせたサイトです。",
   inLanguage: "ja",
-  logo: `${baseURL}/img/nazomatic.png`,
   mainEntityOfPage: {
     "@type": "WebPage",
     "@id": baseURL,

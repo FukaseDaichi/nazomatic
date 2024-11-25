@@ -14,6 +14,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Card, CardTitle } from "@/components/ui/card";
+import Article from "@/components/common/json-ld-component";
 
 const hiraganaList = hiragana.list;
 
@@ -69,6 +70,7 @@ export default function Comprehensive() {
 
   return (
     <main className="flex min-h-screen flex-col items-center bg-gradient-to-b from-gray-900 to-gray-800">
+      <Article index={0} />
       <Card className="bg-gray-800 border-gray-700 flex flex-col items-center mx-auto text-white sm:p-4 md:p-8 mt-5 w-full sm:w-auto">
         <WordList wordInfos={wordInfos} />
         <StylishAutoResizeTextareaComponent value={text} setValue={setText} />
