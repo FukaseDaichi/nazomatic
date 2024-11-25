@@ -7,12 +7,37 @@ import { Button } from "@/components/ui/button";
 import { HeaderComponent } from "@/components/common/header-component";
 import { FooterComponent } from "@/components/common/footer-component";
 import featuresData from "@/lib/json/features.json";
+import { baseURL } from "@/app/config";
+import Script from "next/script";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "ナゾマティック",
+  alternateName: ["NAZOMATIC"],
+  url: baseURL,
+  description:
+    "ナゾマティック(NAZOMARICE)は、謎解きやパズルを解くためのお助けツールを詰め合わせたサイトです。",
+  inLanguage: "ja",
+  logo: `${baseURL}/img/nazomatic.png`,
+  mainEntityOfPage: {
+    "@type": "WebPage",
+    "@id": baseURL,
+  },
+  keywords: ["謎解き", "パズル", "お助けツール", "ナゾマティック"],
+};
 
 export default function Home() {
   const [hintRevealed, setHintRevealed] = useState(false);
 
   return (
     <>
+      <Script
+        id="json-ld"
+        key="json-ld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <HeaderComponent />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <motion.section

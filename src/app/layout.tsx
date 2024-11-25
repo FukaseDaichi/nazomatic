@@ -1,15 +1,13 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Script from "next/script";
+import { baseURL } from "@/app/config";
 const inter = Inter({ subsets: ["latin"] });
-
-const BASE_URL = "https://nazomatic.vercel.app/";
 
 export const viewport = "width=device-width, initial-scale=1";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(BASE_URL),
+  metadataBase: new URL(baseURL),
   title: "ナゾマティック｜謎解きお助けツール集",
   description:
     "ナゾマティック(NAZOMARICE)は、謎解きやパズルを解くためのお助けツールを詰め合わせたサイトです。",
@@ -54,16 +52,6 @@ export const metadata: Metadata = {
   authors: [{ name: "WhiteFranc", url: "https://あなたのサイトのURL" }],
 };
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  name: "ナゾマティック",
-  url: BASE_URL,
-  description:
-    "ナゾマティック(NAZOMARICE)は、謎解きやパズルを解くためのお助けツールを詰め合わせたサイトです。",
-  inLanguage: "ja",
-};
-
 export default function RootLayout({
   children,
 }: {
@@ -71,13 +59,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja">
-      <head>
-        <Script
-          id="structured-data"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      </head>
       <body
         className={`${inter.className} min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white`}
       >
