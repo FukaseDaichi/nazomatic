@@ -80,7 +80,7 @@ export default function Comprehensive() {
         </Button>
       </Card>
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[1000px] overflow-y-auto">
+        <DialogContent className="sm:max-w-[1000px] overflow-y-auto text-black">
           <DialogHeader>
             <DialogTitle className="text-center text-xl font-bold">
               <CardTitle className="text-2xl font-bold text-center text-purple-800 dark:text-purple-200">

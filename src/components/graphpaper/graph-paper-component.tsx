@@ -291,7 +291,7 @@ export default function GraphPaperComponent() {
                 ref={(el) => (inputRefs.current[`${i}-${j}`] = el)}
                 className={`w-8 h-8 text-center ${
                   cell === "#" || cell === "＃"
-                    ? "bg-black"
+                    ? "bg-black text-gray-800"
                     : "bg-white text-black"
                 } border ${
                   i === currentCell.row && j === currentCell.col
