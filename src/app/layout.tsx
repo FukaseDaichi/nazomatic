@@ -4,18 +4,25 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "ナゾマティック",
-  description: "謎解きお助けツール詰め合わせサイト",
+  title: "ナゾマティック｜謎解きお助けツール集",
+  description:
+    "謎解きやパズルを解くためのお助けツールを詰め合わせたサイトです。",
+  viewport: "width=device-width, initial-scale=1",
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
-    title: "ナゾマティック",
-    description: "謎解きお助けツール詰め合わせサイト",
+    title: "ナゾマティック｜謎解きお助けツール集",
+    description:
+      "謎解きやパズルを解くためのお助けツールを詰め合わせたサイトです。",
     siteName: "ナゾマティック",
     images: [
       {
         url: "https://nazomatic.vercel.app/og-image.png",
         width: 1200,
         height: 630,
-        alt: "OG Image",
+        alt: "ナゾマティックのOGイメージ",
       },
     ],
     locale: "ja_JP",
@@ -23,8 +30,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "ナゾマティック",
-    description: "謎解きお助けツール詰め合わせサイト",
+    title: "ナゾマティック｜謎解きお助けツール集",
+    description:
+      "謎解きやパズルを解くためのお助けツールを詰め合わせたサイトです。",
     images: ["https://nazomatic.vercel.app/og-image.png"],
   },
   icons: {
