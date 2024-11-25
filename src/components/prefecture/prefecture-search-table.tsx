@@ -15,330 +15,330 @@ const PREFECTURES = [
   {
     name: "北海道",
     hiragana: "ほっかいどう",
-    capital: "札幌市",
-    capitalHiragana: "さっぽろし",
+    capital: "札幌",
+    capitalHiragana: "さっぽろ",
     region: "北海道",
   },
   {
-    name: "青森県",
-    hiragana: "あおもりけん",
-    capital: "青森市",
-    capitalHiragana: "あおもりし",
+    name: "青森",
+    hiragana: "あおもり",
+    capital: "青森",
+    capitalHiragana: "あおもり",
     region: "東北",
   },
   {
-    name: "岩手県",
-    hiragana: "いわてけん",
-    capital: "盛岡市",
-    capitalHiragana: "もりおかし",
+    name: "岩手",
+    hiragana: "いわて",
+    capital: "盛岡",
+    capitalHiragana: "もりおか",
     region: "東北",
   },
   {
-    name: "宮城県",
-    hiragana: "みやぎけん",
-    capital: "仙台市",
-    capitalHiragana: "せんだいし",
+    name: "宮城",
+    hiragana: "みやぎ",
+    capital: "仙台",
+    capitalHiragana: "せんだい",
     region: "東北",
   },
   {
-    name: "秋田県",
-    hiragana: "あきたけん",
-    capital: "秋田市",
-    capitalHiragana: "あきたし",
+    name: "秋田",
+    hiragana: "あきた",
+    capital: "秋田",
+    capitalHiragana: "あきた",
     region: "東北",
   },
   {
-    name: "山形県",
-    hiragana: "やまがたけん",
-    capital: "山形市",
-    capitalHiragana: "やまがたし",
+    name: "山形",
+    hiragana: "やまがた",
+    capital: "山形",
+    capitalHiragana: "やまがた",
     region: "東北",
   },
   {
-    name: "福島県",
-    hiragana: "ふくしまけん",
-    capital: "福島市",
-    capitalHiragana: "ふくしまし",
+    name: "福島",
+    hiragana: "ふくしま",
+    capital: "福島",
+    capitalHiragana: "ふくしま",
     region: "東北",
   },
   {
-    name: "茨城県",
-    hiragana: "いばらきけん",
-    capital: "水戸市",
-    capitalHiragana: "みとし",
+    name: "茨城",
+    hiragana: "いばらき",
+    capital: "水戸",
+    capitalHiragana: "みと",
     region: "関東",
   },
   {
-    name: "栃木県",
-    hiragana: "とちぎけん",
-    capital: "宇都宮市",
-    capitalHiragana: "うつのみやし",
+    name: "栃木",
+    hiragana: "とちぎ",
+    capital: "宇都宮",
+    capitalHiragana: "うつのみや",
     region: "関東",
   },
   {
-    name: "群馬県",
-    hiragana: "ぐんまけん",
-    capital: "前橋市",
-    capitalHiragana: "まえばしし",
+    name: "群馬",
+    hiragana: "ぐんま",
+    capital: "前橋",
+    capitalHiragana: "まえばし",
     region: "関東",
   },
   {
-    name: "埼玉県",
-    hiragana: "さいたまけん",
-    capital: "さいたま市",
-    capitalHiragana: "さいたまし",
+    name: "埼玉",
+    hiragana: "さいたま",
+    capital: "さいたま",
+    capitalHiragana: "さいたま",
     region: "関東",
   },
   {
-    name: "千葉県",
-    hiragana: "ちばけん",
-    capital: "千葉市",
-    capitalHiragana: "ちばし",
+    name: "千葉",
+    hiragana: "ちば",
+    capital: "千葉",
+    capitalHiragana: "ちば",
     region: "関東",
   },
   {
-    name: "東京都",
-    hiragana: "とうきょうと",
+    name: "東京",
+    hiragana: "とうきょう",
     capital: "東京",
     capitalHiragana: "とうきょう",
     region: "関東",
   },
   {
-    name: "神奈川県",
-    hiragana: "かながわけん",
-    capital: "横浜市",
-    capitalHiragana: "よこはまし",
+    name: "神奈川",
+    hiragana: "かながわ",
+    capital: "横浜",
+    capitalHiragana: "よこはま",
     region: "関東",
   },
   {
-    name: "新潟県",
-    hiragana: "にいがたけん",
-    capital: "新潟市",
-    capitalHiragana: "にいがたし",
+    name: "新潟",
+    hiragana: "にいがた",
+    capital: "新潟",
+    capitalHiragana: "にいがた",
     region: "中部",
   },
   {
-    name: "富山県",
-    hiragana: "とやまけん",
-    capital: "富山市",
-    capitalHiragana: "とやまし",
+    name: "富山",
+    hiragana: "とやま",
+    capital: "富山",
+    capitalHiragana: "とやま",
     region: "中部",
   },
   {
-    name: "石川県",
-    hiragana: "いしかわけん",
-    capital: "金沢市",
-    capitalHiragana: "かなざわし",
+    name: "石川",
+    hiragana: "いしかわ",
+    capital: "金沢",
+    capitalHiragana: "かなざわ",
     region: "中部",
   },
   {
-    name: "福井県",
-    hiragana: "ふくいけん",
-    capital: "福井市",
-    capitalHiragana: "ふくいし",
+    name: "福井",
+    hiragana: "ふくい",
+    capital: "福井",
+    capitalHiragana: "ふくい",
     region: "中部",
   },
   {
-    name: "山梨県",
-    hiragana: "やまなしけん",
-    capital: "甲府市",
-    capitalHiragana: "こうふし",
+    name: "山梨",
+    hiragana: "やまなし",
+    capital: "甲府",
+    capitalHiragana: "こうふ",
     region: "中部",
   },
   {
-    name: "長野県",
-    hiragana: "ながのけん",
-    capital: "長野市",
-    capitalHiragana: "ながのし",
+    name: "長野",
+    hiragana: "ながの",
+    capital: "長野",
+    capitalHiragana: "ながの",
     region: "中部",
   },
   {
-    name: "岐阜県",
-    hiragana: "ぎふけん",
-    capital: "岐阜市",
-    capitalHiragana: "ぎふし",
+    name: "岐阜",
+    hiragana: "ぎふ",
+    capital: "岐阜",
+    capitalHiragana: "ぎふ",
     region: "中部",
   },
   {
-    name: "静岡県",
-    hiragana: "しずおかけん",
-    capital: "静岡市",
-    capitalHiragana: "しずおかし",
+    name: "静岡",
+    hiragana: "しずおか",
+    capital: "静岡",
+    capitalHiragana: "しずおか",
     region: "中部",
   },
   {
-    name: "愛知県",
-    hiragana: "あいちけん",
-    capital: "名古屋市",
-    capitalHiragana: "なごやし",
+    name: "愛知",
+    hiragana: "あいち",
+    capital: "名古屋",
+    capitalHiragana: "なごや",
     region: "中部",
   },
   {
-    name: "三重県",
-    hiragana: "みえけん",
-    capital: "津市",
-    capitalHiragana: "つし",
+    name: "三重",
+    hiragana: "みえ",
+    capital: "津",
+    capitalHiragana: "つ",
     region: "近畿",
   },
   {
-    name: "滋賀県",
-    hiragana: "しがけん",
-    capital: "大津市",
-    capitalHiragana: "おおつし",
+    name: "滋賀",
+    hiragana: "しが",
+    capital: "大津",
+    capitalHiragana: "おおつ",
     region: "近畿",
   },
   {
-    name: "京都府",
-    hiragana: "きょうとふ",
-    capital: "京都市",
-    capitalHiragana: "きょうとし",
+    name: "京都",
+    hiragana: "きょうと",
+    capital: "京都",
+    capitalHiragana: "きょうと",
     region: "近畿",
   },
   {
-    name: "大阪府",
-    hiragana: "おおさかふ",
-    capital: "大阪市",
-    capitalHiragana: "おおさかし",
+    name: "大阪",
+    hiragana: "おおさか",
+    capital: "大阪",
+    capitalHiragana: "おおさか",
     region: "近畿",
   },
   {
-    name: "兵庫県",
-    hiragana: "ひょうごけん",
-    capital: "神戸市",
-    capitalHiragana: "こうべし",
+    name: "兵庫",
+    hiragana: "ひょうご",
+    capital: "神戸",
+    capitalHiragana: "こうべ",
     region: "近畿",
   },
   {
-    name: "奈良県",
-    hiragana: "ならけん",
-    capital: "奈良市",
-    capitalHiragana: "ならし",
+    name: "奈良",
+    hiragana: "なら",
+    capital: "奈良",
+    capitalHiragana: "なら",
     region: "近畿",
   },
   {
-    name: "和歌山県",
-    hiragana: "わかやまけん",
-    capital: "和歌山市",
-    capitalHiragana: "わかやまし",
+    name: "和歌山",
+    hiragana: "わかやま",
+    capital: "和歌山",
+    capitalHiragana: "わかやま",
     region: "近畿",
   },
   {
-    name: "鳥取県",
-    hiragana: "とっとりけん",
-    capital: "鳥取市",
-    capitalHiragana: "とっとりし",
+    name: "鳥取",
+    hiragana: "とっとり",
+    capital: "鳥取",
+    capitalHiragana: "とっとり",
     region: "中国",
   },
   {
-    name: "島根県",
-    hiragana: "しまねけん",
-    capital: "松江市",
-    capitalHiragana: "まつえし",
+    name: "島根",
+    hiragana: "しまね",
+    capital: "松江",
+    capitalHiragana: "まつえ",
     region: "中国",
   },
   {
-    name: "岡山県",
-    hiragana: "おかやまけん",
-    capital: "岡山市",
-    capitalHiragana: "おかやまし",
+    name: "岡山",
+    hiragana: "おかやま",
+    capital: "岡山",
+    capitalHiragana: "おかやま",
     region: "中国",
   },
   {
-    name: "広島県",
-    hiragana: "ひろしまけん",
-    capital: "広島市",
-    capitalHiragana: "ひろしまし",
+    name: "広島",
+    hiragana: "ひろしま",
+    capital: "広島",
+    capitalHiragana: "ひろしま",
     region: "中国",
   },
   {
-    name: "山口県",
-    hiragana: "やまぐちけん",
-    capital: "山口市",
-    capitalHiragana: "やまぐちし",
+    name: "山口",
+    hiragana: "やまぐち",
+    capital: "山口",
+    capitalHiragana: "やまぐち",
     region: "中国",
   },
   {
-    name: "徳島県",
-    hiragana: "とくしまけん",
-    capital: "徳島市",
-    capitalHiragana: "とくしまし",
+    name: "徳島",
+    hiragana: "とくしま",
+    capital: "徳島",
+    capitalHiragana: "とくしま",
     region: "四国",
   },
   {
-    name: "香川県",
-    hiragana: "かがわけん",
-    capital: "高松市",
-    capitalHiragana: "たかまつし",
+    name: "香川",
+    hiragana: "かがわ",
+    capital: "高松",
+    capitalHiragana: "たかまつ",
     region: "四国",
   },
   {
-    name: "愛媛県",
-    hiragana: "えひめけん",
-    capital: "松山市",
-    capitalHiragana: "まつやまし",
+    name: "愛媛",
+    hiragana: "えひめ",
+    capital: "松山",
+    capitalHiragana: "まつやま",
     region: "四国",
   },
   {
-    name: "高知県",
-    hiragana: "こうちけん",
-    capital: "高知市",
-    capitalHiragana: "こうちし",
+    name: "高知",
+    hiragana: "こうち",
+    capital: "高知",
+    capitalHiragana: "こうち",
     region: "四国",
   },
   {
-    name: "福岡県",
-    hiragana: "ふくおかけん",
-    capital: "福岡市",
-    capitalHiragana: "ふくおかし",
+    name: "福岡",
+    hiragana: "ふくおか",
+    capital: "福岡",
+    capitalHiragana: "ふくおか",
     region: "九州",
   },
   {
-    name: "佐賀県",
-    hiragana: "さがけん",
-    capital: "佐賀市",
-    capitalHiragana: "さがし",
+    name: "佐賀",
+    hiragana: "さが",
+    capital: "佐賀",
+    capitalHiragana: "さが",
     region: "九州",
   },
   {
-    name: "長崎県",
-    hiragana: "ながさきけん",
-    capital: "長崎市",
-    capitalHiragana: "ながさきし",
+    name: "長崎",
+    hiragana: "ながさき",
+    capital: "長崎",
+    capitalHiragana: "ながさき",
     region: "九州",
   },
   {
-    name: "熊本県",
-    hiragana: "くまもとけん",
-    capital: "熊本市",
-    capitalHiragana: "くまもとし",
+    name: "熊本",
+    hiragana: "くまもと",
+    capital: "熊本",
+    capitalHiragana: "くまもと",
     region: "九州",
   },
   {
-    name: "大分県",
-    hiragana: "おおいたけん",
-    capital: "大分市",
-    capitalHiragana: "おおいたし",
+    name: "大分",
+    hiragana: "おおいた",
+    capital: "大分",
+    capitalHiragana: "おおいた",
     region: "九州",
   },
   {
-    name: "宮崎県",
-    hiragana: "みやざきけん",
-    capital: "宮崎市",
-    capitalHiragana: "みやざきし",
+    name: "宮崎",
+    hiragana: "みやざき",
+    capital: "宮崎",
+    capitalHiragana: "みやざき",
     region: "九州",
   },
   {
-    name: "鹿児島県",
-    hiragana: "かごしまけん",
-    capital: "鹿児島市",
-    capitalHiragana: "かごしまし",
+    name: "鹿児島",
+    hiragana: "かごしま",
+    capital: "鹿児島",
+    capitalHiragana: "かごしま",
     region: "九州",
   },
   {
-    name: "沖縄県",
-    hiragana: "おきなわけん",
-    capital: "那覇市",
-    capitalHiragana: "なはし",
+    name: "沖縄",
+    hiragana: "おきなわ",
+    capital: "那覇",
+    capitalHiragana: "なは",
     region: "九州",
   },
 ];
@@ -376,7 +376,7 @@ export function PrefectureSearchTableComponent() {
       // ワイルドカード文字を正規表現パターンに変換
       const pattern = normalizedSearch.replace(/\*/g, ".*").replace(/\?/g, ".");
 
-      const regex = new RegExp(`${pattern}`, "i");
+      const regex = new RegExp(`^${pattern}$`, "i");
       return regex.test(text);
     } catch (error) {
       return false;
@@ -397,53 +397,62 @@ export function PrefectureSearchTableComponent() {
     <main className="p-8">
       <div className="max-w-[700px] mx-auto">
         <h1 className="text-3xl font-bold mb-8 text-center">
-          都道府県検索システム
+          都道府県システム
         </h1>
         <div className="flex gap-4 mb-2">
           <div className="flex-1">
             <Input
               type="text"
-              placeholder="都道府県をひらがな検索"
+              placeholder="都道府県ひらがな"
               value={prefectureSearch}
               onChange={handlePrefectureSearch}
               className="bg-gray-700 text-white placeholder-gray-400 border-purple-400"
             />
-            <p className="text-xs text-gray-400 mt-1">
-              ※＊（0文字以上）？（1文字）も利用して検索可
-            </p>
           </div>
           <div className="flex-1">
             <Input
               type="text"
-              placeholder="県庁所在地をひらがな検索"
+              placeholder="県庁所在地ひらがな"
               value={capitalSearch}
               onChange={handleCapitalSearch}
               className="bg-gray-700 text-white placeholder-gray-400 border-purple-400"
             />
-            <p className="text-xs text-gray-400 mt-1">
-              ※＊（0文字以上）、？（1文字）も利用して検索可
-            </p>
           </div>
         </div>
+        <p className="text-xs text-gray-400 mt-1 text-center">
+          ※ アスタリスク(＊)で0文字以上、クエスチョン(？)1文字
+        </p>
         <div className="overflow-x-auto mb-8">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="text-purple-400">地方</TableHead>
+                <TableHead className="hidden sm:table-cell text-purple-400">
+                  地方
+                </TableHead>
                 <TableHead className="text-purple-400">都道府県</TableHead>
-                <TableHead className="text-purple-400">ひらがな</TableHead>
+                <TableHead className="hidden sm:table-cell text-purple-400">
+                  ひらがな
+                </TableHead>
                 <TableHead className="text-purple-400">県庁所在地</TableHead>
-                <TableHead className="text-purple-400">ひらがな</TableHead>
+                <TableHead className="hidden sm:table-cell text-purple-400">
+                  ひらがな
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredPrefectures.map((prefecture) => (
                 <TableRow key={prefecture.name} className="hover:bg-gray-700">
-                  <TableCell>{prefecture.region}</TableCell>
+                  <TableCell className="hidden sm:table-cell">
+                    {prefecture.region}
+                  </TableCell>
                   <TableCell>{prefecture.name}</TableCell>
-                  <TableCell>{prefecture.hiragana}</TableCell>
+                  <TableCell className="hidden sm:table-cell">
+                    {prefecture.hiragana}
+                  </TableCell>
                   <TableCell>{prefecture.capital}</TableCell>
-                  <TableCell>{prefecture.capitalHiragana}</TableCell>
+                  <TableCell className="hidden sm:table-cell">
+                    {prefecture.capitalHiragana}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { Card, CardTitle } from "@/components/ui/card";
 import Article from "@/components/common/json-ld-component";
+import ArticleHeaderComponent from "@/components/common/article-header-component";
 
 const hiraganaList = hiragana.list;
 
@@ -69,32 +70,35 @@ export default function Comprehensive() {
   }, [text]);
 
   return (
-    <main className="flex min-h-screen flex-col items-center bg-gradient-to-b from-gray-900 to-gray-800">
+    <>
+      <ArticleHeaderComponent />
       <Article index={0} />
-      <Card className="bg-gray-800 border-gray-700 flex flex-col items-center mx-auto text-white sm:p-4 md:p-8 mt-5 w-full sm:w-auto">
-        <WordList wordInfos={wordInfos} />
-        <StylishAutoResizeTextareaComponent value={text} setValue={setText} />
-        <Button
-          onClick={generateShiritori}
-          className="bg-purple-600 hover:bg-purple-700 text-white mb-4"
-        >
-          ✨しりとり生成 ✨
-        </Button>
-      </Card>
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[1000px] overflow-y-auto text-black">
-          <DialogHeader>
-            <DialogTitle className="text-center text-xl font-bold">
-              <CardTitle className="text-2xl font-bold text-center text-purple-800 dark:text-purple-200">
-                しりとり結果
-              </CardTitle>
-            </DialogTitle>
-          </DialogHeader>
-          {shiritoriText && (
-            <ShiritoriResultComponent inputText={shiritoriText} />
-          )}
-        </DialogContent>
-      </Dialog>
-    </main>
+      <main className="flex min-h-screen flex-col items-center bg-gradient-to-b from-gray-900 to-gray-800">
+        <Card className="bg-gray-800 border-gray-700 flex flex-col items-center mx-auto text-white sm:p-4 md:p-8 mt-5 w-full sm:w-auto">
+          <WordList wordInfos={wordInfos} />
+          <StylishAutoResizeTextareaComponent value={text} setValue={setText} />
+          <Button
+            onClick={generateShiritori}
+            className="bg-purple-600 hover:bg-purple-700 text-white mb-4"
+          >
+            ✨しりとり生成 ✨
+          </Button>
+        </Card>
+        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+          <DialogContent className="sm:max-w-[1000px] overflow-y-auto text-black">
+            <DialogHeader>
+              <DialogTitle className="text-center text-xl font-bold">
+                <CardTitle className="text-2xl font-bold text-center text-purple-800 dark:text-purple-200">
+                  しりとり結果
+                </CardTitle>
+              </DialogTitle>
+            </DialogHeader>
+            {shiritoriText && (
+              <ShiritoriResultComponent inputText={shiritoriText} />
+            )}
+          </DialogContent>
+        </Dialog>
+      </main>
+    </>
   );
 }

@@ -95,8 +95,8 @@ export const AlphabetConverter = () => {
     <main className="p-8">
       <TooltipProvider>
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold mb-8 text-center">
-            アルファベット数字システム
+          <h1 className="text-2xl sm:text-3xl font-bold mb-8 text-center">
+            アルファベットシステム
           </h1>
           <Card className="bg-gray-800 border-gray-700 md:col-span-2 flex flex-col">
             <CardHeader>
@@ -159,11 +159,11 @@ export const AlphabetConverter = () => {
                 className="text-sm font-medium text-gray-300"
               >
                 <span className="text-purple-400 text-lg">
-                  <CaseUpper className="h-10 w-10 text-purple-400 inline" />
+                  <CaseUpper className="h-9 w-9 text-purple-400 inline" />
                   <ArrowLeftRight className="h-3 w-3 text-purple-400 inline" />
                   Number
                 </span>
-                <span className="ml-5 text-xs text-gray-400 mt-1">
+                <span className="ml-3 text-xs text-gray-400 mt-1">
                   ※スペース区切りで入力
                 </span>
               </Label>
