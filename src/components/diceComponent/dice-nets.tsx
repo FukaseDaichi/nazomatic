@@ -191,20 +191,31 @@ const DiceNet = ({
     return () => window.removeEventListener("resize", checkWidth);
   }, []);
 
+  const percent = rectWidth / 100;
   return (
-    <svg ref={svgRef} width={svgWidth} height="300" viewBox="0 0 600 300">
+    <svg
+      ref={svgRef}
+      width={svgWidth}
+      height={300 * percent}
+      viewBox={`0 0 ${svgWidth} ${300 * percent}`}
+    >
       {net.faces.map((face) => (
         <g key={face.id}>
           <rect
-            x={face.x}
-            y={face.y}
-            width="100"
-            height="100"
+            x={face.x * percent}
+            y={face.y * percent}
+            width={rectWidth}
+            height={rectWidth}
             fill={getBackgroundColor(face.id)}
             fillOpacity="0.5"
             stroke="black"
           />
-          <foreignObject x={face.x} y={face.y} width="100" height="100">
+          <foreignObject
+            x={face.x * percent}
+            y={face.y * percent}
+            width={rectWidth}
+            height={rectWidth}
+          >
             <div className="h-full flex items-center justify-center relative">
               <div
                 className="bg-transparent"
@@ -218,7 +229,7 @@ const DiceNet = ({
                   onChange={(e) =>
                     onFaceDataChange(face.id, { text: e.target.value })
                   }
-                  className="w-16 h-16 text-center text-2xl [touch-action:manipulation]"
+                  className="w-10 h-10 sm:w-16 sm:h-16 text-center text-2xl [touch-action:manipulation]"
                 />
               </div>
               <button
@@ -231,9 +242,9 @@ const DiceNet = ({
                 className="absolute top-0 right-0 p-1 hover:bg-gray-100 rounded-full transition-all duration-100 ease-in-out active:scale-90 hover:shadow-sm"
               >
                 <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
+                  width={16 * percent}
+                  height={16 * percent}
+                  viewBox={`0 0 24 24`}
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"
