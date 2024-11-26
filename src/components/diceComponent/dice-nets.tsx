@@ -229,7 +229,7 @@ const DiceNet = ({
                   onChange={(e) =>
                     onFaceDataChange(face.id, { text: e.target.value })
                   }
-                  className="w-10 h-10 sm:w-16 sm:h-16 text-center text-2xl [touch-action:manipulation]"
+                  className="w-10 h-10 sm:w-16 sm:h-16 text-center text-sm sm:text-2xl [touch-action:manipulation]"
                 />
               </div>
               <button

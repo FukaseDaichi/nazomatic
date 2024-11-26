@@ -4,7 +4,7 @@ import ArticleHeaderComponent from "@/components/common/article-header-component
 import Article from "@/components/common/json-ld-component";
 import { FaceData } from "@/components/diceComponent/dice-nets";
 import dynamic from "next/dynamic";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 
 const DiceComponent = dynamic(
   () => import("@/components/diceComponent/dice-components"),

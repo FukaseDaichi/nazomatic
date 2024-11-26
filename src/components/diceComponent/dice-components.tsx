@@ -128,7 +128,7 @@ export default function DiceComponent({
   const [dragging, setDragging] = useState(false);
   const controlsRef = useRef(null!);
   return (
-    <div className="relative w-full h-screen max-h-[600px]">
+    <div className="relative w-full h-[300px] md:h-screen max-h-[600px]">
       <Canvas className="cursor-grab active:cursor-grabbing">
         <ambientLight intensity={0.5} />
         <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
