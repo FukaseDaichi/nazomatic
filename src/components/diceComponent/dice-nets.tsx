@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DiceNetIcon } from "./dice-net-icon";
@@ -161,20 +161,38 @@ export interface FaceData {
   rotation: number;
 }
 
+const BREAK_POINT = 600;
 const DiceNet = ({
   net,
   faceData,
   onFaceDataChange,
-  isMobile,
 }: {
   net: (typeof diceNets)[0];
   faceData: Record<number, FaceData>;
   onFaceDataChange: (faceId: number, data: Partial<FaceData>) => void;
-  isMobile: boolean;
 }) => {
-  const width = isMobile ? "100%" : 600;
+  const svgRef = useRef<SVGSVGElement>(null); // SVGの参照を作成
+  const [svgWidth, setSvgWidth] = useState<number>(BREAK_POINT); // SVGの幅を状態として管理
+  const [rectWidth, setRectWidth] = useState<number>(100);
+
+  useEffect(() => {
+    const checkWidth = () => {
+      const parent = svgRef?.current?.parentElement;
+      if (parent) {
+        setSvgWidth(
+          parent.clientWidth < BREAK_POINT ? parent.clientWidth : BREAK_POINT
+        );
+        //整数値として管理
+        setRectWidth(Math.floor((100 * parent.clientWidth) / BREAK_POINT));
+      }
+    };
+    checkWidth();
+    window.addEventListener("resize", checkWidth);
+    return () => window.removeEventListener("resize", checkWidth);
+  }, []);
+
   return (
-    <svg width={width} height="300" viewBox="0 0 600 300">
+    <svg ref={svgRef} width={svgWidth} height="300" viewBox="0 0 600 300">
       {net.faces.map((face) => (
         <g key={face.id}>
           <rect
@@ -189,6 +207,7 @@ const DiceNet = ({
           <foreignObject x={face.x} y={face.y} width="100" height="100">
             <div className="h-full flex items-center justify-center relative">
               <div
+                className="bg-transparent"
                 style={{
                   transform: `rotate(${faceData[face.id]?.rotation || 0}deg)`,
                   transition: "transform 0.3s ease",
@@ -233,11 +252,9 @@ const DiceNet = ({
 export function DiceNets({
   faceData,
   onFaceDataChange,
-  isMobile,
 }: {
   faceData: Record<number, FaceData>;
   onFaceDataChange: (faceId: number, data: Partial<FaceData>) => void;
-  isMobile: boolean;
 }) {
   const [selectedNet, setSelectedNet] = useState(diceNets[0]);
   return (
@@ -275,7 +292,6 @@ export function DiceNets({
           net={selectedNet}
           faceData={faceData}
           onFaceDataChange={onFaceDataChange}
-          isMobile={isMobile}
         />
       </Card>
     </Card>
