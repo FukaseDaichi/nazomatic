@@ -6,6 +6,7 @@ import * as LucideIcons from "lucide-react";
 import features from "@/lib/json/features.json";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import ArticleHeaderComponent from "./article-header-component";
+import Link from "next/link";
 
 const BREAK_POINT: number = 640;
 
@@ -35,27 +36,6 @@ export function HeaderComponent() {
             <nav>
               <Tooltip.Provider delayDuration={200}>
                 <ul className="flex space-x-7">
-                  <li>
-                    <Tooltip.Root>
-                      <Tooltip.Trigger asChild>
-                        <a
-                          href="/"
-                          className="text-gray-300 hover:text-purple-400 transition-colors p-2 rounded-full"
-                        >
-                          <LucideIcons.Home size={20} />
-                        </a>
-                      </Tooltip.Trigger>
-                      <Tooltip.Portal>
-                        <Tooltip.Content
-                          className="bg-gray-800 text-gray-100 px-3 py-1.5 rounded-md text-sm animate-in fade-in-0 zoom-in-95"
-                          sideOffset={-15}
-                        >
-                          ホーム
-                          <Tooltip.Arrow className="fill-gray-800" />
-                        </Tooltip.Content>
-                      </Tooltip.Portal>
-                    </Tooltip.Root>
-                  </li>
                   {features.features.map((feature) => {
                     const IconComponent = LucideIcons[
                       feature.iconName as keyof typeof LucideIcons
@@ -65,12 +45,12 @@ export function HeaderComponent() {
                       <li key={feature.path}>
                         <Tooltip.Root>
                           <Tooltip.Trigger asChild>
-                            <a
+                            <Link
                               href={feature.path}
                               className="text-gray-300 hover:text-purple-400 transition-colors p-2 rounded-full"
                             >
                               <IconComponent size={20} />
-                            </a>
+                            </Link>
                           </Tooltip.Trigger>
                           <Tooltip.Portal>
                             <Tooltip.Content

@@ -9,6 +9,7 @@ import { FooterComponent } from "@/components/common/footer-component";
 import featuresData from "@/lib/json/features.json";
 import { baseURL } from "@/app/config";
 import Script from "next/script";
+import { useRouter } from "next/navigation";
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -28,6 +29,7 @@ const jsonLd = {
 
 export default function Home() {
   const [hintRevealed, setHintRevealed] = useState(false);
+  const router = useRouter();
 
   return (
     <>
@@ -68,7 +70,7 @@ export default function Home() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 1.0 }}
                 onClick={() => {
-                  window.location.href = feature.path;
+                  router.push(feature.path);
                 }}
                 className="bg-gray-800 p-6 rounded-lg shadow-lg hover:shadow-xl transition-all cursor-pointer"
               >

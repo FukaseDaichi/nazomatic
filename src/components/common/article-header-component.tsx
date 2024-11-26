@@ -29,7 +29,7 @@ export default function ArticleHeaderComponent() {
         transition={{ duration: 0.5 }}
         className="max-w-7xl mx-auto flex justify-between items-center"
       >
-        <nav className="container mx-auto px-4 md:px-20 py-3">
+        <nav className="container mx-auto px-4 md:px-20 py-3 z-10">
           <div className="flex items-center justify-between">
             <Link
               href="/"
@@ -62,11 +62,11 @@ export default function ArticleHeaderComponent() {
         <AnimatePresence>
           {isOpen && (
             <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: -10 }}
-              exit={{ opacity: 0, y: -20 }}
+              initial={{ opacity: 0, y: -70 }}
+              animate={{ opacity: 1, y: -50 }}
+              exit={{ opacity: 0, y: -70 }}
               transition={{ duration: 0.2 }}
-              className="absolute top-full left-0 w-full md:hidden bg-gray-900 shadow-lg"
+              className="absolute top-full left-0 w-full md:hidden bg-gray-900 shadow-lg pt-10"
             >
               <nav className="container mx-auto px-4 py-2">
                 {menuItems.map((item) => (
