@@ -4,7 +4,7 @@ import ArticleHeaderComponent from "@/components/common/article-header-component
 import Article from "@/components/common/json-ld-component";
 import { FaceData } from "@/components/diceComponent/dice-nets";
 import dynamic from "next/dynamic";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 
 const DiceComponent = dynamic(
   () => import("@/components/diceComponent/dice-components"),
@@ -20,7 +20,10 @@ const DiceNets = dynamic(
   }
 );
 
+const BREAK_POINT = 600;
 export default function Dice() {
+  const [isMobile, setIsMobile] = useState(false);
+
   const [faceData, setFaceData] = useState<Record<number, FaceData>>({
     1: { text: "1", rotation: 0 },
     2: { text: "2", rotation: 0 },
@@ -45,6 +48,13 @@ export default function Dice() {
     []
   );
 
+  useEffect(() => {
+    const checkIfMobile = () => setIsMobile(window.innerWidth < BREAK_POINT);
+    checkIfMobile();
+    window.addEventListener("resize", checkIfMobile);
+    return () => window.removeEventListener("resize", checkIfMobile);
+  }, []);
+
   return (
     <>
       <ArticleHeaderComponent />
@@ -54,6 +64,7 @@ export default function Dice() {
           <DiceNets
             faceData={faceData}
             onFaceDataChange={handleFaceDataChange}
+            isMobile={isMobile}
           />
         </div>
         <div className="flex-1 flex items-center justify-center w-90 sm:max-w-[300px]">

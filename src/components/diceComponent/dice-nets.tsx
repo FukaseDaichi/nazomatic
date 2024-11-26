@@ -165,13 +165,16 @@ const DiceNet = ({
   net,
   faceData,
   onFaceDataChange,
+  isMobile,
 }: {
   net: (typeof diceNets)[0];
   faceData: Record<number, FaceData>;
   onFaceDataChange: (faceId: number, data: Partial<FaceData>) => void;
+  isMobile: boolean;
 }) => {
+  const width = isMobile ? "100%" : 600;
   return (
-    <svg width="600" height="300" viewBox="0 0 600 300">
+    <svg width={width} height="300" viewBox="0 0 600 300">
       {net.faces.map((face) => (
         <g key={face.id}>
           <rect
@@ -185,17 +188,20 @@ const DiceNet = ({
           />
           <foreignObject x={face.x} y={face.y} width="100" height="100">
             <div className="h-full flex items-center justify-center relative">
-              <Input
-                value={faceData[face.id]?.text || ""}
-                onChange={(e) =>
-                  onFaceDataChange(face.id, { text: e.target.value })
-                }
-                className="w-16 h-16 text-center text-2xl [touch-action:manipulation]"
+              <div
                 style={{
                   transform: `rotate(${faceData[face.id]?.rotation || 0}deg)`,
                   transition: "transform 0.3s ease",
                 }}
-              />
+              >
+                <Input
+                  value={faceData[face.id]?.text || ""}
+                  onChange={(e) =>
+                    onFaceDataChange(face.id, { text: e.target.value })
+                  }
+                  className="w-16 h-16 text-center text-2xl [touch-action:manipulation]"
+                />
+              </div>
               <button
                 tabIndex={-1}
                 onClick={() =>
@@ -227,9 +233,11 @@ const DiceNet = ({
 export function DiceNets({
   faceData,
   onFaceDataChange,
+  isMobile,
 }: {
   faceData: Record<number, FaceData>;
   onFaceDataChange: (faceId: number, data: Partial<FaceData>) => void;
+  isMobile: boolean;
 }) {
   const [selectedNet, setSelectedNet] = useState(diceNets[0]);
   return (
@@ -267,6 +275,7 @@ export function DiceNets({
           net={selectedNet}
           faceData={faceData}
           onFaceDataChange={onFaceDataChange}
+          isMobile={isMobile}
         />
       </Card>
     </Card>

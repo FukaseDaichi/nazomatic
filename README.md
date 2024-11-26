@@ -31,8 +31,14 @@
 
 ### 実装メモ
 
+#### AI プロンプト例
+
 ```
 # ルール
 - メインデザイン`bg-gradient-to-b from-gray-900 to-gray-800 text-white`
 - アクセント`purple-400`
 ```
+
+#### shadcn のコンポーネントの追加
+
+`npx shadcn add sheet`
