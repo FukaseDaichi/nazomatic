@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Mic, Camera, Search } from "lucide-react";
 import Head from "next/head";
+import { useRouter } from "next/navigation";
 
 const goToUrl = (url: string) => {
   window.location.href = url; // URLに遷移する
@@ -18,6 +19,7 @@ export default function GoogleMobileHomepage() {
     null
   );
   const [isSounded, setSounded] = useState<boolean>(false);
+  const router = useRouter();
 
   useEffect(() => {
     const SpeechRecognition =
@@ -57,12 +59,24 @@ export default function GoogleMobileHomepage() {
   }, [recognition, isListening]);
 
   const search = useCallback(() => {
-    if (searchWord) {
-      goToUrl(
-        `https://www.google.com/search?q=${encodeURIComponent(searchWord)}`
-      );
+    if (!searchWord) {
+      return;
     }
-  }, [searchWord]);
+
+    if (
+      searchWord == "153" ||
+      searchWord == "１５３" ||
+      searchWord == "１５ろ" ||
+      searchWord == "15ろ"
+    ) {
+      router.push("/secret/christmas/congratulations");
+      return;
+    }
+
+    goToUrl(
+      `https://www.google.com/search?q=${encodeURIComponent(searchWord)}`
+    );
+  }, [searchWord, router]);
 
   return (
     <>
@@ -137,6 +151,11 @@ export default function GoogleMobileHomepage() {
                 onChange={(e) => {
                   setSearchWord(e.target.value);
                   setSounded(false);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    search(); // エンターキーが押されたときに検索を実行
+                  }
                 }}
               />
               {!searchWord && (

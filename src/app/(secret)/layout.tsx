@@ -9,6 +9,10 @@ export const metadata = {
   icons: {
     icon: [{ url: "/img/secret/favicon.ico" }],
   },
+  robots: {
+    index: false, // インデックスを無効にする
+    follow: true, // リンクはフォローする
+  },
 };
 
 export default function RootLayout({
@@ -18,7 +22,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja">
-      <body>{children}</body>
+      <body className="overflow-y-hidden">{children}</body>
     </html>
   );
 }
