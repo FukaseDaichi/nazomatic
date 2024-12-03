@@ -42,3 +42,7 @@
 #### shadcn のコンポーネントの追加
 
 `npx shadcn add sheet`
+
+#### Cosor で開発時に
+
+`Ctrl + k`でショートカットが生成されない場合は、`Ctrl + M, Ctrl + S`のユーザーショートカットから重複するものがないか探す。

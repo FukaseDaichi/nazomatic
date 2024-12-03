@@ -1,7 +1,8 @@
 import { baseURL } from "@/app/config";
 import "@/app/globals.css";
 
-export const viewport = "width=device-width, initial-scale=1";
+export const viewport =
+  "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no";
 
 export const metadata = {
   metadataBase: new URL(baseURL),

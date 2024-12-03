@@ -1,3 +1,5 @@
+import { normalizeKana } from "@/lib/utils";
+
 export class ShiritoriManager {
   private static longestShiritoris: string[] = []; // 最長のしりとりを保持する配列
   private static unusedWords: string[] = []; // 使用されなかった単語リスト
@@ -55,8 +57,8 @@ export class ShiritoriManager {
       const word = remainingWords[i];
 
       // ひらがな・カタカナを統一して比較
-      const normalizedLastChar = this.normalizeKana(lastChar);
-      const normalizedFirstChar = this.normalizeKana(word[0]);
+      const normalizedLastChar = normalizeKana(lastChar);
+      const normalizedFirstChar = normalizeKana(word[0]);
 
       if (normalizedFirstChar === normalizedLastChar) {
         // しりとりの条件
@@ -71,12 +73,5 @@ export class ShiritoriManager {
   // 未使用の単語リストを取得するメソッド
   public static getUnusedWords(): string[] {
     return this.unusedWords;
-  }
-
-  // ひらがな・カタカナを統一するヘルパーメソッド
-  private static normalizeKana(char: string): string {
-    return char.replace(/[\u30a1-\u30f6]/g, function (match) {
-      return String.fromCharCode(match.charCodeAt(0) - 0x60);
-    });
   }
 }

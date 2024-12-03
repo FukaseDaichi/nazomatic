@@ -29,6 +29,12 @@
       "title": "方眼紙",
       "description": "クロスワードや穴埋め形式の問題に最適なメモ用紙！",
       "path": "/graphpaper"
+    },
+    {
+      "iconName": "Search",
+      "title": "アナグラム検索",
+      "description": "アナグラムが解けない！そんなあなたにピッタリ！",
+      "path": "/anagram"
     }
   ]
 }
