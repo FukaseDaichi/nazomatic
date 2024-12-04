@@ -232,7 +232,7 @@ export default function GraphPaperComponent() {
               id="autoFill"
               checked={isAutoFill}
               onChange={(e) => setIsAutoFill(e.target.checked)}
-              className="w-4 h-4 text-purple-600 rounded focus:ring-purple-500 text-xs"
+              className="w-4 h-4 text-purple-600 rounded focus:ring-purple-500 text-xs text-base"
             />
             <label htmlFor="autoFill" className="text-gray-400 text-xs">
               黒(＃)埋め

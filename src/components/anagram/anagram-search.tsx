@@ -89,7 +89,7 @@ export default function AnagramSearch() {
                     nextDictionary();
                   }
                 }}
-                className="bg-gray-700 border-gray-600 text-white"
+                className="bg-gray-700 border-gray-600 text-white text-base"
                 placeholder={AnagramManager.getPlaceholder(selectedDictionary)}
               />
               <p className="absolute text-gray-500 bottom-1 right-1 text-xs">

@@ -406,7 +406,7 @@ export function PrefectureSearchTableComponent() {
               placeholder="都道府県ひらがな"
               value={prefectureSearch}
               onChange={handlePrefectureSearch}
-              className="bg-gray-700 text-white placeholder-gray-400 border-purple-400"
+              className="bg-gray-700 text-white placeholder-gray-400 border-purple-400 text-base"
             />
           </div>
           <div className="flex-1">

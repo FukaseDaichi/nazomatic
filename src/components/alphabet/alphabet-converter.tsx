@@ -172,7 +172,7 @@ export const AlphabetConverter = () => {
                 type="text"
                 value={inputText}
                 onChange={handleNumberInputChange}
-                className="-mt-2 bg-gray-700 border-gray-600 text-white"
+                className="-mt-2 bg-gray-700 border-gray-600 text-white text-base"
               />
               <div className="mt-4">
                 <span className="text-sm font-semibold text-purple-300">
