@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@/app/globals.css";
 import { baseURL } from "@/app/config";
+import AdComponent from "@/components/googleAd/google-ad-component";
+import Script from "next/script";
 const inter = Inter({ subsets: ["latin"] });
 
 export const viewport = "width=device-width, initial-scale=1";
@@ -63,6 +65,7 @@ export default function RootLayout({
         className={`${inter.className} min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white`}
       >
         {children}
+        <AdComponent />
       </body>
     </html>
   );
