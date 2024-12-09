@@ -44,7 +44,9 @@ const tabs = [
 
 export default function AnagramSearch() {
   const [activeTab, setActiveTab] = useState(tabs[0].id);
-  const [showTooltips, setShowTooltips] = useState<Array<Boolean>>([]);
+  const [showTooltips, setShowTooltips] = useState<Array<Boolean>>(
+    new Array(tabs.length).fill(false)
+  );
 
   const [input, setInput] = useState("");
   const [results, setResults] = useState<string[]>([]);
@@ -119,54 +121,52 @@ export default function AnagramSearch() {
           <div className="relative max-w-md">
             <div className="flex space-x-1 bg-gray-800 p-1 rounded-lg">
               {tabs.map((tab, index) => (
-                <>
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`flex justify-center items-center w-full py-1.5 text-sm font-medium rounded-md relative z-10 transition-colors duration-300 ${
-                      activeTab === tab.id
-                        ? "text-gray-900"
-                        : "text-gray-300 hover:text-white"
-                    }`}
-                    role="tab"
-                    aria-selected={activeTab === tab.id}
-                    aria-controls={`panel-${tab.id}`}
-                  >
-                    {tab.label}
-                    <div className="ml-4 flex items-center">
-                      <button
-                        onMouseEnter={() => {
-                          setShowTooltips(
-                            new Array(tabs.length)
-                              .fill(false)
-                              .map((_, i) => i === index)
-                          );
-                        }}
-                        onMouseLeave={() =>
-                          setShowTooltips(new Array(tabs.length).fill(false))
-                        }
-                        className="hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-50 rounded-full"
-                        aria-label="詳細情報"
-                      >
-                        <HelpCircle size={20} />
-                      </button>
-                      <AnimatePresence>
-                        {showTooltips[index] && (
-                          <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 10 }}
-                            transition={{ duration: 0.2 }}
-                            className="absolute top-8 left-10 transform -translate-x-1/2 mt-3 px-4 py-2 bg-purple-200 text-gray-900 text-sm rounded-lg shadow-xl z-10 w-48 "
-                          >
-                            <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-b-8 border-transparent border-b-purple-200"></div>
-                            {tabs.find((tab) => tab.id === activeTab)?.tooltip}
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  </button>
-                </>
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex justify-center items-center w-full py-1.5 text-sm font-medium rounded-md relative z-10 transition-colors duration-300 ${
+                    activeTab === tab.id
+                      ? "text-gray-900"
+                      : "text-gray-300 hover:text-white"
+                  }`}
+                  role="tab"
+                  aria-selected={activeTab === tab.id}
+                  aria-controls={`panel-${tab.id}`}
+                >
+                  {tab.label}
+                  <div className="ml-4 flex items-center">
+                    <span
+                      onMouseEnter={() => {
+                        setShowTooltips(
+                          new Array(tabs.length)
+                            .fill(false)
+                            .map((_, i) => i === index)
+                        );
+                      }}
+                      onMouseLeave={() =>
+                        setShowTooltips(new Array(tabs.length).fill(false))
+                      }
+                      className="hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-50 rounded-full"
+                      aria-label="詳細情報"
+                    >
+                      <HelpCircle size={20} />
+                    </span>
+                    <AnimatePresence>
+                      {showTooltips[index] && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 10 }}
+                          transition={{ duration: 0.2 }}
+                          className="absolute top-8 left-10 transform -translate-x-1/2 mt-3 px-4 py-2 bg-purple-200 text-gray-900 text-sm rounded-lg shadow-xl z-10 w-48 "
+                        >
+                          <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-b-8 border-transparent border-b-purple-200"></div>
+                          {tabs.find((tab) => tab.id === activeTab)?.tooltip}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </button>
               ))}
             </div>
             <motion.div
@@ -267,7 +267,7 @@ export default function AnagramSearch() {
               )}
             </h2>
             {loading ? (
-              <p className="text-gray-400">ローディング中...</p>
+              <p className="text-gray-400">ロ��ディング中...</p>
             ) : results.length > 0 ? (
               <ul className="space-y-2">
                 {results.map((result, index) => (
