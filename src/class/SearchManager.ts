@@ -61,7 +61,7 @@ function normalizeWord(word: string): string {
  * アナグラムマネージャークラス
  * - 辞書のロード、前処理、アナグラム検索を行う
  */
-export class AnagramManager {
+export class SearchManager {
   private dictionary: Dictionary; // ロードされた辞書
   private processed: Map<string, string[]>; // 前処理済みデータ
   private wordsByLength: Map<number, string[]> = new Map();
@@ -85,9 +85,9 @@ export class AnagramManager {
    * @param key 辞書のキー
    * @returns AnagramManagerのインスタンス
    */
-  static async create(key: string): Promise<AnagramManager> {
-    const dictionary = await AnagramManager.loadDictionary(key);
-    return new AnagramManager(dictionary);
+  static async create(key: string): Promise<SearchManager> {
+    const dictionary = await SearchManager.loadDictionary(key);
+    return new SearchManager(dictionary);
   }
 
   /**
@@ -97,8 +97,8 @@ export class AnagramManager {
    */
   public static async loadDictionary(key: string): Promise<Dictionary> {
     // キャッシュに存在する場合はそれを返す
-    if (AnagramManager.dictionaryCache.has(key)) {
-      return AnagramManager.dictionaryCache.get(key)!;
+    if (SearchManager.dictionaryCache.has(key)) {
+      return SearchManager.dictionaryCache.get(key)!;
     }
 
     const dictionaryData = DICTIONARIES.find((d) => d.key === key);
@@ -131,7 +131,7 @@ export class AnagramManager {
       };
 
       // キャッシュに保存
-      AnagramManager.dictionaryCache.set(key, dictionary);
+      SearchManager.dictionaryCache.set(key, dictionary);
 
       return dictionary;
     } catch (error: any) {
@@ -235,6 +235,54 @@ export class AnagramManager {
       }, 0);
     });
   }
+
+  /**
+   * クロスワード検索する（非同期版）
+   * @param input 入力文字列
+   * @returns
+   */
+  public findCrosswordAsync(input: string): Promise<string[]> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const normalizedInput = normalizeWord(input);
+        const inputLength = normalizedInput.length;
+
+        // 入力文字列と同じ長さの単語群を取得
+        const candidateWords = this.wordsByLength.get(inputLength) || [];
+
+        const results: string[] = [];
+
+        // 候補となる単語を一つずつ確認
+        for (const candidate of candidateWords) {
+          let matches = true;
+
+          for (let i = 0; i < inputLength; i++) {
+            const inputChar = normalizedInput[i];
+            const candidateChar = candidate[i];
+
+            // 入力文字が'?'の場合は任意の文字OK、それ以外は文字一致を要求
+            if (inputChar !== "?" && inputChar !== candidateChar) {
+              matches = false;
+              break;
+            }
+          }
+
+          // すべての文字がマッチした場合
+          if (matches) {
+            results.push(candidate);
+
+            // 結果上限チェック
+            if (results.length >= ANAGRAM_RESULT_MAXCOUNT) {
+              break;
+            }
+          }
+        }
+
+        resolve(results);
+      }, 0);
+    });
+  }
+
   /**
    * 指定したキーの辞書をキャッシュから削除する
    * @param key 辞書のキー
