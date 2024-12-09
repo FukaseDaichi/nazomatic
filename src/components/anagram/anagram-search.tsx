@@ -161,7 +161,7 @@ export default function AnagramSearch() {
                           className="absolute top-8 left-10 transform -translate-x-1/2 mt-3 px-4 py-2 bg-purple-200 text-gray-900 text-sm rounded-lg shadow-xl z-10 w-48 "
                         >
                           <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-b-8 border-transparent border-b-purple-200"></div>
-                          {tabs.find((tab) => tab.id === activeTab)?.tooltip}
+                          {tabs[index].tooltip}
                         </motion.div>
                       )}
                     </AnimatePresence>
@@ -246,7 +246,7 @@ export default function AnagramSearch() {
             </Accordion>
             <Button
               onClick={handleSearch}
-              className="w-full bg-purple-400 hover:bg-purple-500 text-white"
+              className="w-full bg-purple-400 hover:bg-purple-500 text-gray-900"
             >
               検索
             </Button>
