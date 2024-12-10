@@ -35,19 +35,8 @@ export default function Comprehensive() {
   const [wordInfos, setWordInfos] = useState<Array<WordInfoProps>>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
-    //初回実行時
-    setWordInfos(
-      hiraganaList.map((hiragana) => {
-        const data: WordInfoProps = {
-          word: hiragana.value,
-          count: 0,
-          number: hiragana.number ?? 0,
-          onClickHandler: () => console.log(`Word: ${hiragana.value}`),
-        };
-        return data;
-      })
-    );
+  const addWord = useCallback((word: string) => {
+    setText((pre) => pre + word);
   }, []);
 
   useEffect(() => {
@@ -57,12 +46,12 @@ export default function Comprehensive() {
           word: hiragana.value,
           count: countHiragana(hiragana, text),
           number: hiragana.number ?? 0,
-          onClickHandler: () => console.log(`Word: ${hiragana.value}`),
+          onClickHandler: () => addWord(hiragana.value),
         };
         return data;
       })
     );
-  }, [text]);
+  }, [text, addWord]);
 
   const generateShiritori = useCallback(() => {
     setShiritoriText(text);

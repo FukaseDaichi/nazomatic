@@ -117,6 +117,13 @@ export default function GraphPaperComponent() {
     });
   };
 
+  const nextCellDown = () => {
+    setCurrentCell((prev) => ({
+      ...prev,
+      row: Math.min(rows - 1, prev.row + 1),
+    }));
+  };
+
   const handleChange = (
     row: number,
     col: number,
@@ -173,6 +180,11 @@ export default function GraphPaperComponent() {
     switch (e.key) {
       case "Enter":
         e.preventDefault();
+        if (e.ctrlKey) {
+          // Ctrl + Enter の場合
+          nextCellDown();
+          break;
+        }
         nextCell();
         break;
       case "Backspace":
