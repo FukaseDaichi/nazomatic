@@ -357,6 +357,7 @@ export default function GraphPaperComponent() {
     col: number,
     e: React.TouchEvent<HTMLInputElement>
   ) => {
+    document.body.style.overflow = "hidden"; // ページのスクロールを無効化
     setTouchStartPos({
       x: e.touches[0].clientX,
       y: e.touches[0].clientY,
@@ -369,9 +370,6 @@ export default function GraphPaperComponent() {
     e: React.TouchEvent<HTMLInputElement>
   ) => {
     if (!touchStartPos) return;
-
-    // ページ全体のスクロールを無効化
-    e.preventDefault();
 
     const touchEndPos = {
       x: e.touches[0].clientX,
@@ -407,6 +405,7 @@ export default function GraphPaperComponent() {
   };
 
   const handleInputTouchEnd = () => {
+    document.body.style.overflow = ""; //
     setTouchStartPos(null);
   };
 
