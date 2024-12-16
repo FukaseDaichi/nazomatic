@@ -48,6 +48,23 @@ export default function GraphPaperComponent() {
   const [isAutoFill, setIsAutoFill] = useState(false);
   const [isRock, setIsRock] = useState(false);
 
+  const [disableScroll, setDisableScroll] = useState(false);
+
+  useEffect(() => {
+    const handleTouchMove = (e: TouchEvent) => {
+      if (disableScroll) {
+        e.preventDefault();
+      }
+    };
+    // passive: false で touchmove イベントを登録
+    document.addEventListener("touchmove", handleTouchMove, { passive: false });
+
+    return () => {
+      // クリーンアップ時に解除
+      document.removeEventListener("touchmove", handleTouchMove);
+    };
+  }, [disableScroll]); // disableScroll の変更を監視
+
   const changePattern = useCallback(
     (row: number, col: number, val: number, isReverse: boolean) => {
       const newGridPattern = [...gridPattern];
@@ -358,6 +375,7 @@ export default function GraphPaperComponent() {
     e: React.TouchEvent<HTMLInputElement>
   ) => {
     document.body.style.overflow = "hidden"; // ページのスクロールを無効化
+    setDisableScroll(true);
     setTouchStartPos({
       x: e.touches[0].clientX,
       y: e.touches[0].clientY,
@@ -370,7 +388,6 @@ export default function GraphPaperComponent() {
     e: React.TouchEvent<HTMLInputElement>
   ) => {
     if (!touchStartPos) return;
-
     const touchEndPos = {
       x: e.touches[0].clientX,
       y: e.touches[0].clientY,
@@ -405,7 +422,9 @@ export default function GraphPaperComponent() {
   };
 
   const handleInputTouchEnd = () => {
-    document.body.style.overflow = ""; //
+    //スクロールを有効化
+    document.body.style.overflow = "";
+    setDisableScroll(false);
     setTouchStartPos(null);
   };
 
@@ -430,8 +449,8 @@ export default function GraphPaperComponent() {
             <p>・行数と列数は最大20まで設定できます。</p>
           </div>
         )}
-        <p className="text-gray-400 text-xs mb-2 text-center">
-          ＃でマスが黒塗り。色変更も可能。
+        <p className="text-gray-400 text-xs mb-2 justify-center flex items-center">
+          <span>＃でマスが黒塗り。色変更も可能。</span>
           <button
             className="text-purple-400 hover:text-purple-600 focus:outline-none"
             onMouseEnter={handleMouseEnter}
@@ -466,7 +485,7 @@ export default function GraphPaperComponent() {
               className="w-4 h-4 text-purple-600 rounded focus:ring-purple-500 text-xs text-base"
             />
             <label htmlFor="autoFill" className="text-gray-400 text-xs mr-1">
-              黒(＃)埋め
+              黒埋め
             </label>
           </div>
           <div className="flex items-center">
@@ -515,7 +534,7 @@ export default function GraphPaperComponent() {
                 className="w-10 px-1 py-0.5 text-black rounded text-xs text-base"
               />
             </div>
-            <span className="text-gray-500 text-xs self-center ml-1">
+            <span className="hidden sm:inline text-gray-500 text-xs self-center ml-1">
               (最大20)
             </span>
           </div>
