@@ -46,7 +46,7 @@ export default function GraphPaperComponent() {
   const [isComposing, setIsComposing] = useState(false);
   const inputRefs = useRef<Record<string, HTMLInputElement | null>>({});
   const [isAutoFill, setIsAutoFill] = useState(false);
-  const [isRock, setIsRock] = useState(false);
+  const [isColorMode, setColorMode] = useState(false);
 
   const [disableScroll, setDisableScroll] = useState(false);
 
@@ -437,16 +437,36 @@ export default function GraphPaperComponent() {
         {showHelp && (
           <div className="absolute top-[100px] left-0 w-full bg-gray-800 bg-opacity-70 z-10">
             {/* ここにヘルプテキストの内容を記述 */}
-            <p>・＃でマスが黒塗りになります。</p>
-            <p>・マス連続タップで色変更ができます。</p>
-            <p>・マス上でスワイプで色変更ができます。</p>
-            <p>・Shift + ↑ 赤色に変更できます。</p>
-            <p>・Shift + ↓ で緑色に変更できます。</p>
-            <p>・Shift + ← で青色に変更できます。</p>
-            <p>・Shift + → で黄色に変更できます。</p>
-            <p>・「黒(＃)埋め」で＃埋め/解除ができます。</p>
-            <p>・「ロック」は入力できなくなります。</p>
-            <p>・行数と列数は最大20まで設定できます。</p>
+            <ul>
+              <li>・＃でマスが黒塗りになります。</li>
+              <li className="md:hidden">
+                ・マス連続タップで色変更ができます。
+              </li>
+              <li className="md:hidden">
+                ・色モードでスワイプで色変更ができます。
+              </li>
+              <li className="hidden md:block">
+                ・ダブルクリックで色変更ができます。
+              </li>
+              <li className="hidden md:block">
+                ・Shift + ↑ 赤色に変更できます。
+              </li>
+              <li className="md:hidden">・↑スワイプ 赤色</li>
+              <li className="hidden md:block">
+                ・Shift + ↓ で緑色に変更できます。
+              </li>
+              <li className="md:hidden">・↓スワイプ 緑色</li>
+              <li className="hidden md:block">
+                ・Shift + ← で青色に変更できます。
+              </li>
+              <li className="md:hidden">・←スワイプ 青色</li>
+              <li className="hidden md:block">
+                ・Shift + → で黄色に変更できます。
+              </li>
+              <li className="md:hidden">・→スワイプ 黄色</li>
+              <li>・「黒(＃)埋め」で＃埋め/解除ができます。</li>
+              <li>・行数と列数は最大20まで設定できます。</li>
+            </ul>
           </div>
         )}
         <p className="text-gray-400 text-xs mb-2 justify-center flex items-center">
@@ -488,16 +508,16 @@ export default function GraphPaperComponent() {
               黒埋め
             </label>
           </div>
-          <div className="flex items-center">
+          <div className="flex items-center md:hidden">
             <input
               type="checkbox"
               id="rock"
-              checked={isRock}
-              onChange={(e) => setIsRock(e.target.checked)}
+              checked={isColorMode}
+              onChange={(e) => setColorMode(e.target.checked)}
               className="w-4 h-4 text-purple-600 rounded focus:ring-purple-500 text-xs text-base"
             />
             <label htmlFor="rock" className="text-gray-400 text-xs mr-1">
-              ロック
+              色モード
             </label>
           </div>
 
@@ -569,10 +589,14 @@ export default function GraphPaperComponent() {
                 onKeyDown={(e) => handleKeyDown(i, j, e)}
                 onClickCapture={(e) => handleClickCapture(i, j)}
                 //スマートフォン色変え
-                onTouchStart={(e) => handleInputTouchStart(i, j, e)}
-                onTouchMove={(e) => handleInputTouchMove(i, j, e)}
-                onTouchEnd={handleInputTouchEnd}
-                readOnly={isRock}
+                onTouchStart={(e) =>
+                  isColorMode && handleInputTouchStart(i, j, e)
+                }
+                onTouchMove={(e) =>
+                  isColorMode && handleInputTouchMove(i, j, e)
+                }
+                onTouchEnd={(e) => isColorMode && handleInputTouchEnd()}
+                readOnly={isColorMode}
               />
             ))
           )}
