@@ -18,6 +18,8 @@ const getPattern = (num: any) => {
 };
 
 export default function GraphPaperComponent() {
+  //ヘルプテキスト表示メソッド
+  const [showHelp, setShowHelp] = useState(false);
   const [rows, setRows] = useState(10);
   const [cols, setCols] = useState(10);
   const [lastClickedCell, setLastClickedCell] = useState<{
@@ -44,18 +46,33 @@ export default function GraphPaperComponent() {
   const [isComposing, setIsComposing] = useState(false);
   const inputRefs = useRef<Record<string, HTMLInputElement | null>>({});
   const [isAutoFill, setIsAutoFill] = useState(false);
+  const [isRock, setIsRock] = useState(false);
 
   const changePattern = useCallback(
-    (row: number, col: number, val: number) => {
+    (row: number, col: number, val: number, isReverse: boolean) => {
       const newGridPattern = [...gridPattern];
-      newGridPattern[row][col] =
-        newGridPattern[row][col] % patterns.length === val % patterns.length
-          ? 0
-          : val;
+      if (isReverse) {
+        newGridPattern[row][col] =
+          newGridPattern[row][col] % patterns.length === val % patterns.length
+            ? 0
+            : val;
+      } else {
+        //変更がない場合は処理なし
+        if (newGridPattern[row][col] === val) {
+          return;
+        }
+        newGridPattern[row][col] = val;
+      }
       setGridPattern(newGridPattern);
     },
     [gridPattern]
   );
+
+  //スマートフォンタッチ操作用
+  const [touchStartPos, setTouchStartPos] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
 
   useEffect(() => {
     setGrid((prevGrid) => {
@@ -104,7 +121,7 @@ export default function GraphPaperComponent() {
       switch (e.key) {
         case "ArrowUp":
           if (e.shiftKey) {
-            changePattern(currentCell.row, currentCell.col, 1);
+            changePattern(currentCell.row, currentCell.col, 1, true);
             return;
           }
           setCurrentCell((prev) => ({
@@ -114,7 +131,7 @@ export default function GraphPaperComponent() {
           break;
         case "ArrowDown":
           if (e.shiftKey) {
-            changePattern(currentCell.row, currentCell.col, 2);
+            changePattern(currentCell.row, currentCell.col, 2, true);
             return;
           }
           setCurrentCell((prev) => ({
@@ -124,7 +141,7 @@ export default function GraphPaperComponent() {
           break;
         case "ArrowLeft":
           if (e.shiftKey) {
-            changePattern(currentCell.row, currentCell.col, 3);
+            changePattern(currentCell.row, currentCell.col, 3, true);
             return;
           }
           setCurrentCell((prev) => ({
@@ -134,7 +151,7 @@ export default function GraphPaperComponent() {
           break;
         case "ArrowRight":
           if (e.shiftKey) {
-            changePattern(currentCell.row, currentCell.col, 4);
+            changePattern(currentCell.row, currentCell.col, 4, true);
             return;
           }
           setCurrentCell((prev) => ({
@@ -315,9 +332,6 @@ export default function GraphPaperComponent() {
     }
   };
 
-  //ヘルプテキスト表示メソッド
-  const [showHelp, setShowHelp] = useState(false);
-
   // ホバー時にヘルプテキストを表示
   const handleMouseEnter = () => {
     setShowHelp(true);
@@ -338,6 +352,64 @@ export default function GraphPaperComponent() {
     setShowHelp(false);
   };
 
+  const handleInputTouchStart = (
+    row: number,
+    col: number,
+    e: React.TouchEvent<HTMLInputElement>
+  ) => {
+    setTouchStartPos({
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY,
+    });
+  };
+
+  const handleInputTouchMove = (
+    row: number,
+    col: number,
+    e: React.TouchEvent<HTMLInputElement>
+  ) => {
+    if (!touchStartPos) return;
+
+    // ページ全体のスクロールを無効化
+    e.preventDefault();
+
+    const touchEndPos = {
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY,
+    };
+
+    const diffX = touchEndPos.x - touchStartPos.x;
+    const diffY = touchEndPos.y - touchStartPos.y;
+
+    // スワイプ距離が短い場合は無視
+    if (Math.abs(diffX) < 50 && Math.abs(diffY) < 50) return;
+
+    // 上下左右のスワイプ方向を判定
+    if (Math.abs(diffX) > Math.abs(diffY)) {
+      // 左右スワイプ
+      if (diffX > 0) {
+        // 右スワイプ
+        changePattern(row, col, 4, false);
+      } else {
+        // 左スワイプ
+        changePattern(row, col, 3, false);
+      }
+    } else {
+      // 上下スワイプ
+      if (diffY > 0) {
+        // 下スワイプ
+        changePattern(row, col, 2, false);
+      } else {
+        // 上スワイプ
+        changePattern(row, col, 1, false);
+      }
+    }
+  };
+
+  const handleInputTouchEnd = () => {
+    setTouchStartPos(null);
+  };
+
   return (
     <main className="flex items-center justify-center">
       <div className="p-8 bg-gray-800 rounded-lg shadow-xl relative">
@@ -349,11 +421,13 @@ export default function GraphPaperComponent() {
             {/* ここにヘルプテキストの内容を記述 */}
             <p>・＃でマスが黒塗りになります。</p>
             <p>・マス連続タップで色変更ができます。</p>
-            <p>・Shift + ↑ で赤色に変更できます。</p>
+            <p>・マス上でスワイプで色変更ができます。</p>
+            <p>・Shift + ↑ 赤色に変更できます。</p>
             <p>・Shift + ↓ で緑色に変更できます。</p>
             <p>・Shift + ← で青色に変更できます。</p>
             <p>・Shift + → で黄色に変更できます。</p>
             <p>・「黒(＃)埋め」で＃埋め/解除ができます。</p>
+            <p>・「ロック」は入力できなくなります。</p>
             <p>・行数と列数は最大20まで設定できます。</p>
           </div>
         )}
@@ -384,7 +458,7 @@ export default function GraphPaperComponent() {
         </p>
 
         <div className="mb-3 flex justify-between gap-1 text-xs">
-          <div>
+          <div className="flex items-center">
             <input
               type="checkbox"
               id="autoFill"
@@ -392,10 +466,23 @@ export default function GraphPaperComponent() {
               onChange={(e) => setIsAutoFill(e.target.checked)}
               className="w-4 h-4 text-purple-600 rounded focus:ring-purple-500 text-xs text-base"
             />
-            <label htmlFor="autoFill" className="text-gray-400 text-xs">
+            <label htmlFor="autoFill" className="text-gray-400 text-xs mr-1">
               黒(＃)埋め
             </label>
           </div>
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              id="rock"
+              checked={isRock}
+              onChange={(e) => setIsRock(e.target.checked)}
+              className="w-4 h-4 text-purple-600 rounded focus:ring-purple-500 text-xs text-base"
+            />
+            <label htmlFor="rock" className="text-gray-400 text-xs mr-1">
+              ロック
+            </label>
+          </div>
+
           <div className="flex items-center gap-1">
             <div className="flex items-center">
               <label className="text-gray-400 mr-1">行数:</label>
@@ -410,7 +497,7 @@ export default function GraphPaperComponent() {
                     Math.min(20, Math.max(1, parseInt(e.target.value) || 1))
                   )
                 }
-                className="w-10 px-1 py-0.5 text-black rounded text-xs"
+                className="w-10 px-1 py-0.5 text-black rounded text-xs text-base"
               />
             </div>
             <div className="flex items-center">
@@ -426,7 +513,7 @@ export default function GraphPaperComponent() {
                     Math.min(20, Math.max(1, parseInt(e.target.value) || 1))
                   )
                 }
-                className="w-10 px-1 py-0.5 text-black rounded text-xs"
+                className="w-10 px-1 py-0.5 text-black rounded text-xs text-base"
               />
             </div>
             <span className="text-gray-500 text-xs self-center ml-1">
@@ -463,6 +550,11 @@ export default function GraphPaperComponent() {
                 onCompositionEnd={(e) => handleCompositionEnd(i, j, e)}
                 onKeyDown={(e) => handleKeyDown(i, j, e)}
                 onClickCapture={(e) => handleClickCapture(i, j)}
+                //スマートフォン色変え
+                onTouchStart={(e) => handleInputTouchStart(i, j, e)}
+                onTouchMove={(e) => handleInputTouchMove(i, j, e)}
+                onTouchEnd={handleInputTouchEnd}
+                readOnly={isRock}
               />
             ))
           )}
