@@ -58,6 +58,70 @@ function normalizeWord(word: string): string {
 }
 
 /**
+ * 全角数字を半角数字に変更する関数
+ * -
+ * @param str 単語
+ * @returns 半角数字の値
+ */
+function fullWidthToHalfWidth(str: string): string {
+  return str.replace(/[\uFF10-\uFF19]/g, function (match) {
+    switch (match) {
+      case "\uff10":
+        return "0";
+      case "\uff11":
+        return "1";
+      case "\uff12":
+        return "2";
+      case "\uff13":
+        return "3";
+      case "\uff14":
+        return "4";
+      case "\uff15":
+        return "5";
+      case "\uff16":
+        return "6";
+      case "\uff17":
+        return "7";
+      case "\uff18":
+        return "8";
+      case "\uff19":
+        return "9";
+      default:
+        return match;
+    }
+  });
+}
+
+function generateRegex(pattern: string): RegExp {
+  let regex = "";
+  const captures: any = {};
+  let captureIndex = 1;
+
+  for (const char of pattern) {
+    if (/[0-9]/.test(char)) {
+      // 数字のの場合（例: 0, 2）
+      if (!captures[char]) {
+        // 新しいキャプチャグループを作成
+        captures[char] = `\\${captureIndex}`;
+        regex += "(.)"; // 任意の1文字をキャプチャ
+        captureIndex++;
+      } else {
+        // 既存のキャプチャグループを参照
+        regex += captures[char];
+      }
+    } else if (char === "?" || char === "？") {
+      // 任意の1文字
+      regex += ".";
+    } else {
+      // 特殊文字やその他をエスケープ
+      regex += char.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    }
+  }
+
+  return new RegExp(`^${regex}$`);
+}
+
+/**
  * アナグラムマネージャークラス
  * - 辞書のロード、前処理、アナグラム検索を行う
  */
@@ -266,6 +330,45 @@ export class SearchManager {
               break;
             }
           }
+
+          // すべての文字がマッチした場合
+          if (matches) {
+            results.push(candidate);
+
+            // 結果上限チェック
+            if (results.length >= ANAGRAM_RESULT_MAXCOUNT) {
+              break;
+            }
+          }
+        }
+
+        resolve(results);
+      }, 0);
+    });
+  }
+
+  /**
+   * パターン検索する（非同期版）
+   * @param input 入力文字列
+   * @returns
+   */
+  public findPatternwordAsync(input: string): Promise<string[]> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const normalizedInput = fullWidthToHalfWidth(normalizeWord(input));
+        const regex = generateRegex(normalizedInput);
+        console.log(regex);
+        const inputLength = normalizedInput.length;
+
+        // 入力文字列と同じ長さの単語群を取得
+        const candidateWords = this.wordsByLength.get(inputLength) || [];
+
+        const results: string[] = [];
+
+        // 候補となる単語を一つずつ確認
+        for (const candidate of candidateWords) {
+          let matches = true;
+          matches = regex.test(candidate);
 
           // すべての文字がマッチした場合
           if (matches) {

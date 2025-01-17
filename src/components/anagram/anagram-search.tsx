@@ -33,14 +33,24 @@ const tabs = [
     label: "アナグラム",
     title: "アナグラム検索",
     tooltip: "入力を並び替えてできる文字を検索します。",
+    description: "？は任意の1文字",
   },
   {
     id: "tab2",
     label: "クロスワード",
     title: "クロスワード検索",
     tooltip: "入力の？の部分に文字を入れて検索します。",
+    description: "？や数字は任意の1文字。数字同士は同じ文字。",
   },
 ];
+
+const getTabsData = (id: string, property: keyof (typeof tabs)[0]): string => {
+  const tab = tabs.find((tab) => tab.id === id);
+  if (!tab) {
+    return "";
+  }
+  return tab[property] ? tab[property] : "";
+};
 
 export default function AnagramSearch() {
   const [activeTab, setActiveTab] = useState(tabs[0].id);
@@ -79,7 +89,13 @@ export default function AnagramSearch() {
         break;
       case "tab2":
         if (searchManager) {
-          const result = await searchManager.findCrosswordAsync(input);
+          const result = await searchManager.findPatternwordAsync(input);
+          setResults(result);
+        }
+        break;
+      case "tab3":
+        if (searchManager) {
+          const result = await searchManager.findPatternwordAsync(input);
           setResults(result);
         }
         break;
@@ -193,7 +209,7 @@ export default function AnagramSearch() {
                     handleSearch(); // エンターキーが押されたとき検索を実行
                     return;
                   }
-                  if (e.key === "/" && e.ctrlKey) {
+                  if (e.key === "/" && (e.ctrlKey || e.metaKey)) {
                     e.preventDefault(); // ブラウザのデフォルト動作を防ぐ
                     nextDictionary();
                   }
@@ -205,7 +221,7 @@ export default function AnagramSearch() {
                 {SearchManager.getName(selectedDictionary)}
               </p>
               <p className="text-xs text-gray-400 mt-1">
-                ？で任意の文字検索
+                {getTabsData(activeTab, "description")}
                 <span className="hidden md:inline">
                   　　「Ctrl + /」で辞書切り替え
                 </span>
@@ -267,7 +283,7 @@ export default function AnagramSearch() {
               )}
             </h2>
             {loading ? (
-              <p className="text-gray-400">ロ��ディング中...</p>
+              <p className="text-gray-400">ローディング中...</p>
             ) : results.length > 0 ? (
               <ul className="space-y-2">
                 {results.map((result, index) => (
