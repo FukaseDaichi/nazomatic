@@ -3,10 +3,15 @@ import { Inter } from "next/font/google";
 import "@/app/globals.css";
 import { baseURL } from "@/app/config";
 import AdComponent from "@/components/googleAd/google-ad-component";
-import Script from "next/script";
-const inter = Inter({ subsets: ["latin"] });
 
-export const viewport = "width=device-width, initial-scale=1";
+const inter = Inter({ subsets: ["latin"] });
+const themeColor = "#1a1a1a";
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: themeColor,
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseURL),
@@ -50,8 +55,12 @@ export const metadata: Metadata = {
     shortcut: [{ url: "/favicons/favicon.ico" }],
   },
   manifest: "/site.webmanifest",
+  appleMobileWebAppTitle: "NAZOMATIC",
+  applicationName: "NAZOMATIC",
+  msapplicationTileColor: themeColor,
+  themeColor: themeColor,
   keywords: ["謎解き", "パズル", "NAZOMATIC", "お助けツール", "ナゾマティック"],
-  authors: [{ name: "WhiteFranc", url: "https://あなたのサイトのURL" }],
+  authors: [{ name: "WhiteFranc", url: "https://whitefranc.fanbox.cc/" }],
 };
 
 export default function RootLayout({
