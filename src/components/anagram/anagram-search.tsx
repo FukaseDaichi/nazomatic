@@ -32,24 +32,103 @@ const tabs = [
     id: "tab1",
     label: "アナグラム",
     title: "アナグラム検索",
-    tooltip: "入力を並び替えてできる文字を検索します。",
+    tooltip: (
+      <div className="bg-gray-800 text-white p-6 max-w-sm rounded-lg shadow-lg border border-gray-700 transition-opacity duration-150 ease-in-out text-left">
+        <h2 className="text-xl font-bold mb-1 text-purple-400">検索のコツ</h2>
+        <p className="mb-2">入力を並び替えてできる文字を検索します。</p>
+        <ul className="space-y-4">
+          <li className="flex items-start">
+            <span className="inline-flex items-center justify-center w-6 h-6 mr-2 bg-purple-500 rounded-full flex-shrink-0">
+              ？
+            </span>
+            <div>
+              <p className="font-semibold mb-1">？は任意の一文字</p>
+              <p className="text-gray-300">
+                例：うもた
+                <span className="text-yellow-400">？</span>ろ ⇒ ももたろう
+              </p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    ),
     description: "？は任意の1文字",
   },
   {
     id: "tab2",
     label: "クロスワード",
     title: "クロスワード検索",
-    tooltip: "入力の？の部分に文字を入れて検索します。",
-    description: "？や数字は任意の1文字。数字同士は同じ文字。",
+    tooltip: (
+      <div className="bg-gray-800 text-white p-6 max-w-sm rounded-lg shadow-lg border border-gray-700 transition-opacity duration-150 ease-in-out text-left">
+        <h2 className="text-xl font-bold mb-1 text-purple-400">検索のコツ</h2>
+        <p className="mb-2">パターン該当する文字列を検索します</p>
+        <ul className="space-y-4">
+          <li className="flex items-start">
+            <span className="inline-flex items-center justify-center w-6 h-6 mr-2 bg-purple-500 rounded-full flex-shrink-0">
+              ？
+            </span>
+            <div>
+              <p className="font-semibold mb-1">？や0～9は任意の一文字</p>
+              <p className="text-gray-300">
+                例：しん
+                <span className="text-yellow-400">？</span>
+                んし ⇒ しんぶんし
+              </p>
+            </div>
+          </li>
+          <li className="flex items-start">
+            <span className="inline-flex items-center justify-center w-6 h-6 mr-2 bg-purple-500 rounded-full flex-shrink-0">
+              123
+            </span>
+            <div>
+              <p className="font-semibold mb-1">数字同士は同じ文字</p>
+              <p className="text-gray-300">
+                例：
+                <span className="text-yellow-400">１２</span>？
+                <span className="text-yellow-400">２１</span> ⇒ しんぶんし
+              </p>
+              <p className="text-gray-300">
+                例：
+                <span className="text-yellow-400">１</span>
+                い？
+                <span className="text-yellow-400">１</span> ⇒ あいであ
+              </p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    ),
+    description: "？や数字は任意の1文字",
   },
 ];
 
-const getTabsData = (id: string, property: keyof (typeof tabs)[0]): string => {
+const getTabsData = (id: string, property: keyof (typeof tabs)[0]): any => {
   const tab = tabs.find((tab) => tab.id === id);
   if (!tab) {
     return "";
   }
   return tab[property] ? tab[property] : "";
+};
+
+const getTabTooltipsleft = (index: number): number => {
+  if (index < 1) {
+    return 0;
+  }
+  if (window.innerWidth >= 500) {
+    return 0;
+  }
+  return -160;
+};
+
+const getTabTooltipsub = (index: number): string => {
+  if (window.innerWidth >= 500) {
+    return "50%";
+  }
+
+  if (index < 1) {
+    return "125px";
+  }
+  return "280px";
 };
 
 export default function AnagramSearch() {
@@ -67,14 +146,14 @@ export default function AnagramSearch() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // ページトップへスクロール
-    window.scrollTo(0, 0);
     const initializeAnagramManager = async () => {
       // 'buta'キーの辞書でAnagramManagerを作成
       const manager = await SearchManager.create(FIRST_DIC);
       setSearchManager(manager);
     };
     initializeAnagramManager();
+    // ページトップへスクロール
+    window.scrollTo(0, 0);
   }, []);
 
   const handleSearch = useCallback(async () => {
@@ -140,7 +219,7 @@ export default function AnagramSearch() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex justify-center items-center w-full py-1.5 text-sm font-medium rounded-md relative z-10 transition-colors duration-300 ${
+                  className={`relative flex justify-center items-center w-full py-1.5 text-sm font-medium rounded-md z-10 transition-colors duration-300 ${
                     activeTab === tab.id
                       ? "text-gray-900"
                       : "text-gray-300 hover:text-white"
@@ -162,7 +241,7 @@ export default function AnagramSearch() {
                       onMouseLeave={() =>
                         setShowTooltips(new Array(tabs.length).fill(false))
                       }
-                      className="hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-50 rounded-full"
+                      className="hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-50 rounded-full z-2"
                       aria-label="詳細情報"
                     >
                       <HelpCircle size={20} />
@@ -174,9 +253,13 @@ export default function AnagramSearch() {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: 10 }}
                           transition={{ duration: 0.2 }}
-                          className="absolute top-8 left-10 transform -translate-x-1/2 mt-3 px-4 py-2 bg-purple-200 text-gray-900 text-sm rounded-lg shadow-xl z-10 w-48 "
+                          className="absolute top-8 transform -translate-x-1/2 bg-purple-200 text-gray-900 text-sm rounded-lg shadow-xl z-1 w-80"
+                          style={{ left: `${getTabTooltipsleft(index)}px` }}
                         >
-                          <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-b-8 border-transparent border-b-purple-200"></div>
+                          <div
+                            className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-b-8 border-transparent border-b-gray-700"
+                            style={{ left: `${getTabTooltipsub(index)}` }}
+                          ></div>
                           {tabs[index].tooltip}
                         </motion.div>
                       )}
