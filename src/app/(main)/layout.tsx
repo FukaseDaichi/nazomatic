@@ -58,7 +58,6 @@ export const metadata: Metadata = {
   appleMobileWebAppTitle: "NAZOMATIC",
   applicationName: "NAZOMATIC",
   msapplicationTileColor: themeColor,
-  themeColor: themeColor,
   keywords: ["謎解き", "パズル", "NAZOMATIC", "お助けツール", "ナゾマティック"],
   authors: [{ name: "WhiteFranc", url: "https://whitefranc.fanbox.cc/" }],
 };
