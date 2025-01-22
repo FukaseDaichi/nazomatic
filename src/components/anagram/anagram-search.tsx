@@ -95,6 +95,23 @@ const tabs = [
               </p>
             </div>
           </li>
+          <li className="flex items-start">
+            <span className="inline-flex items-center justify-center w-6 h-6 mr-2 bg-purple-500 rounded-full flex-shrink-0">
+              濁
+            </span>
+            <div>
+              <p className="font-semibold mb-1">濁点（゛）半濁点（゜）指定</p>
+              <p className="text-gray-300">
+                例： １く１
+                <span className="text-yellow-400">゛</span> ⇒ こくご
+              </p>
+              <p className="text-gray-300">
+                例： １<span className="text-yellow-400">゜</span>１
+                <span className="text-yellow-400">゜</span>
+                い？ ⇒ ぱぱいや
+              </p>
+            </div>
+          </li>
         </ul>
       </div>
     ),
@@ -198,11 +215,17 @@ export default function AnagramSearch() {
     handleChangeDictionary(nextKey);
   }, [handleChangeDictionary, selectedDictionary]);
 
+  const addDiacritic = (diacritic: "゛" | "゜") => {
+    if (/[?？0-9０-９]/.test(input.slice(-1))) {
+      setInput((prevInput) => prevInput + diacritic);
+    }
+  };
+
   return (
     <main className="min-h-screen">
       <div className="max-w-2xl mx-auto">
         {/* タブの部分 */}
-        <div className="w-full">
+        <div className="w-full px-1 sm:px-0">
           <motion.h1
             key={activeTab}
             initial={{ opacity: 0, y: -20 }}
@@ -309,7 +332,31 @@ export default function AnagramSearch() {
                   　　「Ctrl + /」で辞書切り替え
                 </span>
               </p>
+              {activeTab === "tab2" &&
+                SearchManager.getType(selectedDictionary) === "jp" && (
+                  <div className="absolute right-1 top-5 -translate-y-1/2 flex items-center space-x-0.5">
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => addDiacritic("゛")}
+                      className="h-7 w-7 rounded-full bg-gray-600 hover:bg-gray-500 text-purple-400 text-sm font-bold transition-all duration-100 hover:scale-110 active:scale-95 shadow-md hover:shadow-lg"
+                      aria-label="濁点を追加"
+                    >
+                      ゛
+                    </Button>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => addDiacritic("゜")}
+                      className="h-7 w-7 rounded-full bg-gray-600 hover:bg-gray-500 text-purple-400 text-sm font-bold transition-all duration-100 hover:scale-110 active:scale-95 shadow-md hover:shadow-lg"
+                      aria-label="半濁点を追加"
+                    >
+                      ゜
+                    </Button>
+                  </div>
+                )}
             </div>
+
             <Accordion type="single" collapsible className="mb-4">
               <AccordionItem value="advanced-settings p-4">
                 <AccordionTrigger className="text-sm text-gray-400 hover:text-gray-300 py-2">

@@ -10,6 +10,7 @@ export type Dictionary = {
   name: string;
   description: string;
   words: string[];
+  type: string;
 };
 
 /**
@@ -23,16 +24,39 @@ export const DICTIONARIES = [
       "20万語の日本語ひらがな辞書です。大文字と小文字を区別しません。",
     path: "/dic/buta.dic",
     placeholder: "例：あい？つ",
+    type: "jp",
   },
   {
     key: "cefr",
     name: "英単語(CEFR-J)",
-    description: "基本英単語「CEFR-J Wordlist」です。大文字のみ検索可能です。",
+    description: "基本英単語「CEFR-J Wordlist」です。",
     path: "/dic/CEFR-J.dic",
     placeholder: "例：hel?l",
+    type: "en",
   },
   // 他の辞書を追加可能
 ];
+
+export const KANA_MARKS: Record<string, string> = {
+  DAKUTEN: "゛",
+  HANDAKUTEN: "゜",
+  DAKUTEN_REPLACE: "d",
+  HANDAKUTEN_REPLACE: "p",
+};
+
+function replaceMarks(inputString: string): string {
+  return inputString
+    .split("")
+    .map((char) => {
+      if (char === KANA_MARKS.DAKUTEN) {
+        return KANA_MARKS.DAKUTEN_REPLACE;
+      } else if (char === KANA_MARKS.HANDAKUTEN) {
+        return KANA_MARKS.HANDAKUTEN_REPLACE;
+      }
+      return char; // 置換対象でない場合そのまま返す
+    })
+    .join("");
+}
 
 /**
  * 単語を正規化する関数
@@ -121,6 +145,159 @@ function generateRegex(pattern: string): RegExp {
   return new RegExp(`^${regex}$`);
 }
 
+// 濁点半濁点の入力を一時変更文字列に変更する関数
+function normalizeInputMark(input: string): string {
+  if (!input) {
+    return "";
+  }
+
+  const numMarkRegex = new RegExp(
+    `([0-9])[${KANA_MARKS.DAKUTEN_REPLACE}${KANA_MARKS.HANDAKUTEN_REPLACE}]`,
+    "g"
+  );
+
+  const markRegex = new RegExp(
+    `[${KANA_MARKS.DAKUTEN_REPLACE}${KANA_MARKS.HANDAKUTEN_REPLACE}]`,
+    "g"
+  );
+
+  // 濁点や半濁点が数字に続く場合は削除
+  // 濁点や半濁点が数字に続く場合は置き換える
+  const replacedInput = input
+    .replace(numMarkRegex, (_, digit) => {
+      return "?"; // 数字と濁点の組み合わせを "?" に置換
+    })
+    .replace(markRegex, ""); // 残った濁点・半濁点を削除
+
+  return replacedInput;
+}
+
+// 濁点半濁点の部分チェック
+function isMatchMarkPoint(word: string, rawInput: string): boolean {
+  // 濁点・半濁点を取り除く関数
+  const removeDiacritics = (input: string): string => {
+    return input.replace(
+      new RegExp(
+        `[${KANA_MARKS.DAKUTEN_REPLACE}${KANA_MARKS.HANDAKUTEN_REPLACE}]`,
+        "g"
+      ),
+      ""
+    );
+  };
+
+  let wordIndex = 0;
+  // 濁点・半濁点付き文字の確認
+  for (let i = 0; i < rawInput.length; i++) {
+    const inputChar = rawInput[i];
+    if (
+      inputChar === KANA_MARKS.DAKUTEN_REPLACE ||
+      inputChar === KANA_MARKS.HANDAKUTEN_REPLACE
+    ) {
+      // 濁点・半濁点がある場合、直前の文字とwordの対応を確認
+      const preRawChar = rawInput[i - 1];
+      const targetWordChar = word[wordIndex - 1];
+
+      //濁点文字ではなかった場合false
+      if (
+        inputChar === KANA_MARKS.DAKUTEN_REPLACE &&
+        !isDakutenChar(targetWordChar)
+      ) {
+        return false;
+      }
+
+      //半濁点文字ではなかった場合false
+      if (
+        inputChar === KANA_MARKS.HANDAKUTEN_REPLACE &&
+        !isHandakutenChar(targetWordChar)
+      ) {
+        return false;
+      }
+
+      //任意の濁点であるためそのまま次へ
+      if (preRawChar === "?") {
+        continue;
+      }
+
+      if (/[0-9]/.test(preRawChar)) {
+        //数字に濁点がついている場合
+
+        //一度自分の濁点ついている場所を!へ変更し、濁点半濁点を変更
+        const removeDiacriticsInput = removeDiacritics(
+          rawInput.replace(new RegExp(`${preRawChar}${inputChar}`, "g"), "!")
+        );
+        const removeDakutenChar = removeDakuten(targetWordChar);
+
+        let point = null;
+        // 一文字ずつ確認
+        for (let j = 0; j < removeDiacriticsInput.length; j++) {
+          //同じ数字のものがあった場合
+          if (
+            removeDiacriticsInput[j] === preRawChar &&
+            word[j] !== removeDakutenChar
+          ) {
+            return false;
+          }
+
+          //全ての濁点箇所が一致している必要がある
+          if ("!" === removeDiacriticsInput[j]) {
+            if (!point) {
+              //初めての時は記録
+              point = word[j];
+            } else if (point !== word[j]) {
+              return false;
+            }
+          }
+        }
+      }
+      //濁点がある場合はwordIndexをインクメントしない
+      continue;
+    }
+    wordIndex++;
+  }
+
+  return true;
+}
+function isDakutenChar(char: string): boolean {
+  const dakutenChars = "がぎぐげござじずぜぞだぢづでどばびぶべぼ";
+  return dakutenChars.includes(char);
+}
+
+function isHandakutenChar(char: string): boolean {
+  const handakutenChars = "ぱぴぷぺぽ";
+  return handakutenChars.includes(char);
+}
+
+function removeDakuten(char: string): string {
+  const kanaMap: Record<string, string> = {
+    が: "か",
+    ぎ: "き",
+    ぐ: "く",
+    げ: "け",
+    ご: "こ",
+    ざ: "さ",
+    じ: "し",
+    ず: "す",
+    ぜ: "せ",
+    ぞ: "そ",
+    だ: "た",
+    ぢ: "ち",
+    づ: "つ",
+    で: "て",
+    ど: "と",
+    ば: "は",
+    び: "ひ",
+    ぶ: "ふ",
+    べ: "へ",
+    ぼ: "ほ",
+    ぱ: "は",
+    ぴ: "ひ",
+    ぷ: "ふ",
+    ぺ: "へ",
+    ぽ: "ほ",
+  };
+  return kanaMap[char] || char;
+}
+
 /**
  * アナグラムマネージャークラス
  * - 辞書のロード、前処理、アナグラム検索を行う
@@ -192,6 +369,7 @@ export class SearchManager {
         name: dictionaryData.name,
         description: `${dictionaryData.description}に関連する単語の辞書です。`,
         words,
+        type: dictionaryData.type,
       };
 
       // キャッシュに保存
@@ -301,53 +479,6 @@ export class SearchManager {
   }
 
   /**
-   * クロスワード検索する（非同期版）
-   * @param input 入力文字列
-   * @returns
-   */
-  public findCrosswordAsync(input: string): Promise<string[]> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const normalizedInput = normalizeWord(input);
-        const inputLength = normalizedInput.length;
-
-        // 入力文字列と同じ長さの単語群を取得
-        const candidateWords = this.wordsByLength.get(inputLength) || [];
-
-        const results: string[] = [];
-
-        // 候補となる単語を一つずつ確認
-        for (const candidate of candidateWords) {
-          let matches = true;
-
-          for (let i = 0; i < inputLength; i++) {
-            const inputChar = normalizedInput[i];
-            const candidateChar = candidate[i];
-
-            // 入力文字が'?'の場合は任意の文字OK、それ以外は文字一致を要求
-            if (inputChar !== "?" && inputChar !== candidateChar) {
-              matches = false;
-              break;
-            }
-          }
-
-          // すべての文字がマッチした場合
-          if (matches) {
-            results.push(candidate);
-
-            // 結果上限チェック
-            if (results.length >= ANAGRAM_RESULT_MAXCOUNT) {
-              break;
-            }
-          }
-        }
-
-        resolve(results);
-      }, 0);
-    });
-  }
-
-  /**
    * パターン検索する（非同期版）
    * @param input 入力文字列
    * @returns
@@ -355,10 +486,34 @@ export class SearchManager {
   public findPatternwordAsync(input: string): Promise<string[]> {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const normalizedInput = fullWidthToHalfWidth(normalizeWord(input));
-        const regex = generateRegex(normalizedInput);
-        console.log(regex);
-        const inputLength = normalizedInput.length;
+        const markRegex = new RegExp(
+          `[${KANA_MARKS.DAKUTEN}${KANA_MARKS.HANDAKUTEN}]`,
+          "g"
+        );
+        const markReplaceRegex = new RegExp(
+          `[${KANA_MARKS.DAKUTEN_REPLACE}${KANA_MARKS.HANDAKUTEN_REPLACE}]`,
+          "g"
+        );
+
+        //濁点半濁点の判定
+        const isContainMark =
+          markRegex.test(input) ||
+          (this.dictionary.type === "jp" && markReplaceRegex.test(input));
+
+        const normalizedInput = isContainMark
+          ? fullWidthToHalfWidth(normalizeWord(replaceMarks(input)))
+          : fullWidthToHalfWidth(normalizeWord(input));
+
+        // console.log("normalizedInput:" + normalizedInput);
+
+        const normalizedMarkInput = isContainMark
+          ? normalizeInputMark(normalizedInput)
+          : normalizedInput;
+
+        // console.log("normalizedMarkInput: " + normalizedMarkInput);
+        const regex = generateRegex(normalizedMarkInput);
+        console.log("regex = " + regex);
+        const inputLength = normalizedMarkInput.length;
 
         // 入力文字列と同じ長さの単語群を取得
         const candidateWords = this.wordsByLength.get(inputLength) || [];
@@ -371,13 +526,19 @@ export class SearchManager {
           matches = regex.test(candidate);
 
           // すべての文字がマッチした場合
-          if (matches) {
+          if (matches && !isContainMark) {
             results.push(candidate);
+          }
 
-            // 結果上限チェック
-            if (results.length >= ANAGRAM_RESULT_MAXCOUNT) {
-              break;
+          //濁点がある場合でマッチしている場合
+          if (matches && isContainMark) {
+            if (isMatchMarkPoint(candidate, normalizedInput)) {
+              results.push(candidate);
             }
+          }
+          // 結果上限チェック
+          if (results.length >= ANAGRAM_RESULT_MAXCOUNT) {
+            break;
           }
         }
 
@@ -418,6 +579,12 @@ export class SearchManager {
   static getName(key: string): string {
     return (
       DICTIONARIES.find((dictionary) => dictionary.key === key)?.name || ""
+    );
+  }
+
+  static getType(key: string): string {
+    return (
+      DICTIONARIES.find((dictionary) => dictionary.key === key)?.type || ""
     );
   }
 }
