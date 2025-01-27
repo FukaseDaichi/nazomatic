@@ -59,9 +59,9 @@ const tabs = [
     label: "クロスワード",
     title: "クロスワード検索",
     tooltip: (
-      <div className="bg-gray-800 text-white p-6 max-w-sm rounded-lg shadow-lg border border-gray-700 transition-opacity duration-150 ease-in-out text-left">
-        <h2 className="text-xl font-bold mb-1 text-purple-400">検索のコツ</h2>
-        <p className="mb-2">パターン該当する文字列を検索します</p>
+      <div className="bg-gray-800 text-white px-6 pt-2 pb-5 max-w-sm rounded-lg shadow-lg border border-gray-700 transition-opacity duration-150 ease-in-out text-left">
+        <h2 className="text-xl font-bold mb-2 text-purple-400">検索のコツ</h2>
+        <p className="mb-3">パターン該当する文字列を検索します。</p>
         <ul className="space-y-4">
           <li className="flex items-start">
             <span className="inline-flex items-center justify-center w-6 h-6 mr-2 bg-purple-500 rounded-full flex-shrink-0">
