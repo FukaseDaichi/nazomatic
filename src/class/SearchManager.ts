@@ -162,7 +162,6 @@ function normalizeInputMark(input: string): string {
   );
 
   // 濁点や半濁点が数字に続く場合は削除
-  // 濁点や半濁点が数字に続く場合は置き換える
   const replacedInput = input
     .replace(numMarkRegex, (_, digit) => {
       return "?"; // 数字と濁点の組み合わせを "?" に置換
@@ -219,11 +218,17 @@ function isMatchMarkPoint(word: string, rawInput: string): boolean {
       }
 
       if (/[0-9]/.test(preRawChar)) {
-        //数字に濁点がついている場合
+        //数字に濁点半濁点がついている場合
 
-        //一度自分の濁点ついている場所を!へ変更し、濁点半濁点を変更
+        //一度自分の濁点半濁点ついている場所を!へ変更する
         const removeDiacriticsInput = removeDiacritics(
-          rawInput.replace(new RegExp(`${preRawChar}${inputChar}`, "g"), "!")
+          rawInput.replace(
+            new RegExp(
+              `${preRawChar}[${KANA_MARKS.DAKUTEN_REPLACE}${KANA_MARKS.HANDAKUTEN_REPLACE}]`,
+              "g"
+            ),
+            "!"
+          )
         );
         const removeDakutenChar = removeDakuten(targetWordChar);
 
@@ -241,9 +246,9 @@ function isMatchMarkPoint(word: string, rawInput: string): boolean {
           //全ての濁点箇所が一致している必要がある
           if ("!" === removeDiacriticsInput[j]) {
             if (!point) {
-              //初めての時は記録
-              point = word[j];
-            } else if (point !== word[j]) {
+              //初めての時は濁点が付いていない文字を記憶
+              point = removeDakuten(word[j]);
+            } else if (point !== removeDakuten(word[j])) {
               return false;
             }
           }
