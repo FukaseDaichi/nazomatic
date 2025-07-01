@@ -137,7 +137,7 @@ const QuizFloatingCard = ({ quiz }: QuizFloatingCardProps) => {
                 gameState === "correct"
                   ? "bg-gradient-to-br from-gray-700 via-gray-900 to-black"
                   : "bg-gradient-to-br from-gray-900 via-gray-800 to-black"
-              } border border-white/10 overflow-hidden ${backZ} gpu-layer`}
+              } border border-white/10 ${backZ} gpu-layer`}
               style={{
                 backfaceVisibility: "hidden",
                 WebkitBackfaceVisibility: "hidden",
