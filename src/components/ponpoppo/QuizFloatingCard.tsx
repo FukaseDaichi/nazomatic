@@ -91,7 +91,7 @@ const QuizFloatingCard = ({ quiz }: QuizFloatingCardProps) => {
           >
             {/* ——— 表面 ——— */}
             <div
-              className={`absolute inset-0 w-full h-full rounded-2xl shadow-2xl bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 border border-white/10 overflow-hidden ${frontZ}`}
+              className={`absolute inset-0 w-full h-full rounded-2xl shadow-2xl bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 border border-white/10 ${frontZ}`}
               style={{ backfaceVisibility: "hidden" }}
             >
               {isAnimating ? (
@@ -220,6 +220,8 @@ const QuizFloatingCard = ({ quiz }: QuizFloatingCardProps) => {
           position: relative;
         }
         .floater {
+          transform-style: preserve-3d;
+          -webkit-transform-style: preserve-3d;
           width: 100%;
           height: 100%;
           position: relative;
@@ -234,6 +236,12 @@ const QuizFloatingCard = ({ quiz }: QuizFloatingCardProps) => {
           transform: translateZ(0);
           /* Safari 用プレフィックスもあると安全 */
           -webkit-transform: translateZ(0);
+        }
+        /* 裏面を隠す */
+        .front,
+        .back {
+          backface-visibility: hidden;
+          -webkit-backface-visibility: hidden;
         }
       `}</style>
     </div>
