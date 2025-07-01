@@ -63,7 +63,10 @@ const QuizFloatingCard = ({ quiz }: QuizFloatingCardProps) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-gray-800 flex items-center justify-center p-8">
-      <div className="relative w-80 h-56" style={{ perspective: "1000px" }}>
+      <div
+        className="relative w-80 h-56"
+        style={{ perspective: "1000px", WebkitPerspective: "1000px" }}
+      >
         {/* flipper: 回転担当 */}
         <div
           className={`relative w-full h-full flipper ${
@@ -134,15 +137,16 @@ const QuizFloatingCard = ({ quiz }: QuizFloatingCardProps) => {
                 gameState === "correct"
                   ? "bg-gradient-to-br from-gray-700 via-gray-900 to-black"
                   : "bg-gradient-to-br from-gray-900 via-gray-800 to-black"
-              } border border-white/10 overflow-hidden ${backZ}`}
+              } border border-white/10 overflow-hidden ${backZ} gpu-layer`}
               style={{
                 backfaceVisibility: "hidden",
+                WebkitBackfaceVisibility: "hidden",
                 transform: "rotateY(180deg)",
               }}
             >
               {/* 回転が終わって結果がセットされたあとだけ表示 */}
               {!isAnimating && gameState === "correct" && (
-                <div className="w-full h-full flex flex-col items-center justify-center text-center p-6">
+                <div className="w-full h-full flex flex-col items-center justify-center text-center p-6 -webkit-backdrop-filter">
                   <div className="flex items-center justify-center gap-2 mb-4">
                     <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm border-2 border-white/30">
                       <Trophy className="w-8 h-8 text-white" />
@@ -210,6 +214,7 @@ const QuizFloatingCard = ({ quiz }: QuizFloatingCardProps) => {
 
         .flipper {
           transform-style: preserve-3d;
+          -webkit-transform-style: preserve-3d;
           width: 100%;
           height: 100%;
           position: relative;
@@ -221,6 +226,14 @@ const QuizFloatingCard = ({ quiz }: QuizFloatingCardProps) => {
         }
         .animate-spin-glow {
           animation: spinGlow 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .will-change-transform {
+          will-change: transform;
+        }
+        .gpu-layer {
+          transform: translateZ(0);
+          /* Safari 用プレフィックスもあると安全 */
+          -webkit-transform: translateZ(0);
         }
       `}</style>
     </div>
