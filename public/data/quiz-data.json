@@ -5,7 +5,8 @@
       "correctAnswer": 1,
       "product": {
         "name": "雨天兼用傘",
-        "image": "/img/secret/ponpoppo/products/1.jpg"
+        "image": "/img/secret/ponpoppo/products/1.jpg",
+        "rarity": "★★★★★ SSR"
       }
     },
     "2": {
@@ -13,7 +14,8 @@
       "correctAnswer": 1,
       "product": {
         "name": "アイス",
-        "image": "/img/secret/ponpoppo/products/2.png"
+        "image": "/img/secret/ponpoppo/products/2.png",
+        "rarity": "★★★ R"
       }
     },
     "3": {
@@ -21,7 +23,8 @@
       "correctAnswer": 0,
       "product": {
         "name": "ラケットのみ",
-        "image": "/img/secret/ponpoppo/products/3.png"
+        "image": "/img/secret/ponpoppo/products/3.png",
+        "rarity": "★★★ R"
       }
     },
     "4": {
@@ -29,7 +32,8 @@
       "correctAnswer": 0,
       "product": {
         "name": "いらすとや謎解き",
-        "image": "/img/secret/ponpoppo/products/4.jpg"
+        "image": "/img/secret/ponpoppo/products/4.jpg",
+        "rarity": "★★★★★ SSR"
       }
     },
     "5": {
@@ -37,7 +41,8 @@
       "correctAnswer": 2,
       "product": {
         "name": "顔パック",
-        "image": "/img/secret/ponpoppo/products/5.png"
+        "image": "/img/secret/ponpoppo/products/5.png",
+        "rarity": "★★★★★ SSR"
       }
     },
     "6": {
@@ -45,7 +50,8 @@
       "correctAnswer": 2,
       "product": {
         "name": "アルファベットチョコ",
-        "image": "/img/secret/ponpoppo/products/6.jpg"
+        "image": "/img/secret/ponpoppo/products/6.jpg",
+        "rarity": "★★★ R"
       }
     }
   }
