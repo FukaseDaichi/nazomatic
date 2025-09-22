@@ -135,7 +135,7 @@ const tabs = [
         </ul>
       </div>
     ),
-    description: "正規表現を利用して自由なパターンで検索します。",
+    description: "正規表現検索",
   },
 ];
 
