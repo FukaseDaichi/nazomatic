@@ -1,8 +1,14 @@
 import QuizFloatingCard from "@/components/ponpoppo/QuizFloatingCard";
-import { baseURL } from "@/app/config";
+import { headers } from "next/headers";
 
 async function getQuizData(): Promise<any> {
-  const res = await fetch(`${baseURL}/data/quiz-data.json`, {
+  const headersList = headers();
+  const protocol = headersList.get("x-forwarded-proto") ?? "https";
+  const host =
+    headersList.get("x-forwarded-host") ?? headersList.get("host") ?? "localhost:3000";
+  const baseUrl = `${protocol}://${host}`;
+
+  const res = await fetch(`${baseUrl}/data/quiz-data.json`, {
     cache: "no-store",
   });
   if (!res.ok) {

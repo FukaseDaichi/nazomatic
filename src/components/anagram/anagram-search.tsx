@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -147,25 +147,58 @@ const getTabsData = (id: string, property: keyof (typeof tabs)[0]): any => {
   return tab[property] ? tab[property] : "";
 };
 
-const getTabTooltipsleft = (index: number): number => {
+const getTabTooltipLeft = (
+  index: number,
+  viewportWidth: number | null
+): number => {
   if (index < 1) {
     return 0;
   }
-  if (window.innerWidth >= 500) {
+  const width = viewportWidth ?? Number.POSITIVE_INFINITY;
+  if (width >= 500) {
     return 0;
   }
-  return -160;
+
+  switch (index) {
+    case 0:
+      return 0;
+    case 1:
+      return -125;
+    case 2:
+      return -210;
+    default:
+      return 0;
+  }
 };
 
-const getTabTooltipsub = (index: number): string => {
-  if (window.innerWidth >= 500) {
-    return "50%";
+const getTabTooltipTop = (
+  index: number,
+  viewportWidth: number | null
+): string => {
+  const width = viewportWidth ?? Number.POSITIVE_INFINITY;
+  if (width >= 500) {
+    switch (index) {
+      case 0:
+        return `calc(50% - ${40}px)`;
+      case 1:
+        return `calc(50% - ${30}px)`;
+      case 2:
+        return `calc(50% - ${45}px)`;
+      default:
+        return `50%`;
+    }
   }
 
-  if (index < 1) {
-    return "125px";
+  switch (index) {
+    case 0:
+      return "105px";
+    case 1:
+      return "240px";
+    case 2:
+      return "305px";
+    default:
+      return "300px";
   }
-  return "280px";
 };
 
 export default function AnagramSearch() {
@@ -182,6 +215,8 @@ export default function AnagramSearch() {
   );
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [viewportWidth, setViewportWidth] = useState<number | null>(null);
+  const dictionaryRequestIdRef = useRef(0);
 
   const handleTabChange = useCallback((tabId: string) => {
     setActiveTab(tabId);
@@ -189,15 +224,56 @@ export default function AnagramSearch() {
   }, []);
 
   useEffect(() => {
-    const initializeAnagramManager = async () => {
-      // 'buta'キーの辞書でAnagramManagerを作成
-      const manager = await SearchManager.create(FIRST_DIC);
-      setSearchManager(manager);
-    };
-    initializeAnagramManager();
-    // ページトップへスクロール
-    window.scrollTo(0, 0);
+    if (typeof window === "undefined") {
+      return;
+    }
+    const updateViewportWidth = () => setViewportWidth(window.innerWidth);
+    updateViewportWidth();
+    window.addEventListener("resize", updateViewportWidth);
+    return () => window.removeEventListener("resize", updateViewportWidth);
   }, []);
+
+  const loadDictionary = useCallback(
+    async (
+      dictionaryKey: string,
+      options: { updateSelection?: boolean } = {}
+    ) => {
+      const { updateSelection = true } = options;
+      if (updateSelection) {
+        setSelectedDictionary(dictionaryKey);
+      }
+      setSearchManager(null);
+      setErrorMessage(null);
+      setResults([]);
+
+      const requestId = dictionaryRequestIdRef.current + 1;
+      dictionaryRequestIdRef.current = requestId;
+
+      try {
+        const manager = await SearchManager.create(dictionaryKey);
+        if (dictionaryRequestIdRef.current !== requestId) {
+          return;
+        }
+        setSearchManager(manager);
+      } catch (error) {
+        if (dictionaryRequestIdRef.current === requestId) {
+          const message =
+            error instanceof Error ? error.message : "???????????????";
+          setErrorMessage(message);
+          setSearchManager(null);
+          setResults([]);
+        }
+      }
+    },
+    []
+  );
+
+  useEffect(() => {
+    loadDictionary(FIRST_DIC, { updateSelection: false });
+    if (typeof window !== "undefined") {
+      window.scrollTo(0, 0);
+    }
+  }, [loadDictionary]);
 
   const handleSearch = useCallback(async () => {
     if (!searchManager) {
@@ -238,13 +314,12 @@ export default function AnagramSearch() {
     }
   }, [searchManager, input, activeTab]);
 
-  const handleChangeDictionary = useCallback(async (val: string) => {
-    setSelectedDictionary(val);
-    const manager = await SearchManager.create(val);
-    setSearchManager(manager);
-    setErrorMessage(null);
-    setResults([]);
-  }, []);
+  const handleChangeDictionary = useCallback(
+    (val: string) => {
+      loadDictionary(val);
+    },
+    [loadDictionary]
+  );
 
   const nextDictionary = useCallback(() => {
     const nextIndex =
@@ -317,11 +392,18 @@ export default function AnagramSearch() {
                           exit={{ opacity: 0, y: 10 }}
                           transition={{ duration: 0.2 }}
                           className="absolute top-8 transform -translate-x-1/2 bg-purple-200 text-gray-900 text-sm rounded-lg shadow-xl z-1 w-80"
-                          style={{ left: `${getTabTooltipsleft(index)}px` }}
+                          style={{
+                            left: `${getTabTooltipLeft(
+                              index,
+                              viewportWidth
+                            )}px`,
+                          }}
                         >
                           <div
                             className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-b-8 border-transparent border-b-gray-700"
-                            style={{ left: `${getTabTooltipsub(index)}` }}
+                            style={{
+                              left: `${getTabTooltipTop(index, viewportWidth)}`,
+                            }}
                           ></div>
                           {tabs[index].tooltip}
                         </motion.div>
