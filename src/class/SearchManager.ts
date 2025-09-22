@@ -115,6 +115,14 @@ function fullWidthToHalfWidth(str: string): string {
     }
   });
 }
+function normalizeRegexPattern(pattern: string): string {
+  if (!pattern) {
+    return "";
+  }
+
+  const normalized = fullWidthToHalfWidth(pattern);
+  return normalizeWord(normalized);
+}
 
 function generateRegex(pattern: string): RegExp {
   let regex = "";
@@ -552,6 +560,36 @@ export class SearchManager {
     });
   }
 
+  public findRegexAsync(pattern: string): Promise<string[]> {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        try {
+          const normalizedPattern = normalizeRegexPattern(pattern);
+          const regex = new RegExp(normalizedPattern);
+          const results: string[] = [];
+
+          for (const word of this.dictionary.words) {
+            regex.lastIndex = 0;
+            if (regex.test(word)) {
+              results.push(word);
+              if (results.length >= ANAGRAM_RESULT_MAXCOUNT) {
+                break;
+              }
+            }
+          }
+
+          resolve(results);
+        } catch (error: any) {
+          const message =
+            error instanceof Error && error.message
+              ? `正規表現が無効です: ${error.message}`
+              : "正規表現が無効です。";
+          reject(new Error(message));
+        }
+      }, 0);
+    });
+  }
+
   /**
    * 指定したキーの辞書をキャッシュから削除する
    * @param key 辞書のキー
@@ -593,3 +631,4 @@ export class SearchManager {
     );
   }
 }
+

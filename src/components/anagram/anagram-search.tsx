@@ -26,6 +26,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 
 const FIRST_DIC = "buta";
+const REGEX_PLACEHOLDER = "例: ^し.*ん$";
 
 const tabs = [
   {
@@ -117,6 +118,25 @@ const tabs = [
     ),
     description: "？や数字は任意の1文字",
   },
+  {
+    id: "tab3",
+    label: "正規表現",
+    title: "正規表現検索",
+    tooltip: (
+      <div className="bg-gray-800 text-white px-6 pt-2 pb-5 max-w-sm rounded-lg shadow-lg border border-gray-700 transition-opacity duration-150 ease-in-out text-left">
+        <h2 className="text-xl font-bold mb-2 text-purple-400">検索のコツ</h2>
+        <p className="mb-3">JavaScriptの正規表現で辞書を検索します。</p>
+        <ul className="space-y-3 text-sm leading-relaxed">
+          <li>
+            例:{" "}
+            <code className="bg-gray-900 px-1 py-0.5 rounded">^し.*ん$</code>{" "}
+            で「し」で始まり「ん」で終わる単語を検索
+          </li>
+        </ul>
+      </div>
+    ),
+    description: "正規表現を利用して自由なパターンで検索します。",
+  },
 ];
 
 const getTabsData = (id: string, property: keyof (typeof tabs)[0]): any => {
@@ -161,6 +181,12 @@ export default function AnagramSearch() {
     null
   );
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const handleTabChange = useCallback((tabId: string) => {
+    setActiveTab(tabId);
+    setErrorMessage(null);
+  }, []);
 
   useEffect(() => {
     const initializeAnagramManager = async () => {
@@ -174,36 +200,50 @@ export default function AnagramSearch() {
   }, []);
 
   const handleSearch = useCallback(async () => {
-    setLoading(true);
-
-    switch (activeTab) {
-      case "tab1":
-        if (searchManager) {
-          const result = await searchManager.findAnagramsAsync(input);
-          setResults(result);
-        }
-        break;
-      case "tab2":
-        if (searchManager) {
-          const result = await searchManager.findPatternwordAsync(input);
-          setResults(result);
-        }
-        break;
-      case "tab3":
-        if (searchManager) {
-          const result = await searchManager.findPatternwordAsync(input);
-          setResults(result);
-        }
-        break;
-      default:
+    if (!searchManager) {
+      return;
     }
-    setLoading(false);
+
+    const trimmed = input.trim();
+    if (!trimmed) {
+      setErrorMessage("検索ワードを入力してください。");
+      setResults([]);
+      return;
+    }
+
+    setLoading(true);
+    setErrorMessage(null);
+
+    try {
+      let result: string[] = [];
+
+      if (activeTab === "tab1") {
+        result = await searchManager.findAnagramsAsync(input);
+      } else if (activeTab === "tab2") {
+        result = await searchManager.findPatternwordAsync(input);
+      } else if (activeTab === "tab3") {
+        result = await searchManager.findRegexAsync(input);
+      }
+
+      setResults(result);
+    } catch (error) {
+      const message =
+        error instanceof Error && error.message
+          ? error.message
+          : "検索中にエラーが発生しました。";
+      setErrorMessage(message);
+      setResults([]);
+    } finally {
+      setLoading(false);
+    }
   }, [searchManager, input, activeTab]);
 
   const handleChangeDictionary = useCallback(async (val: string) => {
     setSelectedDictionary(val);
     const manager = await SearchManager.create(val);
     setSearchManager(manager);
+    setErrorMessage(null);
+    setResults([]);
   }, []);
 
   const nextDictionary = useCallback(() => {
@@ -241,7 +281,7 @@ export default function AnagramSearch() {
               {tabs.map((tab, index) => (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
+                  onClick={() => handleTabChange(tab.id)}
                   className={`relative flex justify-center items-center w-full py-1.5 text-sm font-medium rounded-md z-10 transition-colors duration-300 ${
                     activeTab === tab.id
                       ? "text-gray-900"
@@ -321,7 +361,11 @@ export default function AnagramSearch() {
                   }
                 }}
                 className="bg-gray-700 border-gray-600 text-white text-base"
-                placeholder={SearchManager.getPlaceholder(selectedDictionary)}
+                placeholder={
+                  activeTab === "tab3"
+                    ? REGEX_PLACEHOLDER
+                    : SearchManager.getPlaceholder(selectedDictionary)
+                }
               />
               <p className="absolute text-gray-500 bottom-1 right-1 text-xs">
                 {SearchManager.getName(selectedDictionary)}
@@ -329,7 +373,7 @@ export default function AnagramSearch() {
               <p className="text-xs text-gray-400 mt-1">
                 {getTabsData(activeTab, "description")}
                 <span className="hidden md:inline">
-                  　　「Ctrl + /」で辞書切り替え
+                  　　「Ctrl + /」で辞書を切り替えできます
                 </span>
               </p>
               {activeTab === "tab2" &&
@@ -414,6 +458,8 @@ export default function AnagramSearch() {
             </h2>
             {loading ? (
               <p className="text-gray-400">ローディング中...</p>
+            ) : errorMessage ? (
+              <p className="text-red-400">{errorMessage}</p>
             ) : results.length > 0 ? (
               <ul className="space-y-2">
                 {results.map((result, index) => (
@@ -426,7 +472,11 @@ export default function AnagramSearch() {
                 ))}
               </ul>
             ) : (
-              <p className="text-gray-400">結果がありません</p>
+              <p className="text-gray-400">
+                {activeTab === "tab3"
+                  ? "正規表現に一致する結果がありません"
+                  : "結果がありません"}
+              </p>
             )}
           </CardContent>
         </Card>
