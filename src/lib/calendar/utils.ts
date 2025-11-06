@@ -37,6 +37,12 @@ export function addDays(date: Date, days: number): Date {
   return next;
 }
 
+export function addMonths(date: Date, months: number): Date {
+  const next = new Date(date);
+  next.setMonth(next.getMonth() + months, 1);
+  return startOfDay(next);
+}
+
 export function startOfMonth(date: Date): Date {
   const next = new Date(date.getFullYear(), date.getMonth(), 1);
   return startOfDay(next);
@@ -81,6 +87,13 @@ export function toDateKey(date: Date): string {
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
+}
+
+export function formatMonthHeading(date: Date): string {
+  return new Intl.DateTimeFormat("ja-JP", {
+    year: "numeric",
+    month: "long",
+  }).format(date);
 }
 
 export function groupEventsByDate(events: CalendarEvent[]): CalendarBuckets {

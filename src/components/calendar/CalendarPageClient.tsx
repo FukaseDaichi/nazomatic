@@ -12,49 +12,44 @@ import {
 import { useCalendarData } from "@/hooks/useCalendarData";
 import {
   addDays,
+  addMonths,
+  formatMonthHeading,
   formatTimestamp,
   groupEventsByDate,
-  isSameMonth,
   startOfDay,
   startOfMonth,
   startOfWeek,
   toDateKey,
+  type CalendarBuckets,
+  type CalendarDayEventSummary,
 } from "@/lib/calendar/utils";
+import type { CalendarEvent } from "@/types/calendar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { EventDetailDialog } from "@/components/calendar/EventDetailDialog";
 
 const DEFAULT_QUERY = "#謎チケ売ります";
 const HOUR_MS = 60 * 60 * 1000;
-
-interface CalendarCellEvent {
-  id: string;
-  title: string;
-  timeLabel: string;
-  category: string;
-  needsReview: boolean;
-}
+const queryOptions = [DEFAULT_QUERY, "#譲渡", "#交換希望"];
 
 interface CalendarCell {
   isoDate: string;
   date: Date;
   isToday: boolean;
   isCurrentMonth: boolean;
-  events: CalendarCellEvent[];
+  events: CalendarDayEventSummary[];
 }
 
-const queryOptions = [DEFAULT_QUERY, "#譲渡", "#交換希望"];
-
 export default function CalendarPageClient() {
-  const [query, setQuery] = useState<string>(DEFAULT_QUERY);
-  const [focusDate, setFocusDate] = useState<Date>(() => startOfDay(new Date()));
+  const [query, setQuery] = useState(DEFAULT_QUERY);
+  const [focusDate, setFocusDate] = useState(() => startOfDay(new Date()));
   const [selectedDateKey, setSelectedDateKey] = useState<string | null>(null);
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const { fromDate, toDate, rangeDays } = useMemo(
     () => buildRange(focusDate),
-    [focusDate],
+    [focusDate]
   );
 
   const { data, isLoading, error, refresh } = useCalendarData({
@@ -64,13 +59,20 @@ export default function CalendarPageClient() {
     rangeDays,
   });
 
-  const grouped = useMemo(() => groupEventsByDate(data?.events ?? []), [data]);
-  const eventMap = useMemo(
-    () => new Map((data?.events ?? []).map((event) => [event.id, event])),
-    [data],
+  const grouped = useMemo<CalendarBuckets>(
+    () => groupEventsByDate(data?.events ?? []),
+    [data]
   );
 
-  const calendarCells = useMemo(() => {
+  const eventMap = useMemo(
+    () =>
+      new Map<string, CalendarEvent>(
+        (data?.events ?? []).map((evt) => [evt.id, evt])
+      ),
+    [data]
+  );
+
+  const calendarCells = useMemo<CalendarCell[]>(() => {
     const firstDay = startOfWeek(startOfMonth(focusDate));
     const todayKey = toDateKey(new Date());
 
@@ -79,25 +81,12 @@ export default function CalendarPageClient() {
       const key = toDateKey(date);
       const bucket = grouped[key];
 
-      const events: CalendarCellEvent[] = bucket
-        ? bucket.events
-            .slice()
-            .sort((a, b) => a.timeLabel.localeCompare(b.timeLabel))
-            .map((evt) => ({
-              id: evt.id,
-              title: evt.title,
-              timeLabel: evt.timeLabel,
-              category: evt.category,
-              needsReview: evt.needsReview,
-            }))
-        : [];
-
       return {
         isoDate: key,
         date,
         isToday: key === todayKey,
-        isCurrentMonth: isSameMonth(date, focusDate),
-        events,
+        isCurrentMonth: daisyIsSameMonth(date, focusDate),
+        events: bucket?.events ?? [],
       };
     });
   }, [focusDate, grouped]);
@@ -110,25 +99,27 @@ export default function CalendarPageClient() {
     : [];
 
   const lastUpdated = data?.generatedAt ? new Date(data.generatedAt) : null;
-  const stale = lastUpdated
+  const isStale = lastUpdated
     ? Date.now() - lastUpdated.getTime() > HOUR_MS
     : false;
 
   const handleNavigate = (direction: "prev" | "next") => {
-    setFocusDate((current) => addMonths(current, direction === "prev" ? -1 : 1));
+    setFocusDate((current) =>
+      addMonths(current, direction === "prev" ? -1 : 1)
+    );
   };
 
-  const handleSelectEvent = (iso: string, eventId: string) => {
-    setSelectedDateKey(iso);
+  const handleSelectEvent = (isoDate: string, eventId: string) => {
+    setSelectedDateKey(isoDate);
     setSelectedEventId(eventId);
     setDialogOpen(true);
   };
 
-  const handleOpenDay = (iso: string) => {
-    const dayEvents = grouped[iso]?.events;
-    if (dayEvents?.length) {
-      setSelectedDateKey(iso);
-      setSelectedEventId(dayEvents[0].id);
+  const handleOpenDay = (isoDate: string) => {
+    const events = grouped[isoDate]?.events;
+    if (events?.length) {
+      setSelectedDateKey(isoDate);
+      setSelectedEventId(events[0].id);
       setDialogOpen(true);
     }
   };
@@ -141,73 +132,105 @@ export default function CalendarPageClient() {
     }
   };
 
-  const monthLabel = formatMonthHeading(focusDate);
-
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-col gap-4 px-4 pb-16 pt-6">
-      <section className="flex flex-col gap-4">
-        <header className="flex flex-col gap-2">
-          <div className="flex items-center gap-2">
-            <CalendarIcon className="h-5 w-5 text-purple-500" />
-            <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+      <section className="space-y-4 animate-in fade-in slide-in-from-top-4 duration-500">
+        <header className="space-y-3">
+          {/* Title */}
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <CalendarIcon className="h-6 w-6 text-purple-400 animate-in zoom-in duration-300" />
+              <div className="absolute -inset-1 bg-purple-400/20 blur-lg rounded-full animate-pulse" />
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
               チケットカレンダー
             </h1>
           </div>
-          <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500 dark:text-gray-300">
-            <span className="text-base font-semibold text-gray-700 dark:text-gray-100">
-              {monthLabel}
+
+          {/* Month & Status */}
+          <div className="flex flex-wrap items-center gap-3 text-sm">
+            <span className="text-xl sm:text-2xl font-bold text-white">
+              {formatMonthHeading(focusDate)}
             </span>
             {lastUpdated && (
-              <span className={cn(stale ? "text-red-500" : "text-gray-500")}>
-                最終更新: {formatTimestamp(lastUpdated)}
+              <span
+                className={cn(
+                  "text-xs sm:text-sm px-2 py-1 rounded-full transition-colors duration-300",
+                  isStale
+                    ? "bg-red-500/20 text-red-300 border border-red-500/30"
+                    : "bg-gray-700/50 text-gray-300 border border-gray-600/30"
+                )}
+              >
+                {formatTimestamp(lastUpdated)}
               </span>
             )}
-            {isLoading && <span className="text-blue-400">更新中...</span>}
-            {error && <span className="text-red-500">読み込みに失敗しました</span>}
+            {isLoading && (
+              <span className="text-xs sm:text-sm text-blue-400 flex items-center gap-1.5 animate-pulse">
+                <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-ping" />
+                更新中
+              </span>
+            )}
+            {error && (
+              <span className="text-xs sm:text-sm text-red-400 px-2 py-1 bg-red-500/20 rounded-full border border-red-500/30">
+                読み込み失敗
+              </span>
+            )}
           </div>
         </header>
 
-        <div className="rounded-xl border border-purple-200/20 bg-gradient-to-br from-purple-50/50 to-purple-100/30 p-3 shadow-sm dark:border-purple-400/20 dark:from-purple-900/30 dark:to-purple-800/20">
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => handleNavigate("prev")}
-                aria-label="前へ"
-                className="border-purple-300/50 text-purple-700 hover:bg-purple-100 hover:border-purple-400 dark:border-purple-500/50 dark:text-purple-300 dark:hover:bg-purple-800/50 dark:hover:border-purple-400"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => handleNavigate("next")}
-                aria-label="次へ"
-                className="border-purple-300/50 text-purple-700 hover:bg-purple-100 hover:border-purple-400 dark:border-purple-500/50 dark:text-purple-300 dark:hover:bg-purple-800/50 dark:hover:border-purple-400"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </div>
+        {/* Controls - Single Row on Mobile */}
+        <div className="flex items-center gap-2 p-3 rounded-2xl bg-gradient-to-br from-gray-800/80 to-gray-900/80 backdrop-blur-sm border border-white/10 shadow-lg">
+          {/* Navigation */}
+          <div className="flex items-center gap-1.5">
             <Button
-              variant="outline"
-              className="flex items-center gap-2 border-purple-400/60 bg-purple-100/50 text-purple-700 hover:bg-purple-200 hover:border-purple-500 dark:border-purple-500/60 dark:bg-purple-800/40 dark:text-purple-200 dark:hover:bg-purple-700/50 dark:hover:border-purple-400"
+              variant="ghost"
+              size="icon"
+              onClick={() => handleNavigate("prev")}
+              className="h-8 w-8 sm:h-9 sm:w-9 rounded-xl bg-white/5 hover:bg-purple-400/20 border border-white/10 hover:border-purple-400/50 transition-all duration-300 hover:scale-110 active:scale-95"
+            >
+              <ChevronLeft className="h-4 w-4 text-purple-400" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => handleNavigate("next")}
+              className="h-8 w-8 sm:h-9 sm:w-9 rounded-xl bg-white/5 hover:bg-purple-400/20 border border-white/10 hover:border-purple-400/50 transition-all duration-300 hover:scale-110 active:scale-95"
+            >
+              <ChevronRight className="h-4 w-4 text-purple-400" />
+            </Button>
+            <Button
+              variant="ghost"
+              className="h-8 sm:h-9 px-3 text-xs sm:text-sm rounded-xl bg-purple-400/10 hover:bg-purple-400/20 border border-purple-400/30 hover:border-purple-400/50 text-purple-300 font-medium transition-all duration-300 hover:scale-105 active:scale-95"
               onClick={() => setFocusDate(startOfDay(new Date()))}
             >
               今日
             </Button>
-            <div className="ml-auto flex items-center gap-2 rounded-lg border border-purple-200/30 bg-white/60 px-3 py-2 dark:border-purple-500/30 dark:bg-purple-900/30">
-              <QuerySelect value={query} onChange={setQuery} />
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => refresh()}
-                className="border-purple-300/50 text-purple-700 hover:bg-purple-100 hover:border-purple-400 dark:border-purple-500/50 dark:text-purple-300 dark:hover:bg-purple-800/50 dark:hover:border-purple-400"
+          </div>
+
+          {/* Query & Refresh */}
+          <div className="ml-auto flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 hover:border-purple-400/30 transition-all duration-300">
+              <ListFilter className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-purple-400" />
+              <select
+                className="bg-transparent text-xs sm:text-sm text-white outline-none cursor-pointer font-medium"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
               >
-                <RefreshCcw className="mr-1 h-4 w-4" />
-                更新
-              </Button>
+                {queryOptions.map((option) => (
+                  <option key={option} value={option} className="bg-gray-800">
+                    {option}
+                  </option>
+                ))}
+              </select>
             </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => refresh()}
+              className="h-8 w-8 sm:h-9 sm:w-9 rounded-xl bg-white/5 hover:bg-purple-400/20 border border-white/10 hover:border-purple-400/50 transition-all duration-300 hover:scale-110 active:scale-95 hover:rotate-180"
+            >
+              <RefreshCcw className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-purple-400" />
+            </Button>
           </div>
         </div>
       </section>
@@ -246,12 +269,12 @@ function CalendarGrid({
   onSelectEvent: (isoDate: string, eventId: string) => void;
   onOpenDay: (isoDate: string) => void;
 }) {
-  const chunkSize = 7;
-  const rows = Array.from({ length: Math.ceil(cells.length / chunkSize) }, (_, i) =>
-    cells.slice(i * chunkSize, (i + 1) * chunkSize),
-  );
-
   const weekDayLabels = ["日", "月", "火", "水", "木", "金", "土"];
+  const chunkSize = 7;
+  const rows = Array.from(
+    { length: Math.ceil(cells.length / chunkSize) },
+    (_, i) => cells.slice(i * chunkSize, (i + 1) * chunkSize)
+  );
 
   return (
     <section className="rounded-3xl border border-white/10 bg-gradient-to-b from-gray-900 to-gray-800 text-white shadow-lg">
@@ -264,7 +287,10 @@ function CalendarGrid({
       </header>
       <div className="grid">
         {rows.map((row, idx) => (
-          <div key={idx} className="grid grid-cols-7 border-b border-white/5 last:border-b-0">
+          <div
+            key={idx}
+            className="grid grid-cols-7 border-b border-white/5 last:border-b-0"
+          >
             {row.map((cell) => (
               <CalendarDayCell
                 key={cell.isoDate}
@@ -286,8 +312,8 @@ function CalendarDayCell({
   onOpenDay,
 }: {
   cell: CalendarCell;
-  onSelectEvent: (iso: string, eventId: string) => void;
-  onOpenDay: (iso: string) => void;
+  onSelectEvent: (isoDate: string, eventId: string) => void;
+  onOpenDay: (isoDate: string) => void;
 }) {
   const { date, isoDate, isToday, isCurrentMonth, events } = cell;
   const dateLabel = `${date.getDate()}`;
@@ -297,43 +323,79 @@ function CalendarDayCell({
   return (
     <div
       className={cn(
-        "min-h-[104px] border-r border-white/5 p-3 text-left align-top transition",
-        isToday ? "bg-purple-400/20 shadow-inner shadow-purple-500/40" : "hover:bg-white/5",
-        !isCurrentMonth && "bg-black/10 text-gray-400",
+        "min-h-[90px] sm:min-h-[110px] border-r border-white/5 p-1.5 sm:p-3 text-left align-top transition-all duration-300",
+        isToday
+          ? "bg-purple-400/20 shadow-inner shadow-purple-500/40 relative before:absolute before:inset-0 before:bg-purple-400/10 before:animate-pulse"
+          : "hover:bg-white/5 hover:shadow-lg",
+        !isCurrentMonth && "bg-black/20 text-gray-500"
       )}
     >
-      <div className="mb-2 flex items-center justify-between text-xs">
+      {/* Date Label */}
+      <div className="mb-1.5 sm:mb-2 flex items-center justify-between">
         <span
           className={cn(
-            "font-semibold",
+            "text-xs sm:text-sm font-bold transition-all duration-300",
             isToday
-              ? "rounded-full bg-purple-400 px-2 py-0.5 text-gray-900 shadow"
-              : "text-gray-200",
+              ? "bg-purple-400 text-gray-900 px-2 py-0.5 rounded-full shadow-lg shadow-purple-400/50"
+              : isCurrentMonth
+              ? "text-white"
+              : "text-gray-500"
           )}
         >
           {dateLabel}
         </span>
+        {events.length > 0 && (
+          <span className="text-[9px] sm:text-xs text-purple-400 font-medium px-1.5 py-0.5 bg-purple-400/10 rounded-full border border-purple-400/20">
+            {events.length}
+          </span>
+        )}
       </div>
-      <div className="flex flex-col gap-1">
-        {visibleEvents.map((event) => (
+
+      {/* Events */}
+      <div className="flex flex-col gap-0.5 sm:gap-1">
+        {visibleEvents.map((event, idx) => (
           <button
             key={event.id}
             className={cn(
-              "w-full rounded-lg border border-white/20 bg-white/10 px-2 py-1 text-left text-xs font-medium text-white/90 transition hover:border-purple-400 hover:bg-purple-400/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-300",
-              event.needsReview && "border-amber-300 bg-amber-400/20 text-amber-100 hover:bg-amber-300/30",
+              "w-full rounded-md sm:rounded-lg px-1.5 sm:px-2 py-0.5 sm:py-1 text-left transition-all duration-300 hover:scale-[1.02] active:scale-95",
+              "border bg-white/5 backdrop-blur-sm",
+              event.needsReview
+                ? "border-amber-400/40 bg-amber-400/10 hover:bg-amber-400/20 hover:border-amber-400/60 hover:shadow-lg hover:shadow-amber-400/20"
+                : "border-white/10 hover:border-purple-400/60 hover:bg-purple-400/10 hover:shadow-lg hover:shadow-purple-400/20"
             )}
             onClick={() => onSelectEvent(isoDate, event.id)}
           >
-            <span className="mr-1 inline-block w-2 rounded-full bg-purple-400 align-middle" aria-hidden />
-            <span className="mr-1 text-purple-200">{event.timeLabel}</span>
-            <span className="truncate">{event.title}</span>
+            <div className="flex items-center gap-1">
+              {/* Indicator Dot */}
+              <span
+                className={cn(
+                  "w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full flex-shrink-0",
+                  event.needsReview ? "bg-amber-400" : "bg-purple-400"
+                )}
+              />
+              {/* Time - Always visible */}
+              <span
+                className={cn(
+                  "text-[9px] sm:text-xs font-bold flex-shrink-0",
+                  event.needsReview ? "text-amber-300" : "text-purple-300"
+                )}
+              >
+                {event.timeLabel}
+              </span>
+              {/* Title - Hidden on mobile, visible on desktop */}
+              <span className="hidden sm:block text-xs text-white/90 truncate font-medium">
+                {event.title}
+              </span>
+            </div>
           </button>
         ))}
+
+        {/* Overflow Button */}
         {overflowCount > 0 && (
           <Button
             variant="ghost"
             size="sm"
-            className="justify-start px-2 text-xs text-purple-200 hover:text-purple-100"
+            className="justify-start px-1.5 sm:px-2 h-auto py-0.5 text-[9px] sm:text-xs text-purple-300 hover:text-purple-200 hover:bg-purple-400/10 transition-all duration-300 hover:scale-105"
             onClick={() => onOpenDay(isoDate)}
           >
             +{overflowCount} 件
@@ -383,15 +445,6 @@ function buildRange(base: Date) {
   };
 }
 
-function formatMonthHeading(date: Date) {
-  return new Intl.DateTimeFormat("ja-JP", {
-    year: "numeric",
-    month: "long",
-  }).format(date);
-}
-
-function addMonths(date: Date, months: number): Date {
-  const next = new Date(date);
-  next.setMonth(next.getMonth() + months);
-  return startOfDay(next);
+function daisyIsSameMonth(a: Date, b: Date) {
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth();
 }
