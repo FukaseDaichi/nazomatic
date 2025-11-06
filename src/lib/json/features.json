@@ -35,6 +35,12 @@
       "title": "辞書検索",
       "description": "アナグラムが解けない！クロスワードでここだけわからない！そんなあなたに！",
       "path": "/anagram"
+    },
+    {
+      "iconName": "Calendar",
+      "title": "謎チケ売ります",
+      "description": "謎チケ売りますのチケット情報をカレンダー形式で表示！",
+      "path": "/calendar"
     }
   ]
 }
