@@ -16,7 +16,7 @@ import type { RealtimeApiErrorResponse } from "@/types/realtime";
 
 const DEFAULT_LIMIT = 20;
 const MAX_LIMIT = 100;
-const NEEDS_REVIEW_REASON = "no_event_time";
+const SKIP_REASON_NO_EVENT_TIME = "missing_event_time";
 
 export const runtime = "nodejs";
 
@@ -34,7 +34,7 @@ type RegisterSkippedItem = {
 
 type RegisterEventSummary = {
   postId: string;
-  eventTime: string | null;
+  eventTime: string;
   confidence: number;
   needsReview: boolean;
 };
@@ -76,7 +76,7 @@ export async function POST(request: Request) {
       });
 
       if (!event.eventTime) {
-        skipped.push({ postId: event.postId, reason: NEEDS_REVIEW_REASON });
+        skipped.push({ postId: event.postId, reason: SKIP_REASON_NO_EVENT_TIME });
         continue;
       }
 

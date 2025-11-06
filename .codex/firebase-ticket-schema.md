@@ -18,7 +18,7 @@
 | `authorName`              | string                      | ✅   | 投稿者表示名。スクリーンネームの fallback を許容。                                                      |
 | `authorImageUrl`          | string \| null              | ✅   | 投稿者アイコン URL。                                                                                    |
 | `rawPostText`             | string                      | ✅   | 抽出時の本文全文（正規化根拠の保持用）。                                                                |
-| `eventTime`               | Firestore Timestamp \| null | ✅   | 取引日時。抽出失敗時は `null` とし `needsReview=true`。                                                 |
+| `eventTime`               | Firestore Timestamp         | ✅   | 取引日時。抽出できないポストは `missing_event_time` として登録対象外。                                  |
 | `eventDateResolution`     | string                      | ✅   | `exact` / `date_only` / `inferred` / `unresolved`。`chrono-node` の確度で判定。                           |
 | `ticketTitle`             | string \| null              | 任意 | 公演名・チケット種別。ハッシュタグや本文からの推定。                                                     |
 | `category`                | string                      | ✅   | `sell` / `buy` / `exchange` / `unknown`。                                                               |
@@ -31,7 +31,7 @@
 | `normalizationEngine`     | string                      | ✅   | 適用したルールバージョン（例 `ruleset-v2025-11`）。                                                     |
 | `confidence`              | number                      | ✅   | 0.0〜1.0。日時・価格・数量などの抽出結果から計算。                                                      |
 | `notes`                   | string \| null              | 任意 | 抽出根拠（マッチしたテキスト等）や補足。                                                                |
-| `needsReview`             | boolean                     | ✅   | 手動レビューが必要か。`eventTime` 欠落や `confidence < 0.6` で `true`。                                 |
+| `needsReview`             | boolean                     | ✅   | 手動レビューが必要か。`confidence < 0.6` など低信頼な抽出結果で `true`。                              |
 | `reviewStatus`            | string                      | ✅   | `pending` / `approved` / `rejected`。                                                                   |
 | `lastReviewedAt`          | Firestore Timestamp \| null | 任意 | レビュー最終日時。                                                                                      |
 | `diagnostics`（オプション） | map                        | 任意 | 開発・監視用。`matchedDateText`, `matchedPriceText` などを格納する場合に利用。                           |

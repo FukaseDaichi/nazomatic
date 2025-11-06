@@ -25,7 +25,7 @@
     "updated": 2,
     "skipped": [
       { "postId": "18345...", "reason": "already_exists" },
-      { "postId": "18346...", "reason": "no_event_time" }
+      { "postId": "18346...", "reason": "missing_event_time" }
     ],
     "events": [
       {
@@ -71,9 +71,9 @@
          createdAt: post.createdAt,
          authorId: post.user.id,
          authorName: post.user.name,
-        authorImageUrl: post.user.profileImage,
+         authorImageUrl: post.user.profileImage,
          rawPostText: post.displayText,
-         eventTime: dateResult.date.toISOString(),
+         eventTime: dateResult.date,
          eventDateResolution: dateResult.resolution, // "exact" | "date_only" | "inferred"
          ticketTitle: dateResult.context?.title ?? null,
          category,
@@ -123,11 +123,12 @@
    - `dryRun` false の場合のみ実行。
    - 既存ドキュメント判定は `postId` で実施。存在すればフィールド更新、なければ新規追加。
    - バッチ書き込み（`WriteBatch`）で 500 件単位にコミット。
-   - 書き込み前に `eventTime` が `null` のイベントは `skipped` に計上し保存しない（レビュー対象のみ別キューへ送る案も可）。
+   - 書き込み前に `eventTime` が `null` のイベントは `skipped`（理由 `missing_event_time`）に計上し、Firestore へは保存しない。レビュー対象にしたい場合は別キューで管理。
 
 5. **レスポンス構築**
    - 実際に書き込んだ件数・スキップ理由を集計。
-   - `dryRun=true` の場合は `inserted`/`updated` を 0 とし、解析した `events` 配列をすべて返却。
+   - `events` 配列には保存対象となったイベントのみを含める（`eventTime` は常に ISO8601 文字列）。
+   - `dryRun=true` の場合は `inserted`/`updated` を 0 とし、保存予定イベントのみを返却。
 
 ## 4. Firestore / Cloud Functions 実装イメージ
 ```ts

@@ -54,7 +54,7 @@ Scheduler ──▶ Scraper (fetchYahooRealtime) ──▶ Raw Post Queue ──
 
 ### 5.2 エラーハンドリングとレビュー
 
-- `chrono-node` が日時を特定できない場合は `eventTime=null` とし、`eventDateResolution="unresolved"` で保存。レビュー UI で手動補正。
+- `chrono-node` が日時を特定できない場合は保存対象外として `missing_event_time` 理由でスキップし、別途レビューキューに回す（Firestore には登録しない）。
 - 正規表現で複数候補が出た場合は最も高いスコアを採用し、残りは `notes` に記録して参考値にする。
 - 日付と時間が文中に複数存在するケース（例: 開場／開演）はヒューリスティクスで優先順位を定義（「開演」>「開場」>その他）。
 
