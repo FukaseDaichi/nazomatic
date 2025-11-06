@@ -19,7 +19,9 @@ export async function GET(request: Request) {
 
   const rawQuery = searchParams.get("query") ?? undefined;
   const page = parsePositiveInteger(searchParams.get("page"), "page");
-  const limit = clampLimit(parsePositiveInteger(searchParams.get("limit"), "limit"));
+  const limit = clampLimit(
+    parsePositiveInteger(searchParams.get("limit"), "limit")
+  );
 
   try {
     const data = await fetchYahooRealtimePosts({
@@ -39,7 +41,10 @@ export async function GET(request: Request) {
   }
 }
 
-function parsePositiveInteger(value: string | null, parameterName: string): number | null {
+function parsePositiveInteger(
+  value: string | null,
+  parameterName: string
+): number | null {
   if (!value) {
     return null;
   }
@@ -50,7 +55,7 @@ function parsePositiveInteger(value: string | null, parameterName: string): numb
         error: "Invalid parameter",
         details: `${parameterName} must be a positive integer value`,
       },
-      { status: 400 },
+      { status: 400 }
     );
   }
   return Math.floor(parsed);
@@ -70,7 +75,7 @@ function handleError(error: unknown) {
         error: "Upstream request failed",
         details: error.message,
       },
-      { status: error.status },
+      { status: error.status }
     );
   }
 
@@ -80,7 +85,7 @@ function handleError(error: unknown) {
         error: "Upstream response parsing failed",
         details: error.message,
       },
-      { status: 502 },
+      { status: 502 }
     );
   }
 
@@ -94,6 +99,6 @@ function handleError(error: unknown) {
     {
       error: "Internal server error",
     },
-    { status: 500 },
+    { status: 500 }
   );
 }

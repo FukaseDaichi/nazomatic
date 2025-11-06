@@ -71,7 +71,7 @@
          createdAt: post.createdAt,
          authorId: post.user.id,
          authorName: post.user.name,
-         authorImageUr: post.user.profileImage,
+        authorImageUrl: post.user.profileImage,
          rawPostText: post.displayText,
          eventTime: dateResult.date.toISOString(),
          eventDateResolution: dateResult.resolution, // "exact" | "date_only" | "inferred"

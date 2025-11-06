@@ -90,7 +90,7 @@ Scheduler ──▶ Scraper (fetchYahooRealtime) ──▶ Raw Post Queue ──
 - **BigQuery**: 長期アーカイブや BI。リアルタイム用途には遅いが集計に向く。バッチで同期する構成がよい。
 - **推奨構成（初期）**: Firestore で運用スピード重視 + Cloud Storage に Raw HTML/JSON を保存（監査・再処理用）→ 必要に応じて Cloud SQL へ移行できるようリポジトリ層を抽象化。
 - **インデックス案**: `collection: events` に `eventTime`、`query`, `category`, `needsReview` の複合インデックス。期間検索（週/月）とクエリフィルタを両立。
-- **フィールド仕様**: Firestore で保持するフィールド詳細（`postId`, `postURL`, `hashtags`, `createdAt`, `authorId`, `authorName`, `authorImageUr`, `rawPostText`, `eventTime` など）は `.codex/firebase-ticket-schema.md` に集約。
+- **フィールド仕様**: Firestore で保持するフィールド詳細（`postId`, `postURL`, `hashtags`, `createdAt`, `authorId`, `authorName`, `authorImageUrl`, `rawPostText`, `eventTime` など）は `.codex/firebase-ticket-schema.md` に集約。
 
 ## 7. API / バッチ設計
 
