@@ -25,4 +25,4 @@ jobs:
             -X POST "$BASE_URL/api/internal/realtime/register" \
             -H "Authorization: Bearer $API_TOKEN" \
             -H "Content-Type: application/json" \
-            -d '{"query":"#謎チケ売ります","limit":100,"dryRun":false}'
+            -d '{"query":"#謎チケ売ります","limit":40,"dryRun":false}'

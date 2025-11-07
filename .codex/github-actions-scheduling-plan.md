@@ -26,7 +26,7 @@
 
 - トリガー: `schedule: cron: "0 * * * *"`（毎時 00 分）。
 - ジョブ: Ubuntu runner
-  1. `curl -X POST "$REALTIME_API_BASE_URL/api/internal/realtime/register" -H "Authorization: Bearer $REALTIME_API_TOKEN" -H "Content-Type: application/json" -d '{"query":"#謎チケ売ります","limit":100,"dryRun":false}'`
+  1. `curl -X POST "$REALTIME_API_BASE_URL/api/internal/realtime/register" -H "Authorization: Bearer $REALTIME_API_TOKEN" -H "Content-Type: application/json" -d '{"query":"#謎チケ売ります","limit":40,"dryRun":false}'`
 - `timeout-minutes` で上限（例 5 分）を設定。
 - 再実行戦略: GitHub Actions 標準の再試行またはワークフロー内で簡易リトライ。
 
