@@ -1,5 +1,5 @@
 import { ja } from "chrono-node";
-import type { ParsingOption } from "chrono-node";
+import type { ParsedResult, ParsingOption } from "chrono-node";
 
 import type { RealtimeEventDateResolution } from "@/types/realtimeEvent";
 
@@ -72,7 +72,7 @@ function determineResolution(flags: { hasDay: boolean; hasTime: boolean; hasMont
   return "unresolved";
 }
 
-function buildNotes(result: chrono.ParsedResult): string | null {
+function buildNotes(result: ParsedResult): string | null {
   const fragments: string[] = [];
   const tags = Object.keys(result.tags ?? {});
   if (tags.length) {

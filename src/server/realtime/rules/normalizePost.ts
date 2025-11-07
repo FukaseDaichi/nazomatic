@@ -78,7 +78,7 @@ export function normalizePost(post: RealtimePost, context: NormalizePostContext)
       hasTime: Boolean(dateResult?.hasTime),
       matchedPriceText: priceResult?.matchedText,
       matchedQuantityText: quantityResult?.matchedText,
-      matchedLocationText: locationResult?.matchedText ?? null,
+      matchedLocationText: locationResult?.matchedText ?? undefined,
     },
   };
 }
