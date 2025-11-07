@@ -125,7 +125,7 @@ export function EventDetailDialog({
                       }
                       className="border-white/40 text-xs text-white"
                     >
-                      信頼度 {Math.round(selectedEvent.confidence * 100)}%
+                      正確度 {Math.round(selectedEvent.confidence * 100)}%
                     </Badge>
                   </div>
                   <h3 className="text-base font-bold leading-snug">

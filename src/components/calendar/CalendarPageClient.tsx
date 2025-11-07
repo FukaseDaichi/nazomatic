@@ -27,6 +27,7 @@ import type { CalendarEvent } from "@/types/calendar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { EventDetailDialog } from "@/components/calendar/EventDetailDialog";
+import { HelpTooltip } from "@/components/calendar/HelpTooltip";
 
 const DEFAULT_QUERY = "#謎チケ売ります";
 const HOUR_MS = 60 * 60 * 1000;
@@ -143,8 +144,44 @@ export default function CalendarPageClient() {
               <div className="absolute -inset-1 bg-purple-400/20 blur-lg rounded-full animate-pulse" />
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-              チケットカレンダー
+              謎チケ売りますカレンダー
             </h1>
+            <HelpTooltip
+              content={
+                <div className="text-left">
+                  <h2 className="text-xl font-bold mb-1 text-purple-400">
+                    注意事項
+                  </h2>
+                  <p className="mb-2 text-gray-300">
+                    謎チケ売りますカレンダーは、X（旧Twitter）の「#謎チケ売ります」ハッシュタグからイベント情報を収集して表示しています。
+                  </p>
+                  <ul className="space-y-2 text-sm text-gray-300">
+                    <li className="flex items-start">
+                      <span className="inline-flex items-center justify-center w-6 h-6 mr-2 bg-purple-500 rounded-full flex-shrink-0 text-xs">
+                        1
+                      </span>
+                      <div>
+                        <p className="font-semibold mb-1">内容の間違い</p>
+                        <p className="text-gray-400">
+                          AIが情報精査しています。正確な内容は元のポストを参照して下さい。
+                        </p>
+                      </div>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="inline-flex items-center justify-center w-6 h-6 mr-2 bg-purple-500 rounded-full flex-shrink-0 text-xs">
+                        2
+                      </span>
+                      <div>
+                        <p className="font-semibold mb-1">正確度</p>
+                        <p className="text-gray-400">
+                          情報を精査したAIへの信頼です。ユーザーには何も関係ありません。
+                        </p>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              }
+            />
           </div>
 
           {/* Month & Status */}
