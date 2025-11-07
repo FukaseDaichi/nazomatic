@@ -25,6 +25,12 @@
 - Tailwind 設定 (`tailwind.config.ts`): ダークモード class、2xl=1400px コンテナ、accordion アニメーションの拡張。
 - `globals.css` は Tailwind のベースのみ適用。レイアウトは各コンポーネント内で完結。
 - `components.json` / `src/components/ui/*` は shadcn CLI で生成された UI プリミティブ群。
+- **内部 API / GitHub Actions 用シークレット**
+  - Next.js （Vercel）実行環境に `REALTIME_INTERNAL_API_TOKEN` を設定。`/api/internal/realtime/register` と `/api/internal/realtime/prune` は `Authorization: Bearer <token>` が一致しない場合 401 を返す。
+  - GitHub Actions 側では以下の Secrets を定義する。
+    - `REALTIME_API_BASE_URL`: デプロイ済みアプリのベース URL（例 `https://nazomatic.vercel.app`）。
+    - `REALTIME_API_TOKEN`: `REALTIME_INTERNAL_API_TOKEN` と同値のトークン。ワークフローから内部 API を叩く際に使用。
+  - 追加のクエリやレート調整が必要な場合はワークフロー側の JSON ペイロードを更新することで対応する。
 - 公開辞書ファイルは `public/dic/*.dic` に配置。Next.js の静的アセットとして fetch される。
 - `robots.ts` で `/secret/` 配下をクロール禁止に設定。
 

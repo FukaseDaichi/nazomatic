@@ -50,6 +50,8 @@ type RegisterResponse = {
 
 export async function POST(request: Request) {
   try {
+    enforceAuthorization(request);
+
     const body = await parseBody(request);
     const params = validateBody(body);
     const capturedAt = new Date();
@@ -117,6 +119,25 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     return handleError(error);
+  }
+}
+
+function enforceAuthorization(request: Request) {
+  const expected = process.env.REALTIME_INTERNAL_API_TOKEN;
+  if (!expected) {
+    console.error("REALTIME_INTERNAL_API_TOKEN is not set");
+    throw NextResponse.json<RealtimeApiErrorResponse>(
+      { error: "Server configuration error" },
+      { status: 500 },
+    );
+  }
+
+  const header = request.headers.get("authorization");
+  if (!header || header !== `Bearer ${expected}`) {
+    throw NextResponse.json<RealtimeApiErrorResponse>(
+      { error: "Unauthorized" },
+      { status: 401 },
+    );
   }
 }
 
