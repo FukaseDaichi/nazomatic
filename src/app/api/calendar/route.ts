@@ -20,7 +20,7 @@ export async function GET(request: Request) {
     const toParam = searchParams.get("to");
 
     const rangeDays = clampRangeDays(rangeDaysParam);
-    const { from, to, inclusiveTo } = buildDateRange({ fromParam, toParam, rangeDays });
+    const { from, inclusiveTo } = buildDateRange({ fromParam, toParam, rangeDays });
 
     const snapshot = await buildFirestoreQuery({ query, from, inclusiveTo }).limit(MAX_RESULTS).get();
 
