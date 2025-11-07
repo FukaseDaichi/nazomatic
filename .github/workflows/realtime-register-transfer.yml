@@ -3,7 +3,7 @@ name: Realtime Register
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 * * * *" # Every hour at minute 0
+    - cron: "15 * * * *" # Every hour at minute 15
 
 jobs:
   trigger-register:
@@ -25,4 +25,4 @@ jobs:
             -X POST "$BASE_URL/api/internal/realtime/register" \
             -H "Authorization: Bearer $API_TOKEN" \
             -H "Content-Type: application/json" \
-            -d '{"query":"#謎チケ売ります","limit":40,"dryRun":false}'
+            -d '{"query":"#謎チケ譲ります","limit":40,"dryRun":false}'

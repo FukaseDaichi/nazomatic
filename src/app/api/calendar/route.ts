@@ -10,6 +10,7 @@ const MAX_RANGE_DAYS = 60;
 const MAX_RESULTS = 500;
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   try {

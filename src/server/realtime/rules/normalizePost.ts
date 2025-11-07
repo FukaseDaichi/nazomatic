@@ -24,8 +24,15 @@ const NEEDS_REVIEW_THRESHOLD = 0.6;
 export function normalizePost(post: RealtimePost, context: NormalizePostContext): NormalizedRealtimeEventResult {
   const baseCreatedAt = safeParseDate(post.createdAt) ?? context.capturedAt;
   const text = post.textPlain || post.text || "";
+  const baseReference = toJstReference(baseCreatedAt);
 
-  const dateResult = parseJapaneseDate(text, { referenceDate: baseCreatedAt });
+  const dateResultRaw = parseJapaneseDate(text, { referenceDate: baseReference });
+  const dateResult = dateResultRaw
+    ? {
+        ...dateResultRaw,
+        date: convertJstDateToUtc(dateResultRaw.date),
+      }
+    : null;
   const priceResult = extractPrice(text);
   const quantityResult = extractQuantity(text);
   const categoryResult = inferCategory(text);
@@ -89,6 +96,18 @@ function safeParseDate(value: string | null | undefined): Date | null {
   }
   const parsed = new Date(value);
   return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
+const JST_OFFSET_MINUTES = -9 * 60;
+
+function toJstReference(date: Date): Date {
+  return new Date(date.getTime() - JST_OFFSET_MINUTES * 60 * 1000);
+}
+
+function convertJstDateToUtc(date: Date): Date {
+  const envOffset = date.getTimezoneOffset();
+  const diffMinutes = JST_OFFSET_MINUTES - envOffset;
+  return new Date(date.getTime() + diffMinutes * 60 * 1000);
 }
 
 function buildNotes({

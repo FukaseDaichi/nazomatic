@@ -7,16 +7,15 @@ import {
   YahooRealtimeRequestError,
   fetchYahooRealtimePosts,
 } from "@/server/realtime/fetchYahooRealtime";
-import {
-  RULESET_VERSION,
-  normalizePost,
-} from "@/server/realtime/rules/normalizePost";
+import { RULESET_VERSION, normalizePost } from "@/server/realtime/rules/normalizePost";
 import type { NormalizedRealtimeEvent } from "@/types/realtimeEvent";
 import type { RealtimeApiErrorResponse } from "@/types/realtime";
 
 const DEFAULT_LIMIT = 20;
 const MAX_LIMIT = 100;
 const SKIP_REASON_NO_EVENT_TIME = "missing_event_time";
+const SKIP_REASON_DUPLICATE = "already_exists";
+const EXISTING_CHUNK_SIZE = 450;
 
 export const runtime = "nodejs";
 
@@ -54,7 +53,6 @@ export async function POST(request: Request) {
 
     const body = await parseBody(request);
     const params = validateBody(body);
-    const capturedAt = new Date();
 
     const fetchLimit = Math.min(params.limit, PAGE_SIZE);
     const { posts } = await fetchYahooRealtimePosts({
@@ -63,63 +61,117 @@ export async function POST(request: Request) {
     });
 
     const filteredPosts = filterBySinceId(posts, params.sinceId);
-    const events: RegisterEventSummary[] = [];
     const skipped: RegisterSkippedItem[] = [];
-    let inserted = 0;
-    let updated = 0;
 
-    const batch = firestore.batch();
-    const collection = firestore.collection("realtimeEvents");
+    const normalizedEvents: Array<{
+      event: NormalizedRealtimeEvent;
+      summary: RegisterEventSummary;
+    }> = [];
+
+    const capturedAt = new Date();
 
     for (const post of filteredPosts) {
-      const { event } = normalizePost(post, {
-        query: params.query,
-        capturedAt,
-      });
-
+      const { event } = normalizePost(post, { query: params.query, capturedAt });
       if (!event.eventTime) {
         skipped.push({ postId: event.postId, reason: SKIP_REASON_NO_EVENT_TIME });
         continue;
       }
 
-      events.push({
-        postId: event.postId,
-        eventTime: event.eventTime.toISOString(),
-        confidence: event.confidence,
-        needsReview: event.needsReview,
+      normalizedEvents.push({
+        event,
+        summary: {
+          postId: event.postId,
+          eventTime: event.eventTime.toISOString(),
+          confidence: event.confidence,
+          needsReview: event.needsReview,
+        },
       });
-
-      if (params.dryRun) {
-        continue;
-      }
-
-      const docId = `${event.postId}:${RULESET_VERSION}`;
-      const docRef = collection.doc(docId);
-      const existingSnapshot = await docRef.get();
-      if (existingSnapshot.exists) {
-        updated += 1;
-      } else {
-        inserted += 1;
-      }
-
-      batch.set(docRef, convertEventToFirestoreData(event), { merge: true });
     }
 
-    if (!params.dryRun && events.length > 0) {
+    if (normalizedEvents.length === 0) {
+      return NextResponse.json<RegisterResponse>({
+        query: params.query,
+        processed: filteredPosts.length,
+        inserted: 0,
+        updated: 0,
+        skipped,
+        events: [],
+      });
+    }
+
+    if (params.dryRun) {
+      return NextResponse.json<RegisterResponse>({
+        query: params.query,
+        processed: filteredPosts.length,
+        inserted: 0,
+        updated: 0,
+        skipped,
+        events: normalizedEvents.map((entry) => entry.summary),
+      });
+    }
+
+    const collection = firestore.collection("realtimeEvents");
+    const docIds = normalizedEvents.map(({ event }) => buildDocId(event.postId));
+    const existingIds = await fetchExistingDocumentIds(collection, docIds);
+
+    const batch = firestore.batch();
+    const events: RegisterEventSummary[] = [];
+    let inserted = 0;
+
+    normalizedEvents.forEach(({ event, summary }, index) => {
+      const docId = docIds[index];
+      if (existingIds.has(docId)) {
+        skipped.push({ postId: event.postId, reason: SKIP_REASON_DUPLICATE });
+        return;
+      }
+
+      events.push(summary);
+      inserted += 1;
+      batch.set(collection.doc(docId), convertEventToFirestoreData(event));
+    });
+
+    if (inserted > 0) {
       await batch.commit();
     }
 
     return NextResponse.json<RegisterResponse>({
       query: params.query,
       processed: filteredPosts.length,
-      inserted: params.dryRun ? 0 : inserted,
-      updated: params.dryRun ? 0 : updated,
+      inserted,
+      updated: 0,
       skipped,
       events,
     });
   } catch (error) {
     return handleError(error);
   }
+}
+
+function buildDocId(postId: string) {
+  return `${postId}:${RULESET_VERSION}`;
+}
+
+async function fetchExistingDocumentIds(
+  collection: FirebaseFirestore.CollectionReference,
+  docIds: string[],
+) {
+  const existing = new Set<string>();
+
+  for (let i = 0; i < docIds.length; i += EXISTING_CHUNK_SIZE) {
+    const chunk = docIds.slice(i, i + EXISTING_CHUNK_SIZE);
+    if (chunk.length === 0) {
+      continue;
+    }
+    const refs = chunk.map((id) => collection.doc(id));
+    const snapshots = await firestore.getAll(...refs);
+    snapshots.forEach((snapshot) => {
+      if (snapshot.exists) {
+        existing.add(snapshot.id);
+      }
+    });
+  }
+
+  return existing;
 }
 
 function enforceAuthorization(request: Request) {
@@ -147,7 +199,7 @@ async function parseBody(request: Request) {
   } catch {
     throw NextResponse.json<RealtimeApiErrorResponse>(
       { error: "Invalid JSON body" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 }
@@ -156,7 +208,7 @@ function validateBody(body: unknown): RegisterRequest {
   if (!body || typeof body !== "object") {
     throw NextResponse.json<RealtimeApiErrorResponse>(
       { error: "Request body must be an object" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -164,7 +216,7 @@ function validateBody(body: unknown): RegisterRequest {
   if (!query) {
     throw NextResponse.json<RealtimeApiErrorResponse>(
       { error: "query is required" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -173,7 +225,7 @@ function validateBody(body: unknown): RegisterRequest {
   if (sinceId && !/^[0-9]+$/.test(sinceId)) {
     throw NextResponse.json<RealtimeApiErrorResponse>(
       { error: "sinceId must be a numeric string" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -218,7 +270,7 @@ function clampLimit(limit: number): number {
 
 function filterBySinceId(
   posts: Awaited<ReturnType<typeof fetchYahooRealtimePosts>>["posts"],
-  sinceId?: string
+  sinceId?: string,
 ) {
   if (!sinceId) {
     return posts;
@@ -274,7 +326,7 @@ function handleError(error: unknown) {
         error: "Upstream request failed",
         details: error.message,
       },
-      { status: error.status }
+      { status: error.status },
     );
   }
 
@@ -284,15 +336,16 @@ function handleError(error: unknown) {
         error: "Upstream response parsing failed",
         details: error.message,
       },
-      { status: 502 }
+      { status: 502 },
     );
   }
 
   console.error("Unexpected error while registering realtime posts", error);
+
   return NextResponse.json<RealtimeApiErrorResponse>(
     {
       error: "Internal server error",
     },
-    { status: 500 }
+    { status: 500 },
   );
 }

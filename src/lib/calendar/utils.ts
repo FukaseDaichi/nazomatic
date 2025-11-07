@@ -69,6 +69,7 @@ export function formatTime(date: Date): string {
   return new Intl.DateTimeFormat("ja-JP", {
     hour: "2-digit",
     minute: "2-digit",
+    timeZone: "Asia/Tokyo",
   }).format(date);
 }
 
@@ -79,6 +80,7 @@ export function formatTimestamp(date: Date): string {
     day: "2-digit",
     hour: "2-digit",
     minute: "2-digit",
+    timeZone: "Asia/Tokyo",
   }).format(date);
 }
 

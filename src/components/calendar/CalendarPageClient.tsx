@@ -30,7 +30,7 @@ import { EventDetailDialog } from "@/components/calendar/EventDetailDialog";
 
 const DEFAULT_QUERY = "#謎チケ売ります";
 const HOUR_MS = 60 * 60 * 1000;
-const queryOptions = [DEFAULT_QUERY, "#譲渡", "#交換希望"];
+const queryOptions = [DEFAULT_QUERY, "#謎チケ譲ります"];
 
 interface CalendarCell {
   isoDate: string;
@@ -366,10 +366,10 @@ function CalendarDayCell({
             onClick={() => onSelectEvent(isoDate, event.id)}
           >
             <div className="flex items-center gap-1">
-              {/* Indicator Dot */}
+              {/* Indicator Dot - Hidden on mobile, visible on desktop*/}
               <span
                 className={cn(
-                  "w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full flex-shrink-0",
+                  "hidden sm:block w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full flex-shrink-0",
                   event.needsReview ? "bg-amber-400" : "bg-purple-400"
                 )}
               />
