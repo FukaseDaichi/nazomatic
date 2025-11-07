@@ -62,7 +62,7 @@ export function EventDetailDialog({
           </header>
 
           {/* Event Tabs - Horizontal Scroll */}
-          <div className="shrink-0 border-b border-white/10 bg-gray-900/30">
+          <div className="shrink-0 border-b border-white/10 bg-gray-900/30 w-[95vw] max-w-md ">
             <div className="flex gap-1.5 overflow-x-auto px-3 py-2 scrollbar-hide">
               {events.map((event) => (
                 <button
