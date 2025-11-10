@@ -15,7 +15,9 @@ const DEFAULT_LIMIT = 20;
 const MAX_LIMIT = 100;
 const SKIP_REASON_NO_EVENT_TIME = "missing_event_time";
 const SKIP_REASON_DUPLICATE = "already_exists";
+const SKIP_REASON_EVENT_TIME_TOO_LATE = "event_time_too_late";
 const EXISTING_CHUNK_SIZE = 450;
+const MAX_EVENT_LEAD_TIME_MS = 24 * 60 * 60 * 1000;
 
 export const runtime = "nodejs";
 
@@ -74,6 +76,11 @@ export async function POST(request: Request) {
       const { event } = normalizePost(post, { query: params.query, capturedAt });
       if (!event.eventTime) {
         skipped.push({ postId: event.postId, reason: SKIP_REASON_NO_EVENT_TIME });
+        continue;
+      }
+
+      if (event.eventTime.getTime() - capturedAt.getTime() >= MAX_EVENT_LEAD_TIME_MS) {
+        skipped.push({ postId: event.postId, reason: SKIP_REASON_EVENT_TIME_TOO_LATE });
         continue;
       }
 
