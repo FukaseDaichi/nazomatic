@@ -36,6 +36,9 @@ export function EventDetailDialog({
   const selectedEvent = selectedEventId
     ? eventMap.get(selectedEventId) ?? null
     : null;
+  const authorProfileUrl = selectedEvent
+    ? buildXProfileUrl(selectedEvent)
+    : null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -87,22 +90,21 @@ export function EventDetailDialog({
               <article className="space-y-3">
                 {/* Author Section with Avatar */}
                 <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3">
-                  <div className="relative h-12 w-12 shrink-0">
-                    {selectedEvent.author.imageUrl ? (
-                      <Image
-                        src={selectedEvent.author.imageUrl}
-                        alt={selectedEvent.author.name}
-                        fill
-                        unoptimized
-                        className="rounded-full border-2 border-purple-400 object-cover shadow-lg animate-in fade-in zoom-in duration-300"
-                      />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center rounded-full border-2 border-purple-400 bg-gradient-to-br from-purple-400 to-purple-600 text-lg font-bold text-white shadow-lg animate-in fade-in zoom-in duration-300">
-                        {selectedEvent.author.name?.[0] || "?"}
-                      </div>
-                    )}
-                    <div className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full border-2 border-gray-900 bg-purple-400 animate-pulse" />
-                  </div>
+                  {authorProfileUrl ? (
+                    <a
+                      href={authorProfileUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex shrink-0 rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400"
+                      aria-label={`${
+                        selectedEvent.author.name || "Xユーザー"
+                      }のプロフィールを開く`}
+                    >
+                      <AuthorAvatar author={selectedEvent.author} />
+                    </a>
+                  ) : (
+                    <AuthorAvatar author={selectedEvent.author} />
+                  )}
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-semibold">
                       {selectedEvent.author.name || "不明"}
@@ -132,11 +134,30 @@ export function EventDetailDialog({
                     {selectedEvent.ticketTitle || deriveTitle(selectedEvent)}
                   </h3>
                   {selectedEvent.hashtags.length > 0 && (
-                    <p className="text-xs text-purple-300">
-                      {selectedEvent.hashtags
-                        .map((tag) => `#${tag.replace(/^#/, "")}`)
-                        .join(" ")}
-                    </p>
+                    <div className="flex flex-wrap gap-1 text-xs text-purple-300">
+                      {selectedEvent.hashtags.map((tag, index) => {
+                        const normalizedTag = normalizeHashtag(tag);
+                        const hashtagUrl = buildXHashtagSearchUrl(tag);
+                        if (!normalizedTag) {
+                          return null;
+                        }
+                        return hashtagUrl ? (
+                          <a
+                            key={`${normalizedTag}-${index}`}
+                            href={hashtagUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="rounded px-1 py-0.5 transition hover:bg-purple-400/20 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400"
+                          >
+                            #{normalizedTag}
+                          </a>
+                        ) : (
+                          <span key={`${normalizedTag}-${index}`}>
+                            #{normalizedTag}
+                          </span>
+                        );
+                      })}
+                    </div>
                   )}
                 </div>
 
@@ -287,4 +308,76 @@ function deriveTitle(event: CalendarEvent): string {
     return event.hashtags[0].replace(/^#/, "");
   }
   return event.rawPostText.slice(0, 18) || "イベント";
+}
+
+function AuthorAvatar({ author }: { author: CalendarEvent["author"] }) {
+  return (
+    <div className="relative h-12 w-12 shrink-0">
+      {author.imageUrl ? (
+        <Image
+          src={author.imageUrl}
+          alt={author.name}
+          fill
+          unoptimized
+          className="rounded-full border-2 border-purple-400 object-cover shadow-lg animate-in fade-in zoom-in duration-300"
+        />
+      ) : (
+        <div className="flex h-full w-full items-center justify-center rounded-full border-2 border-purple-400 bg-gradient-to-br from-purple-400 to-purple-600 text-lg font-bold text-white shadow-lg animate-in fade-in zoom-in duration-300">
+          {author.name?.[0] || "?"}
+        </div>
+      )}
+      <div className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full border-2 border-gray-900 bg-purple-400 animate-pulse" />
+    </div>
+  );
+}
+
+function buildXProfileUrl(event: CalendarEvent): string | null {
+  const screenName = extractScreenNameFromPostUrl(event.postURL);
+  if (screenName) {
+    return `https://x.com/${screenName}`;
+  }
+  if (event.author.id) {
+    return `https://x.com/i/user/${event.author.id}`;
+  }
+  return null;
+}
+
+function extractScreenNameFromPostUrl(
+  postUrl: string | null | undefined
+): string | null {
+  if (!postUrl) {
+    return null;
+  }
+  try {
+    const parsed = new URL(postUrl);
+    const hostname = parsed.hostname.replace(/^www\./, "");
+    if (!["x.com", "twitter.com", "mobile.twitter.com"].includes(hostname)) {
+      return null;
+    }
+    const [firstSegment] = parsed.pathname.split("/").filter(Boolean);
+    if (
+      !firstSegment ||
+      firstSegment === "i" ||
+      firstSegment === "share" ||
+      firstSegment === "hashtag"
+    ) {
+      return null;
+    }
+    return firstSegment;
+  } catch {
+    return null;
+  }
+}
+
+function buildXHashtagSearchUrl(tag: string): string | null {
+  const normalized = normalizeHashtag(tag);
+  if (!normalized) {
+    return null;
+  }
+  const query = encodeURIComponent(`#${normalized}`);
+  return `https://x.com/search?q=${query}&src=hashtag_click&f=live`;
+}
+
+function normalizeHashtag(tag: string): string {
+  return tag.replace(/^#/, "").trim();
 }
