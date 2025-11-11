@@ -1,3 +1,5 @@
+import crypto from "crypto";
+
 import { NextResponse } from "next/server";
 
 import { firestore } from "@/server/firebase/admin";
@@ -25,8 +27,11 @@ type RepostEventsResponse = {
   dryRun: boolean;
 };
 
-type XOAuth2Config = {
-  bearerToken: string;
+type XCredentials = {
+  apiKey: string;
+  apiSecret: string;
+  accessToken: string;
+  accessTokenSecret: string;
   userId: string;
 };
 
@@ -290,16 +295,22 @@ function parseTweetIdFromUrl(url: string): string | null {
 }
 
 async function repostOnX(tweetId: string): Promise<XRepostResult> {
-  const config = loadXOAuth2Config();
+  const credentials = loadXCredentials();
   const url = `${X_API_BASE_URL}/users/${encodeURIComponent(
-    config.userId
+    credentials.userId
   )}/retweets`;
   const body = JSON.stringify({ tweet_id: tweetId });
+
+  const authHeader = buildOAuth1Header({
+    credentials,
+    url,
+    method: "POST",
+  });
 
   const response = await fetch(url, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${config.bearerToken}`,
+      Authorization: authHeader,
       "Content-Type": "application/json",
     },
     body,
@@ -349,12 +360,15 @@ async function repostOnX(tweetId: string): Promise<XRepostResult> {
   return { tweetId: responseTweetId };
 }
 
-function loadXOAuth2Config(): XOAuth2Config {
-  const bearerToken = process.env.X_OAUTH2_BEARER_TOKEN;
+function loadXCredentials(): XCredentials {
+  const apiKey = process.env.X_API_KEY;
+  const apiSecret = process.env.X_API_SECRET;
+  const accessToken = process.env.X_ACCESS_TOKEN;
+  const accessTokenSecret = process.env.X_ACCESS_TOKEN_SECRET;
   const userId = process.env.X_USER_ID;
 
-  if (!bearerToken || !userId) {
-    console.error("Missing X OAuth2 credentials");
+  if (!apiKey || !apiSecret || !accessToken || !accessTokenSecret || !userId) {
+    console.error("Missing X API credentials");
     throw NextResponse.json<RealtimeApiErrorResponse>(
       { error: "Server configuration error" },
       { status: 500 }
@@ -362,7 +376,121 @@ function loadXOAuth2Config(): XOAuth2Config {
   }
 
   return {
-    bearerToken,
+    apiKey,
+    apiSecret,
+    accessToken,
+    accessTokenSecret,
     userId,
   };
+}
+
+function buildOAuth1Header({
+  credentials,
+  method,
+  url,
+}: {
+  credentials: XCredentials;
+  method: string;
+  url: string;
+}) {
+  const timestamp = Math.floor(Date.now() / 1000);
+  const nonce = crypto.randomBytes(16).toString("hex");
+
+  const oauthParams: Record<string, string> = {
+    oauth_consumer_key: credentials.apiKey,
+    oauth_nonce: nonce,
+    oauth_signature_method: "HMAC-SHA1",
+    oauth_timestamp: String(timestamp),
+    oauth_token: credentials.accessToken,
+    oauth_version: "1.0",
+  };
+
+  const signature = buildSignature({
+    method,
+    url,
+    oauthParams,
+    consumerSecret: credentials.apiSecret,
+    tokenSecret: credentials.accessTokenSecret,
+  });
+
+  const headerParams: Record<string, string> = {
+    ...oauthParams,
+    oauth_signature: signature,
+  };
+
+  const headerValue =
+    "OAuth " +
+    Object.keys(headerParams)
+      .sort()
+      .map(
+        (key) => `${percentEncode(key)}="${percentEncode(headerParams[key])}"`
+      )
+      .join(", ");
+
+  return headerValue;
+}
+
+function buildSignature({
+  method,
+  url,
+  oauthParams,
+  consumerSecret,
+  tokenSecret,
+}: {
+  method: string;
+  url: string;
+  oauthParams: Record<string, string>;
+  consumerSecret: string;
+  tokenSecret: string;
+}) {
+  const normalizedUrl = normalizeUrl(url);
+  const queryParams = extractQueryParams(url);
+  const allParams = { ...oauthParams, ...queryParams };
+  const normalizedParams = buildNormalizedParams(allParams);
+
+  const baseString = `${method.toUpperCase()}&${percentEncode(
+    normalizedUrl
+  )}&${percentEncode(normalizedParams)}`;
+
+  const signingKey = `${percentEncode(consumerSecret)}&${percentEncode(
+    tokenSecret
+  )}`;
+  return crypto.createHmac("sha1", signingKey).update(baseString).digest("base64");
+}
+
+function normalizeUrl(inputUrl: string): string {
+  const parsed = new URL(inputUrl);
+  const scheme = parsed.protocol.toLowerCase();
+  const host = parsed.hostname.toLowerCase();
+  const port =
+    (scheme === "http:" && parsed.port === "80") ||
+    (scheme === "https:" && parsed.port === "443") ||
+    !parsed.port
+      ? ""
+      : `:${parsed.port}`;
+  const path = parsed.pathname || "/";
+  return `${scheme}//${host}${port}${path}`;
+}
+
+function extractQueryParams(inputUrl: string): Record<string, string> {
+  const parsed = new URL(inputUrl);
+  const params: Record<string, string> = {};
+  parsed.searchParams.forEach((value, key) => {
+    params[key] = value;
+  });
+  return params;
+}
+
+function buildNormalizedParams(params: Record<string, string>): string {
+  const pairs = Object.keys(params)
+    .sort()
+    .map((key) => `${percentEncode(key)}=${percentEncode(params[key])}`);
+  return pairs.join("&");
+}
+
+function percentEncode(value: string): string {
+  return encodeURIComponent(value).replace(
+    /[!*()']/g,
+    (char) => `%${char.charCodeAt(0).toString(16).toUpperCase()}`
+  );
 }
