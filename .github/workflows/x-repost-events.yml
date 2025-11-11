@@ -1,0 +1,34 @@
+name: X Repost Events
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 00:00, 03:00, 06:00, 09:00, 12:00, 15:00, 18:00, 21:00 (UTC)
+    - cron: "0 0,3,6,9,12,15,18,21 * * *"
+    # 01:30, 04:30, 07:30, 10:30, 13:30, 16:30, 19:30, 22:30 (UTC)
+    - cron: "30 1,4,7,10,13,16,19,22 * * *"
+
+jobs:
+  repost-latest-event:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      BASE_URL: ${{ secrets.REALTIME_API_BASE_URL }}
+      INTERNAL_TOKEN: ${{ secrets.REALTIME_API_TOKEN }}
+      HASHTAG: "#謎チケ売ります"
+    steps:
+      - name: Ensure configuration exists
+        run: |
+          if [ -z "$BASE_URL" ] || [ -z "$INTERNAL_TOKEN" ]; then
+            echo "Required secrets REALTIME_API_BASE_URL or REALTIME_API_TOKEN are missing." >&2
+            exit 1
+          fi
+      - name: Invoke repost events API
+        run: |
+          PAYLOAD=$(jq -n --arg hashtag "$HASHTAG" '{hashtag: $hashtag, dryRun: false}')
+          curl --fail --silent --show-error \
+            --retry 2 --retry-delay 10 \
+            -X POST "$BASE_URL/api/internal/x/repost/events" \
+            -H "Authorization: Bearer $INTERNAL_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD"

@@ -31,7 +31,7 @@ import { HelpTooltip } from "@/components/calendar/HelpTooltip";
 
 const DEFAULT_QUERY = "#謎チケ売ります";
 const HOUR_MS = 60 * 60 * 1000;
-const queryOptions = [DEFAULT_QUERY, "#謎チケ譲ります"];
+const queryOptions = [DEFAULT_QUERY, "#謎解き同行者募集", "#謎チケ譲ります"];
 
 interface CalendarCell {
   isoDate: string;

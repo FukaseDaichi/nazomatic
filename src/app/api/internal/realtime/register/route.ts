@@ -7,7 +7,10 @@ import {
   YahooRealtimeRequestError,
   fetchYahooRealtimePosts,
 } from "@/server/realtime/fetchYahooRealtime";
-import { RULESET_VERSION, normalizePost } from "@/server/realtime/rules/normalizePost";
+import {
+  RULESET_VERSION,
+  normalizePost,
+} from "@/server/realtime/rules/normalizePost";
 import type { NormalizedRealtimeEvent } from "@/types/realtimeEvent";
 import type { RealtimeApiErrorResponse } from "@/types/realtime";
 
@@ -15,9 +18,8 @@ const DEFAULT_LIMIT = 20;
 const MAX_LIMIT = 100;
 const SKIP_REASON_NO_EVENT_TIME = "missing_event_time";
 const SKIP_REASON_DUPLICATE = "already_exists";
-const SKIP_REASON_EVENT_TIME_TOO_LATE = "event_time_too_late";
+const SKIP_REASON_EVENT_TIME_IN_PAST = "event_time_in_past";
 const EXISTING_CHUNK_SIZE = 450;
-const MAX_EVENT_LEAD_TIME_MS = 24 * 60 * 60 * 1000;
 
 export const runtime = "nodejs";
 
@@ -73,14 +75,23 @@ export async function POST(request: Request) {
     const capturedAt = new Date();
 
     for (const post of filteredPosts) {
-      const { event } = normalizePost(post, { query: params.query, capturedAt });
+      const { event } = normalizePost(post, {
+        query: params.query,
+        capturedAt,
+      });
       if (!event.eventTime) {
-        skipped.push({ postId: event.postId, reason: SKIP_REASON_NO_EVENT_TIME });
+        skipped.push({
+          postId: event.postId,
+          reason: SKIP_REASON_NO_EVENT_TIME,
+        });
         continue;
       }
 
-      if (event.eventTime.getTime() - capturedAt.getTime() >= MAX_EVENT_LEAD_TIME_MS) {
-        skipped.push({ postId: event.postId, reason: SKIP_REASON_EVENT_TIME_TOO_LATE });
+      if (event.eventTime.getTime() < capturedAt.getTime()) {
+        skipped.push({
+          postId: event.postId,
+          reason: SKIP_REASON_EVENT_TIME_IN_PAST,
+        });
         continue;
       }
 
@@ -118,7 +129,9 @@ export async function POST(request: Request) {
     }
 
     const collection = firestore.collection("realtimeEvents");
-    const docIds = normalizedEvents.map(({ event }) => buildDocId(event.postId));
+    const docIds = normalizedEvents.map(({ event }) =>
+      buildDocId(event.postId)
+    );
     const existingIds = await fetchExistingDocumentIds(collection, docIds);
 
     const batch = firestore.batch();
@@ -160,7 +173,7 @@ function buildDocId(postId: string) {
 
 async function fetchExistingDocumentIds(
   collection: FirebaseFirestore.CollectionReference,
-  docIds: string[],
+  docIds: string[]
 ) {
   const existing = new Set<string>();
 
@@ -187,7 +200,7 @@ function enforceAuthorization(request: Request) {
     console.error("REALTIME_INTERNAL_API_TOKEN is not set");
     throw NextResponse.json<RealtimeApiErrorResponse>(
       { error: "Server configuration error" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 
@@ -195,7 +208,7 @@ function enforceAuthorization(request: Request) {
   if (!header || header !== `Bearer ${expected}`) {
     throw NextResponse.json<RealtimeApiErrorResponse>(
       { error: "Unauthorized" },
-      { status: 401 },
+      { status: 401 }
     );
   }
 }
@@ -206,7 +219,7 @@ async function parseBody(request: Request) {
   } catch {
     throw NextResponse.json<RealtimeApiErrorResponse>(
       { error: "Invalid JSON body" },
-      { status: 400 },
+      { status: 400 }
     );
   }
 }
@@ -215,7 +228,7 @@ function validateBody(body: unknown): RegisterRequest {
   if (!body || typeof body !== "object") {
     throw NextResponse.json<RealtimeApiErrorResponse>(
       { error: "Request body must be an object" },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -223,7 +236,7 @@ function validateBody(body: unknown): RegisterRequest {
   if (!query) {
     throw NextResponse.json<RealtimeApiErrorResponse>(
       { error: "query is required" },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -232,7 +245,7 @@ function validateBody(body: unknown): RegisterRequest {
   if (sinceId && !/^[0-9]+$/.test(sinceId)) {
     throw NextResponse.json<RealtimeApiErrorResponse>(
       { error: "sinceId must be a numeric string" },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -277,7 +290,7 @@ function clampLimit(limit: number): number {
 
 function filterBySinceId(
   posts: Awaited<ReturnType<typeof fetchYahooRealtimePosts>>["posts"],
-  sinceId?: string,
+  sinceId?: string
 ) {
   if (!sinceId) {
     return posts;
@@ -333,7 +346,7 @@ function handleError(error: unknown) {
         error: "Upstream request failed",
         details: error.message,
       },
-      { status: error.status },
+      { status: error.status }
     );
   }
 
@@ -343,7 +356,7 @@ function handleError(error: unknown) {
         error: "Upstream response parsing failed",
         details: error.message,
       },
-      { status: 502 },
+      { status: 502 }
     );
   }
 
@@ -353,6 +366,6 @@ function handleError(error: unknown) {
     {
       error: "Internal server error",
     },
-    { status: 500 },
+    { status: 500 }
   );
 }
