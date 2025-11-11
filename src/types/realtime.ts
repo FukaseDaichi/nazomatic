@@ -62,7 +62,14 @@ export interface RealtimeMeta {
   sourceTimestamp: number | null;
 }
 
+export interface RateLimitInfo {
+  limit: string | null;
+  remaining: string | null;
+  reset: string | null;
+}
+
 export interface RealtimeApiErrorResponse {
   error: string;
   details?: string;
+  rateLimit?: RateLimitInfo;
 }
