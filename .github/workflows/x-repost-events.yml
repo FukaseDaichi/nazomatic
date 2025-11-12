@@ -26,9 +26,25 @@ jobs:
       - name: Invoke repost events API
         run: |
           PAYLOAD=$(jq -n --arg hashtag "$HASHTAG" '{hashtag: $hashtag, dryRun: false}')
-          curl --fail --silent --show-error \
+          RESPONSE_FILE=$(mktemp)
+          HTTP_STATUS=$(curl --silent --show-error \
             --retry 2 --retry-delay 10 \
+            -w "%{http_code}" \
+            -o "$RESPONSE_FILE" \
             -X POST "$BASE_URL/api/internal/x/repost/events" \
             -H "Authorization: Bearer $INTERNAL_TOKEN" \
             -H "Content-Type: application/json" \
-            -d "$PAYLOAD"
+            -d "$PAYLOAD")
+
+          echo "HTTP status: $HTTP_STATUS"
+          if [ "$HTTP_STATUS" -eq 204 ]; then
+            echo "No candidate to repost (204). Treating as success."
+            exit 0
+          elif [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
+            cat "$RESPONSE_FILE"
+            exit 0
+          else
+            echo "API call failed:"
+            cat "$RESPONSE_FILE"
+            exit 1
+          fi
