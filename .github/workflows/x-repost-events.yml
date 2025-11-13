@@ -40,6 +40,10 @@ jobs:
           if [ "$HTTP_STATUS" -eq 204 ]; then
             echo "No candidate to repost (204). Treating as success."
             exit 0
+          elif [ "$HTTP_STATUS" -eq 429 ]; then
+            echo "Rate limited (429). Treating as success to avoid alert fatigue."
+            cat "$RESPONSE_FILE"
+            exit 0
           elif [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
             cat "$RESPONSE_FILE"
             exit 0
