@@ -337,7 +337,7 @@ export default function CalendarPageClient() {
                 placeholder="テキスト絞込"
                 value={textFilter}
                 onChange={(event) => setTextFilter(event.target.value)}
-                className="h-4 sm:h-auto w-full min-w-0 border-0 bg-transparent px-1 py-0 text-base sm:text-sm text-white placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0 scale-[0.875] sm:scale-100 origin-left"
+                className="h-4 sm:h-auto w-full min-w-0 border-0 bg-transparent px-1 py-0 text-base sm:text-sm text-white placeholder:text-sm sm:placeholder:text-base placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0 scale-[0.875] sm:scale-100 origin-left"
                 autoComplete="off"
               />
             </div>
