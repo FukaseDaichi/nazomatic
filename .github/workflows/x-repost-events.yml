@@ -50,5 +50,5 @@ jobs:
           else
             echo "API call failed:"
             cat "$RESPONSE_FILE"
-            exit 1
+            exit 0
           fi

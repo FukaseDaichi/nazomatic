@@ -1,12 +1,13 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Calendar as CalendarIcon,
   ChevronLeft,
   ChevronRight,
   ListFilter,
   RefreshCcw,
+  Search,
 } from "lucide-react";
 
 import { useCalendarData } from "@/hooks/useCalendarData";
@@ -25,6 +26,7 @@ import {
 } from "@/lib/calendar/utils";
 import type { CalendarEvent } from "@/types/calendar";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { EventDetailDialog } from "@/components/calendar/EventDetailDialog";
 import { HelpTooltip } from "@/components/calendar/HelpTooltip";
@@ -32,6 +34,7 @@ import { HelpTooltip } from "@/components/calendar/HelpTooltip";
 const DEFAULT_QUERY = "#謎チケ売ります";
 const HOUR_MS = 60 * 60 * 1000;
 const queryOptions = [DEFAULT_QUERY, "#謎解き同行者募集", "#謎チケ譲ります"];
+const EMPTY_EVENTS: CalendarEvent[] = [];
 
 interface CalendarCell {
   isoDate: string;
@@ -47,6 +50,7 @@ export default function CalendarPageClient() {
   const [selectedDateKey, setSelectedDateKey] = useState<string | null>(null);
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [textFilter, setTextFilter] = useState("");
 
   const { fromDate, toDate, rangeDays } = useMemo(
     () => buildRange(focusDate),
@@ -60,17 +64,33 @@ export default function CalendarPageClient() {
     rangeDays,
   });
 
+  const normalizedFilter = useMemo(
+    () => textFilter.trim().toLowerCase(),
+    [textFilter]
+  );
+
+  const events = data?.events ?? EMPTY_EVENTS;
+
+  const filteredEvents = useMemo(() => {
+    if (!normalizedFilter) {
+      return events;
+    }
+    return events.filter((event) =>
+      event.rawPostText.toLowerCase().includes(normalizedFilter)
+    );
+  }, [events, normalizedFilter]);
+
   const grouped = useMemo<CalendarBuckets>(
-    () => groupEventsByDate(data?.events ?? []),
-    [data]
+    () => groupEventsByDate(filteredEvents),
+    [filteredEvents]
   );
 
   const eventMap = useMemo(
     () =>
       new Map<string, CalendarEvent>(
-        (data?.events ?? []).map((evt) => [evt.id, evt])
+        filteredEvents.map((evt) => [evt.id, evt])
       ),
-    [data]
+    [filteredEvents]
   );
 
   const calendarCells = useMemo<CalendarCell[]>(() => {
@@ -133,6 +153,23 @@ export default function CalendarPageClient() {
     }
   };
 
+  useEffect(() => {
+    if (!selectedDateKey && !selectedEventId) {
+      return;
+    }
+
+    const hasDate = selectedDateKey ? Boolean(grouped[selectedDateKey]) : true;
+    const hasEvent = selectedEventId
+      ? filteredEvents.some((event) => event.id === selectedEventId)
+      : true;
+
+    if (!hasDate || !hasEvent) {
+      setDialogOpen(false);
+      setSelectedDateKey(null);
+      setSelectedEventId(null);
+    }
+  }, [filteredEvents, grouped, selectedDateKey, selectedEventId]);
+
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-col gap-4 px-4 pb-16 pt-6">
       <section className="space-y-4 animate-in fade-in slide-in-from-top-4 duration-500">
@@ -144,7 +181,7 @@ export default function CalendarPageClient() {
               <div className="absolute -inset-1 bg-purple-400/20 blur-lg rounded-full animate-pulse" />
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-              謎チケ売りますカレンダー
+              謎チケカレンダー
             </h1>
             <HelpTooltip
               content={
@@ -153,7 +190,7 @@ export default function CalendarPageClient() {
                     注意事項
                   </h2>
                   <p className="mb-2 text-gray-300">
-                    謎チケ売りますカレンダーは、X（旧Twitter）の「#謎チケ売ります」ハッシュタグからイベント情報を収集して表示しています。
+                    謎チケカレンダーは、X（旧Twitter）の「#謎チケ売ります」ハッシュタグからイベント情報を収集して表示しています。
                   </p>
                   <ul className="space-y-2 text-sm text-gray-300">
                     <li className="flex items-start">
@@ -185,7 +222,7 @@ export default function CalendarPageClient() {
           </div>
 
           {/* Month & Status */}
-          <div className="flex flex-wrap items-center gap-3 text-sm">
+          <div className="flex flex-wrap justify-start items-center gap-3 text-sm">
             <span className="text-xl sm:text-2xl font-bold text-white">
               {formatMonthHeading(focusDate)}
             </span>
@@ -198,7 +235,12 @@ export default function CalendarPageClient() {
                     : "bg-gray-700/50 text-gray-300 border border-gray-600/30"
                 )}
               >
-                {formatTimestamp(lastUpdated)}
+                {new Intl.DateTimeFormat("ja-JP", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+                  timeZone: "Asia/Tokyo",
+                }).format(lastUpdated)}
               </span>
             )}
             {isLoading && (
@@ -212,13 +254,41 @@ export default function CalendarPageClient() {
                 読み込み失敗
               </span>
             )}
+            {/* Navigation */}
+            {(!isLoading || error) && (
+              <div className="flex sm:hidden ml-auto flex-wrap items-center gap-1.5 sm:w-auto">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => handleNavigate("prev")}
+                  className="h-8 w-8 sm:h-9 sm:w-9 rounded-xl bg-white/5 hover:bg-purple-400/20 border border-white/10 hover:border-purple-400/50 transition-all duration-300 hover:scale-110 active:scale-95"
+                >
+                  <ChevronLeft className="h-4 w-4 text-purple-400" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => handleNavigate("next")}
+                  className="h-8 w-8 sm:h-9 sm:w-9 rounded-xl bg-white/5 hover:bg-purple-400/20 border border-white/10 hover:border-purple-400/50 transition-all duration-300 hover:scale-110 active:scale-95"
+                >
+                  <ChevronRight className="h-4 w-4 text-purple-400" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="h-8 sm:h-9 px-3 text-xs sm:text-sm rounded-xl bg-purple-400/10 hover:bg-purple-400/20 border border-purple-400/30 hover:border-purple-400/50 text-purple-300 font-medium transition-all duration-300 hover:scale-105 active:scale-95"
+                  onClick={() => setFocusDate(startOfDay(new Date()))}
+                >
+                  今日
+                </Button>
+              </div>
+            )}
           </div>
         </header>
 
-        {/* Controls - Single Row on Mobile */}
+        {/* Controls - Responsive Row */}
         <div className="flex items-center gap-2 p-3 rounded-2xl bg-gradient-to-br from-gray-800/80 to-gray-900/80 backdrop-blur-sm border border-white/10 shadow-lg">
           {/* Navigation */}
-          <div className="flex items-center gap-1.5">
+          <div className="hidden sm:flex items-center gap-1.5">
             <Button
               variant="ghost"
               size="icon"
@@ -243,8 +313,7 @@ export default function CalendarPageClient() {
               今日
             </Button>
           </div>
-
-          {/* Query & Refresh */}
+          {/* Query, Filter & Refresh */}
           <div className="ml-auto flex items-center gap-1.5">
             <div className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 hover:border-purple-400/30 transition-all duration-300">
               <ListFilter className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-purple-400" />
@@ -252,6 +321,7 @@ export default function CalendarPageClient() {
                 className="bg-transparent text-xs sm:text-sm text-white outline-none cursor-pointer font-medium"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
+                aria-label="カレンダークエリ"
               >
                 {queryOptions.map((option) => (
                   <option key={option} value={option} className="bg-gray-800">
@@ -260,11 +330,23 @@ export default function CalendarPageClient() {
                 ))}
               </select>
             </div>
+            <div className="flex items-center gap-1.5 rounded-xl bg-white/5 border border-white/10 hover:border-purple-400/30 transition-all duration-300 px-2 sm:px-3 py-1.5 sm:w-64">
+              <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-purple-400 flex-shrink-0" />
+              <Input
+                aria-label="テキスト絞込"
+                placeholder="テキスト絞込"
+                value={textFilter}
+                onChange={(event) => setTextFilter(event.target.value)}
+                className="h-7 sm:h-8 w-full min-w-0 border-0 bg-transparent px-1 py-0 text-xs sm:text-sm text-white placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0"
+                autoComplete="off"
+              />
+            </div>
             <Button
               variant="ghost"
               size="icon"
               onClick={() => refresh()}
               className="h-8 w-8 sm:h-9 sm:w-9 rounded-xl bg-white/5 hover:bg-purple-400/20 border border-white/10 hover:border-purple-400/50 transition-all duration-300 hover:scale-110 active:scale-95 hover:rotate-180"
+              aria-label="再読み込み"
             >
               <RefreshCcw className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-purple-400" />
             </Button>

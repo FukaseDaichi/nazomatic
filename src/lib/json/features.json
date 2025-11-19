@@ -38,7 +38,7 @@
     },
     {
       "iconName": "Calendar",
-      "title": "謎チケ売ります",
+      "title": "謎チケカレンダー",
       "description": "#謎チケ売ります のハッシュタグから収集したイベント情報をカレンダー形式で表示！",
       "path": "/calendar"
     }

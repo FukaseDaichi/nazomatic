@@ -58,7 +58,11 @@ export function daysInMonth(date: Date): number {
 }
 
 export function isSameDay(a: Date, b: Date): boolean {
-  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  );
 }
 
 export function isSameMonth(a: Date, b: Date): boolean {
