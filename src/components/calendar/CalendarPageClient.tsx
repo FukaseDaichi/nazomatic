@@ -315,8 +315,8 @@ export default function CalendarPageClient() {
           </div>
           {/* Query, Filter & Refresh */}
           <div className="ml-auto flex items-center gap-1.5">
-            <div className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 hover:border-purple-400/30 transition-all duration-300">
-              <ListFilter className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-purple-400" />
+            <div className="flex items-center gap-1 sm:gap-1.5 px-1 sm:px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 hover:border-purple-400/30 transition-all duration-300">
+              <ListFilter className="h-3.5 w-3 sm:h-4 sm:w-4 text-purple-400" />
               <select
                 className="bg-transparent text-xs sm:text-sm text-white outline-none cursor-pointer font-medium"
                 value={query}
@@ -330,14 +330,14 @@ export default function CalendarPageClient() {
                 ))}
               </select>
             </div>
-            <div className="flex items-center gap-1.5 rounded-xl bg-white/5 border border-white/10 hover:border-purple-400/30 transition-all duration-300 px-2 sm:px-3 py-1.5 sm:w-64">
-              <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-purple-400 flex-shrink-0" />
+            <div className="flex items-center gap-1 sm:gap-1.5 rounded-xl bg-white/5 border border-white/10 hover:border-purple-400/30 transition-all duration-300 px-2 sm:px-3 py-1.5 w-32 sm:w-64">
+              <Search className="h-3 w-3 sm:h-4 sm:w-4 text-purple-400 flex-shrink-0" />
               <Input
                 aria-label="テキスト絞込"
                 placeholder="テキスト絞込"
                 value={textFilter}
                 onChange={(event) => setTextFilter(event.target.value)}
-                className="h-7 sm:h-8 w-full min-w-0 border-0 bg-transparent px-1 py-0 text-xs sm:text-sm text-white placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0"
+                className="h-4 sm:h-auto w-full min-w-0 border-0 bg-transparent px-1 py-0 text-base sm:text-sm text-white placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0 scale-[0.875] sm:scale-100 origin-left"
                 autoComplete="off"
               />
             </div>
