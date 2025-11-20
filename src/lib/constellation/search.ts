@@ -18,13 +18,41 @@ export const CONSTELLATION_TABS: Array<{
   { id: "all", label: "88星座" },
 ];
 
+const ZODIAC_ORDER: string[] = [
+  "aries",
+  "taurus",
+  "gemini",
+  "cancer",
+  "leo",
+  "virgo",
+  "libra",
+  "scorpius",
+  "sagittarius",
+  "capricornus",
+  "aquarius",
+  "pisces",
+];
+
+const ZODIAC_ORDER_INDEX = ZODIAC_ORDER.reduce<Record<string, number>>(
+  (acc, id, index) => {
+    acc[id] = index;
+    return acc;
+  },
+  {}
+);
+
 export const filterConstellationsByTab = (
   constellations: Constellation[],
   tab: ConstellationTab
 ): Constellation[] => {
   switch (tab) {
     case "zodiac":
-      return constellations.filter((item) => item.isZodiac);
+      return constellations
+        .filter((item) => item.isZodiac)
+        .sort((a, b) =>
+          (ZODIAC_ORDER_INDEX[a.id] ?? 99) -
+          (ZODIAC_ORDER_INDEX[b.id] ?? 99)
+        );
     case "spring":
     case "summer":
     case "autumn":

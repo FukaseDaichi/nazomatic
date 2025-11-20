@@ -47,6 +47,21 @@ const TAB_ICONS: Record<
   all: Sparkles,
 };
 
+const ZODIAC_SYMBOLS: Record<string, string> = {
+  aries: "♈",
+  taurus: "♉",
+  gemini: "♊",
+  cancer: "♋",
+  leo: "♌",
+  virgo: "♍",
+  libra: "♎",
+  scorpius: "♏",
+  sagittarius: "♐",
+  capricornus: "♑",
+  aquarius: "♒",
+  pisces: "♓",
+};
+
 export function ConstellationSearchTable() {
   const [activeTab, setActiveTab] = useState<ConstellationTab>("zodiac");
   const [kanaSearch, setKanaSearch] = useState("");
@@ -222,11 +237,23 @@ export function ConstellationSearchTable() {
                         {SEASON_LABEL[item.season]}
                       </span>
                     </TableCell>
-                    <TableCell className="p-3 sm:p-4  font-bold text-white group-hover:text-purple-300 transition-colors duration-200">
-                      <span className="h-3.5 sm:hidden block text-[10px] text-purple-200/80 tracking-wide mb-0">
-                        {item.nameKana}
-                      </span>
-                      {item.nameJa}
+                    <TableCell className="p-3 sm:p-4 font-bold text-white group-hover:text-purple-300 transition-colors duration-200">
+                      <div className="flex items-center gap-2">
+                        {ZODIAC_SYMBOLS[item.id] && (
+                          <span
+                            aria-hidden="true"
+                            className="mt-2 sm:mt-0 block text-xl sm:text-2xl text-purple-200 drop-shadow"
+                          >
+                            {ZODIAC_SYMBOLS[item.id]}
+                          </span>
+                        )}
+                        <div className="flex flex-col justify-center">
+                          <span className="h-3.5 sm:hidden block text-[10px] text-purple-200/80 tracking-wide mb-0">
+                            {item.nameKana}
+                          </span>
+                          {item.nameJa}
+                        </div>
+                      </div>
                     </TableCell>
                     <TableCell className="p-3 sm:p-4 hidden sm:table-cell text-gray-400">
                       {item.nameKana}
