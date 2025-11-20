@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import clsx from "clsx";
+import { Star, Flower2, Sun, Leaf, Snowflake, Sparkles } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import {
@@ -32,6 +33,18 @@ const formatVisibleMonths = ([start, end]: [number, number]) => {
   if (start === end) return `${start}月`;
   if (start < end) return `${start}〜${end}月`;
   return `${start}〜翌${end}月`;
+};
+
+const TAB_ICONS: Record<
+  ConstellationTab,
+  React.ComponentType<{ className?: string }>
+> = {
+  zodiac: Star,
+  spring: Flower2,
+  summer: Sun,
+  autumn: Leaf,
+  winter: Snowflake,
+  all: Sparkles,
 };
 
 export function ConstellationSearchTable() {
@@ -103,25 +116,31 @@ export function ConstellationSearchTable() {
               transform: `translateX(${indicatorStyle.left}px)`,
             }}
           />
-          {CONSTELLATION_TABS.map((tab) => (
-            <button
-              key={tab.id}
-              role="tab"
-              aria-selected={activeTab === tab.id}
-              ref={(element) => {
-                tabRefs.current[tab.id] = element;
-              }}
-              className={clsx(
-                "relative z-10 flex items-center justify-center rounded-xl px-2 py-2 text-[10px] font-semibold tracking-[0.2em] transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-300/70 sm:text-[11px]",
-                activeTab === tab.id
-                  ? "bg-purple-500/60 text-white shadow-[0_6px_18px_rgba(147,51,234,0.3)]"
-                  : "text-purple-400 hover:text-purple-200 hover:bg-white/5"
-              )}
-              onClick={() => setActiveTab(tab.id)}
-            >
-              {tab.label}
-            </button>
-          ))}
+          {CONSTELLATION_TABS.map((tab) => {
+            const IconComponent = TAB_ICONS[tab.id];
+            return (
+              <button
+                key={tab.id}
+                role="tab"
+                aria-selected={activeTab === tab.id}
+                ref={(element) => {
+                  tabRefs.current[tab.id] = element;
+                }}
+                className={clsx(
+                  "relative z-10 flex flex-col items-center justify-center gap-1 rounded-xl px-2 py-2 transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-300/70",
+                  activeTab === tab.id
+                    ? "bg-purple-500/60 text-white shadow-[0_6px_18px_rgba(147,51,234,0.3)]"
+                    : "text-purple-400 hover:text-purple-200 hover:bg-white/5"
+                )}
+                onClick={() => setActiveTab(tab.id)}
+              >
+                <IconComponent className="h-5 w-5 sm:h-6 sm:w-6" />
+                <span className="text-[8px] font-semibold tracking-[0.1em] sm:text-[9px]">
+                  {tab.label}
+                </span>
+              </button>
+            );
+          })}
         </div>
 
         <div className="flex justify-center">
