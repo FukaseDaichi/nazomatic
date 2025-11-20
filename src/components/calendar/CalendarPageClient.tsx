@@ -15,7 +15,6 @@ import {
   addDays,
   addMonths,
   formatMonthHeading,
-  formatTimestamp,
   groupEventsByDate,
   startOfDay,
   startOfMonth,
@@ -286,7 +285,7 @@ export default function CalendarPageClient() {
         </header>
 
         {/* Controls - Responsive Row */}
-        <div className="flex items-center gap-2 p-3 rounded-2xl bg-gradient-to-br from-gray-800/80 to-gray-900/80 backdrop-blur-sm border border-white/10 shadow-lg">
+        <div className="flex items-center justify-center gap-2 py-3 px-1 sm:px-3 rounded-2xl bg-gradient-to-br from-gray-800/80 to-gray-900/80 backdrop-blur-sm border border-white/10 shadow-lg">
           {/* Navigation */}
           <div className="hidden sm:flex items-center gap-1.5">
             <Button
@@ -314,11 +313,11 @@ export default function CalendarPageClient() {
             </Button>
           </div>
           {/* Query, Filter & Refresh */}
-          <div className="ml-auto flex items-center gap-1.5">
+          <div className="sm:ml-auto flex items-center gap-1.5">
             <div className="flex items-center gap-1 sm:gap-1.5 px-1 sm:px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 hover:border-purple-400/30 transition-all duration-300">
               <ListFilter className="h-3.5 w-3 sm:h-4 sm:w-4 text-purple-400" />
               <select
-                className="bg-transparent text-xs sm:text-sm text-white outline-none cursor-pointer font-medium"
+                className="h-4 sm:h-auto bg-transparent text-xs sm:text-sm text-white outline-none cursor-pointer font-medium"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 aria-label="カレンダークエリ"
@@ -337,7 +336,7 @@ export default function CalendarPageClient() {
                 placeholder="テキスト絞込"
                 value={textFilter}
                 onChange={(event) => setTextFilter(event.target.value)}
-                className="h-4 sm:h-auto w-full min-w-0 border-0 bg-transparent px-1 py-0 text-base sm:text-sm text-white placeholder:text-sm sm:placeholder:text-base placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0 scale-[0.875] sm:scale-100 origin-left"
+                className="h-4 sm:h-auto w-full min-w-0 border-0 bg-transparent px-1 py-0 text-base sm:text-sm text-white placeholder:text-xs sm:placeholder:text-base placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0 scale-[0.875] sm:scale-100 origin-left"
                 autoComplete="off"
               />
             </div>
