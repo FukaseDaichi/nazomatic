@@ -50,6 +50,7 @@ const TAB_ICONS: Record<
 export function ConstellationSearchTable() {
   const [activeTab, setActiveTab] = useState<ConstellationTab>("zodiac");
   const [kanaSearch, setKanaSearch] = useState("");
+  const [englishSearch, setEnglishSearch] = useState("");
   const [indicatorStyle, setIndicatorStyle] = useState({ width: 0, left: 0 });
   const tabListRef = useRef<HTMLDivElement | null>(null);
   const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
@@ -61,12 +62,18 @@ export function ConstellationSearchTable() {
 
   const filteredConstellations = useMemo(
     () =>
-      tabbedConstellations.filter((item) =>
-        matchSearch(item.nameKanaNorm, kanaSearch, {
+      tabbedConstellations.filter((item) => {
+        const kanaMatch = matchSearch(item.nameKanaNorm, kanaSearch, {
           preprocessSearch: preprocessKanaSearch,
-        })
-      ),
-    [kanaSearch, tabbedConstellations]
+        });
+        const englishMatch = matchSearch(
+          [item.latinName, item.abbreviation],
+          englishSearch.trim()
+        );
+
+        return kanaMatch && englishMatch;
+      }),
+    [englishSearch, kanaSearch, tabbedConstellations]
   );
 
   useEffect(() => {
@@ -143,15 +150,34 @@ export function ConstellationSearchTable() {
           })}
         </div>
 
-        <div className="flex justify-center">
-          <Input
-            type="text"
-            aria-label="星座名ひらがな検索"
-            placeholder="星座名ひらがな"
-            value={kanaSearch}
-            onChange={(event) => setKanaSearch(event.target.value)}
-            className="blok w-full sm:w-96 bg-gray-700 text-white placeholder-gray-400 border-purple-400 text-base"
-          />
+        <div className="mb-2 grid gap-3 sm:grid-cols-2">
+          <div>
+            <Input
+              type="text"
+              inputMode="search"
+              enterKeyHint="search"
+              autoComplete="off"
+              aria-label="星座名ひらがな検索"
+              placeholder="星座名ひらがな"
+              value={kanaSearch}
+              onChange={(event) => setKanaSearch(event.target.value)}
+              className="block w-full bg-gray-700 text-white placeholder-gray-400 border-purple-400 text-[16px]"
+            />
+          </div>
+          <div>
+            <Input
+              type="text"
+              inputMode="search"
+              enterKeyHint="search"
+              autoComplete="off"
+              autoCapitalize="none"
+              aria-label="ラテン名・略称検索"
+              placeholder="ラテン名 / 略称"
+              value={englishSearch}
+              onChange={(event) => setEnglishSearch(event.target.value)}
+              className="block w-full bg-gray-700 text-white placeholder-gray-400 border-purple-400 text-[16px]"
+            />
+          </div>
         </div>
         <p className="text-xs text-gray-400 text-center">
           ＊ = 0文字以上の任意 / ？ = 1文字のみ一致
@@ -207,9 +233,12 @@ export function ConstellationSearchTable() {
                     </TableCell>
                     <TableCell className="p-3 sm:p-4 text-gray-300">
                       <div className="flex flex-col sm:flex-row sm:items-center gap-1">
+                        <span className="h-2.5 sm:hidden block text-[10px] text-purple-200/80 tracking-wide mb-0">
+                          {item.abbreviation}
+                        </span>
                         <span className="font-medium">{item.latinName}</span>
                         <span className="hidden sm:inline text-xs text-purple-400/80 font-mono">
-                          ({item.abbreviation})
+                          {item.abbreviation}
                         </span>
                       </div>
                     </TableCell>
