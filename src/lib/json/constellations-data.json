@@ -1,0 +1,882 @@
+[
+  {
+    "id": "andromeda",
+    "nameJa": "アンドロメダ",
+    "nameKana": "あんどろめだ",
+    "latinName": "Andromeda",
+    "abbreviation": "And",
+    "season": "autumn",
+    "isZodiac": false,
+    "visibleMonths": [10, 12]
+  },
+  {
+    "id": "monoceros",
+    "nameJa": "一角獣",
+    "nameKana": "いっかくじゅう",
+    "latinName": "Monoceros",
+    "abbreviation": "Mon",
+    "season": "spring",
+    "isZodiac": false,
+    "visibleMonths": [2, 4]
+  },
+  {
+    "id": "sagittarius",
+    "nameJa": "射手",
+    "nameKana": "いて",
+    "latinName": "Sagittarius",
+    "abbreviation": "Sgr",
+    "season": "autumn",
+    "isZodiac": true,
+    "visibleMonths": [8, 10]
+  },
+  {
+    "id": "delphinus",
+    "nameJa": "海豚",
+    "nameKana": "いるか",
+    "latinName": "Delphinus",
+    "abbreviation": "Del",
+    "season": "autumn",
+    "isZodiac": false,
+    "visibleMonths": [8, 10]
+  },
+  {
+    "id": "indus",
+    "nameJa": "インディアン",
+    "nameKana": "いんでぃあん",
+    "latinName": "Indus",
+    "abbreviation": "Ind",
+    "season": "autumn",
+    "isZodiac": false,
+    "visibleMonths": [9, 11]
+  },
+  {
+    "id": "pisces",
+    "nameJa": "魚",
+    "nameKana": "うお",
+    "latinName": "Pisces",
+    "abbreviation": "Psc",
+    "season": "autumn",
+    "isZodiac": true,
+    "visibleMonths": [10, 12]
+  },
+  {
+    "id": "lepus",
+    "nameJa": "兎",
+    "nameKana": "うさぎ",
+    "latinName": "Lepus",
+    "abbreviation": "Lep",
+    "season": "winter",
+    "isZodiac": false,
+    "visibleMonths": [1, 3]
+  },
+  {
+    "id": "bootes",
+    "nameJa": "牛飼",
+    "nameKana": "うしかい",
+    "latinName": "Bootes",
+    "abbreviation": "Boo",
+    "season": "summer",
+    "isZodiac": false,
+    "visibleMonths": [5, 7]
+  },
+  {
+    "id": "hydra",
+    "nameJa": "海蛇",
+    "nameKana": "うみへび",
+    "latinName": "Hydra",
+    "abbreviation": "Hya",
+    "season": "spring",
+    "isZodiac": false,
+    "visibleMonths": [3, 5]
+  },
+  {
+    "id": "eridanus",
+    "nameJa": "エリダヌス",
+    "nameKana": "えりだぬす",
+    "latinName": "Eridanus",
+    "abbreviation": "Eri",
+    "season": "winter",
+    "isZodiac": false,
+    "visibleMonths": [12, 2]
+  },
+  {
+    "id": "taurus",
+    "nameJa": "牡牛",
+    "nameKana": "おうし",
+    "latinName": "Taurus",
+    "abbreviation": "Tau",
+    "season": "winter",
+    "isZodiac": true,
+    "visibleMonths": [12, 2]
+  },
+  {
+    "id": "canis_major",
+    "nameJa": "大犬",
+    "nameKana": "おおいぬ",
+    "latinName": "Canis Major",
+    "abbreviation": "CMa",
+    "season": "winter",
+    "isZodiac": false,
+    "visibleMonths": [1, 3]
+  },
+  {
+    "id": "lupus",
+    "nameJa": "狼",
+    "nameKana": "おおかみ",
+    "latinName": "Lupus",
+    "abbreviation": "Lup",
+    "season": "summer",
+    "isZodiac": false,
+    "visibleMonths": [6, 8]
+  },
+  {
+    "id": "ursa_major",
+    "nameJa": "大熊",
+    "nameKana": "おおぐま",
+    "latinName": "Ursa Major",
+    "abbreviation": "UMa",
+    "season": "spring",
+    "isZodiac": false,
+    "visibleMonths": [4, 6]
+  },
+  {
+    "id": "virgo",
+    "nameJa": "乙女",
+    "nameKana": "おとめ",
+    "latinName": "Virgo",
+    "abbreviation": "Vir",
+    "season": "summer",
+    "isZodiac": true,
+    "visibleMonths": [5, 7]
+  },
+  {
+    "id": "aries",
+    "nameJa": "牡羊",
+    "nameKana": "おひつじ",
+    "latinName": "Aries",
+    "abbreviation": "Ari",
+    "season": "winter",
+    "isZodiac": true,
+    "visibleMonths": [11, 1]
+  },
+  {
+    "id": "orion",
+    "nameJa": "オリオン",
+    "nameKana": "おりおん",
+    "latinName": "Orion",
+    "abbreviation": "Ori",
+    "season": "winter",
+    "isZodiac": false,
+    "visibleMonths": [1, 3]
+  },
+  {
+    "id": "pictor",
+    "nameJa": "画架",
+    "nameKana": "がか",
+    "latinName": "Pictor",
+    "abbreviation": "Pic",
+    "season": "winter",
+    "isZodiac": false,
+    "visibleMonths": [1, 3]
+  },
+  {
+    "id": "cassiopeia",
+    "nameJa": "カシオペヤ",
+    "nameKana": "かしおぺや",
+    "latinName": "Cassiopeia",
+    "abbreviation": "Cas",
+    "season": "winter",
+    "isZodiac": false,
+    "visibleMonths": [11, 1]
+  },
+  {
+    "id": "dorado",
+    "nameJa": "旗魚",
+    "nameKana": "かじき",
+    "latinName": "Dorado",
+    "abbreviation": "Dor",
+    "season": "winter",
+    "isZodiac": false,
+    "visibleMonths": [12, 2]
+  },
+  {
+    "id": "cancer",
+    "nameJa": "蟹",
+    "nameKana": "かに",
+    "latinName": "Cancer",
+    "abbreviation": "Cnc",
+    "season": "spring",
+    "isZodiac": true,
+    "visibleMonths": [2, 4]
+  },
+  {
+    "id": "coma_berenices",
+    "nameJa": "髪",
+    "nameKana": "かみのけ",
+    "latinName": "Coma Berenices",
+    "abbreviation": "Com",
+    "season": "spring",
+    "isZodiac": false,
+    "visibleMonths": [4, 6]
+  },
+  {
+    "id": "chamaeleon",
+    "nameJa": "カメレオン",
+    "nameKana": "かめれおん",
+    "latinName": "Chamaeleon",
+    "abbreviation": "Cha",
+    "season": "spring",
+    "isZodiac": false,
+    "visibleMonths": [3, 5]
+  },
+  {
+    "id": "corvus",
+    "nameJa": "烏",
+    "nameKana": "からす",
+    "latinName": "Corvus",
+    "abbreviation": "Crv",
+    "season": "spring",
+    "isZodiac": false,
+    "visibleMonths": [4, 6]
+  },
+  {
+    "id": "corona_borealis",
+    "nameJa": "冠",
+    "nameKana": "かんむり",
+    "latinName": "Corona Borealis",
+    "abbreviation": "CrB",
+    "season": "summer",
+    "isZodiac": false,
+    "visibleMonths": [6, 8]
+  },
+  {
+    "id": "tucana",
+    "nameJa": "巨嘴鳥",
+    "nameKana": "きょしちょう",
+    "latinName": "Tucana",
+    "abbreviation": "Tuc",
+    "season": "autumn",
+    "isZodiac": false,
+    "visibleMonths": [10, 12]
+  },
+  {
+    "id": "auriga",
+    "nameJa": "馭者",
+    "nameKana": "ぎょしゃ",
+    "latinName": "Auriga",
+    "abbreviation": "Aur",
+    "season": "winter",
+    "isZodiac": false,
+    "visibleMonths": [1, 3]
+  },
+  {
+    "id": "camelopardalis",
+    "nameJa": "麒麟",
+    "nameKana": "きりん",
+    "latinName": "Camelopardalis",
+    "abbreviation": "Cam",
+    "season": "winter",
+    "isZodiac": false,
+    "visibleMonths": [1, 3]
+  },
+  {
+    "id": "pavo",
+    "nameJa": "孔雀",
+    "nameKana": "くじゃく",
+    "latinName": "Pavo",
+    "abbreviation": "Pav",
+    "season": "autumn",
+    "isZodiac": false,
+    "visibleMonths": [8, 10]
+  },
+  {
+    "id": "cetus",
+    "nameJa": "鯨",
+    "nameKana": "くじら",
+    "latinName": "Cetus",
+    "abbreviation": "Cet",
+    "season": "winter",
+    "isZodiac": false,
+    "visibleMonths": [11, 1]
+  },
+  {
+    "id": "cepheus",
+    "nameJa": "ケフェウス",
+    "nameKana": "けふぇうす",
+    "latinName": "Cepheus",
+    "abbreviation": "Cep",
+    "season": "autumn",
+    "isZodiac": false,
+    "visibleMonths": [9, 11]
+  },
+  {
+    "id": "centaurus",
+    "nameJa": "ケンタウルス",
+    "nameKana": "けんたうるす",
+    "latinName": "Centaurus",
+    "abbreviation": "Cen",
+    "season": "summer",
+    "isZodiac": false,
+    "visibleMonths": [5, 7]
+  },
+  {
+    "id": "microscopium",
+    "nameJa": "顕微鏡",
+    "nameKana": "けんびきょう",
+    "latinName": "Microscopium",
+    "abbreviation": "Mic",
+    "season": "autumn",
+    "isZodiac": false,
+    "visibleMonths": [8, 10]
+  },
+  {
+    "id": "canis_minor",
+    "nameJa": "小犬",
+    "nameKana": "こいぬ",
+    "latinName": "Canis Minor",
+    "abbreviation": "CMi",
+    "season": "spring",
+    "isZodiac": false,
+    "visibleMonths": [2, 4]
+  },
+  {
+    "id": "equuleus",
+    "nameJa": "小馬",
+    "nameKana": "こうま",
+    "latinName": "Equuleus",
+    "abbreviation": "Equ",
+    "season": "autumn",
+    "isZodiac": false,
+    "visibleMonths": [9, 11]
+  },
+  {
+    "id": "vulpecula",
+    "nameJa": "小狐",
+    "nameKana": "こぎつね",
+    "latinName": "Vulpecula",
+    "abbreviation": "Vul",
+    "season": "autumn",
+    "isZodiac": false,
+    "visibleMonths": [8, 10]
+  },
+  {
+    "id": "ursa_minor",
+    "nameJa": "小熊",
+    "nameKana": "こぐま",
+    "latinName": "Ursa Minor",
+    "abbreviation": "UMi",
+    "season": "summer",
+    "isZodiac": false,
+    "visibleMonths": [6, 8]
+  },
+  {
+    "id": "leo_minor",
+    "nameJa": "小獅子",
+    "nameKana": "こじし",
+    "latinName": "Leo Minor",
+    "abbreviation": "LMi",
+    "season": "spring",
+    "isZodiac": false,
+    "visibleMonths": [3, 5]
+  },
+  {
+    "id": "crater",
+    "nameJa": "コップ",
+    "nameKana": "こっぷ",
+    "latinName": "Crater",
+    "abbreviation": "Crt",
+    "season": "spring",
+    "isZodiac": false,
+    "visibleMonths": [4, 6]
+  },
+  {
+    "id": "lyra",
+    "nameJa": "琴",
+    "nameKana": "こと",
+    "latinName": "Lyra",
+    "abbreviation": "Lyr",
+    "season": "summer",
+    "isZodiac": false,
+    "visibleMonths": [7, 9]
+  },
+  {
+    "id": "circinus",
+    "nameJa": "コンパス",
+    "nameKana": "こんぱす",
+    "latinName": "Circinus",
+    "abbreviation": "Cir",
+    "season": "summer",
+    "isZodiac": false,
+    "visibleMonths": [5, 7]
+  },
+  {
+    "id": "ara",
+    "nameJa": "祭壇",
+    "nameKana": "さいだん",
+    "latinName": "Ara",
+    "abbreviation": "Ara",
+    "season": "summer",
+    "isZodiac": false,
+    "visibleMonths": [7, 9]
+  },
+  {
+    "id": "scorpius",
+    "nameJa": "蠍",
+    "nameKana": "さそり",
+    "latinName": "Scorpius",
+    "abbreviation": "Sco",
+    "season": "summer",
+    "isZodiac": true,
+    "visibleMonths": [6, 8]
+  },
+  {
+    "id": "triangulum",
+    "nameJa": "三角",
+    "nameKana": "さんかく",
+    "latinName": "Triangulum",
+    "abbreviation": "Tri",
+    "season": "winter",
+    "isZodiac": false,
+    "visibleMonths": [11, 1]
+  },
+  {
+    "id": "leo",
+    "nameJa": "獅子",
+    "nameKana": "しし",
+    "latinName": "Leo",
+    "abbreviation": "Leo",
+    "season": "spring",
+    "isZodiac": true,
+    "visibleMonths": [3, 5]
+  },
+  {
+    "id": "norma",
+    "nameJa": "定規",
+    "nameKana": "じょうぎ",
+    "latinName": "Norma",
+    "abbreviation": "Nor",
+    "season": "summer",
+    "isZodiac": false,
+    "visibleMonths": [6, 8]
+  },
+  {
+    "id": "scutum",
+    "nameJa": "楯",
+    "nameKana": "たて",
+    "latinName": "Scutum",
+    "abbreviation": "Sct",
+    "season": "summer",
+    "isZodiac": false,
+    "visibleMonths": [7, 9]
+  },
+  {
+    "id": "caelum",
+    "nameJa": "彫刻具",
+    "nameKana": "ちょうこくぐ",
+    "latinName": "Caelum",
+    "abbreviation": "Cae",
+    "season": "winter",
+    "isZodiac": false,
+    "visibleMonths": [12, 2]
+  },
+  {
+    "id": "sculptor",
+    "nameJa": "彫刻室",
+    "nameKana": "ちょうこくしつ",
+    "latinName": "Sculptor",
+    "abbreviation": "Scl",
+    "season": "autumn",
+    "isZodiac": false,
+    "visibleMonths": [10, 12]
+  },
+  {
+    "id": "grus",
+    "nameJa": "鶴",
+    "nameKana": "つる",
+    "latinName": "Grus",
+    "abbreviation": "Gru",
+    "season": "autumn",
+    "isZodiac": false,
+    "visibleMonths": [9, 11]
+  },
+  {
+    "id": "mensa",
+    "nameJa": "テーブル山",
+    "nameKana": "てーぶるさん",
+    "latinName": "Mensa",
+    "abbreviation": "Men",
+    "season": "winter",
+    "isZodiac": false,
+    "visibleMonths": [1, 3]
+  },
+  {
+    "id": "libra",
+    "nameJa": "天秤",
+    "nameKana": "てんびん",
+    "latinName": "Libra",
+    "abbreviation": "Lib",
+    "season": "summer",
+    "isZodiac": true,
+    "visibleMonths": [6, 8]
+  },
+  {
+    "id": "lacerta",
+    "nameJa": "蜥蜴",
+    "nameKana": "とかげ",
+    "latinName": "Lacerta",
+    "abbreviation": "Lac",
+    "season": "autumn",
+    "isZodiac": false,
+    "visibleMonths": [9, 11]
+  },
+  {
+    "id": "horologium",
+    "nameJa": "時計",
+    "nameKana": "とけい",
+    "latinName": "Horologium",
+    "abbreviation": "Hor",
+    "season": "winter",
+    "isZodiac": false,
+    "visibleMonths": [12, 2]
+  },
+  {
+    "id": "volans",
+    "nameJa": "飛魚",
+    "nameKana": "とびうお",
+    "latinName": "Volans",
+    "abbreviation": "Vol",
+    "season": "spring",
+    "isZodiac": false,
+    "visibleMonths": [2, 4]
+  },
+  {
+    "id": "puppis",
+    "nameJa": "船尾",
+    "nameKana": "とも",
+    "latinName": "Puppis",
+    "abbreviation": "Pup",
+    "season": "spring",
+    "isZodiac": false,
+    "visibleMonths": [2, 4]
+  },
+  {
+    "id": "musca",
+    "nameJa": "蠅",
+    "nameKana": "はえ",
+    "latinName": "Musca",
+    "abbreviation": "Mus",
+    "season": "spring",
+    "isZodiac": false,
+    "visibleMonths": [4, 6]
+  },
+  {
+    "id": "cygnus",
+    "nameJa": "白鳥",
+    "nameKana": "はくちょう",
+    "latinName": "Cygnus",
+    "abbreviation": "Cyg",
+    "season": "autumn",
+    "isZodiac": false,
+    "visibleMonths": [8, 10]
+  },
+  {
+    "id": "octans",
+    "nameJa": "八分儀",
+    "nameKana": "はちぶんぎ",
+    "latinName": "Octans",
+    "abbreviation": "Oct",
+    "season": "autumn",
+    "isZodiac": false,
+    "visibleMonths": [9, 11]
+  },
+  {
+    "id": "columba",
+    "nameJa": "鳩",
+    "nameKana": "はと",
+    "latinName": "Columba",
+    "abbreviation": "Col",
+    "season": "winter",
+    "isZodiac": false,
+    "visibleMonths": [1, 3]
+  },
+  {
+    "id": "apus",
+    "nameJa": "風鳥",
+    "nameKana": "ふうちょう",
+    "latinName": "Apus",
+    "abbreviation": "Aps",
+    "season": "summer",
+    "isZodiac": false,
+    "visibleMonths": [6, 8]
+  },
+  {
+    "id": "gemini",
+    "nameJa": "双子",
+    "nameKana": "ふたご",
+    "latinName": "Gemini",
+    "abbreviation": "Gem",
+    "season": "spring",
+    "isZodiac": true,
+    "visibleMonths": [2, 4]
+  },
+  {
+    "id": "pegasus",
+    "nameJa": "ペガスス",
+    "nameKana": "ぺがすす",
+    "latinName": "Pegasus",
+    "abbreviation": "Peg",
+    "season": "autumn",
+    "isZodiac": false,
+    "visibleMonths": [9, 11]
+  },
+  {
+    "id": "serpens",
+    "nameJa": "蛇",
+    "nameKana": "へび",
+    "latinName": "Serpens",
+    "abbreviation": "Ser",
+    "season": "summer",
+    "isZodiac": false,
+    "visibleMonths": [7, 8]
+  },
+  {
+    "id": "ophiuchus",
+    "nameJa": "蛇遣",
+    "nameKana": "へびつかい",
+    "latinName": "Ophiuchus",
+    "abbreviation": "Oph",
+    "season": "summer",
+    "isZodiac": false,
+    "visibleMonths": [7, 9]
+  },
+  {
+    "id": "hercules",
+    "nameJa": "ヘルクレス",
+    "nameKana": "へるくれす",
+    "latinName": "Hercules",
+    "abbreviation": "Her",
+    "season": "summer",
+    "isZodiac": false,
+    "visibleMonths": [7, 9]
+  },
+  {
+    "id": "perseus",
+    "nameJa": "ペルセウス",
+    "nameKana": "ぺるせうす",
+    "latinName": "Perseus",
+    "abbreviation": "Per",
+    "season": "winter",
+    "isZodiac": false,
+    "visibleMonths": [12, 2]
+  },
+  {
+    "id": "vela",
+    "nameJa": "帆",
+    "nameKana": "ほ",
+    "latinName": "Vela",
+    "abbreviation": "Vel",
+    "season": "spring",
+    "isZodiac": false,
+    "visibleMonths": [3, 5]
+  },
+  {
+    "id": "telescopium",
+    "nameJa": "望遠鏡",
+    "nameKana": "ぼうえんきょう",
+    "latinName": "Telescopium",
+    "abbreviation": "Tel",
+    "season": "autumn",
+    "isZodiac": false,
+    "visibleMonths": [8, 10]
+  },
+  {
+    "id": "phoenix",
+    "nameJa": "鳳凰",
+    "nameKana": "ほうおう",
+    "latinName": "Phoenix",
+    "abbreviation": "Phe",
+    "season": "winter",
+    "isZodiac": false,
+    "visibleMonths": [11, 1]
+  },
+  {
+    "id": "antlia",
+    "nameJa": "ポンプ",
+    "nameKana": "ぽんぷ",
+    "latinName": "Antlia",
+    "abbreviation": "Ant",
+    "season": "spring",
+    "isZodiac": false,
+    "visibleMonths": [3, 5]
+  },
+  {
+    "id": "aquarius",
+    "nameJa": "水瓶",
+    "nameKana": "みずがめ",
+    "latinName": "Aquarius",
+    "abbreviation": "Aqr",
+    "season": "autumn",
+    "isZodiac": true,
+    "visibleMonths": [9, 11]
+  },
+  {
+    "id": "hydrus",
+    "nameJa": "水蛇",
+    "nameKana": "みずへび",
+    "latinName": "Hydrus",
+    "abbreviation": "Hyi",
+    "season": "winter",
+    "isZodiac": false,
+    "visibleMonths": [11, 1]
+  },
+  {
+    "id": "crux",
+    "nameJa": "南十字",
+    "nameKana": "みなみじゅうじ",
+    "latinName": "Crux",
+    "abbreviation": "Cru",
+    "season": "spring",
+    "isZodiac": false,
+    "visibleMonths": [4, 6]
+  },
+  {
+    "id": "piscis_austrinus",
+    "nameJa": "南魚",
+    "nameKana": "みなみのうお",
+    "latinName": "Piscis Austrinus",
+    "abbreviation": "PsA",
+    "season": "autumn",
+    "isZodiac": false,
+    "visibleMonths": [9, 11]
+  },
+  {
+    "id": "corona_australis",
+    "nameJa": "南冠",
+    "nameKana": "みなみのかんむり",
+    "latinName": "Corona Australis",
+    "abbreviation": "CrA",
+    "season": "summer",
+    "isZodiac": false,
+    "visibleMonths": [7, 9]
+  },
+  {
+    "id": "triangulum_australe",
+    "nameJa": "南三角",
+    "nameKana": "みなみのさんかく",
+    "latinName": "Triangulum Australe",
+    "abbreviation": "TrA",
+    "season": "summer",
+    "isZodiac": false,
+    "visibleMonths": [6, 8]
+  },
+  {
+    "id": "sagitta",
+    "nameJa": "矢",
+    "nameKana": "や",
+    "latinName": "Sagitta",
+    "abbreviation": "Sge",
+    "season": "autumn",
+    "isZodiac": false,
+    "visibleMonths": [8, 10]
+  },
+  {
+    "id": "capricornus",
+    "nameJa": "山羊",
+    "nameKana": "やぎ",
+    "latinName": "Capricornus",
+    "abbreviation": "Cap",
+    "season": "autumn",
+    "isZodiac": true,
+    "visibleMonths": [8, 10]
+  },
+  {
+    "id": "lynx",
+    "nameJa": "山猫",
+    "nameKana": "やまねこ",
+    "latinName": "Lynx",
+    "abbreviation": "Lyn",
+    "season": "spring",
+    "isZodiac": false,
+    "visibleMonths": [2, 4]
+  },
+  {
+    "id": "pyxis",
+    "nameJa": "羅針盤",
+    "nameKana": "らしんばん",
+    "latinName": "Pyxis",
+    "abbreviation": "Pyx",
+    "season": "spring",
+    "isZodiac": false,
+    "visibleMonths": [2, 4]
+  },
+  {
+    "id": "draco",
+    "nameJa": "竜",
+    "nameKana": "りゅう",
+    "latinName": "Draco",
+    "abbreviation": "Dra",
+    "season": "summer",
+    "isZodiac": false,
+    "visibleMonths": [7, 9]
+  },
+  {
+    "id": "carina",
+    "nameJa": "竜骨",
+    "nameKana": "りゅうこつ",
+    "latinName": "Carina",
+    "abbreviation": "Car",
+    "season": "spring",
+    "isZodiac": false,
+    "visibleMonths": [2, 4]
+  },
+  {
+    "id": "canes_venatici",
+    "nameJa": "猟犬",
+    "nameKana": "りょうけん",
+    "latinName": "Canes Venatici",
+    "abbreviation": "CVn",
+    "season": "summer",
+    "isZodiac": false,
+    "visibleMonths": [5, 7]
+  },
+  {
+    "id": "reticulum",
+    "nameJa": "レチクル",
+    "nameKana": "れちくる",
+    "latinName": "Reticulum",
+    "abbreviation": "Ret",
+    "season": "winter",
+    "isZodiac": false,
+    "visibleMonths": [12, 2]
+  },
+  {
+    "id": "fornax",
+    "nameJa": "炉",
+    "nameKana": "ろ",
+    "latinName": "Fornax",
+    "abbreviation": "For",
+    "season": "winter",
+    "isZodiac": false,
+    "visibleMonths": [11, 1]
+  },
+  {
+    "id": "sextans",
+    "nameJa": "六分儀",
+    "nameKana": "ろくぶんぎ",
+    "latinName": "Sextans",
+    "abbreviation": "Sex",
+    "season": "spring",
+    "isZodiac": false,
+    "visibleMonths": [3, 5]
+  },
+  {
+    "id": "aquila",
+    "nameJa": "鷲",
+    "nameKana": "わし",
+    "latinName": "Aquila",
+    "abbreviation": "Aql",
+    "season": "autumn",
+    "isZodiac": false,
+    "visibleMonths": [8, 10]
+  }
+]
