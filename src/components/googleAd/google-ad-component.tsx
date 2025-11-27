@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Script from "next/script";
 import { baseURL } from "@/app/config";
 
@@ -10,17 +10,34 @@ declare global {
 }
 
 export const AdComponent = () => {
-  // const pathname = usePathname();　page遷移ごとに表示するためのもの
+  const [showAds, setShowAds] = useState(false);
+
   useEffect(() => {
-    const adsbygoogle = window.adsbygoogle || [];
+    // localhost のときは広告非表示
+    if (baseURL.includes("localhost")) {
+      setShowAds(false);
+      return;
+    }
+
+    // PWA(standalone) で起動しているか判定
+    if (window.matchMedia?.("(display-mode: standalone)").matches) {
+      // PWA のときは広告を表示しない
+      setShowAds(false);
+      return;
+    }
+
+    // 通常ブラウザ表示のときだけ広告を出す
+    setShowAds(true);
+
     try {
+      const adsbygoogle = window.adsbygoogle || [];
       adsbygoogle.push({});
     } catch (e) {
       console.error("AdSense initialization error:", e);
     }
   }, []);
 
-  if (baseURL.includes("localhost")) {
+  if (!showAds) {
     return <></>; // 広告を表示しない
   }
 
