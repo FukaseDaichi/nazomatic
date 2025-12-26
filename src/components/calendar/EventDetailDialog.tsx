@@ -89,7 +89,7 @@ export function EventDetailDialog({
             {selectedEvent ? (
               <article className="space-y-3">
                 {/* Author Section with Avatar */}
-                <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3">
+                <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3 w-full max-w-[335px] sm:max-w-full mx-auto sm:mx-0">
                   {authorProfileUrl ? (
                     <a
                       href={authorProfileUrl}
