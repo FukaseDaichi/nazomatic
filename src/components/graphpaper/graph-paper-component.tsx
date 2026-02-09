@@ -571,7 +571,11 @@ export default function GraphPaperComponent() {
               <input
                 onClick={() => setCurrentCell({ row: i, col: j })}
                 key={`${i}-${j}`}
-                ref={(el) => (inputRefs.current[`${i}-${j}`] = el)}
+                ref={(el: HTMLInputElement | null) => {
+                  if (el) {
+                    inputRefs.current[`${i}-${j}`] = el;
+                  }
+                }}
                 className={`w-8 h-8 text-center ${
                   cell === "#" || cell === "＃"
                     ? "bg-black text-gray-800"
