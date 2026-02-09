@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "problems": [
+    {
+      "id": "blank25-001",
+      "linkName": "第1問",
+      "imageFile": "1.jpg",
+      "answers": ["たぬき", "タヌキ"]
+    },
+    {
+      "id": "blank25-002",
+      "linkName": "第2問",
+      "imageFile": "1.jpg",
+      "answers": ["たぬき", "タヌキ"]
+    },
+    {
+      "id": "blank25-003",
+      "linkName": "第3問",
+      "imageFile": "1.jpg",
+      "answers": ["たぬき", "タヌキ"]
+    },
+    {
+      "id": "blank25-004",
+      "linkName": "第4問",
+      "imageFile": "1.jpg",
+      "answers": ["たぬき", "タヌキ"]
+    }
+  ]
+}
