@@ -6,9 +6,8 @@ export default function Blank25ListPage() {
   return (
     <>
       <ArticleHeaderComponent />
-      <Article index={8} />
+      {/* <Article index={8} /> */}
       <Blank25ProblemList />
     </>
   );
 }
-
