@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { CheckCircle2, List, RotateCcw } from "lucide-react";
@@ -8,6 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { generateJsonLdArticle } from "@/components/common/generateJsonLdArticle";
+import Blank25ClearDialog from "@/components/blank25/clear-dialog";
+import {
+  fireBlank25Confetti,
+  type ConfettiCleanup,
+} from "@/components/blank25/confetti";
 import { fetchBlank25Manifest } from "@/components/blank25/manifest";
 import type {
   Blank25PersistedStateV1,
@@ -80,6 +85,8 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
   const [solvedAt, setSolvedAt] = useState<number | null>(null);
   const [score, setScore] = useState<number | null>(null);
   const [isCorrect, setIsCorrect] = useState(false);
+  const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
+  const confettiCleanupRef = useRef<ConfettiCleanup | null>(null);
 
   const openedCount = useMemo(
     () => openedPanels.reduce((acc, isOpened) => acc + (isOpened ? 1 : 0), 0),
@@ -101,6 +108,7 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
     setSolvedAt(null);
     setScore(null);
     setIsCorrect(false);
+    setIsClearDialogOpen(false);
   }, []);
 
   useEffect(() => {
@@ -144,6 +152,27 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
         : { type: "idle" }
     );
   }, [manifestVersion, problemId]);
+
+  useEffect(() => {
+    return () => {
+      confettiCleanupRef.current?.();
+      confettiCleanupRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isClearDialogOpen) {
+      return;
+    }
+
+    confettiCleanupRef.current?.();
+    confettiCleanupRef.current = fireBlank25Confetti();
+
+    return () => {
+      confettiCleanupRef.current?.();
+      confettiCleanupRef.current = null;
+    };
+  }, [isClearDialogOpen]);
 
   useEffect(() => {
     if (manifestVersion === null) return;
@@ -204,6 +233,7 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
       setScore(finalScore);
       setSolvedAt(Date.now());
       setJudgeStatus({ type: "correct", score: finalScore });
+      setIsClearDialogOpen(true);
       return;
     }
     setJudgeStatus({ type: "wrong" });
@@ -222,6 +252,14 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
 
   return (
     <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {isCorrect && typeof score === "number" && (
+        <Blank25ClearDialog
+          open={isClearDialogOpen}
+          onOpenChange={setIsClearDialogOpen}
+          score={score}
+          openedCount={openedCount}
+        />
+      )}
       {jsonLd && (
         <script
           key="json-ld"
@@ -281,13 +319,14 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
                   <div className="absolute inset-0 grid grid-cols-5 grid-rows-5 gap-0">
                     {openedPanels.map((isOpened, index) => {
                       const number = index + 1;
-                      const hidden = isOpened || isCorrect;
+                      const hidden = isOpened;
+                      const dimmed = isCorrect && !isOpened;
                       return (
                         <button
                           key={number}
                           type="button"
                           onClick={() => openPanel(index)}
-                          disabled={hidden}
+                          disabled={hidden || isCorrect}
                           aria-label={`パネル ${number}`}
                           className={[
                             "border border-gray-300",
@@ -295,6 +334,8 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
                             "transition-all duration-150",
                             hidden
                               ? "opacity-0 pointer-events-none"
+                              : dimmed
+                              ? "bg-black/50 text-white/70"
                               : "bg-black text-gray-100 hover:bg-gray-950",
                             "flex items-center justify-center",
                             "text-sm sm:text-base font-semibold",

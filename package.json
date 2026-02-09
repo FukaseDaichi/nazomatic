@@ -24,6 +24,7 @@
     "@types/three": "^0.169.0",
     "@types/webspeechapi": "^0.0.29",
     "@use-gesture/react": "^10.3.1",
+    "canvas-confetti": "^1.9.4",
     "chrono-node": "^2.9.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
@@ -43,6 +44,7 @@
   },
   "devDependencies": {
     "@shadcn/ui": "^0.0.4",
+    "@types/canvas-confetti": "^1.9.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
