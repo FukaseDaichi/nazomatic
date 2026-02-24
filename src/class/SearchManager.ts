@@ -161,12 +161,12 @@ function normalizeInputMark(input: string): string {
 
   const numMarkRegex = new RegExp(
     `([0-9])[${KANA_MARKS.DAKUTEN_REPLACE}${KANA_MARKS.HANDAKUTEN_REPLACE}]`,
-    "g"
+    "g",
   );
 
   const markRegex = new RegExp(
     `[${KANA_MARKS.DAKUTEN_REPLACE}${KANA_MARKS.HANDAKUTEN_REPLACE}]`,
-    "g"
+    "g",
   );
 
   // 濁点や半濁点が数字に続く場合は削除
@@ -186,9 +186,9 @@ function isMatchMarkPoint(word: string, rawInput: string): boolean {
     return input.replace(
       new RegExp(
         `[${KANA_MARKS.DAKUTEN_REPLACE}${KANA_MARKS.HANDAKUTEN_REPLACE}]`,
-        "g"
+        "g",
       ),
-      ""
+      "",
     );
   };
 
@@ -233,10 +233,10 @@ function isMatchMarkPoint(word: string, rawInput: string): boolean {
           rawInput.replace(
             new RegExp(
               `${preRawChar}[${KANA_MARKS.DAKUTEN_REPLACE}${KANA_MARKS.HANDAKUTEN_REPLACE}]`,
-              "g"
+              "g",
             ),
-            "!"
-          )
+            "!",
+          ),
         );
         const removeDakutenChar = removeDakuten(targetWordChar);
 
@@ -319,6 +319,7 @@ export class SearchManager {
   private dictionary: Dictionary; // ロードされた辞書
   private processed: Map<string, string[]>; // 前処理済みデータ
   private wordsByLength: Map<number, string[]> = new Map();
+  private wordSet: Set<string> = new Set();
   /**
    * 辞書のキャッシュ（複数の辞書を管理）
    */
@@ -391,7 +392,7 @@ export class SearchManager {
       return dictionary;
     } catch (error: any) {
       throw new Error(
-        `辞書ファイルの読み込み中にエラーが発生しました: ${error.message}`
+        `辞書ファイルの読み込み中にエラーが発生しました: ${error.message}`,
       );
     }
   }
@@ -401,6 +402,8 @@ export class SearchManager {
    */
   private preprocessDictionary(): void {
     this.dictionary.words.forEach((word) => {
+      this.wordSet.add(word);
+
       // 通常のアナグラム検索用
       const key = word.split("").sort().join("");
       if (!this.processed.has(key)) {
@@ -439,7 +442,7 @@ export class SearchManager {
             if (char !== "?") {
               inputLetterCounts.set(
                 char,
-                (inputLetterCounts.get(char) || 0) + 1
+                (inputLetterCounts.get(char) || 0) + 1,
               );
             } else {
               wildcardCount++;
@@ -491,6 +494,15 @@ export class SearchManager {
     });
   }
 
+  public findExactWordAsync(input: string): Promise<boolean> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const normalizedInput = normalizeWord(input);
+        resolve(this.wordSet.has(normalizedInput));
+      }, 0);
+    });
+  }
+
   /**
    * パターン検索する（非同期版）
    * @param input 入力文字列
@@ -501,11 +513,11 @@ export class SearchManager {
       setTimeout(() => {
         const markRegex = new RegExp(
           `[${KANA_MARKS.DAKUTEN}${KANA_MARKS.HANDAKUTEN}]`,
-          "g"
+          "g",
         );
         const markReplaceRegex = new RegExp(
           `[${KANA_MARKS.DAKUTEN_REPLACE}${KANA_MARKS.HANDAKUTEN_REPLACE}]`,
-          "g"
+          "g",
         );
 
         //濁点半濁点の判定
@@ -631,4 +643,3 @@ export class SearchManager {
     );
   }
 }
-

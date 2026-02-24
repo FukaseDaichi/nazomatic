@@ -47,6 +47,12 @@
       "title": "星座システム",
       "description": "十二星座や四季の星座をひらがな検索で横断！",
       "path": "/constellation"
+    },
+    {
+      "iconName": "RotateCw",
+      "title": "シフト検索",
+      "description": "入力語を文字ずらしして辞書検索。必要ならずらし後アナグラムも検索！",
+      "path": "/shift-search"
     }
   ]
 }
