@@ -31,9 +31,7 @@ const WordData: FC<WordInfoProps> = ({
       >
         {number}
       </span>
-      <div
-        className={`rounded-lg ${styles.word} bg-gray-500 group-hover:bg-purple-500 text-white`}
-      >
+      <div className={`rounded-lg ${styles.word} bg-gray-500 text-white`}>
         {word}
       </div>
       <div className={styles.count}>{count}</div>
