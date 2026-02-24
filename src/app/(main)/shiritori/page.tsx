@@ -12,8 +12,9 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
-import { Card, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import Article from "@/components/common/json-ld-component";
 import ArticleHeaderComponent from "@/components/common/article-header-component";
 
@@ -49,7 +50,7 @@ export default function Comprehensive() {
           onClickHandler: () => addWord(hiragana.value),
         };
         return data;
-      })
+      }),
     );
   }, [text, addWord]);
 
@@ -63,6 +64,9 @@ export default function Comprehensive() {
       <ArticleHeaderComponent />
       <Article index={0} />
       <main className="flex min-h-screen flex-col items-center bg-gradient-to-b from-gray-900 to-gray-800">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-1 text-center">
+          しりとりシステム
+        </h1>
         <Card className="bg-gray-800 border-gray-700 flex flex-col items-center mx-auto text-white sm:p-4 md:p-8 mt-5 w-full sm:w-auto">
           <WordList wordInfos={wordInfos} />
           <StylishAutoResizeTextareaComponent value={text} setValue={setText} />
@@ -74,16 +78,20 @@ export default function Comprehensive() {
           </Button>
         </Card>
         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-          <DialogContent className="sm:max-w-[1000px] overflow-y-auto text-black">
-            <DialogHeader>
-              <DialogTitle className="text-center text-xl font-bold">
-                <CardTitle className="text-2xl font-bold text-center text-purple-800 dark:text-purple-200">
-                  しりとり結果
-                </CardTitle>
+          <DialogContent className="w-[calc(100%-2rem)] max-w-2xl max-h-[85vh] overflow-y-auto rounded-xl text-black p-4 sm:p-6">
+            <DialogHeader className="pb-2">
+              <DialogTitle className="text-lg sm:text-xl font-bold text-center text-purple-800 dark:text-purple-200">
+                しりとり結果
               </DialogTitle>
+              <DialogDescription className="sr-only">
+                しりとりの最長チェーンと未使用単語の結果表示
+              </DialogDescription>
             </DialogHeader>
             {shiritoriText && (
-              <ShiritoriResultComponent inputText={shiritoriText} />
+              <ShiritoriResultComponent
+                inputText={shiritoriText}
+                onClose={() => setIsModalOpen(false)}
+              />
             )}
           </DialogContent>
         </Dialog>

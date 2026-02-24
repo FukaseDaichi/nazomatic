@@ -10,14 +10,14 @@ const DiceComponent = dynamic(
   () => import("@/components/diceComponent/dice-components"),
   {
     ssr: false,
-  }
+  },
 );
 const DiceNets = dynamic(
   () =>
     import("@/components/diceComponent/dice-nets").then((mod) => mod.DiceNets),
   {
     ssr: false,
-  }
+  },
 );
 
 export default function Dice() {
@@ -42,7 +42,7 @@ export default function Dice() {
         },
       }));
     },
-    []
+    [],
   );
 
   return (
