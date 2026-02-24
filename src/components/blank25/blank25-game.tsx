@@ -29,7 +29,7 @@ const storageKey = (manifestVersion: number, problemId: string) =>
   `blank25:v1:${manifestVersion}:${problemId}`;
 
 const safeParsePersisted = (
-  value: string | null
+  value: string | null,
 ): Blank25PersistedStateV1 | null => {
   if (!value) return null;
   try {
@@ -90,7 +90,7 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
 
   const openedCount = useMemo(
     () => openedPanels.reduce((acc, isOpened) => acc + (isOpened ? 1 : 0), 0),
-    [openedPanels]
+    [openedPanels],
   );
   const remainingCount = PANEL_COUNT - openedCount;
 
@@ -149,7 +149,7 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
     setJudgeStatus(
       persisted.isCorrect && typeof persisted.score === "number"
         ? { type: "correct", score: persisted.score }
-        : { type: "idle" }
+        : { type: "idle" },
     );
   }, [manifestVersion, problemId]);
 
@@ -217,7 +217,7 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
         return [...prev, number];
       });
     },
-    [isCorrect]
+    [isCorrect],
   );
 
   const judge = useCallback(() => {
@@ -274,12 +274,22 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
           </h2>
           <div className="text-sm text-gray-400 truncate">ID: {problemId}</div>
         </div>
-        <Button asChild variant="outline" className="bg-white text-gray-900">
-          <Link href="/blank25">
-            <List className="w-4 h-4 mr-2" />
-            一覧へ
-          </Link>
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            onClick={reset}
+            variant="outline"
+            className="bg-white text-gray-900"
+          >
+            <RotateCcw className="w-4 h-4 mr-2" />
+            リセット
+          </Button>
+          <Button asChild variant="outline" className="bg-white text-gray-900">
+            <Link href="/blank25">
+              <List className="w-4 h-4 mr-2" />
+              一覧へ
+            </Link>
+          </Button>
+        </div>
       </div>
 
       {error && (
@@ -335,8 +345,8 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
                             hidden
                               ? "opacity-0 pointer-events-none"
                               : dimmed
-                              ? "bg-black/50 text-white/70"
-                              : "bg-black text-gray-100 hover:bg-gray-950",
+                                ? "bg-black/50 text-white/70"
+                                : "bg-black text-gray-100 hover:bg-gray-950",
                             "flex items-center justify-center",
                             "text-sm sm:text-base font-semibold",
                             "focus-visible:outline-none focus-visible:bg-purple-700 focus-visible:ring-2 focus-visible:ring-purple-400",
@@ -360,16 +370,6 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
                     残り {remainingCount} / 25
                   </span>
                   <span className="text-gray-400 ml-3">開封 {openedCount}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button
-                    onClick={reset}
-                    variant="outline"
-                    className="bg-white"
-                  >
-                    <RotateCcw className="w-4 h-4 mr-2" />
-                    リセット
-                  </Button>
                 </div>
               </div>
 
