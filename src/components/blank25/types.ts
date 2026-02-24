@@ -1,6 +1,14 @@
+export type Blank25Category = {
+  id: string;
+  name: string;
+  description: string;
+  color: string;
+  problems: Blank25Problem[];
+};
+
 export type Blank25Manifest = {
   version: number;
-  problems: Blank25Problem[];
+  categories: Blank25Category[];
 };
 
 export type Blank25Problem = {

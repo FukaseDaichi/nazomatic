@@ -122,7 +122,9 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
       }
       setManifestVersion(result.manifest.version);
       const found =
-        result.manifest.problems.find((p) => p.id === problemId) ?? null;
+        result.manifest.categories
+          .flatMap((c) => c.problems)
+          .find((p) => p.id === problemId) ?? null;
       if (!found) {
         setError(`指定された問題が見つかりません: ${problemId}`);
         return;
