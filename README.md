@@ -22,6 +22,12 @@
 - Tailwind CSS
 - Vercel (デプロイ)
 
+## ルーティング構成
+
+- メイン機能: `src/app/(main)`
+- BLANK25: `src/app/(blank25)`
+- シークレット機能: `src/app/(secret)`
+
 ## ローカル開発環境のセットアップ
 
 ### 実装メモ
