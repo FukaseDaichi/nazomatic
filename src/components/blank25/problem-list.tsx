@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { RotateCcw } from "lucide-react";
 import { fetchBlank25Manifest } from "@/components/blank25/manifest";
 import type { Blank25Problem } from "@/components/blank25/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,6 +11,28 @@ import { Button } from "@/components/ui/button";
 export default function Blank25ProblemList() {
   const [problems, setProblems] = useState<Blank25Problem[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [resetMessage, setResetMessage] = useState<string | null>(null);
+
+  const resetAllProblems = useCallback(() => {
+    const confirmed = window.confirm(
+      "BLANK25の保存データをすべてリセットします。よろしいですか？"
+    );
+    if (!confirmed) return;
+
+    try {
+      const keys: string[] = [];
+      for (let index = 0; index < localStorage.length; index += 1) {
+        const key = localStorage.key(index);
+        if (key && key.startsWith("blank25:v")) {
+          keys.push(key);
+        }
+      }
+      keys.forEach((key) => localStorage.removeItem(key));
+      setResetMessage(`${keys.length}件の保存データをリセットしました。`);
+    } catch {
+      setResetMessage("保存データのリセットに失敗しました。時間をおいて再試行してください。");
+    }
+  }, []);
 
   useEffect(() => {
     let canceled = false;
@@ -34,12 +57,24 @@ export default function Blank25ProblemList() {
 
   return (
     <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h2 className="text-3xl font-bold tracking-tight text-gray-100 mb-2">
-        BLANK25
-      </h2>
-      <p className="text-gray-300 mb-6">
+      <div className="flex flex-wrap items-start justify-between gap-3 mb-2">
+        <h2 className="text-3xl font-bold tracking-tight text-gray-100">BLANK25</h2>
+        <Button
+          type="button"
+          variant="outline"
+          className="bg-white text-gray-900"
+          onClick={resetAllProblems}
+        >
+          <RotateCcw className="w-4 h-4 mr-2" />
+          全問題をリセット
+        </Button>
+      </div>
+      <p className="text-gray-300 mb-2">
         問題を選んで開始します。画像の上の 25 パネル（5×5）を開きながら推理し、回答で正誤判定します。
       </p>
+      <div className="mb-6 min-h-6">
+        {resetMessage && <p className="text-sm text-gray-300">{resetMessage}</p>}
+      </div>
 
       {error && (
         <Card className="bg-gray-800 border-gray-700">
