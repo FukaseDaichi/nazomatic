@@ -19,9 +19,9 @@
 
 ## データソース
 - 既存生成物を利用:
-  - `codex/reports/shift-search-report-manifest.json`
-  - `codex/reports/jp/shift-search-jp-len-*.md`
-  - `codex/reports/en/shift-search-en-len-*.md`
+  - `.codex/shift-search/reports/shift-search-report-manifest.json`
+  - `.codex/shift-search/reports/jp/shift-search-jp-len-*.md`
+  - `.codex/shift-search/reports/en/shift-search-en-len-*.md`
 
 ## 一覧ページ仕様（`/shift-search/reports`）
 - 目的:
@@ -80,5 +80,5 @@
 - JP5のような大きいレポートでもページが固まらず表示できる（ページング有効）。
 
 ## 補足
-- 現時点では `codex/reports` を直接参照する前提。
+- 現時点では `.codex/shift-search/reports` を直接参照する前提。
 - 将来、公開環境向けに `public` 配下へ同期する構成に切り替える余地は残す。

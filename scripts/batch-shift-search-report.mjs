@@ -8,13 +8,13 @@ const DICTIONARIES = {
     path: path.join("public", "dic", "buta.dic"),
     type: "jp",
     label: "buta.dic",
-    defaultOutDir: path.join("codex", "reports", "jp"),
+    defaultOutDir: path.join(".codex", "shift-search", "reports", "jp"),
   },
   cefr: {
     path: path.join("public", "dic", "CEFR-J.dic"),
     type: "en",
     label: "CEFR-J.dic",
-    defaultOutDir: path.join("codex", "reports", "en"),
+    defaultOutDir: path.join(".codex", "shift-search", "reports", "en"),
   },
 };
 
@@ -152,13 +152,17 @@ function parseArgs(argv) {
 
   if (!DICTIONARIES[options.dictionary]) {
     throw new Error(
-      `Unsupported dictionary: ${options.dictionary} (use "buta" or "cefr").`
+      `Unsupported dictionary: ${options.dictionary} (use "buta" or "cefr").`,
     );
   }
 
-  const uniqueLengths = Array.from(new Set(options.lengths)).sort((a, b) => a - b);
+  const uniqueLengths = Array.from(new Set(options.lengths)).sort(
+    (a, b) => a - b,
+  );
   if (uniqueLengths.length === 0) {
-    throw new Error("Length is required. Example: --length 5 or --length 5,6,7,8");
+    throw new Error(
+      "Length is required. Example: --length 5 or --length 5,6,7,8",
+    );
   }
   options.lengths = uniqueLengths;
 
@@ -171,7 +175,7 @@ function parseArgs(argv) {
 
 function normalizeKana(input) {
   return input.replace(/[\u30a1-\u30f6]/g, (match) =>
-    String.fromCharCode(match.charCodeAt(0) - 0x60)
+    String.fromCharCode(match.charCodeAt(0) - 0x60),
   );
 }
 
@@ -181,7 +185,10 @@ function normalizeWord(word, dictionaryType) {
   }
 
   const convertedWord = word
-    .replace(SMALL_KANA_NORMALIZE_REGEX, (char) => JP_SMALL_TO_LARGE[char] ?? char)
+    .replace(
+      SMALL_KANA_NORMALIZE_REGEX,
+      (char) => JP_SMALL_TO_LARGE[char] ?? char,
+    )
     .toLowerCase()
     .normalize("NFKC");
 
@@ -193,7 +200,10 @@ function normalizeShiftInput(input, dictionaryType) {
   if (dictionaryType === "en") {
     return normalized;
   }
-  return normalized.replace(JP_SMALL_KANA_REGEX, (char) => JP_SMALL_TO_LARGE[char] || char);
+  return normalized.replace(
+    JP_SMALL_KANA_REGEX,
+    (char) => JP_SMALL_TO_LARGE[char] || char,
+  );
 }
 
 function applyKanaMark(base, mark) {
@@ -251,7 +261,8 @@ function buildShiftedWords(normalizedInput, dictionaryType) {
     return tokens
       .map((token) => {
         const baseIndex = JP_BASE_ALPHABET.indexOf(token.base);
-        const shiftedBase = JP_BASE_ALPHABET[(baseIndex + shift) % JP_BASE_ALPHABET.length];
+        const shiftedBase =
+          JP_BASE_ALPHABET[(baseIndex + shift) % JP_BASE_ALPHABET.length];
         return applyKanaMark(shiftedBase, token.mark);
       })
       .join("");
@@ -279,7 +290,9 @@ function readDictionaryWords(filePath) {
 }
 
 function buildDictionaryIndex(rawWords, dictionaryType) {
-  const normalizedWords = rawWords.map((word) => normalizeWord(word, dictionaryType));
+  const normalizedWords = rawWords.map((word) =>
+    normalizeWord(word, dictionaryType),
+  );
   const wordSet = new Set(normalizedWords);
   const anagramMap = new Map();
 
@@ -322,13 +335,15 @@ function writeReport({
     executedWordCount += 1;
 
     const zeroAnagrams = index.anagramMap.get(sortedWordKey(inputWord)) || [];
-    const zeroUnique = Array.from(new Set(zeroAnagrams)).sort((a, b) => a.localeCompare(b, "ja"));
+    const zeroUnique = Array.from(new Set(zeroAnagrams)).sort((a, b) =>
+      a.localeCompare(b, "ja"),
+    );
     for (const anagramWord of zeroUnique) {
       if (anagramWord === inputWord) {
         continue;
       }
       rowStream.write(
-        `| ${escapeMd(inputWord)} | 0 | ${escapeMd(anagramWord)} | アナグラム |\n`
+        `| ${escapeMd(inputWord)} | 0 | ${escapeMd(anagramWord)} | アナグラム |\n`,
       );
       totalHitRows += 1;
     }
@@ -338,7 +353,11 @@ function writeReport({
       continue;
     }
 
-    for (let shiftIndex = 0; shiftIndex < shiftedWords.length; shiftIndex += 1) {
+    for (
+      let shiftIndex = 0;
+      shiftIndex < shiftedWords.length;
+      shiftIndex += 1
+    ) {
       const shift = shiftIndex + 1;
       const sourceWord = shiftedWords[shiftIndex];
 
@@ -350,15 +369,16 @@ function writeReport({
 
       if (index.wordSet.has(sourceWordNormalized)) {
         rowStream.write(
-          `| ${escapeMd(inputWord)} | ${shift} | ${escapeMd(sourceWordNormalized)} | 完全一致 |\n`
+          `| ${escapeMd(inputWord)} | ${shift} | ${escapeMd(sourceWordNormalized)} | 完全一致 |\n`,
         );
         totalHitRows += 1;
       }
 
-      const anagrams = index.anagramMap.get(sortedWordKey(sourceWordNormalized)) || [];
+      const anagrams =
+        index.anagramMap.get(sortedWordKey(sourceWordNormalized)) || [];
       if (anagrams.length > 0) {
         rowStream.write(
-          `| ${escapeMd(inputWord)} | ${shift} | ${escapeMd(sourceWordNormalized)} | アナグラム |\n`
+          `| ${escapeMd(inputWord)} | ${shift} | ${escapeMd(sourceWordNormalized)} | アナグラム |\n`,
         );
         totalHitRows += 1;
       }
@@ -425,7 +445,11 @@ async function main() {
 
   for (const length of options.lengths) {
     const words = rawWords.filter((word) => [...word].length === length);
-    const outputPath = resolveOutputPath(options, dictionaryConfig.type, length);
+    const outputPath = resolveOutputPath(
+      options,
+      dictionaryConfig.type,
+      length,
+    );
 
     const result = await writeReport({
       outputPath,
@@ -439,7 +463,7 @@ async function main() {
 
     // eslint-disable-next-line no-console
     console.log(
-      `[done] length=${length} target=${result.targetWordCount} hits=${result.totalHitRows} file=${result.outputPath}`
+      `[done] length=${length} target=${result.targetWordCount} hits=${result.totalHitRows} file=${result.outputPath}`,
     );
   }
 }

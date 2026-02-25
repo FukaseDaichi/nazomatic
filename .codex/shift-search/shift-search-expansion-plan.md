@@ -1,23 +1,27 @@
 # shift-search 拡張計画（軽量版）
 
 ## 前提
+
 - ここでは実行手順と出力仕様を定義する。
 - 出力MDはそのまま画面表示で使う前提。
 - `shift-search` の結果一覧に近い形で表示する。
 
 ## 対象範囲
+
 - 日本語（`buta.dic`）: 3 / 4 / 5 / 6 / 7 / 8 文字
 - 英語（`CEFR-J.dic`）: 3文字以上
 
 ## 出力ファイル方針
+
 - 1条件1ファイルで分離:
-  - 日本語: `codex/reports/jp/shift-search-jp-len-{N}.md`
-  - 英語: `codex/reports/en/shift-search-en-len-{N}.md`
+  - 日本語: `.codex/shift-search/reports/jp/shift-search-jp-len-{N}.md`
+  - 英語: `.codex/shift-search/reports/en/shift-search-en-len-{N}.md`
 - 付帯:
-  - 目次: `codex/reports/shift-search-report-index.md`
-  - メタ: `codex/reports/shift-search-report-manifest.json`
+  - 目次: `.codex/shift-search/reports/shift-search-report-index.md`
+  - メタ: `.codex/shift-search/reports/shift-search-report-manifest.json`
 
 ## MDフォーマット（軽量）
+
 - ヘッダ:
   - 辞書名
   - 長さ条件
@@ -32,13 +36,14 @@
   - `matchType`（`完全一致` または `アナグラム`）
 
 例:
+
 ```md
-| inputWord | shift | shiftedWord | matchType |
-|---|---:|---|---|
-| ことば | 0 | ばこと | アナグラム |
-| ことば | 7 | さとび | 完全一致 |
-| ことば | 7 | さとび | アナグラム |
-| ことば | 22 | のひる | アナグラム |
+| inputWord | shift | shiftedWord | matchType  |
+| --------- | ----: | ----------- | ---------- |
+| ことば    |     0 | ばこと      | アナグラム |
+| ことば    |     7 | さとび      | 完全一致   |
+| ことば    |     7 | さとび      | アナグラム |
+| ことば    |    22 | のひる      | アナグラム |
 ```
 
 - 補足:
@@ -49,11 +54,13 @@
   - これで表示は軽く保ちつつ、「どの単語が何シフトで何になるか」は追える。
 
 ## 除外する情報
+
 - skip理由は出力しない。
 - skipした単語一覧は出力しない。
 - 個別アナグラム単語の全列挙（`resultWord`の大量行）はMDに出さない。
 
 ## 実装方針（スクリプト）
+
 - 新規:
   - `scripts/batch-shift-search-report.mjs`
   - `scripts/build-shift-search-report-meta.mjs`
@@ -69,6 +76,7 @@
 - すべてのMD生成後に `scripts/build-shift-search-report-meta.mjs` を実行し、index / manifest を再生成する。
 
 ## 実行順（本実行時）
+
 1. `--limit 20` で試験実行（JP5 / EN5）。
 2. UI (`/shift-search`) と代表語を突合。
 3. 日本語6ファイル（3,4,5,6,7,8）を生成。
@@ -76,6 +84,7 @@
 5. index / manifest を生成。
 
 ## 調査ページ化
+
 - ページはMDをそのまま読む（またはmanifest経由で表示対象を切替）。
 - UIは最小構成:
   - 辞書切替

@@ -3,10 +3,13 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const REPORT_ROOT = path.join("codex", "reports");
+const REPORT_ROOT = path.join(".codex", "shift-search", "reports");
 const REPORT_FILENAME_REGEX = /^shift-search-(jp|en)-len-(\d+)\.md$/;
 const INDEX_PATH = path.join(REPORT_ROOT, "shift-search-report-index.md");
-const MANIFEST_PATH = path.join(REPORT_ROOT, "shift-search-report-manifest.json");
+const MANIFEST_PATH = path.join(
+  REPORT_ROOT,
+  "shift-search-report-manifest.json",
+);
 
 function parseRequiredMatch(content, pattern, label) {
   const match = content.match(pattern);
@@ -17,7 +20,11 @@ function parseRequiredMatch(content, pattern, label) {
 }
 
 function parseRequiredNumber(content, key) {
-  const raw = parseRequiredMatch(content, new RegExp(`^- ${key}: (\\d+)$`, "m"), key);
+  const raw = parseRequiredMatch(
+    content,
+    new RegExp(`^- ${key}: (\\d+)$`, "m"),
+    key,
+  );
   return Number(raw);
 }
 
@@ -25,12 +32,24 @@ function parseReport(filePath, language, length) {
   const content = fs.readFileSync(filePath, "utf8");
   const stat = fs.statSync(filePath);
 
-  const dictionary = parseRequiredMatch(content, /^- dictionary: (.+)$/m, "dictionary");
+  const dictionary = parseRequiredMatch(
+    content,
+    /^- dictionary: (.+)$/m,
+    "dictionary",
+  );
   const targetWordCount = parseRequiredNumber(content, "targetWordCount");
   const executedWordCount = parseRequiredNumber(content, "executedWordCount");
   const totalHitRows = parseRequiredNumber(content, "totalHitRows");
-  const startedAt = parseRequiredMatch(content, /^- startedAt: (.+)$/m, "startedAt");
-  const generatedAt = parseRequiredMatch(content, /^- generatedAt: (.+)$/m, "generatedAt");
+  const startedAt = parseRequiredMatch(
+    content,
+    /^- startedAt: (.+)$/m,
+    "startedAt",
+  );
+  const generatedAt = parseRequiredMatch(
+    content,
+    /^- generatedAt: (.+)$/m,
+    "generatedAt",
+  );
 
   return {
     language,
@@ -76,8 +95,14 @@ function listLanguageReports(language) {
 function buildGroup(reports) {
   return {
     reportCount: reports.length,
-    totalTargetWordCount: reports.reduce((sum, report) => sum + report.targetWordCount, 0),
-    totalExecutedWordCount: reports.reduce((sum, report) => sum + report.executedWordCount, 0),
+    totalTargetWordCount: reports.reduce(
+      (sum, report) => sum + report.targetWordCount,
+      0,
+    ),
+    totalExecutedWordCount: reports.reduce(
+      (sum, report) => sum + report.executedWordCount,
+      0,
+    ),
     totalHitRows: reports.reduce((sum, report) => sum + report.totalHitRows, 0),
   };
 }
@@ -85,7 +110,7 @@ function buildGroup(reports) {
 function buildIndexTableRows(reports) {
   return reports.map(
     (report) =>
-      `| ${report.length} | ${report.targetWordCount} | ${report.executedWordCount} | ${report.totalHitRows} | [${path.basename(report.path)}](${report.path}) |`
+      `| ${report.length} | ${report.targetWordCount} | ${report.executedWordCount} | ${report.totalHitRows} | [${path.basename(report.path)}](${report.path}) |`,
   );
 }
 
@@ -101,12 +126,22 @@ function writeManifest({ generatedAt, jpReports, enReports }) {
     reports,
   };
 
-  fs.writeFileSync(MANIFEST_PATH, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
+  fs.writeFileSync(
+    MANIFEST_PATH,
+    `${JSON.stringify(manifest, null, 2)}\n`,
+    "utf8",
+  );
 }
 
 function writeIndex({ generatedAt, jpReports, enReports }) {
-  const jpTotalHitRows = jpReports.reduce((sum, report) => sum + report.totalHitRows, 0);
-  const enTotalHitRows = enReports.reduce((sum, report) => sum + report.totalHitRows, 0);
+  const jpTotalHitRows = jpReports.reduce(
+    (sum, report) => sum + report.totalHitRows,
+    0,
+  );
+  const enTotalHitRows = enReports.reduce(
+    (sum, report) => sum + report.totalHitRows,
+    0,
+  );
   const reportCount = jpReports.length + enReports.length;
 
   const lines = [
@@ -144,7 +179,7 @@ function main() {
 
   // eslint-disable-next-line no-console
   console.log(
-    `[done] generated index and manifest (jp=${jpReports.length}, en=${enReports.length}, total=${jpReports.length + enReports.length})`
+    `[done] generated index and manifest (jp=${jpReports.length}, en=${enReports.length}, total=${jpReports.length + enReports.length})`,
   );
 }
 
