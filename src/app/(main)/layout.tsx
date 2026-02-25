@@ -68,7 +68,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ja">
+    <html lang="ja" style={{ backgroundColor: themeColor }}>
       <body
         className={`${inter.className} min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white`}
       >
