@@ -1,0 +1,272 @@
+{
+  "generatedAt": "2026-02-25T03:37:50.125Z",
+  "reportCount": 21,
+  "groups": {
+    "jp": {
+      "reportCount": 6,
+      "totalTargetWordCount": 199060,
+      "totalExecutedWordCount": 199060,
+      "totalHitRows": 418553
+    },
+    "en": {
+      "reportCount": 15,
+      "totalTargetWordCount": 6824,
+      "totalExecutedWordCount": 6824,
+      "totalHitRows": 2158
+    }
+  },
+  "reports": [
+    {
+      "language": "en",
+      "length": 3,
+      "dictionary": "CEFR-J.dic",
+      "targetWordCount": 285,
+      "executedWordCount": 285,
+      "totalHitRows": 767,
+      "startedAt": "2026-02-25T03:36:39.056Z",
+      "generatedAt": "2026-02-25T03:36:39.092Z",
+      "path": "codex/reports/en/shift-search-en-len-3.md",
+      "sizeBytes": 28096
+    },
+    {
+      "language": "en",
+      "length": 4,
+      "dictionary": "CEFR-J.dic",
+      "targetWordCount": 818,
+      "executedWordCount": 818,
+      "totalHitRows": 930,
+      "startedAt": "2026-02-25T03:36:39.130Z",
+      "generatedAt": "2026-02-25T03:36:39.168Z",
+      "path": "codex/reports/en/shift-search-en-len-4.md",
+      "sizeBytes": 36009
+    },
+    {
+      "language": "en",
+      "length": 5,
+      "dictionary": "CEFR-J.dic",
+      "targetWordCount": 933,
+      "executedWordCount": 933,
+      "totalHitRows": 280,
+      "startedAt": "2026-02-25T02:43:27.501Z",
+      "generatedAt": "2026-02-25T02:43:27.571Z",
+      "path": "codex/reports/en/shift-search-en-len-5.md",
+      "sizeBytes": 11578
+    },
+    {
+      "language": "en",
+      "length": 6,
+      "dictionary": "CEFR-J.dic",
+      "targetWordCount": 1025,
+      "executedWordCount": 1025,
+      "totalHitRows": 111,
+      "startedAt": "2026-02-25T02:43:27.608Z",
+      "generatedAt": "2026-02-25T02:43:27.662Z",
+      "path": "codex/reports/en/shift-search-en-len-6.md",
+      "sizeBytes": 4977
+    },
+    {
+      "language": "en",
+      "length": 7,
+      "dictionary": "CEFR-J.dic",
+      "targetWordCount": 1026,
+      "executedWordCount": 1026,
+      "totalHitRows": 48,
+      "startedAt": "2026-02-25T02:43:27.697Z",
+      "generatedAt": "2026-02-25T02:43:27.742Z",
+      "path": "codex/reports/en/shift-search-en-len-7.md",
+      "sizeBytes": 2413
+    },
+    {
+      "language": "en",
+      "length": 8,
+      "dictionary": "CEFR-J.dic",
+      "targetWordCount": 858,
+      "executedWordCount": 858,
+      "totalHitRows": 4,
+      "startedAt": "2026-02-25T02:43:27.772Z",
+      "generatedAt": "2026-02-25T02:43:27.814Z",
+      "path": "codex/reports/en/shift-search-en-len-8.md",
+      "sizeBytes": 470
+    },
+    {
+      "language": "en",
+      "length": 9,
+      "dictionary": "CEFR-J.dic",
+      "targetWordCount": 690,
+      "executedWordCount": 690,
+      "totalHitRows": 8,
+      "startedAt": "2026-02-25T02:43:27.847Z",
+      "generatedAt": "2026-02-25T02:43:27.885Z",
+      "path": "codex/reports/en/shift-search-en-len-9.md",
+      "sizeBytes": 670
+    },
+    {
+      "language": "en",
+      "length": 10,
+      "dictionary": "CEFR-J.dic",
+      "targetWordCount": 551,
+      "executedWordCount": 551,
+      "totalHitRows": 8,
+      "startedAt": "2026-02-25T02:43:27.918Z",
+      "generatedAt": "2026-02-25T02:43:27.959Z",
+      "path": "codex/reports/en/shift-search-en-len-10.md",
+      "sizeBytes": 688
+    },
+    {
+      "language": "en",
+      "length": 11,
+      "dictionary": "CEFR-J.dic",
+      "targetWordCount": 316,
+      "executedWordCount": 316,
+      "totalHitRows": 0,
+      "startedAt": "2026-02-25T02:43:27.990Z",
+      "generatedAt": "2026-02-25T02:43:28.016Z",
+      "path": "codex/reports/en/shift-search-en-len-11.md",
+      "sizeBytes": 288
+    },
+    {
+      "language": "en",
+      "length": 12,
+      "dictionary": "CEFR-J.dic",
+      "targetWordCount": 166,
+      "executedWordCount": 166,
+      "totalHitRows": 2,
+      "startedAt": "2026-02-25T02:43:28.019Z",
+      "generatedAt": "2026-02-25T02:43:28.035Z",
+      "path": "codex/reports/en/shift-search-en-len-12.md",
+      "sizeBytes": 396
+    },
+    {
+      "language": "en",
+      "length": 13,
+      "dictionary": "CEFR-J.dic",
+      "targetWordCount": 111,
+      "executedWordCount": 111,
+      "totalHitRows": 0,
+      "startedAt": "2026-02-25T02:43:28.076Z",
+      "generatedAt": "2026-02-25T02:43:28.087Z",
+      "path": "codex/reports/en/shift-search-en-len-13.md",
+      "sizeBytes": 288
+    },
+    {
+      "language": "en",
+      "length": 14,
+      "dictionary": "CEFR-J.dic",
+      "targetWordCount": 30,
+      "executedWordCount": 30,
+      "totalHitRows": 0,
+      "startedAt": "2026-02-25T02:43:28.090Z",
+      "generatedAt": "2026-02-25T02:43:28.095Z",
+      "path": "codex/reports/en/shift-search-en-len-14.md",
+      "sizeBytes": 286
+    },
+    {
+      "language": "en",
+      "length": 15,
+      "dictionary": "CEFR-J.dic",
+      "targetWordCount": 10,
+      "executedWordCount": 10,
+      "totalHitRows": 0,
+      "startedAt": "2026-02-25T02:43:28.099Z",
+      "generatedAt": "2026-02-25T02:43:28.103Z",
+      "path": "codex/reports/en/shift-search-en-len-15.md",
+      "sizeBytes": 286
+    },
+    {
+      "language": "en",
+      "length": 16,
+      "dictionary": "CEFR-J.dic",
+      "targetWordCount": 4,
+      "executedWordCount": 4,
+      "totalHitRows": 0,
+      "startedAt": "2026-02-25T02:43:28.109Z",
+      "generatedAt": "2026-02-25T02:43:28.111Z",
+      "path": "codex/reports/en/shift-search-en-len-16.md",
+      "sizeBytes": 284
+    },
+    {
+      "language": "en",
+      "length": 18,
+      "dictionary": "CEFR-J.dic",
+      "targetWordCount": 1,
+      "executedWordCount": 1,
+      "totalHitRows": 0,
+      "startedAt": "2026-02-25T02:43:28.114Z",
+      "generatedAt": "2026-02-25T02:43:28.115Z",
+      "path": "codex/reports/en/shift-search-en-len-18.md",
+      "sizeBytes": 284
+    },
+    {
+      "language": "jp",
+      "length": 3,
+      "dictionary": "buta.dic",
+      "targetWordCount": 15674,
+      "executedWordCount": 15674,
+      "totalHitRows": 243609,
+      "startedAt": "2026-02-25T03:36:39.639Z",
+      "generatedAt": "2026-02-25T03:36:42.625Z",
+      "path": "codex/reports/jp/shift-search-jp-len-3.md",
+      "sizeBytes": 11739082
+    },
+    {
+      "language": "jp",
+      "length": 4,
+      "dictionary": "buta.dic",
+      "targetWordCount": 42814,
+      "executedWordCount": 42814,
+      "totalHitRows": 149427,
+      "startedAt": "2026-02-25T03:36:42.767Z",
+      "generatedAt": "2026-02-25T03:36:50.143Z",
+      "path": "codex/reports/jp/shift-search-jp-len-4.md",
+      "sizeBytes": 8130783
+    },
+    {
+      "language": "jp",
+      "length": 5,
+      "dictionary": "buta.dic",
+      "targetWordCount": 41205,
+      "executedWordCount": 41205,
+      "totalHitRows": 17359,
+      "startedAt": "2026-02-25T02:32:48.848Z",
+      "generatedAt": "2026-02-25T02:32:53.906Z",
+      "path": "codex/reports/jp/shift-search-jp-len-5.md",
+      "sizeBytes": 1048093
+    },
+    {
+      "language": "jp",
+      "length": 6,
+      "dictionary": "buta.dic",
+      "targetWordCount": 40045,
+      "executedWordCount": 40045,
+      "totalHitRows": 5059,
+      "startedAt": "2026-02-25T02:32:53.967Z",
+      "generatedAt": "2026-02-25T02:32:59.288Z",
+      "path": "codex/reports/jp/shift-search-jp-len-6.md",
+      "sizeBytes": 334768
+    },
+    {
+      "language": "jp",
+      "length": 7,
+      "dictionary": "buta.dic",
+      "targetWordCount": 34639,
+      "executedWordCount": 34639,
+      "totalHitRows": 2124,
+      "startedAt": "2026-02-25T02:32:59.338Z",
+      "generatedAt": "2026-02-25T02:33:04.262Z",
+      "path": "codex/reports/jp/shift-search-jp-len-7.md",
+      "sizeBytes": 153263
+    },
+    {
+      "language": "jp",
+      "length": 8,
+      "dictionary": "buta.dic",
+      "targetWordCount": 24683,
+      "executedWordCount": 24683,
+      "totalHitRows": 975,
+      "startedAt": "2026-02-25T02:33:04.314Z",
+      "generatedAt": "2026-02-25T02:33:08.072Z",
+      "path": "codex/reports/jp/shift-search-jp-len-8.md",
+      "sizeBytes": 76341
+    }
+  ]
+}
