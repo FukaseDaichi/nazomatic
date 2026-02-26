@@ -1,18 +1,18 @@
 {
-  "generatedAt": "2026-02-25T08:07:12.745Z",
+  "generatedAt": "2026-02-26T00:08:52.468Z",
   "reportCount": 21,
   "groups": {
     "jp": {
       "reportCount": 6,
       "totalTargetWordCount": 199060,
       "totalExecutedWordCount": 199060,
-      "totalHitRows": 418553
+      "totalHitRows": 388340
     },
     "en": {
       "reportCount": 15,
       "totalTargetWordCount": 6824,
       "totalExecutedWordCount": 6824,
-      "totalHitRows": 2158
+      "totalHitRows": 2050
     }
   },
   "reports": [
@@ -22,11 +22,11 @@
       "dictionary": "CEFR-J.dic",
       "targetWordCount": 285,
       "executedWordCount": 285,
-      "totalHitRows": 767,
-      "startedAt": "2026-02-25T03:36:39.056Z",
-      "generatedAt": "2026-02-25T03:36:39.092Z",
+      "totalHitRows": 695,
+      "startedAt": "2026-02-26T00:08:47.255Z",
+      "generatedAt": "2026-02-26T00:08:47.285Z",
       "path": ".codex/shift-search/reports/en/shift-search-en-len-3.md",
-      "sizeBytes": 28096
+      "sizeBytes": 25453
     },
     {
       "language": "en",
@@ -34,11 +34,11 @@
       "dictionary": "CEFR-J.dic",
       "targetWordCount": 818,
       "executedWordCount": 818,
-      "totalHitRows": 930,
-      "startedAt": "2026-02-25T03:36:39.130Z",
-      "generatedAt": "2026-02-25T03:36:39.168Z",
+      "totalHitRows": 896,
+      "startedAt": "2026-02-26T00:08:47.317Z",
+      "generatedAt": "2026-02-26T00:08:47.345Z",
       "path": ".codex/shift-search/reports/en/shift-search-en-len-4.md",
-      "sizeBytes": 36009
+      "sizeBytes": 34692
     },
     {
       "language": "en",
@@ -46,11 +46,11 @@
       "dictionary": "CEFR-J.dic",
       "targetWordCount": 933,
       "executedWordCount": 933,
-      "totalHitRows": 280,
-      "startedAt": "2026-02-25T02:43:27.501Z",
-      "generatedAt": "2026-02-25T02:43:27.571Z",
+      "totalHitRows": 278,
+      "startedAt": "2026-02-26T00:08:47.371Z",
+      "generatedAt": "2026-02-26T00:08:47.421Z",
       "path": ".codex/shift-search/reports/en/shift-search-en-len-5.md",
-      "sizeBytes": 11578
+      "sizeBytes": 11497
     },
     {
       "language": "en",
@@ -59,8 +59,8 @@
       "targetWordCount": 1025,
       "executedWordCount": 1025,
       "totalHitRows": 111,
-      "startedAt": "2026-02-25T02:43:27.608Z",
-      "generatedAt": "2026-02-25T02:43:27.662Z",
+      "startedAt": "2026-02-26T00:08:47.452Z",
+      "generatedAt": "2026-02-26T00:08:47.480Z",
       "path": ".codex/shift-search/reports/en/shift-search-en-len-6.md",
       "sizeBytes": 4977
     },
@@ -71,8 +71,8 @@
       "targetWordCount": 1026,
       "executedWordCount": 1026,
       "totalHitRows": 48,
-      "startedAt": "2026-02-25T02:43:27.697Z",
-      "generatedAt": "2026-02-25T02:43:27.742Z",
+      "startedAt": "2026-02-26T00:08:47.507Z",
+      "generatedAt": "2026-02-26T00:08:47.542Z",
       "path": ".codex/shift-search/reports/en/shift-search-en-len-7.md",
       "sizeBytes": 2413
     },
@@ -83,8 +83,8 @@
       "targetWordCount": 858,
       "executedWordCount": 858,
       "totalHitRows": 4,
-      "startedAt": "2026-02-25T02:43:27.772Z",
-      "generatedAt": "2026-02-25T02:43:27.814Z",
+      "startedAt": "2026-02-26T00:08:47.569Z",
+      "generatedAt": "2026-02-26T00:08:47.602Z",
       "path": ".codex/shift-search/reports/en/shift-search-en-len-8.md",
       "sizeBytes": 470
     },
@@ -95,8 +95,8 @@
       "targetWordCount": 690,
       "executedWordCount": 690,
       "totalHitRows": 8,
-      "startedAt": "2026-02-25T02:43:27.847Z",
-      "generatedAt": "2026-02-25T02:43:27.885Z",
+      "startedAt": "2026-02-26T00:08:47.626Z",
+      "generatedAt": "2026-02-26T00:08:47.651Z",
       "path": ".codex/shift-search/reports/en/shift-search-en-len-9.md",
       "sizeBytes": 670
     },
@@ -107,8 +107,8 @@
       "targetWordCount": 551,
       "executedWordCount": 551,
       "totalHitRows": 8,
-      "startedAt": "2026-02-25T02:43:27.918Z",
-      "generatedAt": "2026-02-25T02:43:27.959Z",
+      "startedAt": "2026-02-26T00:08:47.666Z",
+      "generatedAt": "2026-02-26T00:08:47.685Z",
       "path": ".codex/shift-search/reports/en/shift-search-en-len-10.md",
       "sizeBytes": 688
     },
@@ -119,8 +119,8 @@
       "targetWordCount": 316,
       "executedWordCount": 316,
       "totalHitRows": 0,
-      "startedAt": "2026-02-25T02:43:27.990Z",
-      "generatedAt": "2026-02-25T02:43:28.016Z",
+      "startedAt": "2026-02-26T00:08:47.710Z",
+      "generatedAt": "2026-02-26T00:08:47.724Z",
       "path": ".codex/shift-search/reports/en/shift-search-en-len-11.md",
       "sizeBytes": 288
     },
@@ -131,8 +131,8 @@
       "targetWordCount": 166,
       "executedWordCount": 166,
       "totalHitRows": 2,
-      "startedAt": "2026-02-25T02:43:28.019Z",
-      "generatedAt": "2026-02-25T02:43:28.035Z",
+      "startedAt": "2026-02-26T00:08:47.725Z",
+      "generatedAt": "2026-02-26T00:08:47.734Z",
       "path": ".codex/shift-search/reports/en/shift-search-en-len-12.md",
       "sizeBytes": 396
     },
@@ -143,8 +143,8 @@
       "targetWordCount": 111,
       "executedWordCount": 111,
       "totalHitRows": 0,
-      "startedAt": "2026-02-25T02:43:28.076Z",
-      "generatedAt": "2026-02-25T02:43:28.087Z",
+      "startedAt": "2026-02-26T00:08:47.760Z",
+      "generatedAt": "2026-02-26T00:08:47.767Z",
       "path": ".codex/shift-search/reports/en/shift-search-en-len-13.md",
       "sizeBytes": 288
     },
@@ -155,8 +155,8 @@
       "targetWordCount": 30,
       "executedWordCount": 30,
       "totalHitRows": 0,
-      "startedAt": "2026-02-25T02:43:28.090Z",
-      "generatedAt": "2026-02-25T02:43:28.095Z",
+      "startedAt": "2026-02-26T00:08:47.768Z",
+      "generatedAt": "2026-02-26T00:08:47.770Z",
       "path": ".codex/shift-search/reports/en/shift-search-en-len-14.md",
       "sizeBytes": 286
     },
@@ -167,8 +167,8 @@
       "targetWordCount": 10,
       "executedWordCount": 10,
       "totalHitRows": 0,
-      "startedAt": "2026-02-25T02:43:28.099Z",
-      "generatedAt": "2026-02-25T02:43:28.103Z",
+      "startedAt": "2026-02-26T00:08:47.771Z",
+      "generatedAt": "2026-02-26T00:08:47.772Z",
       "path": ".codex/shift-search/reports/en/shift-search-en-len-15.md",
       "sizeBytes": 286
     },
@@ -179,8 +179,8 @@
       "targetWordCount": 4,
       "executedWordCount": 4,
       "totalHitRows": 0,
-      "startedAt": "2026-02-25T02:43:28.109Z",
-      "generatedAt": "2026-02-25T02:43:28.111Z",
+      "startedAt": "2026-02-26T00:08:47.773Z",
+      "generatedAt": "2026-02-26T00:08:47.774Z",
       "path": ".codex/shift-search/reports/en/shift-search-en-len-16.md",
       "sizeBytes": 284
     },
@@ -191,8 +191,8 @@
       "targetWordCount": 1,
       "executedWordCount": 1,
       "totalHitRows": 0,
-      "startedAt": "2026-02-25T02:43:28.114Z",
-      "generatedAt": "2026-02-25T02:43:28.115Z",
+      "startedAt": "2026-02-26T00:08:47.776Z",
+      "generatedAt": "2026-02-26T00:08:47.777Z",
       "path": ".codex/shift-search/reports/en/shift-search-en-len-18.md",
       "sizeBytes": 284
     },
@@ -202,11 +202,11 @@
       "dictionary": "buta.dic",
       "targetWordCount": 15674,
       "executedWordCount": 15674,
-      "totalHitRows": 243609,
-      "startedAt": "2026-02-25T03:36:39.639Z",
-      "generatedAt": "2026-02-25T03:36:42.625Z",
+      "totalHitRows": 222762,
+      "startedAt": "2026-02-26T00:07:52.487Z",
+      "generatedAt": "2026-02-26T00:07:54.831Z",
       "path": ".codex/shift-search/reports/jp/shift-search-jp-len-3.md",
-      "sizeBytes": 11739082
+      "sizeBytes": 10722029
     },
     {
       "language": "jp",
@@ -214,11 +214,11 @@
       "dictionary": "buta.dic",
       "targetWordCount": 42814,
       "executedWordCount": 42814,
-      "totalHitRows": 149427,
-      "startedAt": "2026-02-25T03:36:42.767Z",
-      "generatedAt": "2026-02-25T03:36:50.143Z",
+      "totalHitRows": 140159,
+      "startedAt": "2026-02-26T00:07:54.986Z",
+      "generatedAt": "2026-02-26T00:08:05.316Z",
       "path": ".codex/shift-search/reports/jp/shift-search-jp-len-4.md",
-      "sizeBytes": 8130783
+      "sizeBytes": 7623263
     },
     {
       "language": "jp",
@@ -226,11 +226,11 @@
       "dictionary": "buta.dic",
       "targetWordCount": 41205,
       "executedWordCount": 41205,
-      "totalHitRows": 17359,
-      "startedAt": "2026-02-25T02:32:48.848Z",
-      "generatedAt": "2026-02-25T02:32:53.906Z",
+      "totalHitRows": 17266,
+      "startedAt": "2026-02-26T00:08:05.456Z",
+      "generatedAt": "2026-02-26T00:08:15.239Z",
       "path": ".codex/shift-search/reports/jp/shift-search-jp-len-5.md",
-      "sizeBytes": 1048093
+      "sizeBytes": 1042449
     },
     {
       "language": "jp",
@@ -238,11 +238,11 @@
       "dictionary": "buta.dic",
       "targetWordCount": 40045,
       "executedWordCount": 40045,
-      "totalHitRows": 5059,
-      "startedAt": "2026-02-25T02:32:53.967Z",
-      "generatedAt": "2026-02-25T02:32:59.288Z",
+      "totalHitRows": 5054,
+      "startedAt": "2026-02-26T00:08:15.305Z",
+      "generatedAt": "2026-02-26T00:08:25.696Z",
       "path": ".codex/shift-search/reports/jp/shift-search-jp-len-6.md",
-      "sizeBytes": 334768
+      "sizeBytes": 334435
     },
     {
       "language": "jp",
@@ -251,8 +251,8 @@
       "targetWordCount": 34639,
       "executedWordCount": 34639,
       "totalHitRows": 2124,
-      "startedAt": "2026-02-25T02:32:59.338Z",
-      "generatedAt": "2026-02-25T02:33:04.262Z",
+      "startedAt": "2026-02-26T00:08:25.762Z",
+      "generatedAt": "2026-02-26T00:08:34.812Z",
       "path": ".codex/shift-search/reports/jp/shift-search-jp-len-7.md",
       "sizeBytes": 153263
     },
@@ -263,8 +263,8 @@
       "targetWordCount": 24683,
       "executedWordCount": 24683,
       "totalHitRows": 975,
-      "startedAt": "2026-02-25T02:33:04.314Z",
-      "generatedAt": "2026-02-25T02:33:08.072Z",
+      "startedAt": "2026-02-26T00:08:34.877Z",
+      "generatedAt": "2026-02-26T00:08:41.597Z",
       "path": ".codex/shift-search/reports/jp/shift-search-jp-len-8.md",
       "sizeBytes": 76341
     }

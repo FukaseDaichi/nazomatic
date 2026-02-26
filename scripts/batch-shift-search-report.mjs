@@ -376,7 +376,10 @@ function writeReport({
 
       const anagrams =
         index.anagramMap.get(sortedWordKey(sourceWordNormalized)) || [];
-      if (anagrams.length > 0) {
+      const hasNonExactAnagram = anagrams.some(
+        (anagramWord) => anagramWord !== sourceWordNormalized,
+      );
+      if (hasNonExactAnagram) {
         rowStream.write(
           `| ${escapeMd(inputWord)} | ${shift} | ${escapeMd(sourceWordNormalized)} | アナグラム |\n`,
         );

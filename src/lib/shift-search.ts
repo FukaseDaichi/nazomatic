@@ -287,6 +287,9 @@ export async function runShiftSearch({
 
     const anagramResults = await searchManager.findAnagramsAsync(sourceWord);
     for (const anagramWord of anagramResults) {
+      if (anagramWord === sourceWord) {
+        continue;
+      }
       if (results.length >= SHIFT_TOTAL_RESULT_MAXCOUNT) {
         limitReached = true;
         break;
@@ -316,4 +319,3 @@ export async function runShiftSearch({
     limitReached,
   };
 }
-

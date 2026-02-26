@@ -4,9 +4,9 @@
 - length: 3
 - targetWordCount: 285
 - executedWordCount: 285
-- totalHitRows: 767
-- startedAt: 2026-02-25T03:36:39.056Z
-- generatedAt: 2026-02-25T03:36:39.092Z
+- totalHitRows: 695
+- startedAt: 2026-02-26T00:08:47.255Z
+- generatedAt: 2026-02-26T00:08:47.285Z
 
 | inputWord | shift | shiftedWord | matchType |
 |---|---:|---|---|
@@ -16,9 +16,7 @@
 | act | 24 | yar | アナグラム |
 | add | 0 | dad | アナグラム |
 | add | 1 | bee | 完全一致 |
-| add | 1 | bee | アナグラム |
 | add | 8 | ill | 完全一致 |
-| add | 8 | ill | アナグラム |
 | ago | 6 | gmu | アナグラム |
 | aid | 6 | goj | アナグラム |
 | aid | 11 | lto | アナグラム |
@@ -27,11 +25,9 @@
 | aim | 18 | sae | アナグラム |
 | air | 9 | jra | アナグラム |
 | air | 12 | mud | 完全一致 |
-| air | 12 | mud | アナグラム |
 | air | 22 | wen | アナグラム |
 | air | 23 | xfo | アナグラム |
 | all | 19 | tee | 完全一致 |
-| all | 19 | tee | アナグラム |
 | and | 0 | dna | アナグラム |
 | and | 4 | erh | アナグラム |
 | and | 14 | obr | アナグラム |
@@ -45,14 +41,12 @@
 | ape | 11 | lap | 完全一致 |
 | ape | 11 | lap | アナグラム |
 | ape | 15 | pet | 完全一致 |
-| ape | 15 | pet | アナグラム |
 | ape | 22 | wla | アナグラム |
 | are | 0 | ear | アナグラム |
 | are | 0 | era | アナグラム |
 | are | 23 | xob | アナグラム |
 | arm | 0 | ram | アナグラム |
 | arm | 17 | rid | 完全一致 |
-| arm | 17 | rid | アナグラム |
 | arm | 22 | wni | アナグラム |
 | art | 0 | rat | アナグラム |
 | art | 1 | bsu | アナグラム |
@@ -66,14 +60,12 @@
 | awe | 22 | wsa | アナグラム |
 | axe | 3 | dah | アナグラム |
 | axe | 11 | lip | 完全一致 |
-| axe | 11 | lip | アナグラム |
 | bad | 14 | por | アナグラム |
 | bag | 13 | ont | アナグラム |
 | ban | 19 | utg | アナグラム |
 | bar | 0 | bra | アナグラム |
 | bar | 3 | edu | アナグラム |
 | bar | 13 | one | 完全一致 |
-| bar | 13 | one | アナグラム |
 | bar | 17 | sri | アナグラム |
 | bat | 3 | edw | アナグラム |
 | bat | 14 | poh | アナグラム |
@@ -81,12 +73,10 @@
 | bay | 3 | edb | アナグラム |
 | bed | 23 | yba | アナグラム |
 | bee | 7 | ill | 完全一致 |
-| bee | 7 | ill | アナグラム |
 | bee | 25 | add | 完全一致 |
 | bee | 25 | add | アナグラム |
 | beg | 2 | dgi | アナグラム |
 | bet | 4 | fix | 完全一致 |
-| bet | 4 | fix | アナグラム |
 | bet | 10 | lod | アナグラム |
 | bet | 25 | ads | アナグラム |
 | bid | 3 | elg | アナグラム |
@@ -95,13 +85,11 @@
 | big | 7 | ipn | アナグラム |
 | big | 12 | nus | アナグラム |
 | bin | 6 | hot | 完全一致 |
-| bin | 6 | hot | アナグラム |
 | bin | 16 | ryd | アナグラム |
 | bin | 18 | taf | アナグラム |
 | bin | 19 | ubg | アナグラム |
 | bin | 25 | ahm | アナグラム |
 | bio | 18 | tag | 完全一致 |
-| bio | 18 | tag | アナグラム |
 | bio | 23 | yfl | アナグラム |
 | bit | 12 | nuf | アナグラム |
 | bit | 19 | ubm | アナグラム |
@@ -114,12 +102,10 @@
 | bra | 3 | eud | アナグラム |
 | bra | 13 | oen | アナグラム |
 | bra | 17 | sir | 完全一致 |
-| bra | 17 | sir | アナグラム |
 | bud | 14 | pir | アナグラム |
 | bud | 23 | yra | アナグラム |
 | bud | 25 | atc | アナグラム |
 | bug | 6 | ham | 完全一致 |
-| bug | 6 | ham | アナグラム |
 | bug | 7 | ibn | アナグラム |
 | bug | 13 | oht | アナグラム |
 | bug | 23 | yrd | アナグラム |
@@ -130,12 +116,9 @@
 | bum | 19 | unf | アナグラム |
 | bun | 4 | fyr | アナグラム |
 | bun | 6 | hat | 完全一致 |
-| bun | 6 | hat | アナグラム |
 | bun | 19 | ung | アナグラム |
 | bus | 6 | hay | 完全一致 |
-| bus | 6 | hay | アナグラム |
 | bus | 14 | pig | 完全一致 |
-| bus | 14 | pig | アナグラム |
 | bus | 25 | atr | アナグラム |
 | but | 0 | tub | アナグラム |
 | but | 14 | pih | アナグラム |
@@ -148,7 +131,6 @@
 | can | 13 | pna | アナグラム |
 | can | 24 | ayl | アナグラム |
 | cap | 4 | get | 完全一致 |
-| cap | 4 | get | アナグラム |
 | cap | 15 | rpe | アナグラム |
 | cap | 24 | ayn | アナグラム |
 | car | 13 | pne | アナグラム |
@@ -160,7 +142,6 @@
 | cod | 0 | doc | アナグラム |
 | cod | 5 | hti | アナグラム |
 | cod | 16 | set | 完全一致 |
-| cod | 16 | set | アナグラム |
 | cop | 5 | htu | アナグラム |
 | cop | 15 | rde | アナグラム |
 | cop | 18 | ugh | アナグラム |
@@ -183,7 +164,6 @@
 | dam | 0 | mad | アナグラム |
 | day | 10 | nki | アナグラム |
 | day | 14 | rom | 完全一致 |
-| day | 14 | rom | アナグラム |
 | did | 11 | oto | アナグラム |
 | die | 4 | hmi | アナグラム |
 | die | 10 | nso | アナグラム |
@@ -191,7 +171,6 @@
 | dig | 24 | bge | アナグラム |
 | dim | 14 | rwa | アナグラム |
 | dip | 12 | pub | 完全一致 |
-| dip | 12 | pub | アナグラム |
 | dip | 15 | sxe | アナグラム |
 | dna | 0 | and | アナグラム |
 | dna | 4 | hre | アナグラム |
@@ -227,7 +206,6 @@
 | era | 0 | are | アナグラム |
 | era | 0 | ear | アナグラム |
 | era | 23 | box | 完全一致 |
-| era | 23 | box | アナグラム |
 | fan | 15 | upc | アナグラム |
 | fan | 21 | avi | アナグラム |
 | fat | 1 | gbu | アナグラム |
@@ -248,7 +226,6 @@
 | fix | 6 | lod | アナグラム |
 | fix | 21 | ads | アナグラム |
 | fix | 22 | bet | 完全一致 |
-| fix | 22 | bet | アナグラム |
 | flu | 13 | syh | アナグラム |
 | flu | 21 | agp | アナグラム |
 | fly | 3 | iob | アナグラム |
@@ -267,7 +244,6 @@
 | fun | 13 | sha | アナグラム |
 | fun | 14 | tib | アナグラム |
 | fur | 13 | she | 完全一致 |
-| fur | 13 | she | アナグラム |
 | fur | 14 | tif | アナグラム |
 | fur | 15 | ujg | アナグラム |
 | fur | 21 | apm | アナグラム |
@@ -281,13 +257,11 @@
 | get | 11 | rpe | アナグラム |
 | get | 20 | ayn | アナグラム |
 | get | 22 | cap | 完全一致 |
-| get | 22 | cap | アナグラム |
 | god | 0 | dog | アナグラム |
 | god | 8 | owl | 完全一致 |
 | god | 8 | owl | アナグラム |
 | god | 12 | sap | アナグラム |
 | god | 16 | wet | 完全一致 |
-| god | 16 | wet | アナグラム |
 | gum | 0 | mug | アナグラム |
 | gum | 20 | aog | アナグラム |
 | gun | 7 | nbu | アナグラム |
@@ -295,7 +269,6 @@
 | gun | 13 | tha | アナグラム |
 | guy | 24 | esw | アナグラム |
 | gym | 12 | sky | 完全一致 |
-| gym | 12 | sky | アナグラム |
 | gym | 16 | woc | アナグラム |
 | gym | 20 | asg | アナグラム |
 | had | 8 | pil | アナグラム |
@@ -305,23 +278,17 @@
 | ham | 17 | yrd | アナグラム |
 | ham | 19 | atf | アナグラム |
 | ham | 20 | bug | 完全一致 |
-| ham | 20 | bug | アナグラム |
 | has | 0 | ash | アナグラム |
 | has | 1 | ibt | アナグラム |
 | has | 13 | unf | アナグラム |
 | has | 20 | bum | 完全一致 |
-| has | 20 | bum | アナグラム |
 | hat | 13 | ung | アナグラム |
 | hat | 20 | bun | 完全一致 |
-| hat | 20 | bun | アナグラム |
 | hat | 24 | fyr | アナグラム |
 | hay | 8 | pig | 完全一致 |
-| hay | 8 | pig | アナグラム |
 | hay | 19 | atr | アナグラム |
 | hay | 20 | bus | 完全一致 |
-| hay | 20 | bus | アナグラム |
 | her | 10 | rob | 完全一致 |
-| her | 10 | rob | アナグラム |
 | her | 22 | dan | アナグラム |
 | him | 6 | nos | アナグラム |
 | him | 7 | opt | アナグラム |
@@ -344,7 +311,6 @@
 | hot | 13 | ubg | アナグラム |
 | hot | 19 | ahm | アナグラム |
 | hot | 20 | bin | 完全一致 |
-| hot | 20 | bin | アナグラム |
 | how | 0 | who | アナグラム |
 | how | 23 | elt | アナグラム |
 | hug | 1 | ivh | アナグラム |
@@ -353,7 +319,6 @@
 | hug | 13 | uht | アナグラム |
 | hug | 23 | erd | アナグラム |
 | hut | 10 | red | 完全一致 |
-| hut | 10 | red | アナグラム |
 | hut | 13 | uhg | アナグラム |
 | hut | 14 | vih | アナグラム |
 | hut | 19 | anm | アナグラム |
@@ -361,7 +326,6 @@
 | ill | 18 | add | 完全一致 |
 | ill | 18 | add | アナグラム |
 | ill | 19 | bee | 完全一致 |
-| ill | 19 | bee | アナグラム |
 | ink | 4 | mro | アナグラム |
 | ink | 16 | yda | アナグラム |
 | its | 0 | sit | アナグラム |
@@ -375,7 +339,6 @@
 | jet | 5 | ojy | アナグラム |
 | jet | 10 | tod | アナグラム |
 | job | 12 | van | 完全一致 |
-| job | 12 | van | アナグラム |
 | job | 13 | wbo | アナグラム |
 | jog | 5 | otl | アナグラム |
 | jog | 8 | rwo | アナグラム |
@@ -398,7 +361,6 @@
 | lab | 7 | shi | アナグラム |
 | lap | 0 | pal | アナグラム |
 | lap | 4 | pet | 完全一致 |
-| lap | 4 | pet | アナグラム |
 | lap | 11 | wla | アナグラム |
 | lap | 15 | ape | 完全一致 |
 | lap | 15 | ape | アナグラム |
@@ -407,7 +369,6 @@
 | law | 4 | pea | 完全一致 |
 | law | 4 | pea | アナグラム |
 | law | 8 | tie | 完全一致 |
-| law | 8 | tie | アナグラム |
 | law | 12 | xmi | アナグラム |
 | law | 15 | apl | アナグラム |
 | law | 19 | etp | アナグラム |
@@ -423,10 +384,8 @@
 | lie | 15 | axt | アナグラム |
 | lie | 16 | byu | アナグラム |
 | lip | 15 | axe | 完全一致 |
-| lip | 15 | axe | アナグラム |
 | lip | 18 | dah | アナグラム |
 | log | 8 | two | 完全一致 |
-| log | 8 | two | アナグラム |
 | log | 16 | bew | アナグラム |
 | log | 23 | ild | アナグラム |
 | lot | 3 | orw | アナグラム |
@@ -449,7 +408,6 @@
 | map | 20 | guj | アナグラム |
 | max | 3 | pda | アナグラム |
 | max | 7 | the | 完全一致 |
-| max | 7 | the | アナグラム |
 | max | 20 | gur | アナグラム |
 | max | 22 | iwt | アナグラム |
 | mix | 3 | pla | アナグラム |
@@ -463,7 +421,6 @@
 | mud | 10 | wen | アナグラム |
 | mud | 11 | xfo | アナグラム |
 | mud | 14 | air | 完全一致 |
-| mud | 14 | air | アナグラム |
 | mud | 23 | jra | アナグラム |
 | mug | 0 | gum | アナグラム |
 | mug | 20 | goa | アナグラム |
@@ -485,9 +442,7 @@
 | now | 6 | tuc | アナグラム |
 | now | 18 | fgo | アナグラム |
 | odd | 1 | pee | 完全一致 |
-| odd | 1 | pee | アナグラム |
 | odd | 11 | zoo | 完全一致 |
-| odd | 11 | zoo | アナグラム |
 | oil | 6 | uor | アナグラム |
 | oil | 16 | eyb | アナグラム |
 | old | 15 | das | アナグラム |
@@ -505,7 +460,6 @@
 | owl | 0 | low | アナグラム |
 | owl | 4 | sap | アナグラム |
 | owl | 8 | wet | 完全一致 |
-| owl | 8 | wet | アナグラム |
 | owl | 18 | god | 完全一致 |
 | owl | 18 | god | アナグラム |
 | own | 0 | now | アナグラム |
@@ -532,16 +486,12 @@
 | pay | 15 | epn | アナグラム |
 | pea | 0 | ape | アナグラム |
 | pea | 4 | tie | 完全一致 |
-| pea | 4 | tie | アナグラム |
 | pea | 8 | xmi | アナグラム |
 | pea | 11 | apl | アナグラム |
 | pea | 15 | etp | アナグラム |
 | pea | 22 | law | 完全一致 |
-| pea | 22 | law | アナグラム |
 | pee | 10 | zoo | 完全一致 |
-| pee | 10 | zoo | アナグラム |
 | pee | 25 | odd | 完全一致 |
-| pee | 25 | odd | アナグラム |
 | peg | 4 | tik | アナグラム |
 | peg | 11 | apr | アナグラム |
 | peg | 15 | etv | アナグラム |
@@ -561,9 +511,7 @@
 | pie | 11 | atp | アナグラム |
 | pig | 11 | atr | アナグラム |
 | pig | 12 | bus | 完全一致 |
-| pig | 12 | bus | アナグラム |
 | pig | 18 | hay | 完全一致 |
-| pig | 18 | hay | アナグラム |
 | pin | 5 | uns | アナグラム |
 | pin | 19 | ibg | アナグラム |
 | pin | 21 | kdi | アナグラム |
@@ -578,13 +526,11 @@
 | pro | 12 | bda | アナグラム |
 | pub | 3 | sxe | アナグラム |
 | pub | 14 | dip | 完全一致 |
-| pub | 14 | dip | アナグラム |
 | rag | 13 | ent | アナグラム |
 | ram | 0 | arm | アナグラム |
 | ram | 17 | ird | アナグラム |
 | ram | 22 | nwi | アナグラム |
 | rap | 4 | vet | 完全一致 |
-| rap | 4 | vet | アナグラム |
 | rap | 7 | yhw | アナグラム |
 | rap | 15 | gpe | アナグラム |
 | rap | 19 | kti | アナグラム |
@@ -602,7 +548,6 @@
 | red | 9 | anm | アナグラム |
 | red | 11 | cpo | アナグラム |
 | red | 16 | hut | 完全一致 |
-| red | 16 | hut | アナグラム |
 | rid | 5 | wni | アナグラム |
 | rid | 9 | arm | 完全一致 |
 | rid | 9 | arm | アナグラム |
@@ -611,9 +556,7 @@
 | rip | 12 | dub | アナグラム |
 | rob | 12 | dan | アナグラム |
 | rob | 16 | her | 完全一致 |
-| rob | 16 | her | アナグラム |
 | rom | 12 | day | 完全一致 |
-| rom | 12 | day | アナグラム |
 | rom | 22 | nki | アナグラム |
 | row | 9 | axf | アナグラム |
 | row | 12 | dai | アナグラム |
@@ -647,7 +590,6 @@
 | she | 2 | ujg | アナグラム |
 | she | 8 | apm | アナグラム |
 | she | 13 | fur | 完全一致 |
-| she | 13 | fur | アナグラム |
 | shy | 8 | apg | アナグラム |
 | shy | 13 | ful | アナグラム |
 | sir | 9 | bra | 完全一致 |
@@ -660,7 +602,6 @@
 | sky | 4 | woc | アナグラム |
 | sky | 8 | asg | アナグラム |
 | sky | 14 | gym | 完全一致 |
-| sky | 14 | gym | アナグラム |
 | sob | 8 | awj | アナグラム |
 | son | 1 | tpo | アナグラム |
 | son | 16 | ied | アナグラム |
@@ -676,7 +617,6 @@
 | sun | 21 | npi | アナグラム |
 | tag | 5 | yfl | アナグラム |
 | tag | 8 | bio | 完全一致 |
-| tag | 8 | bio | アナグラム |
 | tan | 0 | ant | アナグラム |
 | tap | 15 | ipe | アナグラム |
 | tax | 1 | uby | アナグラム |
@@ -685,29 +625,24 @@
 | tea | 0 | eat | アナグラム |
 | tea | 15 | itp | アナグラム |
 | tea | 22 | paw | 完全一致 |
-| tea | 22 | paw | アナグラム |
 | tea | 24 | rcy | アナグラム |
 | tee | 7 | all | 完全一致 |
-| tee | 7 | all | アナグラム |
 | ten | 0 | net | アナグラム |
 | ten | 13 | gra | アナグラム |
 | the | 13 | gur | アナグラム |
 | the | 15 | iwt | アナグラム |
 | the | 19 | max | 完全一致 |
-| the | 19 | max | アナグラム |
 | the | 22 | pda | アナグラム |
 | tie | 4 | xmi | アナグラム |
 | tie | 7 | apl | アナグラム |
 | tie | 11 | etp | アナグラム |
 | tie | 18 | law | 完全一致 |
-| tie | 18 | law | アナグラム |
 | tie | 22 | pea | 完全一致 |
 | tie | 22 | pea | アナグラム |
 | tin | 11 | ety | アナグラム |
 | tip | 0 | pit | アナグラム |
 | tip | 7 | apw | アナグラム |
 | tip | 9 | cry | 完全一致 |
-| tip | 9 | cry | アナグラム |
 | tip | 11 | eta | アナグラム |
 | toe | 4 | xsi | アナグラム |
 | ton | 0 | not | アナグラム |
@@ -721,23 +656,18 @@
 | try | 13 | gel | アナグラム |
 | tub | 0 | but | アナグラム |
 | tub | 14 | hip | 完全一致 |
-| tub | 14 | hip | アナグラム |
 | tug | 7 | abn | アナグラム |
 | two | 8 | bew | アナグラム |
 | two | 15 | ild | アナグラム |
 | two | 18 | log | 完全一致 |
-| two | 18 | log | アナグラム |
 | use | 0 | sue | アナグラム |
 | use | 10 | eco | 完全一致 |
-| use | 10 | eco | アナグラム |
 | van | 1 | wbo | アナグラム |
 | van | 14 | job | 完全一致 |
-| van | 14 | job | アナグラム |
 | vet | 3 | yhw | アナグラム |
 | vet | 11 | gpe | アナグラム |
 | vet | 15 | kti | アナグラム |
 | vet | 22 | rap | 完全一致 |
-| vet | 22 | rap | アナグラム |
 | via | 5 | anf | アナグラム |
 | via | 20 | pcu | アナグラム |
 | vow | 5 | atb | アナグラム |
@@ -774,6 +704,4 @@
 | yes | 6 | eky | アナグラム |
 | yet | 15 | nti | アナグラム |
 | zoo | 15 | odd | 完全一致 |
-| zoo | 15 | odd | アナグラム |
 | zoo | 16 | pee | 完全一致 |
-| zoo | 16 | pee | アナグラム |

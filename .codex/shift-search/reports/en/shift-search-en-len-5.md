@@ -4,9 +4,9 @@
 - length: 5
 - targetWordCount: 933
 - executedWordCount: 933
-- totalHitRows: 280
-- startedAt: 2026-02-25T02:43:27.501Z
-- generatedAt: 2026-02-25T02:43:27.571Z
+- totalHitRows: 278
+- startedAt: 2026-02-26T00:08:47.371Z
+- generatedAt: 2026-02-26T00:08:47.421Z
 
 | inputWord | shift | shiftedWord | matchType |
 |---|---:|---|---|
@@ -31,7 +31,6 @@
 | angle | 8 | ivotm | アナグラム |
 | apron | 17 | rgife | アナグラム |
 | arena | 17 | river | 完全一致 |
-| arena | 17 | river | アナグラム |
 | arise | 0 | raise | アナグラム |
 | armed | 0 | dream | アナグラム |
 | avoid | 5 | fatni | アナグラム |
@@ -202,7 +201,6 @@
 | reply | 2 | tgrna | アナグラム |
 | reply | 15 | gtean | アナグラム |
 | river | 9 | arena | 完全一致 |
-| river | 9 | arena | アナグラム |
 | robin | 13 | ebova | アナグラム |
 | route | 0 | outer | アナグラム |
 | rugby | 13 | ehtol | アナグラム |

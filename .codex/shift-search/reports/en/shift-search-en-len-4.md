@@ -4,9 +4,9 @@
 - length: 4
 - targetWordCount: 818
 - executedWordCount: 818
-- totalHitRows: 930
-- startedAt: 2026-02-25T03:36:39.130Z
-- generatedAt: 2026-02-25T03:36:39.168Z
+- totalHitRows: 896
+- startedAt: 2026-02-26T00:08:47.317Z
+- generatedAt: 2026-02-26T00:08:47.345Z
 
 | inputWord | shift | shiftedWord | matchType |
 |---|---:|---|---|
@@ -60,12 +60,10 @@
 | bolt | 7 | ivsa | アナグラム |
 | bomb | 3 | erpe | アナグラム |
 | bomb | 6 | hush | 完全一致 |
-| bomb | 6 | hush | アナグラム |
 | bond | 1 | cpoe | アナグラム |
 | bone | 16 | redu | アナグラム |
 | bone | 25 | anmd | アナグラム |
 | bony | 16 | redo | 完全一致 |
-| bony | 16 | redo | アナグラム |
 | bore | 13 | ober | アナグラム |
 | bowl | 0 | blow | アナグラム |
 | brag | 0 | grab | アナグラム |
@@ -76,7 +74,6 @@
 | burn | 17 | slie | アナグラム |
 | bury | 13 | ohel | アナグラム |
 | bury | 17 | slip | 完全一致 |
-| bury | 17 | slip | アナグラム |
 | bust | 25 | atrs | アナグラム |
 | busy | 6 | haye | アナグラム |
 | cafe | 0 | face | アナグラム |
@@ -116,7 +113,6 @@
 | coin | 0 | icon | アナグラム |
 | cola | 0 | coal | アナグラム |
 | cold | 3 | frog | 完全一致 |
-| cold | 3 | frog | アナグラム |
 | cold | 16 | sebt | アナグラム |
 | cone | 0 | once | アナグラム |
 | cone | 16 | sedu | アナグラム |
@@ -141,7 +137,6 @@
 | damn | 1 | ebno | アナグラム |
 | damn | 17 | urde | アナグラム |
 | damp | 14 | road | 完全一致 |
-| damp | 14 | road | アナグラム |
 | damp | 17 | urdg | アナグラム |
 | dare | 0 | dear | アナグラム |
 | dare | 0 | read | アナグラム |
@@ -150,7 +145,6 @@
 | date | 8 | libm | アナグラム |
 | date | 11 | olep | アナグラム |
 | dawn | 4 | hear | 完全一致 |
-| dawn | 4 | hear | アナグラム |
 | dawn | 8 | liev | アナグラム |
 | dawn | 11 | olhy | アナグラム |
 | daze | 4 | hedi | アナグラム |
@@ -167,11 +161,9 @@
 | dear | 0 | read | アナグラム |
 | debt | 11 | opme | アナグラム |
 | deed | 10 | noon | 完全一致 |
-| deed | 10 | noon | アナグラム |
 | deep | 15 | stte | アナグラム |
 | deer | 0 | reed | アナグラム |
 | defy | 15 | stun | 完全一致 |
-| defy | 15 | stun | アナグラム |
 | deny | 4 | hirc | アナグラム |
 | desk | 1 | eftl | アナグラム |
 | desk | 8 | lmas | アナグラム |
@@ -276,7 +268,6 @@
 | flow | 6 | lruc | アナグラム |
 | fold | 25 | enkc | アナグラム |
 | folk | 3 | iron | 完全一致 |
-| folk | 3 | iron | アナグラム |
 | fond | 23 | clka | アナグラム |
 | food | 23 | clla | アナグラム |
 | fork | 3 | irun | アナグラム |
@@ -290,7 +281,6 @@
 | free | 9 | oann | アナグラム |
 | frog | 13 | sebt | アナグラム |
 | frog | 23 | cold | 完全一致 |
-| frog | 23 | cold | アナグラム |
 | from | 0 | form | アナグラム |
 | from | 12 | rday | アナグラム |
 | from | 14 | tfca | アナグラム |
@@ -303,7 +293,6 @@
 | gear | 13 | trne | アナグラム |
 | gift | 9 | proc | アナグラム |
 | gift | 12 | surf | 完全一致 |
-| gift | 12 | surf | アナグラム |
 | girl | 2 | iktn | アナグラム |
 | girl | 20 | aclf | アナグラム |
 | give | 18 | yanw | アナグラム |
@@ -341,7 +330,6 @@
 | hear | 4 | liev | アナグラム |
 | hear | 7 | olhy | アナグラム |
 | hear | 22 | dawn | 完全一致 |
-| hear | 22 | dawn | アナグラム |
 | heat | 0 | hate | アナグラム |
 | hell | 3 | khoo | アナグラム |
 | hell | 7 | olss | アナグラム |
@@ -376,7 +364,6 @@
 | huge | 13 | uhtr | アナグラム |
 | hurt | 13 | uheg | アナグラム |
 | hush | 20 | bomb | 完全一致 |
-| hush | 20 | bomb | アナグラム |
 | hush | 23 | erpe | アナグラム |
 | icon | 0 | coin | アナグラム |
 | idea | 11 | topl | アナグラム |
@@ -387,7 +374,6 @@
 | into | 18 | aflg | アナグラム |
 | into | 20 | chni | アナグラム |
 | iron | 23 | folk | 完全一致 |
-| iron | 23 | folk | アナグラム |
 | isle | 9 | rbun | アナグラム |
 | item | 0 | time | アナグラム |
 | item | 14 | whsa | アナグラム |
@@ -468,7 +454,6 @@
 | ling | 2 | nkpi | アナグラム |
 | link | 4 | pmro | アナグラム |
 | link | 7 | spur | 完全一致 |
-| link | 7 | spur | アナグラム |
 | link | 20 | fche | アナグラム |
 | lion | 6 | rout | アナグラム |
 | list | 22 | heop | アナグラム |
@@ -477,7 +462,6 @@
 | live | 18 | danw | アナグラム |
 | live | 22 | hera | アナグラム |
 | loaf | 8 | twin | 完全一致 |
-| loaf | 8 | twin | アナグラム |
 | loaf | 19 | ehty | アナグラム |
 | lock | 16 | besa | アナグラム |
 | lock | 20 | fiwe | アナグラム |
@@ -512,7 +496,6 @@
 | meat | 0 | team | アナグラム |
 | meet | 7 | tlla | アナグラム |
 | meet | 10 | wood | 完全一致 |
-| meet | 10 | wood | アナグラム |
 | melt | 7 | tlsa | アナグラム |
 | menu | 6 | skta | アナグラム |
 | menu | 16 | cudk | アナグラム |
@@ -541,7 +524,6 @@
 | nice | 4 | rmgi | アナグラム |
 | none | 16 | dedu | アナグラム |
 | noon | 16 | deed | 完全一致 |
-| noon | 16 | deed | アナグラム |
 | note | 0 | tone | アナグラム |
 | note | 13 | abgr | アナグラム |
 | noun | 17 | efle | アナグラム |
@@ -558,7 +540,6 @@
 | only | 6 | utre | アナグラム |
 | only | 20 | ihfs | アナグラム |
 | open | 4 | stir | 完全一致 |
-| open | 4 | stir | アナグラム |
 | open | 5 | tujs | アナグラム |
 | open | 13 | bcra | アナグラム |
 | ours | 0 | sour | アナグラム |
@@ -591,7 +572,6 @@
 | pear | 11 | aplc | アナグラム |
 | pear | 20 | jyul | アナグラム |
 | pear | 22 | lawn | 完全一致 |
-| pear | 22 | lawn | アナグラム |
 | peer | 3 | shhu | アナグラム |
 | peer | 23 | mbbo | アナグラム |
 | pick | 24 | ngai | アナグラム |
@@ -648,12 +628,10 @@
 | rail | 0 | liar | アナグラム |
 | rail | 3 | udlo | アナグラム |
 | rail | 13 | envy | 完全一致 |
-| rail | 13 | envy | アナグラム |
 | rail | 22 | nweh | アナグラム |
 | rank | 4 | vero | アナグラム |
 | rape | 0 | pear | アナグラム |
 | rape | 11 | clap | 完全一致 |
-| rape | 11 | clap | アナグラム |
 | rape | 20 | lujy | アナグラム |
 | rape | 22 | nwla | アナグラム |
 | rare | 0 | rear | アナグラム |
@@ -664,7 +642,6 @@
 | read | 0 | dear | アナグラム |
 | rear | 0 | rare | アナグラム |
 | redo | 10 | bony | 完全一致 |
-| redo | 10 | bony | アナグラム |
 | reed | 0 | deer | アナグラム |
 | reef | 0 | free | アナグラム |
 | reef | 9 | anno | アナグラム |
@@ -681,7 +658,6 @@
 | rite | 7 | ypal | アナグラム |
 | road | 3 | urdg | アナグラム |
 | road | 12 | damp | 完全一致 |
-| road | 12 | damp | アナグラム |
 | roam | 22 | nkwi | アナグラム |
 | roar | 13 | ebne | アナグラム |
 | role | 3 | uroh | アナグラム |
@@ -740,7 +716,6 @@
 | slap | 19 | leti | アナグラム |
 | slim | 6 | yros | アナグラム |
 | slip | 9 | bury | 完全一致 |
-| slip | 9 | bury | アナグラム |
 | slip | 22 | ohel | アナグラム |
 | slot | 0 | lost | アナグラム |
 | slow | 4 | wpsa | アナグラム |
@@ -770,11 +745,9 @@
 | spot | 0 | post | アナグラム |
 | spot | 0 | stop | アナグラム |
 | spot | 11 | daze | 完全一致 |
-| spot | 11 | daze | アナグラム |
 | spot | 15 | hedi | アナグラム |
 | spur | 13 | fche | アナグラム |
 | spur | 19 | link | 完全一致 |
-| spur | 19 | link | アナグラム |
 | spur | 23 | pmro | アナグラム |
 | star | 1 | tubs | アナグラム |
 | stew | 0 | west | アナグラム |
@@ -783,21 +756,17 @@
 | stir | 1 | tujs | アナグラム |
 | stir | 9 | bcra | アナグラム |
 | stir | 22 | open | 完全一致 |
-| stir | 22 | open | アナグラム |
 | stop | 0 | post | アナグラム |
 | stop | 0 | spot | アナグラム |
 | stop | 11 | deza | アナグラム |
 | stop | 15 | hide | 完全一致 |
-| stop | 15 | hide | アナグラム |
 | stun | 11 | defy | 完全一致 |
-| stun | 11 | defy | アナグラム |
 | such | 8 | ackp | アナグラム |
 | suck | 8 | acks | アナグラム |
 | suit | 21 | npdo | アナグラム |
 | sure | 0 | user | アナグラム |
 | sure | 9 | bdan | アナグラム |
 | surf | 14 | gift | 完全一致 |
-| surf | 14 | gift | アナグラム |
 | surf | 23 | proc | アナグラム |
 | swan | 4 | waer | アナグラム |
 | swim | 6 | ycos | アナグラム |
@@ -863,7 +832,6 @@
 | turn | 17 | klie | アナグラム |
 | twin | 11 | ehty | アナグラム |
 | twin | 18 | loaf | 完全一致 |
-| twin | 18 | loaf | アナグラム |
 | type | 7 | afwl | アナグラム |
 | ugly | 20 | oafs | アナグラム |
 | undo | 17 | leuf | アナグラム |
@@ -917,9 +885,7 @@
 | wish | 22 | seod | アナグラム |
 | wolf | 0 | flow | アナグラム |
 | wolf | 6 | curl | 完全一致 |
-| wolf | 6 | curl | アナグラム |
 | wood | 16 | meet | 完全一致 |
-| wood | 16 | meet | アナグラム |
 | wood | 23 | tlla | アナグラム |
 | wool | 4 | assp | アナグラム |
 | wool | 23 | tlli | アナグラム |

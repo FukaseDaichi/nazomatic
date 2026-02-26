@@ -1,18 +1,18 @@
 # shift-search report index
 
-- generatedAt: 2026-02-25T08:07:12.745Z
+- generatedAt: 2026-02-26T00:08:52.468Z
 - reportCount: 21
-- jpTotalHitRows: 418553
-- enTotalHitRows: 2158
+- jpTotalHitRows: 388340
+- enTotalHitRows: 2050
 
 ## JP Reports
 
 | Length | Target | Executed | HitRows | File |
 |---:|---:|---:|---:|---|
-| 3 | 15674 | 15674 | 243609 | [shift-search-jp-len-3.md](.codex/shift-search/reports/jp/shift-search-jp-len-3.md) |
-| 4 | 42814 | 42814 | 149427 | [shift-search-jp-len-4.md](.codex/shift-search/reports/jp/shift-search-jp-len-4.md) |
-| 5 | 41205 | 41205 | 17359 | [shift-search-jp-len-5.md](.codex/shift-search/reports/jp/shift-search-jp-len-5.md) |
-| 6 | 40045 | 40045 | 5059 | [shift-search-jp-len-6.md](.codex/shift-search/reports/jp/shift-search-jp-len-6.md) |
+| 3 | 15674 | 15674 | 222762 | [shift-search-jp-len-3.md](.codex/shift-search/reports/jp/shift-search-jp-len-3.md) |
+| 4 | 42814 | 42814 | 140159 | [shift-search-jp-len-4.md](.codex/shift-search/reports/jp/shift-search-jp-len-4.md) |
+| 5 | 41205 | 41205 | 17266 | [shift-search-jp-len-5.md](.codex/shift-search/reports/jp/shift-search-jp-len-5.md) |
+| 6 | 40045 | 40045 | 5054 | [shift-search-jp-len-6.md](.codex/shift-search/reports/jp/shift-search-jp-len-6.md) |
 | 7 | 34639 | 34639 | 2124 | [shift-search-jp-len-7.md](.codex/shift-search/reports/jp/shift-search-jp-len-7.md) |
 | 8 | 24683 | 24683 | 975 | [shift-search-jp-len-8.md](.codex/shift-search/reports/jp/shift-search-jp-len-8.md) |
 
@@ -20,9 +20,9 @@
 
 | Length | Target | Executed | HitRows | File |
 |---:|---:|---:|---:|---|
-| 3 | 285 | 285 | 767 | [shift-search-en-len-3.md](.codex/shift-search/reports/en/shift-search-en-len-3.md) |
-| 4 | 818 | 818 | 930 | [shift-search-en-len-4.md](.codex/shift-search/reports/en/shift-search-en-len-4.md) |
-| 5 | 933 | 933 | 280 | [shift-search-en-len-5.md](.codex/shift-search/reports/en/shift-search-en-len-5.md) |
+| 3 | 285 | 285 | 695 | [shift-search-en-len-3.md](.codex/shift-search/reports/en/shift-search-en-len-3.md) |
+| 4 | 818 | 818 | 896 | [shift-search-en-len-4.md](.codex/shift-search/reports/en/shift-search-en-len-4.md) |
+| 5 | 933 | 933 | 278 | [shift-search-en-len-5.md](.codex/shift-search/reports/en/shift-search-en-len-5.md) |
 | 6 | 1025 | 1025 | 111 | [shift-search-en-len-6.md](.codex/shift-search/reports/en/shift-search-en-len-6.md) |
 | 7 | 1026 | 1026 | 48 | [shift-search-en-len-7.md](.codex/shift-search/reports/en/shift-search-en-len-7.md) |
 | 8 | 858 | 858 | 4 | [shift-search-en-len-8.md](.codex/shift-search/reports/en/shift-search-en-len-8.md) |
