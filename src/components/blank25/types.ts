@@ -28,3 +28,15 @@ export type Blank25PersistedStateV1 = {
   score: number | null;
 };
 
+export type Blank25SakumonPhase = "draft" | "locked" | "solved";
+
+export type Blank25SakumonPersistedStateV1 = {
+  version: 1;
+  phase: Blank25SakumonPhase;
+  hiddenPanels: boolean[];
+  lockedAt: number | null;
+  startedAt: number;
+  solvedAt: number | null;
+  isCorrect: boolean;
+  score: number | null;
+};

@@ -17,11 +17,13 @@ export default function Blank25ClearDialog({
   onOpenChange,
   score,
   openedCount,
+  countLabel = "開封",
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   score: number;
   openedCount: number;
+  countLabel?: string;
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -46,8 +48,8 @@ export default function Blank25ClearDialog({
             <div className="mt-1 text-5xl font-black text-white">{score}</div>
           </div>
           <div className="text-center text-sm text-gray-300">
-            開封: <span className="text-white font-semibold">{openedCount}</span>{" "}
-            / 25
+            {countLabel}:{" "}
+            <span className="text-white font-semibold">{openedCount}</span> / 25
           </div>
         </div>
 

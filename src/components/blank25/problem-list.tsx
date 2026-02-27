@@ -27,7 +27,10 @@ export default function Blank25ProblemList() {
       const keys: string[] = [];
       for (let index = 0; index < localStorage.length; index += 1) {
         const key = localStorage.key(index);
-        if (key && key.startsWith("blank25:v")) {
+        if (
+          key &&
+          (key.startsWith("blank25:v") || key.startsWith("blank25:sakumon:v"))
+        ) {
           keys.push(key);
         }
       }
