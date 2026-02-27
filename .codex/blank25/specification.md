@@ -124,7 +124,7 @@ NAZOMATIC 内に、パネルを開きながら断片情報で謎解きを進め�
 
 ## 7. ルーティング/導線追加（実装時）
 
-- `src/app/(main)/blank25/page.tsx` を追加して `/blank25` を提供
+- `src/app/(blank25)/blank25/page.tsx` を追加して `/blank25` を提供
 - トップ導線:
   - `src/lib/json/features.json` にエントリ追加（順序が `Article index` と整合するように注意）
   - `Article`（JSON-LD）を追加する場合は index 管理も更新

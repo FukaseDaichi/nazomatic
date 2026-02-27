@@ -54,8 +54,8 @@
 ## 5. ディレクトリ案（実装時）
 
 - `public/data/blank25/problems.json`（問題定義）
-- `src/app/(main)/blank25/page.tsx`（問題一覧）
-- `src/app/(main)/blank25/[problemId]/page.tsx`（ゲーム）
+- `src/app/(blank25)/blank25/page.tsx`（問題一覧）
+- `src/app/(blank25)/blank25/[problemId]/page.tsx`（ゲーム）
 - `src/components/blank25/blank25-game.tsx`（盤面 + ステータス）
 - `src/components/blank25/problem-list.tsx`（一覧 UI）
 - `src/components/blank25/answer-form.tsx`（回答入力/判定）

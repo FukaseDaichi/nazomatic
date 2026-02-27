@@ -43,7 +43,7 @@
           "id": "blank25-005",
           "linkName": "第4問",
           "imageFile": "5.png",
-          "answers": ["wing", "WING", "ウイング"]
+          "answers": ["wing", "WING", "ウイング","羽","はね","ハネ"]
         },
         {
           "id": "blank25-006",
@@ -109,7 +109,7 @@
           "id": "blank25-016",
           "linkName": "第15問",
           "imageFile": "17.png",
-          "answers": ["へあー", "ヘアー"]
+          "answers": ["かーぺっと", "カーペット"]
         },
         {
           "id": "blank25-017",
