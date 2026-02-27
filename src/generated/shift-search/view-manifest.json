@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-02-27T01:58:05.391Z",
-  "sourceManifestGeneratedAt": "2026-02-27T01:58:04.845Z",
-  "externalRowThreshold": 10000,
+  "generatedAt": "2026-02-27T09:06:06.662Z",
+  "sourceManifestGeneratedAt": "2026-02-27T09:05:59.651Z",
+  "externalRowThreshold": 3000,
   "reportCount": 21,
   "groups": {
     "jp": {
@@ -18,9 +18,9 @@
     }
   },
   "delivery": {
-    "internalCount": 18,
-    "externalCount": 3,
-    "unresolvedExternalCount": 3
+    "internalCount": 17,
+    "externalCount": 4,
+    "unresolvedExternalCount": 4
   },
   "reports": [
     {
@@ -285,9 +285,9 @@
       "totalHitRows": 5054,
       "generatedAt": "2026-02-27T01:57:33.376Z",
       "sizeBytes": 441448,
-      "deliveryType": "internal",
+      "deliveryType": "external",
       "externalUrl": null,
-      "internalDataFile": "internal/jp-6.json"
+      "internalDataFile": null
     },
     {
       "reportKey": "jp-7",

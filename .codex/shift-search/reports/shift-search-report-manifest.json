@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-02-27T01:58:04.845Z",
+  "generatedAt": "2026-02-27T09:05:59.651Z",
   "reportCount": 21,
-  "externalRowThreshold": 10000,
+  "externalRowThreshold": 3000,
   "groups": {
     "jp": {
       "reportCount": 6,
@@ -17,9 +17,9 @@
     }
   },
   "delivery": {
-    "internalCount": 18,
-    "externalCount": 3,
-    "unresolvedExternalCount": 3
+    "internalCount": 17,
+    "externalCount": 4,
+    "unresolvedExternalCount": 4
   },
   "reports": [
     {
@@ -304,7 +304,7 @@
       "generatedAt": "2026-02-27T01:57:33.376Z",
       "path": ".codex/shift-search/reports/jp/shift-search-jp-len-6.md",
       "sizeBytes": 441448,
-      "deliveryType": "internal",
+      "deliveryType": "external",
       "externalUrl": null
     },
     {

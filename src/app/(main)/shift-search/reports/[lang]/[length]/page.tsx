@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import ArticleHeaderComponent from "@/components/common/article-header-component";
 import {
+  getShiftSearchViewManifest,
   getShiftSearchViewReports,
   getShiftSearchViewReport,
   readInternalShiftSearchReport,
@@ -21,7 +22,6 @@ type PageProps = {
 };
 
 const NUMBER_FORMAT = new Intl.NumberFormat("ja-JP");
-const EXTERNAL_THRESHOLD = 10_000;
 const RAW_REPORT_BASE_URL =
   "https://raw.githubusercontent.com/FukaseDaichi/nazomatic/refs/heads/main/.codex/shift-search/reports";
 
@@ -68,7 +68,9 @@ export default function ShiftSearchReportDetailPage({ params }: PageProps) {
     notFound();
   }
 
-  const isLargeReport = summary.totalHitRows >= EXTERNAL_THRESHOLD;
+  const manifest = getShiftSearchViewManifest();
+  const EXTERNAL_THRESHOLD = manifest.externalRowThreshold;
+  const isLargeReport = summary.deliveryType === "external";
   const downloadUrl = getRawReportDownloadUrl(language, length);
 
   const report =

@@ -2,6 +2,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
+import { EXTERNAL_THRESHOLD } from "./shift-search-threshold.mjs";
 
 const REPORT_ROOT = path.join(".codex", "shift-search", "reports");
 const MANIFEST_PATH = path.join(
@@ -12,7 +13,6 @@ const MANIFEST_PATH = path.join(
 const GENERATED_ROOT = path.join("src", "generated", "shift-search");
 const INTERNAL_OUTPUT_DIR = path.join(GENERATED_ROOT, "internal");
 const VIEW_MANIFEST_PATH = path.join(GENERATED_ROOT, "view-manifest.json");
-const DEFAULT_EXTERNAL_ROW_THRESHOLD = 10000;
 
 function ensureDirectory(dirPath) {
   fs.mkdirSync(dirPath, { recursive: true });
@@ -112,7 +112,7 @@ function resolveReport(report, externalRowThreshold) {
   const reportKey = report.reportKey ?? `${report.language}-${report.length}`;
   const deliveryType =
     report.deliveryType ??
-    (report.totalHitRows > externalRowThreshold ? "external" : "internal");
+    (report.totalHitRows >= externalRowThreshold ? "external" : "internal");
 
   return {
     ...report,
@@ -165,7 +165,7 @@ function main() {
     Number.isInteger(manifest.externalRowThreshold) &&
     manifest.externalRowThreshold > 0
       ? manifest.externalRowThreshold
-      : DEFAULT_EXTERNAL_ROW_THRESHOLD;
+      : EXTERNAL_THRESHOLD;
 
   ensureDirectory(GENERATED_ROOT);
   cleanDirectory(INTERNAL_OUTPUT_DIR);

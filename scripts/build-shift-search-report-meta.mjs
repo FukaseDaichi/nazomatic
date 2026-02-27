@@ -2,6 +2,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
+import { EXTERNAL_THRESHOLD } from "./shift-search-threshold.mjs";
 
 const REPORT_ROOT = path.join(".codex", "shift-search", "reports");
 const REPORT_FILENAME_REGEX = /^shift-search-(jp|en)-len-(\d+)\.md$/;
@@ -14,7 +15,6 @@ const EXTERNAL_LINKS_PATH = path.join(
   REPORT_ROOT,
   "shift-search-external-links.json",
 );
-const EXTERNAL_ROW_THRESHOLD = 10000;
 
 function loadExternalLinks() {
   if (!fs.existsSync(EXTERNAL_LINKS_PATH)) {
@@ -73,7 +73,7 @@ function parseReport(filePath, language, length, externalLinks) {
 
   const reportKey = `${language}-${length}`;
   const deliveryType =
-    totalHitRows > EXTERNAL_ROW_THRESHOLD ? "external" : "internal";
+    totalHitRows >= EXTERNAL_THRESHOLD ? "external" : "internal";
   const externalUrlRaw = externalLinks[reportKey];
   const externalUrl =
     typeof externalUrlRaw === "string" && externalUrlRaw.trim()
@@ -160,7 +160,7 @@ function writeManifest({ generatedAt, jpReports, enReports }) {
   const manifest = {
     generatedAt,
     reportCount: reports.length,
-    externalRowThreshold: EXTERNAL_ROW_THRESHOLD,
+    externalRowThreshold: EXTERNAL_THRESHOLD,
     groups: {
       jp: buildGroup(jpReports),
       en: buildGroup(enReports),
@@ -227,7 +227,7 @@ function main() {
 
   // eslint-disable-next-line no-console
   console.log(
-    `[done] generated index and manifest (jp=${jpReports.length}, en=${enReports.length}, total=${jpReports.length + enReports.length}, threshold=${EXTERNAL_ROW_THRESHOLD})`,
+    `[done] generated index and manifest (jp=${jpReports.length}, en=${enReports.length}, total=${jpReports.length + enReports.length}, threshold=${EXTERNAL_THRESHOLD})`,
   );
 }
 
