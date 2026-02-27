@@ -211,6 +211,18 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
     setIsClearDialogOpen(false);
   }, []);
 
+  const unlockSakumon = useCallback(() => {
+    if (sakumonPhase === "draft" && !isCorrect) return;
+    setSakumonPhase("draft");
+    setLockedAt(null);
+    setAnswerInput("");
+    setJudgeStatus({ type: "idle" });
+    setSolvedAt(null);
+    setScore(null);
+    setIsCorrect(false);
+    setIsClearDialogOpen(false);
+  }, [isCorrect, sakumonPhase]);
+
   const reset = useCallback(() => {
     if (isSakumonMode) {
       sakumonReset();
@@ -430,12 +442,6 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
 
   const lockSakumon = useCallback(() => {
     if (sakumonPhase !== "draft") return;
-
-    const confirmed = window.confirm(
-      "隠し配置をロックします。ロック後は作問やり直しまで編集できません。よろしいですか？",
-    );
-    if (!confirmed) return;
-
     setSakumonPhase("locked");
     setLockedAt(Date.now());
     setJudgeStatus({ type: "idle" });
@@ -528,29 +534,52 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
         </div>
 
         <div className="flex flex-col items-end gap-2">
-          <div className="flex items-center gap-2">
-            <Button
-              asChild
-              variant="outline"
-              className={
-                isSakumonMode
-                  ? "bg-white text-gray-900"
-                  : "border-purple-500 bg-purple-600 text-white hover:bg-purple-700"
-              }
+          <div className="flex flex-col items-end gap-1">
+            <span className="text-[10px] font-medium tracking-wide text-gray-400 sm:text-[11px]">
+              モード切替
+            </span>
+            <div
+              role="tablist"
+              aria-label="プレイモード"
+              className="relative inline-grid grid-cols-2 rounded-xl border border-gray-600/80 bg-gray-900/85 p-0.5 sm:p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
             >
-              <Link href={problemPath}>通常モード</Link>
-            </Button>
-            <Button
-              asChild
-              variant="outline"
-              className={
-                isSakumonMode
-                  ? "border-emerald-500 bg-emerald-600 text-white hover:bg-emerald-700"
-                  : "bg-white text-gray-900"
-              }
-            >
-              <Link href={`${problemPath}?mode=sakumon`}>作問モード</Link>
-            </Button>
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute bottom-0.5 top-0.5 sm:bottom-1 sm:top-1 z-0 rounded-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-fuchsia-500 shadow-[0_6px_20px_rgba(99,102,241,0.4)] transition-all duration-300 ease-out"
+                style={{
+                  left: isSakumonMode ? "calc(50% + 2px)" : "2px",
+                  width: "calc(50% - 4px)",
+                }}
+              />
+              <Link
+                href={problemPath}
+                role="tab"
+                aria-selected={!isSakumonMode}
+                aria-current={!isSakumonMode ? "page" : undefined}
+                className={[
+                  "relative z-10 flex min-w-[5.75rem] sm:min-w-[7.5rem] items-center justify-center rounded-md px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold transition-colors",
+                  !isSakumonMode
+                    ? "text-white"
+                    : "text-gray-300 hover:text-gray-100",
+                ].join(" ")}
+              >
+                通常モード
+              </Link>
+              <Link
+                href={`${problemPath}?mode=sakumon`}
+                role="tab"
+                aria-selected={isSakumonMode}
+                aria-current={isSakumonMode ? "page" : undefined}
+                className={[
+                  "relative z-10 flex min-w-[5.75rem] sm:min-w-[7.5rem] items-center justify-center rounded-md px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold transition-colors",
+                  isSakumonMode
+                    ? "text-white"
+                    : "text-gray-300 hover:text-gray-100",
+                ].join(" ")}
+              >
+                作問モード
+              </Link>
+            </div>
           </div>
 
           <div className="flex items-center gap-2">
@@ -706,12 +735,13 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
                     ロック
                   </Button>
                   <Button
-                    onClick={sakumonReset}
+                    onClick={unlockSakumon}
                     variant="outline"
                     className="bg-white text-gray-900"
+                    disabled={sakumonPhase === "draft" && !isCorrect}
                   >
                     <RotateCcw className="mr-2 h-4 w-4" />
-                    作問やり直し
+                    ロック解除
                   </Button>
                 </div>
               )}
