@@ -89,26 +89,34 @@ export default function ShiftSearchReportDetailPage({ params }: PageProps) {
                   <th className="text-left py-2 pr-3">inputWord</th>
                   <th className="text-right py-2 pr-3">shift</th>
                   <th className="text-left py-2 pr-3">shiftedWord</th>
-                  <th className="text-left py-2">matchType</th>
+                  <th className="text-left py-2 pr-3">matchType</th>
+                  <th className="text-left py-2">matchedWords</th>
                 </tr>
               </thead>
               <tbody>
                 {report.rows.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="py-4 text-gray-400">
+                    <td colSpan={5} className="py-4 text-gray-400">
                       ヒット行はありません。
                     </td>
                   </tr>
                 ) : (
                   report.rows.map((row, index) => (
                     <tr
-                      key={`${row.inputWord}-${row.shift}-${row.shiftedWord}-${row.matchType}-${index}`}
+                      key={`${row.inputWord}-${row.shift}-${row.shiftedWord}-${row.matchType}-${(row.matchedWords ?? []).join(",")}-${index}`}
                       className="border-b border-gray-700/60"
                     >
                       <td className="py-2 pr-3">{row.inputWord}</td>
                       <td className="py-2 pr-3 text-right">{row.shift}</td>
                       <td className="py-2 pr-3">{row.shiftedWord}</td>
-                      <td className="py-2">{row.matchType}</td>
+                      <td className="py-2 pr-3">{row.matchType}</td>
+                      <td className="py-2">
+                        {(
+                          row.matchedWords && row.matchedWords.length > 0
+                            ? row.matchedWords
+                            : [row.shiftedWord]
+                        ).join(", ")}
+                      </td>
                     </tr>
                   ))
                 )}
@@ -120,4 +128,3 @@ export default function ShiftSearchReportDetailPage({ params }: PageProps) {
     </>
   );
 }
-

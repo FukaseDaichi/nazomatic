@@ -307,6 +307,9 @@ function buildDictionaryIndex(rawWords, dictionaryType) {
   return { wordSet, anagramMap };
 }
 
+const MATCH_TYPE_EXACT = "\u5b8c\u5168\u4e00\u81f4";
+const MATCH_TYPE_ANAGRAM = "\u30a2\u30ca\u30b0\u30e9\u30e0";
+
 function writeReport({
   outputPath,
   dictionaryLabel,
@@ -343,7 +346,7 @@ function writeReport({
         continue;
       }
       rowStream.write(
-        `| ${escapeMd(inputWord)} | 0 | ${escapeMd(anagramWord)} | アナグラム |\n`,
+        `| ${escapeMd(inputWord)} | 0 | ${escapeMd(anagramWord)} | ${MATCH_TYPE_ANAGRAM} | ${escapeMd(anagramWord)} |\n`,
       );
       totalHitRows += 1;
     }
@@ -369,19 +372,22 @@ function writeReport({
 
       if (index.wordSet.has(sourceWordNormalized)) {
         rowStream.write(
-          `| ${escapeMd(inputWord)} | ${shift} | ${escapeMd(sourceWordNormalized)} | 完全一致 |\n`,
+          `| ${escapeMd(inputWord)} | ${shift} | ${escapeMd(sourceWordNormalized)} | ${MATCH_TYPE_EXACT} | ${escapeMd(sourceWordNormalized)} |\n`,
         );
         totalHitRows += 1;
       }
 
       const anagrams =
         index.anagramMap.get(sortedWordKey(sourceWordNormalized)) || [];
-      const hasNonExactAnagram = anagrams.some(
-        (anagramWord) => anagramWord !== sourceWordNormalized,
-      );
-      if (hasNonExactAnagram) {
+      const matchedAnagrams = Array.from(
+        new Set(
+          anagrams.filter((anagramWord) => anagramWord !== sourceWordNormalized),
+        ),
+      ).sort((a, b) => a.localeCompare(b, "ja"));
+
+      if (matchedAnagrams.length > 0) {
         rowStream.write(
-          `| ${escapeMd(inputWord)} | ${shift} | ${escapeMd(sourceWordNormalized)} | アナグラム |\n`,
+          `| ${escapeMd(inputWord)} | ${shift} | ${escapeMd(sourceWordNormalized)} | ${MATCH_TYPE_ANAGRAM} | ${escapeMd(matchedAnagrams.join(", "))} |\n`,
         );
         totalHitRows += 1;
       }
@@ -404,8 +410,8 @@ function writeReport({
         `- startedAt: ${startedAt.toISOString()}`,
         `- generatedAt: ${generatedAt.toISOString()}`,
         "",
-        "| inputWord | shift | shiftedWord | matchType |",
-        "|---|---:|---|---|",
+        "| inputWord | shift | shiftedWord | matchType | matchedWords |",
+        "|---|---:|---|---|---|",
       ].join("\n");
 
       const rowsBody = fs.readFileSync(tempRowsPath, "utf8");

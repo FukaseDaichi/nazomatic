@@ -41,6 +41,7 @@ export type ShiftSearchReportRow = {
   shift: number;
   shiftedWord: string;
   matchType: string;
+  matchedWords?: string[];
 };
 
 export type ShiftSearchInternalReport = {
@@ -117,4 +118,3 @@ export function readInternalShiftSearchReport(
   const raw = fs.readFileSync(filePath, "utf8");
   return JSON.parse(raw) as ShiftSearchInternalReport;
 }
-

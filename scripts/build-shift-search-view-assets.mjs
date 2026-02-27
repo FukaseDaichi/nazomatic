@@ -52,7 +52,11 @@ function parseReportRows(markdown) {
 
   for (const line of lines) {
     if (!inTable) {
-      if (line.trim() === "| inputWord | shift | shiftedWord | matchType |") {
+      if (
+        line.trim() === "| inputWord | shift | shiftedWord | matchType |" ||
+        line.trim() ===
+          "| inputWord | shift | shiftedWord | matchType | matchedWords |"
+      ) {
         inTable = true;
       }
       continue;
@@ -62,6 +66,9 @@ function parseReportRows(markdown) {
       continue;
     }
     if (line.trim() === "|---|---:|---|---|") {
+      continue;
+    }
+    if (line.trim() === "|---|---:|---|---|---|") {
       continue;
     }
     if (!line.trim().startsWith("|")) {
@@ -78,11 +85,23 @@ function parseReportRows(markdown) {
       continue;
     }
 
+    const matchedWordsRaw = columns[4] ?? columns[2] ?? "";
+    const matchedWords = matchedWordsRaw
+      .split(",")
+      .map((value) => value.trim())
+      .filter(Boolean);
+
     rows.push({
       inputWord: columns[0],
       shift,
       shiftedWord: columns[2],
       matchType: columns[3],
+      matchedWords:
+        matchedWords.length > 0
+          ? matchedWords
+          : columns[2]
+            ? [columns[2]]
+            : [],
     });
   }
 
