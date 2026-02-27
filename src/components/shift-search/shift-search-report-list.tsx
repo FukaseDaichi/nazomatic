@@ -25,13 +25,12 @@ type Props = {
   reports: ReportItem[];
 };
 
-type DisabledReason = "no_results" | "missing_external_url" | null;
+type DisabledReason = "no_results" | null;
 
 const NUMBER_FORMAT = new Intl.NumberFormat("ja-JP");
-const EXTERNAL_THRESHOLD = 10_000;
 
 function getLanguageLabel(language: "jp" | "en"): string {
-  return language === "jp" ? "日本語" : "英語";
+  return language === "jp" ? "\u65e5\u672c\u8a9e" : "\u82f1\u8a9e";
 }
 
 function getLanguageShort(language: "jp" | "en"): string {
@@ -46,13 +45,17 @@ function formatDate(value: string): string {
   return date.toLocaleString("ja-JP", { hour12: false });
 }
 
+function getInternalReportHref(report: ReportItem): string {
+  return `/shift-search/reports/${report.language}/${report.length}`;
+}
+
+function isExternalDirectLink(report: ReportItem): boolean {
+  return report.deliveryType === "external" && Boolean(report.externalUrl);
+}
+
 function getReportDisabledReason(report: ReportItem): DisabledReason {
   if (report.totalHitRows === 0) {
     return "no_results";
-  }
-
-  if (report.deliveryType === "external" && !report.externalUrl) {
-    return "missing_external_url";
   }
 
   return null;
@@ -63,19 +66,19 @@ function getReportHref(report: ReportItem): string | null {
     return null;
   }
 
-  if (report.deliveryType === "internal") {
-    return `/shift-search/reports/${report.language}/${report.length}`;
+  if (isExternalDirectLink(report)) {
+    return report.externalUrl;
   }
 
-  return report.externalUrl;
+  return getInternalReportHref(report);
 }
 
 function getDisabledLabel(reason: DisabledReason): string {
   if (reason === "no_results") {
-    return "検索結果が0件のためリンクなし";
+    return "\u691c\u7d22\u7d50\u679c\u304c0\u4ef6\u306e\u305f\u3081\u30ea\u30f3\u30af\u306a\u3057";
   }
 
-  return "外部リンクが未設定";
+  return "";
 }
 
 const container = {
@@ -94,12 +97,10 @@ const item = {
 export function ShiftSearchReportList({ reports }: Props) {
   return (
     <section className="space-y-3">
-      {/* Desktop: table view */}
       <div className="hidden md:block">
         <DesktopTable reports={reports} />
       </div>
 
-      {/* Mobile: card view */}
       <div className="block md:hidden">
         <MobileCards reports={reports} />
       </div>
@@ -114,14 +115,14 @@ function DesktopTable({ reports }: Props) {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-gray-700 text-gray-400 text-xs uppercase tracking-wider">
-              <th className="text-left py-3 pr-3">言語</th>
-              <th className="text-right py-3 pr-3">文字数</th>
-              <th className="text-left py-3 pr-3">辞書</th>
-              <th className="text-right py-3 pr-3">対象語数</th>
-              <th className="text-right py-3 pr-3">ヒット件数</th>
-              <th className="text-left py-3 pr-3">生成日時</th>
-              <th className="text-left py-3 pr-3">表示先</th>
-              <th className="text-left py-3">リンク</th>
+              <th className="text-left py-3 pr-3">{"\u8a00\u8a9e"}</th>
+              <th className="text-right py-3 pr-3">{"\u6587\u5b57\u6570"}</th>
+              <th className="text-left py-3 pr-3">{"\u8f9e\u66f8"}</th>
+              <th className="text-right py-3 pr-3">{"\u5bfe\u8c61\u8a9e\u6570"}</th>
+              <th className="text-right py-3 pr-3">{"\u30d2\u30c3\u30c8\u4ef6\u6570"}</th>
+              <th className="text-left py-3 pr-3">{"\u751f\u6210\u65e5\u6642"}</th>
+              <th className="text-left py-3 pr-3">{"\u8868\u793a\u5148"}</th>
+              <th className="text-left py-3">{"\u30ea\u30f3\u30af"}</th>
             </tr>
           </thead>
           <motion.tbody variants={container} initial="hidden" animate="show">
@@ -148,9 +149,7 @@ function DesktopTable({ reports }: Props) {
                   <td className="py-3 pr-3 text-right tabular-nums">
                     {report.length}
                   </td>
-                  <td className="py-3 pr-3 text-gray-300">
-                    {report.dictionary}
-                  </td>
+                  <td className="py-3 pr-3 text-gray-300">{report.dictionary}</td>
                   <td className="py-3 pr-3 text-right tabular-nums">
                     {NUMBER_FORMAT.format(report.targetWordCount)}
                   </td>
@@ -163,17 +162,14 @@ function DesktopTable({ reports }: Props) {
                     {formatDate(report.generatedAt)}
                   </td>
                   <td className="py-3 pr-3">
-                    {report.deliveryType === "internal" ? (
-                      <span className="text-xs text-emerald-400">内部</span>
+                    {isExternalDirectLink(report) ? (
+                      <span className="text-xs text-sky-400">{"\u5916\u90e8"}</span>
                     ) : (
-                      <span className="text-xs text-sky-400">外部</span>
+                      <span className="text-xs text-emerald-400">{"\u5185\u90e8"}</span>
                     )}
                   </td>
                   <td className="py-3">
-                    <ReportLink
-                      report={report}
-                      disabledReason={disabledReason}
-                    />
+                    <ReportLink report={report} disabledReason={disabledReason} />
                   </td>
                 </motion.tr>
               );
@@ -201,7 +197,7 @@ function MobileCards({ reports }: Props) {
 }
 
 function MobileCard({ report }: { report: ReportItem }) {
-  const isInternal = report.deliveryType === "internal";
+  const opensExternalSite = isExternalDirectLink(report);
   const href = getReportHref(report);
   const disabledReason = getReportDisabledReason(report);
   const isDisabled = disabledReason !== null;
@@ -216,7 +212,6 @@ function MobileCard({ report }: { report: ReportItem }) {
         ${isDisabled ? "opacity-60" : "hover:border-gray-500 hover:bg-gray-750 active:bg-gray-700/80"}
       `}
     >
-      {/* Top row: Language badge + length + hit count */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span
@@ -231,35 +226,34 @@ function MobileCard({ report }: { report: ReportItem }) {
           <span className="text-lg font-bold tabular-nums">
             {report.length}
             <span className="text-sm font-normal text-gray-400 ml-0.5">
-              文字
+              {"\u6587\u5b57"}
             </span>
           </span>
         </div>
 
         <div className="flex items-center gap-1.5 text-sm">
-          <span className="text-gray-400">ヒット</span>
+          <span className="text-gray-400">{"\u30d2\u30c3\u30c8"}</span>
           <span className="font-bold tabular-nums text-purple-300">
             {NUMBER_FORMAT.format(report.totalHitRows)}
           </span>
         </div>
       </div>
 
-      {/* Action row */}
       <div className="flex items-center justify-between">
         {isDisabled ? (
           <span className="inline-flex items-center gap-1.5 text-sm text-amber-400">
             <AlertTriangle className="h-3.5 w-3.5" />
             {getDisabledLabel(disabledReason)}
           </span>
-        ) : isInternal ? (
+        ) : !opensExternalSite ? (
           <span className="inline-flex items-center gap-1.5 text-sm text-emerald-400 font-medium">
             <FileText className="h-3.5 w-3.5" />
-            レポートを開く
+            {"\u30ec\u30dd\u30fc\u30c8\u3092\u958b\u304f"}
           </span>
         ) : (
           <span className="inline-flex items-center gap-1.5 text-sm text-sky-400 font-medium">
             <ExternalLink className="h-3.5 w-3.5" />
-            外部サイトで開く
+            {"\u5916\u90e8\u30b5\u30a4\u30c8\u3067\u958b\u304f"}
           </span>
         )}
 
@@ -272,7 +266,7 @@ function MobileCard({ report }: { report: ReportItem }) {
     return inner;
   }
 
-  if (isInternal) {
+  if (!opensExternalSite) {
     return <Link href={href}>{inner}</Link>;
   }
 
@@ -301,14 +295,14 @@ function ReportLink({
     );
   }
 
-  if (report.deliveryType === "internal") {
+  if (!isExternalDirectLink(report)) {
     return (
       <Link
-        href={`/shift-search/reports/${report.language}/${report.length}`}
+        href={getInternalReportHref(report)}
         className="inline-flex items-center gap-1.5 rounded-md bg-emerald-500/15 px-3 py-1.5 text-xs font-medium text-emerald-300 transition-colors hover:bg-emerald-500/25 hover:text-emerald-200"
       >
         <FileText className="h-3.5 w-3.5" />
-        開く
+        {"\u958b\u304f"}
       </Link>
     );
   }
@@ -321,7 +315,7 @@ function ReportLink({
       className="inline-flex items-center gap-1.5 rounded-md bg-sky-500/15 px-3 py-1.5 text-xs font-medium text-sky-300 transition-colors hover:bg-sky-500/25 hover:text-sky-200"
     >
       <ExternalLink className="h-3.5 w-3.5" />
-      外部サイトで開く
+      {"\u5916\u90e8\u30b5\u30a4\u30c8\u3067\u958b\u304f"}
     </a>
   );
 }
