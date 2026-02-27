@@ -1,61 +1,52 @@
-# ナゾマティック
+# ナゾマティック（NAZOMATIC）
 
-ナゾマティックは、謎解きお助けツール詰め合わせサイトです。
+謎解きお助けツールをまとめた Next.js アプリです。
 
-## 特徴
+- 要件定義書: [`./.codex/specification.md`](./.codex/specification.md)
 
-- 入力された単語リストから最長のしりとり連鎖を自動的に見つけ出します
-- 使用されなかった単語も表示され、謎解きのヒントとして活用できます
-- Next.js と Tailwind CSS を使用した、モダンでレスポンシブな UI
+## 主な機能
 
-## 使い方
-
-1. テキストエリアに単語リストを入力します
-2. 「しりとりを開始」ボタンをクリックします
-3. システムが自動的に最長のしりとり連鎖を表示します
-4. 使用されなかった単語も確認できます
-
-## 技術スタック
-
-- Next.js 13
-- TypeScript
-- Tailwind CSS
-- Vercel (デプロイ)
+- しりとり最長連鎖探索
+- サイコロ展開図 + 3D表示
+- アルファベット変換 / 都道府県検索 / 方眼紙
+- 辞書検索（アナグラム / クロスワード / 正規表現）
+- 謎チケカレンダー（Firestore連携）
+- 星座検索
+- シフト検索 + 全探索レポート表示
+- BLANK25（25パネル推理ゲーム）
 
 ## ルーティング構成
 
 - メイン機能: `src/app/(main)`
 - BLANK25: `src/app/(blank25)`
 - シークレット機能: `src/app/(secret)`
+- API: `src/app/api`
 
-## ローカル開発環境のセットアップ
+## セットアップ
 
-### 実装メモ
-
-#### AI プロンプト例
-
-```
-# ルール
-- メインデザイン`bg-gradient-to-b from-gray-900 to-gray-800 text-white`
-- アクセント`purple-400`
+```bash
+npm install
+npm run dev
 ```
 
-#### shadcn のコンポーネントの追加
+ブラウザで `http://localhost:3000` を開いて確認できます。
 
-`npx shadcn add sheet`
+## 主なスクリプト
 
-#### Cosor で開発時に
-
-`Ctrl + k`でショートカットが生成されない場合は、`Ctrl + M, Ctrl + S`のユーザーショートカットから重複するものがないか探す。
-
-#### 追記予定
-
+```bash
+npm run dev
+npm run build
+npm run start
+npm run lint
+npm run shift:report:meta
+npm run shift:report:view-assets
 ```
-,
-    {
-      "iconName": "Puzzle",
-      "title": "BLANK25",
-      "description": "25パネルを開いて断片情報から推理。回答を入力して正誤判定！",
-      "path": "/blank25"
-    }
-```
+
+## 環境変数
+
+最低限、以下の用途で環境変数を利用します（詳細は要件定義書参照）。
+
+- `NEXT_PUBLIC_BASE_URL`
+- Firestore 接続情報（`FIREBASE_*`）
+- 内部 API 認可（`REALTIME_INTERNAL_API_TOKEN`）
+- X 再投稿連携（`X_*`）
