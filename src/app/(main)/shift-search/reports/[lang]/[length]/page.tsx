@@ -71,7 +71,7 @@ export default function ShiftSearchReportDetailPage({ params }: PageProps) {
   return (
     <>
       <ArticleHeaderComponent />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         <section className="bg-gray-800 border border-gray-700 rounded-lg p-5 space-y-3">
           <div className="flex items-center justify-between gap-3">
             <h1 className="text-xl sm:text-2xl font-bold">

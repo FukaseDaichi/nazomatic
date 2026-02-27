@@ -81,15 +81,15 @@ export function ShiftSearchReportDetail({ rows }: Props) {
 /* ===== Desktop Table ===== */
 function DesktopTable({ rows }: Props) {
   return (
-    <section className="bg-gray-800 border border-gray-700 rounded-lg p-5 max-w-3xl">
-      <table className="text-sm">
+    <section className="bg-gray-800 border border-gray-700 rounded-lg p-5 mx-auto">
+      <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-gray-700 text-gray-400 text-xs uppercase tracking-wider">
-            <th className="text-left py-3 pr-4">入力語</th>
+            <th className="text-center py-3 px-2">入力語</th>
             <th className="text-center py-3 px-2 whitespace-nowrap">シフト</th>
-            <th className="text-left py-3 px-4">シフト後</th>
+            <th className="text-center py-3 px-2">シフト後</th>
             <th className="text-center py-3 px-2 whitespace-nowrap">一致種別</th>
-            <th className="text-left py-3 pl-4">マッチ語</th>
+            <th className="text-center py-3 px-2">マッチ語</th>
           </tr>
         </thead>
         <motion.tbody variants={container} initial="hidden" animate="show">
@@ -104,7 +104,7 @@ function DesktopTable({ rows }: Props) {
                 className="border-b border-gray-700/40 hover:bg-gray-700/20 transition-colors"
               >
                 {/* inputWord - only show on first matched word */}
-                <td className="py-2 pr-4">
+                <td className="py-2 px-2 text-center">
                   {wordIndex === 0 ? (
                     <span className="font-mono font-semibold text-gray-100">
                       {row.inputWord}
@@ -125,7 +125,7 @@ function DesktopTable({ rows }: Props) {
                 </td>
 
                 {/* shiftedWord */}
-                <td className="py-2 px-4">
+                <td className="py-2 px-2 text-center">
                   {wordIndex === 0 ? (
                     <span className="font-mono text-gray-300">
                       {row.shiftedWord}
@@ -148,7 +148,7 @@ function DesktopTable({ rows }: Props) {
                 </td>
 
                 {/* matchedWord */}
-                <td className="py-2 pl-4">
+                <td className="py-2 px-2 text-center">
                   <span className="inline-flex items-center gap-1">
                     <ChevronRight className="h-3 w-3 text-gray-600" />
                     <span className="font-mono font-semibold text-purple-300">
