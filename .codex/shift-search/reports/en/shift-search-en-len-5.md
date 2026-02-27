@@ -5,286 +5,286 @@
 - targetWordCount: 933
 - executedWordCount: 933
 - totalHitRows: 278
-- startedAt: 2026-02-26T00:08:47.371Z
-- generatedAt: 2026-02-26T00:08:47.421Z
+- startedAt: 2026-02-27T01:56:59.073Z
+- generatedAt: 2026-02-27T01:56:59.120Z
 
-| inputWord | shift | shiftedWord | matchType |
-|---|---:|---|---|
-| above | 13 | nobir | アナグラム |
-| acute | 24 | yasrc | アナグラム |
-| admit | 18 | sveal | アナグラム |
-| adorn | 5 | fitws | アナグラム |
-| agent | 11 | lrpye | アナグラム |
-| agent | 13 | ntrag | アナグラム |
-| agree | 0 | eager | アナグラム |
-| alert | 0 | alter | アナグラム |
-| alert | 0 | later | アナグラム |
-| alter | 0 | alert | アナグラム |
-| alter | 0 | later | アナグラム |
-| among | 0 | mango | アナグラム |
-| ample | 0 | maple | アナグラム |
-| amuse | 16 | qckiu | アナグラム |
-| angel | 0 | angle | アナグラム |
-| angel | 8 | ivomt | アナグラム |
-| anger | 0 | range | アナグラム |
-| angle | 0 | angel | アナグラム |
-| angle | 8 | ivotm | アナグラム |
-| apron | 17 | rgife | アナグラム |
-| arena | 17 | river | 完全一致 |
-| arise | 0 | raise | アナグラム |
-| armed | 0 | dream | アナグラム |
-| avoid | 5 | fatni | アナグラム |
-| baker | 0 | brake | アナグラム |
-| baker | 0 | break | アナグラム |
-| beard | 0 | bread | アナグラム |
-| beard | 17 | svriu | アナグラム |
-| begin | 0 | being | アナグラム |
-| being | 0 | begin | アナグラム |
-| below | 0 | elbow | アナグラム |
-| bench | 6 | hktin | アナグラム |
-| black | 19 | uetvd | アナグラム |
-| bleed | 7 | isllk | アナグラム |
-| board | 0 | broad | アナグラム |
-| brake | 0 | baker | アナグラム |
-| brake | 0 | break | アナグラム |
-| bread | 0 | beard | アナグラム |
-| bread | 17 | sivru | アナグラム |
-| break | 0 | baker | アナグラム |
-| break | 0 | brake | アナグラム |
-| brick | 12 | nduow | アナグラム |
-| brief | 0 | fiber | アナグラム |
-| brief | 0 | fibre | アナグラム |
-| brief | 7 | iyplm | アナグラム |
-| broad | 0 | board | アナグラム |
-| buddy | 10 | lenni | アナグラム |
-| build | 23 | yrfia | アナグラム |
-| bunch | 17 | slety | アナグラム |
-| candy | 17 | treup | アナグラム |
-| cause | 0 | sauce | アナグラム |
-| charm | 0 | march | アナグラム |
-| charm | 17 | tyrid | アナグラム |
-| charm | 22 | ydwni | アナグラム |
-| cheap | 0 | peach | アナグラム |
-| cheap | 24 | afcyn | アナグラム |
-| cheat | 0 | teach | アナグラム |
-| chest | 11 | nspde | アナグラム |
-| chirp | 12 | otudb | アナグラム |
-| chunk | 4 | glyro | アナグラム |
-| civil | 3 | flylo | アナグラム |
-| civil | 9 | lreru | アナグラム |
-| clean | 0 | lance | アナグラム |
-| cloud | 0 | could | アナグラム |
-| clown | 4 | gpsar | アナグラム |
-| color | 3 | froru | アナグラム |
-| could | 0 | cloud | アナグラム |
-| crowd | 17 | tifnu | アナグラム |
-| death | 11 | oples | アナグラム |
-| delay | 15 | stapn | アナグラム |
-| dirty | 5 | inwyd | アナグラム |
-| dirty | 9 | mrach | アナグラム |
-| diver | 0 | drive | アナグラム |
-| doubt | 14 | rciph | アナグラム |
-| draft | 14 | rfoth | アナグラム |
-| dream | 0 | armed | アナグラム |
-| drive | 0 | diver | アナグラム |
-| drunk | 1 | esvol | アナグラム |
-| dusty | 0 | study | アナグラム |
-| duvet | 7 | kbcla | アナグラム |
-| eager | 0 | agree | アナグラム |
-| early | 0 | layer | アナグラム |
-| early | 0 | relay | アナグラム |
-| earth | 0 | heart | アナグラム |
-| elbow | 0 | below | アナグラム |
-| elect | 15 | tatri | アナグラム |
-| entry | 13 | ragel | アナグラム |
-| erupt | 9 | nadyc | アナグラム |
-| exalt | 7 | lehsa | アナグラム |
-| exile | 7 | lepsl | アナグラム |
-| faint | 21 | avdio | アナグラム |
-| fairy | 3 | idlub | アナグラム |
-| fancy | 2 | hcpea | アナグラム |
-| feast | 14 | tsogh | アナグラム |
-| fiber | 0 | brief | アナグラム |
-| fiber | 0 | fibre | アナグラム |
-| fiber | 7 | mpily | アナグラム |
-| fibre | 0 | brief | アナグラム |
-| fibre | 0 | fiber | アナグラム |
-| fibre | 7 | mpiyl | アナグラム |
-| field | 9 | ornum | アナグラム |
-| first | 21 | admno | アナグラム |
-| flash | 8 | ntiap | アナグラム |
-| fleet | 7 | mslla | アナグラム |
-| flesh | 0 | shelf | アナグラム |
-| folly | 6 | lurre | アナグラム |
-| folly | 23 | cliiv | アナグラム |
-| forth | 12 | radft | アナグラム |
-| furor | 23 | crolo | アナグラム |
-| gaudy | 8 | oiclg | アナグラム |
-| genre | 0 | green | アナグラム |
-| ghost | 12 | staef | アナグラム |
-| glare | 0 | large | アナグラム |
-| glare | 13 | tyner | アナグラム |
-| glory | 22 | chknu | アナグラム |
-| godly | 23 | dlaiv | アナグラム |
-| grant | 13 | tenag | アナグラム |
-| grant | 24 | epylr | アナグラム |
-| grasp | 22 | cnwol | アナグラム |
-| grave | 13 | tenir | アナグラム |
-| green | 0 | genre | アナグラム |
-| grief | 9 | parno | アナグラム |
-| grown | 0 | wrong | アナグラム |
-| heart | 0 | earth | アナグラム |
-| horse | 0 | shore | アナグラム |
-| hotel | 13 | ubgry | アナグラム |
-| imply | 19 | bfier | アナグラム |
-| inert | 13 | vareg | アナグラム |
-| juicy | 10 | tesmi | アナグラム |
-| lance | 0 | clean | アナグラム |
-| large | 0 | glare | アナグラム |
-| large | 13 | ynetr | アナグラム |
-| later | 0 | alert | アナグラム |
-| later | 0 | alter | アナグラム |
-| laugh | 8 | ticop | アナグラム |
-| layer | 0 | early | アナグラム |
-| layer | 0 | relay | アナグラム |
-| learn | 13 | yrnea | アナグラム |
-| leash | 19 | extla | アナグラム |
-| least | 0 | steal | アナグラム |
-| lemon | 0 | melon | アナグラム |
-| linen | 16 | bydud | アナグラム |
-| liter | 0 | litre | アナグラム |
-| litre | 0 | liter | アナグラム |
-| logic | 18 | dgyau | アナグラム |
-| loyal | 19 | ehrte | アナグラム |
-| lunch | 6 | ratin | アナグラム |
-| maker | 24 | kyicp | アナグラム |
-| mango | 0 | among | アナグラム |
-| maple | 0 | ample | アナグラム |
-| march | 0 | charm | アナグラム |
-| march | 17 | drity | アナグラム |
-| march | 22 | iwnyd | アナグラム |
-| melon | 0 | lemon | アナグラム |
-| meter | 0 | metre | アナグラム |
-| metre | 0 | meter | アナグラム |
-| moral | 3 | prudo | アナグラム |
-| mourn | 17 | dflie | アナグラム |
-| nerve | 0 | never | アナグラム |
-| never | 0 | nerve | アナグラム |
-| night | 0 | thing | アナグラム |
-| nomad | 5 | strfi | アナグラム |
-| ought | 0 | tough | アナグラム |
-| outer | 0 | route | アナグラム |
-| paint | 18 | hsafl | アナグラム |
-| panel | 0 | plane | アナグラム |
-| pants | 11 | alyed | アナグラム |
-| peach | 0 | cheap | アナグラム |
-| peach | 24 | ncyaf | アナグラム |
-| pedal | 0 | plead | アナグラム |
-| phase | 0 | shape | アナグラム |
-| picky | 2 | rkema | アナグラム |
-| plane | 0 | panel | アナグラム |
-| plead | 0 | pedal | アナグラム |
-| prize | 9 | yarin | アナグラム |
-| probe | 3 | sureh | アナグラム |
-| proud | 23 | molra | アナグラム |
-| purse | 0 | super | アナグラム |
-| quick | 10 | aesmu | アナグラム |
-| quiet | 0 | quite | アナグラム |
-| quite | 0 | quiet | アナグラム |
-| rainy | 17 | irzep | アナグラム |
-| raise | 0 | arise | アナグラム |
-| range | 0 | anger | アナグラム |
-| react | 0 | trace | アナグラム |
-| rebel | 7 | ylils | アナグラム |
-| relay | 0 | early | アナグラム |
-| relay | 0 | layer | アナグラム |
-| reply | 2 | tgrna | アナグラム |
-| reply | 15 | gtean | アナグラム |
-| river | 9 | arena | 完全一致 |
-| robin | 13 | ebova | アナグラム |
-| route | 0 | outer | アナグラム |
-| rugby | 13 | ehtol | アナグラム |
-| ruler | 17 | ilcvi | アナグラム |
-| ruler | 20 | lofyl | アナグラム |
-| sauce | 0 | cause | アナグラム |
-| scary | 2 | uecta | アナグラム |
-| serve | 0 | verse | アナグラム |
-| shade | 4 | wlehi | アナグラム |
-| shape | 0 | phase | アナグラム |
-| sheer | 1 | tiffs | アナグラム |
-| sheet | 0 | these | アナグラム |
-| shelf | 0 | flesh | アナグラム |
-| shore | 0 | horse | アナグラム |
-| shout | 0 | south | アナグラム |
-| silly | 19 | lbeer | アナグラム |
-| skate | 0 | stake | アナグラム |
-| skate | 0 | steak | アナグラム |
-| skill | 19 | ldbee | アナグラム |
-| slave | 8 | atidm | アナグラム |
-| slope | 15 | hadet | アナグラム |
-| small | 19 | lftee | アナグラム |
-| snake | 0 | sneak | アナグラム |
-| sneak | 0 | snake | アナグラム |
-| solve | 25 | rnkud | アナグラム |
-| south | 0 | shout | アナグラム |
-| spell | 19 | lixee | アナグラム |
-| spend | 15 | hetcs | アナグラム |
-| stake | 0 | skate | アナグラム |
-| stake | 0 | steak | アナグラム |
-| state | 0 | taste | アナグラム |
-| steak | 0 | skate | アナグラム |
-| steak | 0 | stake | アナグラム |
-| steal | 0 | least | アナグラム |
-| steer | 1 | tuffs | アナグラム |
-| steer | 15 | hittg | アナグラム |
-| stiff | 25 | rshee | アナグラム |
-| study | 0 | dusty | アナグラム |
-| stuff | 14 | ghitt | アナグラム |
-| stuff | 25 | rstee | アナグラム |
-| style | 9 | bchun | アナグラム |
-| super | 0 | purse | アナグラム |
-| sweat | 0 | waste | アナグラム |
-| swift | 21 | nrdao | アナグラム |
-| taste | 0 | state | アナグラム |
-| teach | 0 | cheat | アナグラム |
-| there | 0 | three | アナグラム |
-| there | 7 | aolyl | アナグラム |
-| these | 0 | sheet | アナグラム |
-| thing | 0 | night | アナグラム |
-| think | 20 | nbche | アナグラム |
-| those | 15 | iwdht | アナグラム |
-| three | 0 | there | アナグラム |
-| three | 7 | aoyll | アナグラム |
-| throw | 0 | worth | アナグラム |
-| tight | 11 | etrse | アナグラム |
-| tight | 12 | fustf | アナグラム |
-| times | 16 | jycui | アナグラム |
-| topic | 18 | lghau | アナグラム |
-| tough | 0 | ought | アナグラム |
-| trace | 0 | react | アナグラム |
-| trade | 0 | tread | アナグラム |
-| trail | 0 | trial | アナグラム |
-| trail | 3 | wudlo | アナグラム |
-| train | 20 | nluch | アナグラム |
-| trait | 11 | eclte | アナグラム |
-| tread | 0 | trade | アナグラム |
-| trial | 0 | trail | アナグラム |
-| trial | 3 | wuldo | アナグラム |
-| unfit | 9 | dworc | アナグラム |
-| unite | 0 | untie | アナグラム |
-| untie | 0 | unite | アナグラム |
-| usher | 23 | rpebo | アナグラム |
-| valid | 3 | ydolg | アナグラム |
-| verse | 0 | serve | アナグラム |
-| virus | 9 | eradb | アナグラム |
-| vomit | 18 | ngeal | アナグラム |
-| waste | 0 | sweat | アナグラム |
-| while | 22 | sdeha | アナグラム |
-| width | 11 | htoes | アナグラム |
-| windy | 4 | amrhc | アナグラム |
-| windy | 21 | rdiyt | アナグラム |
-| worth | 0 | throw | アナグラム |
-| would | 23 | tlria | アナグラム |
-| wound | 14 | kcibr | アナグラム |
-| wrong | 0 | grown | アナグラム |
-| yearn | 13 | lrnea | アナグラム |
+| inputWord | shift | shiftedWord | matchType | matchedWords |
+|---|---:|---|---|---|
+| above | 13 | nobir | アナグラム | robin |
+| acute | 24 | yasrc | アナグラム | scary |
+| admit | 18 | sveal | アナグラム | slave |
+| adorn | 5 | fitws | アナグラム | swift |
+| agent | 11 | lrpye | アナグラム | reply |
+| agent | 13 | ntrag | アナグラム | grant |
+| agree | 0 | eager | アナグラム | eager |
+| alert | 0 | alter | アナグラム | alter |
+| alert | 0 | later | アナグラム | later |
+| alter | 0 | alert | アナグラム | alert |
+| alter | 0 | later | アナグラム | later |
+| among | 0 | mango | アナグラム | mango |
+| ample | 0 | maple | アナグラム | maple |
+| amuse | 16 | qckiu | アナグラム | quick |
+| angel | 0 | angle | アナグラム | angle |
+| angel | 8 | ivomt | アナグラム | vomit |
+| anger | 0 | range | アナグラム | range |
+| angle | 0 | angel | アナグラム | angel |
+| angle | 8 | ivotm | アナグラム | vomit |
+| apron | 17 | rgife | アナグラム | grief |
+| arena | 17 | river | 完全一致 | river |
+| arise | 0 | raise | アナグラム | raise |
+| armed | 0 | dream | アナグラム | dream |
+| avoid | 5 | fatni | アナグラム | faint |
+| baker | 0 | brake | アナグラム | brake |
+| baker | 0 | break | アナグラム | break |
+| beard | 0 | bread | アナグラム | bread |
+| beard | 17 | svriu | アナグラム | virus |
+| begin | 0 | being | アナグラム | being |
+| being | 0 | begin | アナグラム | begin |
+| below | 0 | elbow | アナグラム | elbow |
+| bench | 6 | hktin | アナグラム | think |
+| black | 19 | uetvd | アナグラム | duvet |
+| bleed | 7 | isllk | アナグラム | skill |
+| board | 0 | broad | アナグラム | broad |
+| brake | 0 | baker | アナグラム | baker |
+| brake | 0 | break | アナグラム | break |
+| bread | 0 | beard | アナグラム | beard |
+| bread | 17 | sivru | アナグラム | virus |
+| break | 0 | baker | アナグラム | baker |
+| break | 0 | brake | アナグラム | brake |
+| brick | 12 | nduow | アナグラム | wound |
+| brief | 0 | fiber | アナグラム | fiber |
+| brief | 0 | fibre | アナグラム | fibre |
+| brief | 7 | iyplm | アナグラム | imply |
+| broad | 0 | board | アナグラム | board |
+| buddy | 10 | lenni | アナグラム | linen |
+| build | 23 | yrfia | アナグラム | fairy |
+| bunch | 17 | slety | アナグラム | style |
+| candy | 17 | treup | アナグラム | erupt |
+| cause | 0 | sauce | アナグラム | sauce |
+| charm | 0 | march | アナグラム | march |
+| charm | 17 | tyrid | アナグラム | dirty |
+| charm | 22 | ydwni | アナグラム | windy |
+| cheap | 0 | peach | アナグラム | peach |
+| cheap | 24 | afcyn | アナグラム | fancy |
+| cheat | 0 | teach | アナグラム | teach |
+| chest | 11 | nspde | アナグラム | spend |
+| chirp | 12 | otudb | アナグラム | doubt |
+| chunk | 4 | glyro | アナグラム | glory |
+| civil | 3 | flylo | アナグラム | folly |
+| civil | 9 | lreru | アナグラム | ruler |
+| clean | 0 | lance | アナグラム | lance |
+| cloud | 0 | could | アナグラム | could |
+| clown | 4 | gpsar | アナグラム | grasp |
+| color | 3 | froru | アナグラム | furor |
+| could | 0 | cloud | アナグラム | cloud |
+| crowd | 17 | tifnu | アナグラム | unfit |
+| death | 11 | oples | アナグラム | slope |
+| delay | 15 | stapn | アナグラム | pants |
+| dirty | 5 | inwyd | アナグラム | windy |
+| dirty | 9 | mrach | アナグラム | charm, march |
+| diver | 0 | drive | アナグラム | drive |
+| doubt | 14 | rciph | アナグラム | chirp |
+| draft | 14 | rfoth | アナグラム | forth |
+| dream | 0 | armed | アナグラム | armed |
+| drive | 0 | diver | アナグラム | diver |
+| drunk | 1 | esvol | アナグラム | solve |
+| dusty | 0 | study | アナグラム | study |
+| duvet | 7 | kbcla | アナグラム | black |
+| eager | 0 | agree | アナグラム | agree |
+| early | 0 | layer | アナグラム | layer |
+| early | 0 | relay | アナグラム | relay |
+| earth | 0 | heart | アナグラム | heart |
+| elbow | 0 | below | アナグラム | below |
+| elect | 15 | tatri | アナグラム | trait |
+| entry | 13 | ragel | アナグラム | glare, large |
+| erupt | 9 | nadyc | アナグラム | candy |
+| exalt | 7 | lehsa | アナグラム | leash |
+| exile | 7 | lepsl | アナグラム | spell |
+| faint | 21 | avdio | アナグラム | avoid |
+| fairy | 3 | idlub | アナグラム | build |
+| fancy | 2 | hcpea | アナグラム | cheap, peach |
+| feast | 14 | tsogh | アナグラム | ghost |
+| fiber | 0 | brief | アナグラム | brief |
+| fiber | 0 | fibre | アナグラム | fibre |
+| fiber | 7 | mpily | アナグラム | imply |
+| fibre | 0 | brief | アナグラム | brief |
+| fibre | 0 | fiber | アナグラム | fiber |
+| fibre | 7 | mpiyl | アナグラム | imply |
+| field | 9 | ornum | アナグラム | mourn |
+| first | 21 | admno | アナグラム | nomad |
+| flash | 8 | ntiap | アナグラム | paint |
+| fleet | 7 | mslla | アナグラム | small |
+| flesh | 0 | shelf | アナグラム | shelf |
+| folly | 6 | lurre | アナグラム | ruler |
+| folly | 23 | cliiv | アナグラム | civil |
+| forth | 12 | radft | アナグラム | draft |
+| furor | 23 | crolo | アナグラム | color |
+| gaudy | 8 | oiclg | アナグラム | logic |
+| genre | 0 | green | アナグラム | green |
+| ghost | 12 | staef | アナグラム | feast |
+| glare | 0 | large | アナグラム | large |
+| glare | 13 | tyner | アナグラム | entry |
+| glory | 22 | chknu | アナグラム | chunk |
+| godly | 23 | dlaiv | アナグラム | valid |
+| grant | 13 | tenag | アナグラム | agent |
+| grant | 24 | epylr | アナグラム | reply |
+| grasp | 22 | cnwol | アナグラム | clown |
+| grave | 13 | tenir | アナグラム | inert |
+| green | 0 | genre | アナグラム | genre |
+| grief | 9 | parno | アナグラム | apron |
+| grown | 0 | wrong | アナグラム | wrong |
+| heart | 0 | earth | アナグラム | earth |
+| horse | 0 | shore | アナグラム | shore |
+| hotel | 13 | ubgry | アナグラム | rugby |
+| imply | 19 | bfier | アナグラム | brief, fiber, fibre |
+| inert | 13 | vareg | アナグラム | grave |
+| juicy | 10 | tesmi | アナグラム | times |
+| lance | 0 | clean | アナグラム | clean |
+| large | 0 | glare | アナグラム | glare |
+| large | 13 | ynetr | アナグラム | entry |
+| later | 0 | alert | アナグラム | alert |
+| later | 0 | alter | アナグラム | alter |
+| laugh | 8 | ticop | アナグラム | topic |
+| layer | 0 | early | アナグラム | early |
+| layer | 0 | relay | アナグラム | relay |
+| learn | 13 | yrnea | アナグラム | yearn |
+| leash | 19 | extla | アナグラム | exalt |
+| least | 0 | steal | アナグラム | steal |
+| lemon | 0 | melon | アナグラム | melon |
+| linen | 16 | bydud | アナグラム | buddy |
+| liter | 0 | litre | アナグラム | litre |
+| litre | 0 | liter | アナグラム | liter |
+| logic | 18 | dgyau | アナグラム | gaudy |
+| loyal | 19 | ehrte | アナグラム | there, three |
+| lunch | 6 | ratin | アナグラム | train |
+| maker | 24 | kyicp | アナグラム | picky |
+| mango | 0 | among | アナグラム | among |
+| maple | 0 | ample | アナグラム | ample |
+| march | 0 | charm | アナグラム | charm |
+| march | 17 | drity | アナグラム | dirty |
+| march | 22 | iwnyd | アナグラム | windy |
+| melon | 0 | lemon | アナグラム | lemon |
+| meter | 0 | metre | アナグラム | metre |
+| metre | 0 | meter | アナグラム | meter |
+| moral | 3 | prudo | アナグラム | proud |
+| mourn | 17 | dflie | アナグラム | field |
+| nerve | 0 | never | アナグラム | never |
+| never | 0 | nerve | アナグラム | nerve |
+| night | 0 | thing | アナグラム | thing |
+| nomad | 5 | strfi | アナグラム | first |
+| ought | 0 | tough | アナグラム | tough |
+| outer | 0 | route | アナグラム | route |
+| paint | 18 | hsafl | アナグラム | flash |
+| panel | 0 | plane | アナグラム | plane |
+| pants | 11 | alyed | アナグラム | delay |
+| peach | 0 | cheap | アナグラム | cheap |
+| peach | 24 | ncyaf | アナグラム | fancy |
+| pedal | 0 | plead | アナグラム | plead |
+| phase | 0 | shape | アナグラム | shape |
+| picky | 2 | rkema | アナグラム | maker |
+| plane | 0 | panel | アナグラム | panel |
+| plead | 0 | pedal | アナグラム | pedal |
+| prize | 9 | yarin | アナグラム | rainy |
+| probe | 3 | sureh | アナグラム | usher |
+| proud | 23 | molra | アナグラム | moral |
+| purse | 0 | super | アナグラム | super |
+| quick | 10 | aesmu | アナグラム | amuse |
+| quiet | 0 | quite | アナグラム | quite |
+| quite | 0 | quiet | アナグラム | quiet |
+| rainy | 17 | irzep | アナグラム | prize |
+| raise | 0 | arise | アナグラム | arise |
+| range | 0 | anger | アナグラム | anger |
+| react | 0 | trace | アナグラム | trace |
+| rebel | 7 | ylils | アナグラム | silly |
+| relay | 0 | early | アナグラム | early |
+| relay | 0 | layer | アナグラム | layer |
+| reply | 2 | tgrna | アナグラム | grant |
+| reply | 15 | gtean | アナグラム | agent |
+| river | 9 | arena | 完全一致 | arena |
+| robin | 13 | ebova | アナグラム | above |
+| route | 0 | outer | アナグラム | outer |
+| rugby | 13 | ehtol | アナグラム | hotel |
+| ruler | 17 | ilcvi | アナグラム | civil |
+| ruler | 20 | lofyl | アナグラム | folly |
+| sauce | 0 | cause | アナグラム | cause |
+| scary | 2 | uecta | アナグラム | acute |
+| serve | 0 | verse | アナグラム | verse |
+| shade | 4 | wlehi | アナグラム | while |
+| shape | 0 | phase | アナグラム | phase |
+| sheer | 1 | tiffs | アナグラム | stiff |
+| sheet | 0 | these | アナグラム | these |
+| shelf | 0 | flesh | アナグラム | flesh |
+| shore | 0 | horse | アナグラム | horse |
+| shout | 0 | south | アナグラム | south |
+| silly | 19 | lbeer | アナグラム | rebel |
+| skate | 0 | stake | アナグラム | stake |
+| skate | 0 | steak | アナグラム | steak |
+| skill | 19 | ldbee | アナグラム | bleed |
+| slave | 8 | atidm | アナグラム | admit |
+| slope | 15 | hadet | アナグラム | death |
+| small | 19 | lftee | アナグラム | fleet |
+| snake | 0 | sneak | アナグラム | sneak |
+| sneak | 0 | snake | アナグラム | snake |
+| solve | 25 | rnkud | アナグラム | drunk |
+| south | 0 | shout | アナグラム | shout |
+| spell | 19 | lixee | アナグラム | exile |
+| spend | 15 | hetcs | アナグラム | chest |
+| stake | 0 | skate | アナグラム | skate |
+| stake | 0 | steak | アナグラム | steak |
+| state | 0 | taste | アナグラム | taste |
+| steak | 0 | skate | アナグラム | skate |
+| steak | 0 | stake | アナグラム | stake |
+| steal | 0 | least | アナグラム | least |
+| steer | 1 | tuffs | アナグラム | stuff |
+| steer | 15 | hittg | アナグラム | tight |
+| stiff | 25 | rshee | アナグラム | sheer |
+| study | 0 | dusty | アナグラム | dusty |
+| stuff | 14 | ghitt | アナグラム | tight |
+| stuff | 25 | rstee | アナグラム | steer |
+| style | 9 | bchun | アナグラム | bunch |
+| super | 0 | purse | アナグラム | purse |
+| sweat | 0 | waste | アナグラム | waste |
+| swift | 21 | nrdao | アナグラム | adorn |
+| taste | 0 | state | アナグラム | state |
+| teach | 0 | cheat | アナグラム | cheat |
+| there | 0 | three | アナグラム | three |
+| there | 7 | aolyl | アナグラム | loyal |
+| these | 0 | sheet | アナグラム | sheet |
+| thing | 0 | night | アナグラム | night |
+| think | 20 | nbche | アナグラム | bench |
+| those | 15 | iwdht | アナグラム | width |
+| three | 0 | there | アナグラム | there |
+| three | 7 | aoyll | アナグラム | loyal |
+| throw | 0 | worth | アナグラム | worth |
+| tight | 11 | etrse | アナグラム | steer |
+| tight | 12 | fustf | アナグラム | stuff |
+| times | 16 | jycui | アナグラム | juicy |
+| topic | 18 | lghau | アナグラム | laugh |
+| tough | 0 | ought | アナグラム | ought |
+| trace | 0 | react | アナグラム | react |
+| trade | 0 | tread | アナグラム | tread |
+| trail | 0 | trial | アナグラム | trial |
+| trail | 3 | wudlo | アナグラム | would |
+| train | 20 | nluch | アナグラム | lunch |
+| trait | 11 | eclte | アナグラム | elect |
+| tread | 0 | trade | アナグラム | trade |
+| trial | 0 | trail | アナグラム | trail |
+| trial | 3 | wuldo | アナグラム | would |
+| unfit | 9 | dworc | アナグラム | crowd |
+| unite | 0 | untie | アナグラム | untie |
+| untie | 0 | unite | アナグラム | unite |
+| usher | 23 | rpebo | アナグラム | probe |
+| valid | 3 | ydolg | アナグラム | godly |
+| verse | 0 | serve | アナグラム | serve |
+| virus | 9 | eradb | アナグラム | beard, bread |
+| vomit | 18 | ngeal | アナグラム | angel, angle |
+| waste | 0 | sweat | アナグラム | sweat |
+| while | 22 | sdeha | アナグラム | shade |
+| width | 11 | htoes | アナグラム | those |
+| windy | 4 | amrhc | アナグラム | charm, march |
+| windy | 21 | rdiyt | アナグラム | dirty |
+| worth | 0 | throw | アナグラム | throw |
+| would | 23 | tlria | アナグラム | trail, trial |
+| wound | 14 | kcibr | アナグラム | brick |
+| wrong | 0 | grown | アナグラム | grown |
+| yearn | 13 | lrnea | アナグラム | learn |

@@ -5,12 +5,12 @@
 - targetWordCount: 858
 - executedWordCount: 858
 - totalHitRows: 4
-- startedAt: 2026-02-26T00:08:47.569Z
-- generatedAt: 2026-02-26T00:08:47.602Z
+- startedAt: 2026-02-27T01:56:59.270Z
+- generatedAt: 2026-02-27T01:56:59.310Z
 
-| inputWord | shift | shiftedWord | matchType |
-|---|---:|---|---|
-| creation | 0 | reaction | アナグラム |
-| generate | 0 | teenager | アナグラム |
-| reaction | 0 | creation | アナグラム |
-| teenager | 0 | generate | アナグラム |
+| inputWord | shift | shiftedWord | matchType | matchedWords |
+|---|---:|---|---|---|
+| creation | 0 | reaction | アナグラム | reaction |
+| generate | 0 | teenager | アナグラム | teenager |
+| reaction | 0 | creation | アナグラム | creation |
+| teenager | 0 | generate | アナグラム | generate |

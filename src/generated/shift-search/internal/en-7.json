@@ -6,297 +6,441 @@
   "targetWordCount": 1026,
   "executedWordCount": 1026,
   "totalHitRows": 48,
-  "startedAt": "2026-02-26T00:08:47.507Z",
-  "generatedAt": "2026-02-26T00:08:47.542Z",
+  "startedAt": "2026-02-27T01:56:59.204Z",
+  "generatedAt": "2026-02-27T01:56:59.253Z",
   "rowCount": 48,
   "rows": [
     {
       "inputWord": "abandon",
       "shift": 4,
       "shiftedWord": "eferhsr",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "refresh"
+      ]
     },
     {
       "inputWord": "bedroom",
       "shift": 0,
       "shiftedWord": "boredom",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "boredom"
+      ]
     },
     {
       "inputWord": "biology",
       "shift": 16,
       "shiftedWord": "ryebewo",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "eyebrow"
+      ]
     },
     {
       "inputWord": "boredom",
       "shift": 0,
       "shiftedWord": "bedroom",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bedroom"
+      ]
     },
     {
       "inputWord": "builder",
       "shift": 0,
       "shiftedWord": "rebuild",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "rebuild"
+      ]
     },
     {
       "inputWord": "climber",
       "shift": 3,
       "shiftedWord": "folpehu",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "hopeful"
+      ]
     },
     {
       "inputWord": "disease",
       "shift": 0,
       "shiftedWord": "seaside",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "seaside"
+      ]
     },
     {
       "inputWord": "earnest",
       "shift": 0,
       "shiftedWord": "eastern",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "eastern"
+      ]
     },
     {
       "inputWord": "earring",
       "shift": 13,
       "shiftedWord": "rneevat",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "veteran"
+      ]
     },
     {
       "inputWord": "eastern",
       "shift": 0,
       "shiftedWord": "earnest",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "earnest"
+      ]
     },
     {
       "inputWord": "eyebrow",
       "shift": 10,
       "shiftedWord": "oiolbyg",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "biology"
+      ]
     },
     {
       "inputWord": "fluency",
       "shift": 13,
       "shiftedWord": "syhrapl",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "sharply"
+      ]
     },
     {
       "inputWord": "gallery",
       "shift": 0,
       "shiftedWord": "largely",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "largely"
+      ]
     },
     {
       "inputWord": "gateway",
       "shift": 0,
       "shiftedWord": "getaway",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "getaway"
+      ]
     },
     {
       "inputWord": "getaway",
       "shift": 0,
       "shiftedWord": "gateway",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "gateway"
+      ]
     },
     {
       "inputWord": "hopeful",
       "shift": 23,
       "shiftedWord": "elmbcri",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "climber"
+      ]
     },
     {
       "inputWord": "however",
       "shift": 0,
       "shiftedWord": "whoever",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "whoever"
+      ]
     },
     {
       "inputWord": "largely",
       "shift": 0,
       "shiftedWord": "gallery",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "gallery"
+      ]
     },
     {
       "inputWord": "leopard",
       "shift": 23,
       "shiftedWord": "iblmxoa",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "mailbox"
+      ]
     },
     {
       "inputWord": "license",
       "shift": 0,
       "shiftedWord": "silence",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "silence"
+      ]
     },
     {
       "inputWord": "lowland",
       "shift": 4,
       "shiftedWord": "psaperh",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "perhaps"
+      ]
     },
     {
       "inputWord": "mailbox",
       "shift": 3,
       "shiftedWord": "pdloera",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "leopard"
+      ]
     },
     {
       "inputWord": "miracle",
       "shift": 0,
       "shiftedWord": "reclaim",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "reclaim"
+      ]
     },
     {
       "inputWord": "nuclear",
       "shift": 0,
       "shiftedWord": "unclear",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "unclear"
+      ]
     },
     {
       "inputWord": "painter",
       "shift": 0,
       "shiftedWord": "repaint",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "repaint"
+      ]
     },
     {
       "inputWord": "perfect",
       "shift": 0,
       "shiftedWord": "prefect",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "prefect"
+      ]
     },
     {
       "inputWord": "perhaps",
       "shift": 22,
       "shiftedWord": "landwlo",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "lowland"
+      ]
     },
     {
       "inputWord": "plastic",
       "shift": 11,
       "shiftedWord": "awldetn",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "wetland"
+      ]
     },
     {
       "inputWord": "prefect",
       "shift": 0,
       "shiftedWord": "perfect",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "perfect"
+      ]
     },
     {
       "inputWord": "printer",
       "shift": 0,
       "shiftedWord": "reprint",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "reprint"
+      ]
     },
     {
       "inputWord": "rebuild",
       "shift": 0,
       "shiftedWord": "builder",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "builder"
+      ]
     },
     {
       "inputWord": "reclaim",
       "shift": 0,
       "shiftedWord": "miracle",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "miracle"
+      ]
     },
     {
       "inputWord": "refresh",
       "shift": 22,
       "shiftedWord": "nabnaod",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "abandon"
+      ]
     },
     {
       "inputWord": "remains",
       "shift": 0,
       "shiftedWord": "seminar",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "seminar"
+      ]
     },
     {
       "inputWord": "repaint",
       "shift": 0,
       "shiftedWord": "painter",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "painter"
+      ]
     },
     {
       "inputWord": "reprint",
       "shift": 0,
       "shiftedWord": "printer",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "printer"
+      ]
     },
     {
       "inputWord": "reserve",
       "shift": 0,
       "shiftedWord": "reverse",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "reverse"
+      ]
     },
     {
       "inputWord": "reverse",
       "shift": 0,
       "shiftedWord": "reserve",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "reserve"
+      ]
     },
     {
       "inputWord": "seaside",
       "shift": 0,
       "shiftedWord": "disease",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "disease"
+      ]
     },
     {
       "inputWord": "seminar",
       "shift": 0,
       "shiftedWord": "remains",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "remains"
+      ]
     },
     {
       "inputWord": "sharply",
       "shift": 13,
       "shiftedWord": "funecyl",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fluency"
+      ]
     },
     {
       "inputWord": "silence",
       "shift": 0,
       "shiftedWord": "license",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "license"
+      ]
     },
     {
       "inputWord": "theater",
       "shift": 0,
       "shiftedWord": "theatre",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "theatre"
+      ]
     },
     {
       "inputWord": "theatre",
       "shift": 0,
       "shiftedWord": "theater",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "theater"
+      ]
     },
     {
       "inputWord": "unclear",
       "shift": 0,
       "shiftedWord": "nuclear",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "nuclear"
+      ]
     },
     {
       "inputWord": "veteran",
       "shift": 13,
       "shiftedWord": "irgrena",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "earring"
+      ]
     },
     {
       "inputWord": "wetland",
       "shift": 15,
       "shiftedWord": "ltiapcs",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "plastic"
+      ]
     },
     {
       "inputWord": "whoever",
       "shift": 0,
       "shiftedWord": "however",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "however"
+      ]
     }
   ]
 }

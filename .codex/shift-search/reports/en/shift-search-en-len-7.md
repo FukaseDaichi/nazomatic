@@ -5,56 +5,56 @@
 - targetWordCount: 1026
 - executedWordCount: 1026
 - totalHitRows: 48
-- startedAt: 2026-02-26T00:08:47.507Z
-- generatedAt: 2026-02-26T00:08:47.542Z
+- startedAt: 2026-02-27T01:56:59.204Z
+- generatedAt: 2026-02-27T01:56:59.253Z
 
-| inputWord | shift | shiftedWord | matchType |
-|---|---:|---|---|
-| abandon | 4 | eferhsr | アナグラム |
-| bedroom | 0 | boredom | アナグラム |
-| biology | 16 | ryebewo | アナグラム |
-| boredom | 0 | bedroom | アナグラム |
-| builder | 0 | rebuild | アナグラム |
-| climber | 3 | folpehu | アナグラム |
-| disease | 0 | seaside | アナグラム |
-| earnest | 0 | eastern | アナグラム |
-| earring | 13 | rneevat | アナグラム |
-| eastern | 0 | earnest | アナグラム |
-| eyebrow | 10 | oiolbyg | アナグラム |
-| fluency | 13 | syhrapl | アナグラム |
-| gallery | 0 | largely | アナグラム |
-| gateway | 0 | getaway | アナグラム |
-| getaway | 0 | gateway | アナグラム |
-| hopeful | 23 | elmbcri | アナグラム |
-| however | 0 | whoever | アナグラム |
-| largely | 0 | gallery | アナグラム |
-| leopard | 23 | iblmxoa | アナグラム |
-| license | 0 | silence | アナグラム |
-| lowland | 4 | psaperh | アナグラム |
-| mailbox | 3 | pdloera | アナグラム |
-| miracle | 0 | reclaim | アナグラム |
-| nuclear | 0 | unclear | アナグラム |
-| painter | 0 | repaint | アナグラム |
-| perfect | 0 | prefect | アナグラム |
-| perhaps | 22 | landwlo | アナグラム |
-| plastic | 11 | awldetn | アナグラム |
-| prefect | 0 | perfect | アナグラム |
-| printer | 0 | reprint | アナグラム |
-| rebuild | 0 | builder | アナグラム |
-| reclaim | 0 | miracle | アナグラム |
-| refresh | 22 | nabnaod | アナグラム |
-| remains | 0 | seminar | アナグラム |
-| repaint | 0 | painter | アナグラム |
-| reprint | 0 | printer | アナグラム |
-| reserve | 0 | reverse | アナグラム |
-| reverse | 0 | reserve | アナグラム |
-| seaside | 0 | disease | アナグラム |
-| seminar | 0 | remains | アナグラム |
-| sharply | 13 | funecyl | アナグラム |
-| silence | 0 | license | アナグラム |
-| theater | 0 | theatre | アナグラム |
-| theatre | 0 | theater | アナグラム |
-| unclear | 0 | nuclear | アナグラム |
-| veteran | 13 | irgrena | アナグラム |
-| wetland | 15 | ltiapcs | アナグラム |
-| whoever | 0 | however | アナグラム |
+| inputWord | shift | shiftedWord | matchType | matchedWords |
+|---|---:|---|---|---|
+| abandon | 4 | eferhsr | アナグラム | refresh |
+| bedroom | 0 | boredom | アナグラム | boredom |
+| biology | 16 | ryebewo | アナグラム | eyebrow |
+| boredom | 0 | bedroom | アナグラム | bedroom |
+| builder | 0 | rebuild | アナグラム | rebuild |
+| climber | 3 | folpehu | アナグラム | hopeful |
+| disease | 0 | seaside | アナグラム | seaside |
+| earnest | 0 | eastern | アナグラム | eastern |
+| earring | 13 | rneevat | アナグラム | veteran |
+| eastern | 0 | earnest | アナグラム | earnest |
+| eyebrow | 10 | oiolbyg | アナグラム | biology |
+| fluency | 13 | syhrapl | アナグラム | sharply |
+| gallery | 0 | largely | アナグラム | largely |
+| gateway | 0 | getaway | アナグラム | getaway |
+| getaway | 0 | gateway | アナグラム | gateway |
+| hopeful | 23 | elmbcri | アナグラム | climber |
+| however | 0 | whoever | アナグラム | whoever |
+| largely | 0 | gallery | アナグラム | gallery |
+| leopard | 23 | iblmxoa | アナグラム | mailbox |
+| license | 0 | silence | アナグラム | silence |
+| lowland | 4 | psaperh | アナグラム | perhaps |
+| mailbox | 3 | pdloera | アナグラム | leopard |
+| miracle | 0 | reclaim | アナグラム | reclaim |
+| nuclear | 0 | unclear | アナグラム | unclear |
+| painter | 0 | repaint | アナグラム | repaint |
+| perfect | 0 | prefect | アナグラム | prefect |
+| perhaps | 22 | landwlo | アナグラム | lowland |
+| plastic | 11 | awldetn | アナグラム | wetland |
+| prefect | 0 | perfect | アナグラム | perfect |
+| printer | 0 | reprint | アナグラム | reprint |
+| rebuild | 0 | builder | アナグラム | builder |
+| reclaim | 0 | miracle | アナグラム | miracle |
+| refresh | 22 | nabnaod | アナグラム | abandon |
+| remains | 0 | seminar | アナグラム | seminar |
+| repaint | 0 | painter | アナグラム | painter |
+| reprint | 0 | printer | アナグラム | printer |
+| reserve | 0 | reverse | アナグラム | reverse |
+| reverse | 0 | reserve | アナグラム | reserve |
+| seaside | 0 | disease | アナグラム | disease |
+| seminar | 0 | remains | アナグラム | remains |
+| sharply | 13 | funecyl | アナグラム | fluency |
+| silence | 0 | license | アナグラム | license |
+| theater | 0 | theatre | アナグラム | theatre |
+| theatre | 0 | theater | アナグラム | theater |
+| unclear | 0 | nuclear | アナグラム | nuclear |
+| veteran | 13 | irgrena | アナグラム | earring |
+| wetland | 15 | ltiapcs | アナグラム | plastic |
+| whoever | 0 | however | アナグラム | however |

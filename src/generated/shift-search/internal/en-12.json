@@ -6,21 +6,27 @@
   "targetWordCount": 166,
   "executedWordCount": 166,
   "totalHitRows": 2,
-  "startedAt": "2026-02-26T00:08:47.725Z",
-  "generatedAt": "2026-02-26T00:08:47.734Z",
+  "startedAt": "2026-02-27T01:56:59.458Z",
+  "generatedAt": "2026-02-27T01:56:59.474Z",
   "rowCount": 2,
   "rows": [
     {
       "inputWord": "conservation",
       "shift": 0,
       "shiftedWord": "conversation",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "conversation"
+      ]
     },
     {
       "inputWord": "conversation",
       "shift": 0,
       "shiftedWord": "conservation",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "conservation"
+      ]
     }
   ]
 }

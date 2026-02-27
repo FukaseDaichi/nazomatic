@@ -5,119 +5,119 @@
 - targetWordCount: 1025
 - executedWordCount: 1025
 - totalHitRows: 111
-- startedAt: 2026-02-26T00:08:47.452Z
-- generatedAt: 2026-02-26T00:08:47.480Z
+- startedAt: 2026-02-27T01:56:59.142Z
+- generatedAt: 2026-02-27T01:56:59.181Z
 
-| inputWord | shift | shiftedWord | matchType |
-|---|---:|---|---|
-| aboard | 0 | abroad | アナグラム |
-| abroad | 0 | aboard | アナグラム |
-| artist | 0 | strait | アナグラム |
-| asleep | 0 | please | アナグラム |
-| aspire | 0 | praise | アナグラム |
-| barely | 0 | barley | アナグラム |
-| barley | 0 | barely | アナグラム |
-| battle | 0 | tablet | アナグラム |
-| burgle | 13 | ohetyr | アナグラム |
-| bustle | 0 | subtle | アナグラム |
-| caller | 0 | cellar | アナグラム |
-| caller | 0 | recall | アナグラム |
-| cellar | 0 | caller | アナグラム |
-| cellar | 0 | recall | アナグラム |
-| center | 0 | centre | アナグラム |
-| center | 0 | recent | アナグラム |
-| centre | 0 | center | アナグラム |
-| centre | 0 | recent | アナグラム |
-| cinema | 0 | iceman | アナグラム |
-| commit | 18 | ugeeal | アナグラム |
-| course | 0 | source | アナグラム |
-| credit | 0 | direct | アナグラム |
-| dancer | 17 | uretvi | アナグラム |
-| danger | 0 | garden | アナグラム |
-| dealer | 0 | leader | アナグラム |
-| decent | 15 | strtci | アナグラム |
-| defeat | 14 | rstsoh | アナグラム |
-| derive | 9 | mnaren | アナグラム |
-| desert | 15 | sthtgi | アナグラム |
-| direct | 0 | credit | アナグラム |
-| drawer | 0 | reward | アナグラム |
-| except | 0 | expect | アナグラム |
-| expect | 0 | except | アナグラム |
-| figure | 9 | orpdan | アナグラム |
-| finger | 13 | svatre | アナグラム |
-| former | 0 | reform | アナグラム |
-| garden | 0 | danger | アナグラム |
-| gather | 13 | tngure | アナグラム |
-| happen | 4 | lettir | アナグラム |
-| hatred | 0 | thread | アナグラム |
-| helper | 7 | olswly | アナグラム |
-| iceman | 0 | cinema | アナグラム |
-| ignore | 0 | region | アナグラム |
-| indent | 0 | intend | アナグラム |
-| intend | 0 | indent | アナグラム |
-| latter | 0 | rattle | アナグラム |
-| launch | 6 | rgatin | アナグラム |
-| leader | 0 | dealer | アナグラム |
-| league | 8 | tmiocm | アナグラム |
-| listen | 0 | silent | アナグラム |
-| litter | 22 | heppan | アナグラム |
-| manner | 17 | dreevi | アナグラム |
-| marine | 0 | remain | アナグラム |
-| master | 0 | stream | アナグラム |
-| napkin | 4 | retomr | アナグラム |
-| nearly | 13 | arneyl | アナグラム |
-| openly | 4 | stirpc | アナグラム |
-| pardon | 17 | griufe | アナグラム |
-| piracy | 2 | rktcea | アナグラム |
-| please | 0 | asleep | アナグラム |
-| praise | 0 | aspire | アナグラム |
-| prance | 13 | cenapr | アナグラム |
-| priest | 0 | stripe | アナグラム |
-| racket | 24 | pyaicr | アナグラム |
-| rating | 20 | luncha | アナグラム |
-| rattle | 0 | latter | アナグラム |
-| recall | 0 | caller | アナグラム |
-| recall | 0 | cellar | アナグラム |
-| recent | 0 | center | アナグラム |
-| recent | 0 | centre | アナグラム |
-| reform | 0 | former | アナグラム |
-| region | 0 | ignore | アナグラム |
-| regret | 13 | erterg | アナグラム |
-| remain | 0 | marine | アナグラム |
-| rescue | 0 | secure | アナグラム |
-| resign | 0 | singer | アナグラム |
-| resist | 0 | sister | アナグラム |
-| retain | 0 | retina | アナグラム |
-| retard | 0 | trader | アナグラム |
-| retell | 0 | teller | アナグラム |
-| retina | 0 | retain | アナグラム |
-| review | 0 | viewer | アナグラム |
-| reward | 0 | drawer | アナグラム |
-| sacred | 0 | scared | アナグラム |
-| scared | 0 | sacred | アナグラム |
-| script | 22 | oynelp | アナグラム |
-| secure | 0 | rescue | アナグラム |
-| shorts | 12 | etadfe | アナグラム |
-| silent | 0 | listen | アナグラム |
-| silver | 0 | sliver | アナグラム |
-| singer | 0 | resign | アナグラム |
-| sister | 0 | resist | アナグラム |
-| sliver | 0 | silver | アナグラム |
-| slowly | 19 | lehper | アナグラム |
-| source | 0 | course | アナグラム |
-| starve | 13 | fgneir | アナグラム |
-| strait | 0 | artist | アナグラム |
-| stream | 0 | master | アナグラム |
-| strict | 11 | dectne | アナグラム |
-| stripe | 0 | priest | アナグラム |
-| subtle | 0 | bustle | アナグラム |
-| tablet | 0 | battle | アナグラム |
-| teller | 0 | retell | アナグラム |
-| theory | 13 | gurbel | アナグラム |
-| thread | 0 | hatred | アナグラム |
-| tights | 11 | etrsed | アナグラム |
-| trader | 0 | retard | アナグラム |
-| tremor | 22 | pnaikn | アナグラム |
-| urgent | 13 | hetrag | アナグラム |
-| viewer | 0 | review | アナグラム |
-| virtue | 9 | eracdn | アナグラム |
+| inputWord | shift | shiftedWord | matchType | matchedWords |
+|---|---:|---|---|---|
+| aboard | 0 | abroad | アナグラム | abroad |
+| abroad | 0 | aboard | アナグラム | aboard |
+| artist | 0 | strait | アナグラム | strait |
+| asleep | 0 | please | アナグラム | please |
+| aspire | 0 | praise | アナグラム | praise |
+| barely | 0 | barley | アナグラム | barley |
+| barley | 0 | barely | アナグラム | barely |
+| battle | 0 | tablet | アナグラム | tablet |
+| burgle | 13 | ohetyr | アナグラム | theory |
+| bustle | 0 | subtle | アナグラム | subtle |
+| caller | 0 | cellar | アナグラム | cellar |
+| caller | 0 | recall | アナグラム | recall |
+| cellar | 0 | caller | アナグラム | caller |
+| cellar | 0 | recall | アナグラム | recall |
+| center | 0 | centre | アナグラム | centre |
+| center | 0 | recent | アナグラム | recent |
+| centre | 0 | center | アナグラム | center |
+| centre | 0 | recent | アナグラム | recent |
+| cinema | 0 | iceman | アナグラム | iceman |
+| commit | 18 | ugeeal | アナグラム | league |
+| course | 0 | source | アナグラム | source |
+| credit | 0 | direct | アナグラム | direct |
+| dancer | 17 | uretvi | アナグラム | virtue |
+| danger | 0 | garden | アナグラム | garden |
+| dealer | 0 | leader | アナグラム | leader |
+| decent | 15 | strtci | アナグラム | strict |
+| defeat | 14 | rstsoh | アナグラム | shorts |
+| derive | 9 | mnaren | アナグラム | manner |
+| desert | 15 | sthtgi | アナグラム | tights |
+| direct | 0 | credit | アナグラム | credit |
+| drawer | 0 | reward | アナグラム | reward |
+| except | 0 | expect | アナグラム | expect |
+| expect | 0 | except | アナグラム | except |
+| figure | 9 | orpdan | アナグラム | pardon |
+| finger | 13 | svatre | アナグラム | starve |
+| former | 0 | reform | アナグラム | reform |
+| garden | 0 | danger | アナグラム | danger |
+| gather | 13 | tngure | アナグラム | urgent |
+| happen | 4 | lettir | アナグラム | litter |
+| hatred | 0 | thread | アナグラム | thread |
+| helper | 7 | olswly | アナグラム | slowly |
+| iceman | 0 | cinema | アナグラム | cinema |
+| ignore | 0 | region | アナグラム | region |
+| indent | 0 | intend | アナグラム | intend |
+| intend | 0 | indent | アナグラム | indent |
+| latter | 0 | rattle | アナグラム | rattle |
+| launch | 6 | rgatin | アナグラム | rating |
+| leader | 0 | dealer | アナグラム | dealer |
+| league | 8 | tmiocm | アナグラム | commit |
+| listen | 0 | silent | アナグラム | silent |
+| litter | 22 | heppan | アナグラム | happen |
+| manner | 17 | dreevi | アナグラム | derive |
+| marine | 0 | remain | アナグラム | remain |
+| master | 0 | stream | アナグラム | stream |
+| napkin | 4 | retomr | アナグラム | tremor |
+| nearly | 13 | arneyl | アナグラム | nearly |
+| openly | 4 | stirpc | アナグラム | script |
+| pardon | 17 | griufe | アナグラム | figure |
+| piracy | 2 | rktcea | アナグラム | racket |
+| please | 0 | asleep | アナグラム | asleep |
+| praise | 0 | aspire | アナグラム | aspire |
+| prance | 13 | cenapr | アナグラム | prance |
+| priest | 0 | stripe | アナグラム | stripe |
+| racket | 24 | pyaicr | アナグラム | piracy |
+| rating | 20 | luncha | アナグラム | launch |
+| rattle | 0 | latter | アナグラム | latter |
+| recall | 0 | caller | アナグラム | caller |
+| recall | 0 | cellar | アナグラム | cellar |
+| recent | 0 | center | アナグラム | center |
+| recent | 0 | centre | アナグラム | centre |
+| reform | 0 | former | アナグラム | former |
+| region | 0 | ignore | アナグラム | ignore |
+| regret | 13 | erterg | アナグラム | regret |
+| remain | 0 | marine | アナグラム | marine |
+| rescue | 0 | secure | アナグラム | secure |
+| resign | 0 | singer | アナグラム | singer |
+| resist | 0 | sister | アナグラム | sister |
+| retain | 0 | retina | アナグラム | retina |
+| retard | 0 | trader | アナグラム | trader |
+| retell | 0 | teller | アナグラム | teller |
+| retina | 0 | retain | アナグラム | retain |
+| review | 0 | viewer | アナグラム | viewer |
+| reward | 0 | drawer | アナグラム | drawer |
+| sacred | 0 | scared | アナグラム | scared |
+| scared | 0 | sacred | アナグラム | sacred |
+| script | 22 | oynelp | アナグラム | openly |
+| secure | 0 | rescue | アナグラム | rescue |
+| shorts | 12 | etadfe | アナグラム | defeat |
+| silent | 0 | listen | アナグラム | listen |
+| silver | 0 | sliver | アナグラム | sliver |
+| singer | 0 | resign | アナグラム | resign |
+| sister | 0 | resist | アナグラム | resist |
+| sliver | 0 | silver | アナグラム | silver |
+| slowly | 19 | lehper | アナグラム | helper |
+| source | 0 | course | アナグラム | course |
+| starve | 13 | fgneir | アナグラム | finger |
+| strait | 0 | artist | アナグラム | artist |
+| stream | 0 | master | アナグラム | master |
+| strict | 11 | dectne | アナグラム | decent |
+| stripe | 0 | priest | アナグラム | priest |
+| subtle | 0 | bustle | アナグラム | bustle |
+| tablet | 0 | battle | アナグラム | battle |
+| teller | 0 | retell | アナグラム | retell |
+| theory | 13 | gurbel | アナグラム | burgle |
+| thread | 0 | hatred | アナグラム | hatred |
+| tights | 11 | etrsed | アナグラム | desert |
+| trader | 0 | retard | アナグラム | retard |
+| tremor | 22 | pnaikn | アナグラム | napkin |
+| urgent | 13 | hetrag | アナグラム | gather |
+| viewer | 0 | review | アナグラム | review |
+| virtue | 9 | eracdn | アナグラム | dancer |

@@ -6,4179 +6,6311 @@
   "targetWordCount": 285,
   "executedWordCount": 285,
   "totalHitRows": 695,
-  "startedAt": "2026-02-26T00:08:47.255Z",
-  "generatedAt": "2026-02-26T00:08:47.285Z",
+  "startedAt": "2026-02-27T01:56:58.918Z",
+  "generatedAt": "2026-02-27T01:56:58.975Z",
   "rowCount": 695,
   "rows": [
     {
       "inputWord": "act",
       "shift": 0,
       "shiftedWord": "cat",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "cat"
+      ]
     },
     {
       "inputWord": "act",
       "shift": 1,
       "shiftedWord": "bdu",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bud"
+      ]
     },
     {
       "inputWord": "act",
       "shift": 15,
       "shiftedWord": "pri",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "rip"
+      ]
     },
     {
       "inputWord": "act",
       "shift": 24,
       "shiftedWord": "yar",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "ray"
+      ]
     },
     {
       "inputWord": "add",
       "shift": 0,
       "shiftedWord": "dad",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "dad"
+      ]
     },
     {
       "inputWord": "add",
       "shift": 1,
       "shiftedWord": "bee",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "bee"
+      ]
     },
     {
       "inputWord": "add",
       "shift": 8,
       "shiftedWord": "ill",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "ill"
+      ]
     },
     {
       "inputWord": "ago",
       "shift": 6,
       "shiftedWord": "gmu",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "gum",
+        "mug"
+      ]
     },
     {
       "inputWord": "aid",
       "shift": 6,
       "shiftedWord": "goj",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "jog"
+      ]
     },
     {
       "inputWord": "aid",
       "shift": 11,
       "shiftedWord": "lto",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "lot"
+      ]
     },
     {
       "inputWord": "aid",
       "shift": 14,
       "shiftedWord": "owr",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "row"
+      ]
     },
     {
       "inputWord": "aid",
       "shift": 23,
       "shiftedWord": "xfa",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fax"
+      ]
     },
     {
       "inputWord": "aim",
       "shift": 18,
       "shiftedWord": "sae",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "sea"
+      ]
     },
     {
       "inputWord": "air",
       "shift": 9,
       "shiftedWord": "jra",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "jar"
+      ]
     },
     {
       "inputWord": "air",
       "shift": 12,
       "shiftedWord": "mud",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "mud"
+      ]
     },
     {
       "inputWord": "air",
       "shift": 22,
       "shiftedWord": "wen",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "new"
+      ]
     },
     {
       "inputWord": "air",
       "shift": 23,
       "shiftedWord": "xfo",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fox"
+      ]
     },
     {
       "inputWord": "all",
       "shift": 19,
       "shiftedWord": "tee",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "tee"
+      ]
     },
     {
       "inputWord": "and",
       "shift": 0,
       "shiftedWord": "dna",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "dna"
+      ]
     },
     {
       "inputWord": "and",
       "shift": 4,
       "shiftedWord": "erh",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "her"
+      ]
     },
     {
       "inputWord": "and",
       "shift": 14,
       "shiftedWord": "obr",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "rob"
+      ]
     },
     {
       "inputWord": "ant",
       "shift": 0,
       "shiftedWord": "tan",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "tan"
+      ]
     },
     {
       "inputWord": "any",
       "shift": 2,
       "shiftedWord": "cpa",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "cap"
+      ]
     },
     {
       "inputWord": "any",
       "shift": 6,
       "shiftedWord": "gte",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "get"
+      ]
     },
     {
       "inputWord": "any",
       "shift": 17,
       "shiftedWord": "rep",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "per"
+      ]
     },
     {
       "inputWord": "ape",
       "shift": 0,
       "shiftedWord": "pea",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pea"
+      ]
     },
     {
       "inputWord": "ape",
       "shift": 4,
       "shiftedWord": "eti",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "tie"
+      ]
     },
     {
       "inputWord": "ape",
       "shift": 8,
       "shiftedWord": "ixm",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "mix"
+      ]
     },
     {
       "inputWord": "ape",
       "shift": 11,
       "shiftedWord": "lap",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "lap"
+      ]
     },
     {
       "inputWord": "ape",
       "shift": 11,
       "shiftedWord": "lap",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pal"
+      ]
     },
     {
       "inputWord": "ape",
       "shift": 15,
       "shiftedWord": "pet",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "pet"
+      ]
     },
     {
       "inputWord": "ape",
       "shift": 22,
       "shiftedWord": "wla",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "law"
+      ]
     },
     {
       "inputWord": "are",
       "shift": 0,
       "shiftedWord": "ear",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "ear"
+      ]
     },
     {
       "inputWord": "are",
       "shift": 0,
       "shiftedWord": "era",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "era"
+      ]
     },
     {
       "inputWord": "are",
       "shift": 23,
       "shiftedWord": "xob",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "box"
+      ]
     },
     {
       "inputWord": "arm",
       "shift": 0,
       "shiftedWord": "ram",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "ram"
+      ]
     },
     {
       "inputWord": "arm",
       "shift": 17,
       "shiftedWord": "rid",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "rid"
+      ]
     },
     {
       "inputWord": "arm",
       "shift": 22,
       "shiftedWord": "wni",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "win"
+      ]
     },
     {
       "inputWord": "art",
       "shift": 0,
       "shiftedWord": "rat",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "rat"
+      ]
     },
     {
       "inputWord": "art",
       "shift": 1,
       "shiftedWord": "bsu",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bus"
+      ]
     },
     {
       "inputWord": "art",
       "shift": 7,
       "shiftedWord": "hya",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "hay"
+      ]
     },
     {
       "inputWord": "art",
       "shift": 15,
       "shiftedWord": "pgi",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pig"
+      ]
     },
     {
       "inputWord": "ash",
       "shift": 0,
       "shiftedWord": "has",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "has"
+      ]
     },
     {
       "inputWord": "ash",
       "shift": 1,
       "shiftedWord": "bti",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bit"
+      ]
     },
     {
       "inputWord": "ash",
       "shift": 13,
       "shiftedWord": "nfu",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fun"
+      ]
     },
     {
       "inputWord": "ash",
       "shift": 20,
       "shiftedWord": "umb",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bum"
+      ]
     },
     {
       "inputWord": "ask",
       "shift": 4,
       "shiftedWord": "ewo",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "owe"
+      ]
     },
     {
       "inputWord": "awe",
       "shift": 22,
       "shiftedWord": "wsa",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "saw",
+        "was"
+      ]
     },
     {
       "inputWord": "axe",
       "shift": 3,
       "shiftedWord": "dah",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "had"
+      ]
     },
     {
       "inputWord": "axe",
       "shift": 11,
       "shiftedWord": "lip",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "lip"
+      ]
     },
     {
       "inputWord": "bad",
       "shift": 14,
       "shiftedWord": "por",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pro"
+      ]
     },
     {
       "inputWord": "bag",
       "shift": 13,
       "shiftedWord": "ont",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "not",
+        "ton"
+      ]
     },
     {
       "inputWord": "ban",
       "shift": 19,
       "shiftedWord": "utg",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "tug"
+      ]
     },
     {
       "inputWord": "bar",
       "shift": 0,
       "shiftedWord": "bra",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bra"
+      ]
     },
     {
       "inputWord": "bar",
       "shift": 3,
       "shiftedWord": "edu",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "due"
+      ]
     },
     {
       "inputWord": "bar",
       "shift": 13,
       "shiftedWord": "one",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "one"
+      ]
     },
     {
       "inputWord": "bar",
       "shift": 17,
       "shiftedWord": "sri",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "sir"
+      ]
     },
     {
       "inputWord": "bat",
       "shift": 3,
       "shiftedWord": "edw",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "wed"
+      ]
     },
     {
       "inputWord": "bat",
       "shift": 14,
       "shiftedWord": "poh",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "hop"
+      ]
     },
     {
       "inputWord": "bat",
       "shift": 21,
       "shiftedWord": "wvo",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "vow"
+      ]
     },
     {
       "inputWord": "bay",
       "shift": 3,
       "shiftedWord": "edb",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bed"
+      ]
     },
     {
       "inputWord": "bed",
       "shift": 23,
       "shiftedWord": "yba",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bay"
+      ]
     },
     {
       "inputWord": "bee",
       "shift": 7,
       "shiftedWord": "ill",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "ill"
+      ]
     },
     {
       "inputWord": "bee",
       "shift": 25,
       "shiftedWord": "add",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "add"
+      ]
     },
     {
       "inputWord": "bee",
       "shift": 25,
       "shiftedWord": "add",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "dad"
+      ]
     },
     {
       "inputWord": "beg",
       "shift": 2,
       "shiftedWord": "dgi",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "dig"
+      ]
     },
     {
       "inputWord": "bet",
       "shift": 4,
       "shiftedWord": "fix",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "fix"
+      ]
     },
     {
       "inputWord": "bet",
       "shift": 10,
       "shiftedWord": "lod",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "old"
+      ]
     },
     {
       "inputWord": "bet",
       "shift": 25,
       "shiftedWord": "ads",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "sad"
+      ]
     },
     {
       "inputWord": "bid",
       "shift": 3,
       "shiftedWord": "elg",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "leg"
+      ]
     },
     {
       "inputWord": "bid",
       "shift": 16,
       "shiftedWord": "ryt",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "try"
+      ]
     },
     {
       "inputWord": "big",
       "shift": 2,
       "shiftedWord": "dki",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "kid"
+      ]
     },
     {
       "inputWord": "big",
       "shift": 7,
       "shiftedWord": "ipn",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pin"
+      ]
     },
     {
       "inputWord": "big",
       "shift": 12,
       "shiftedWord": "nus",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "sun"
+      ]
     },
     {
       "inputWord": "bin",
       "shift": 6,
       "shiftedWord": "hot",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "hot"
+      ]
     },
     {
       "inputWord": "bin",
       "shift": 16,
       "shiftedWord": "ryd",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "dry"
+      ]
     },
     {
       "inputWord": "bin",
       "shift": 18,
       "shiftedWord": "taf",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fat"
+      ]
     },
     {
       "inputWord": "bin",
       "shift": 19,
       "shiftedWord": "ubg",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bug"
+      ]
     },
     {
       "inputWord": "bin",
       "shift": 25,
       "shiftedWord": "ahm",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "ham"
+      ]
     },
     {
       "inputWord": "bio",
       "shift": 18,
       "shiftedWord": "tag",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "tag"
+      ]
     },
     {
       "inputWord": "bio",
       "shift": 23,
       "shiftedWord": "yfl",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fly"
+      ]
     },
     {
       "inputWord": "bit",
       "shift": 12,
       "shiftedWord": "nuf",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fun"
+      ]
     },
     {
       "inputWord": "bit",
       "shift": 19,
       "shiftedWord": "ubm",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bum"
+      ]
     },
     {
       "inputWord": "bit",
       "shift": 25,
       "shiftedWord": "ahs",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "ash",
+        "has"
+      ]
     },
     {
       "inputWord": "bow",
       "shift": 13,
       "shiftedWord": "obj",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "job"
+      ]
     },
     {
       "inputWord": "bow",
       "shift": 25,
       "shiftedWord": "anv",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "van"
+      ]
     },
     {
       "inputWord": "box",
       "shift": 3,
       "shiftedWord": "era",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "era"
+      ]
     },
     {
       "inputWord": "box",
       "shift": 3,
       "shiftedWord": "era",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "are",
+        "ear"
+      ]
     },
     {
       "inputWord": "bra",
       "shift": 0,
       "shiftedWord": "bar",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bar"
+      ]
     },
     {
       "inputWord": "bra",
       "shift": 3,
       "shiftedWord": "eud",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "due"
+      ]
     },
     {
       "inputWord": "bra",
       "shift": 13,
       "shiftedWord": "oen",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "one"
+      ]
     },
     {
       "inputWord": "bra",
       "shift": 17,
       "shiftedWord": "sir",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "sir"
+      ]
     },
     {
       "inputWord": "bud",
       "shift": 14,
       "shiftedWord": "pir",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "rip"
+      ]
     },
     {
       "inputWord": "bud",
       "shift": 23,
       "shiftedWord": "yra",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "ray"
+      ]
     },
     {
       "inputWord": "bud",
       "shift": 25,
       "shiftedWord": "atc",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "act",
+        "cat"
+      ]
     },
     {
       "inputWord": "bug",
       "shift": 6,
       "shiftedWord": "ham",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "ham"
+      ]
     },
     {
       "inputWord": "bug",
       "shift": 7,
       "shiftedWord": "ibn",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bin"
+      ]
     },
     {
       "inputWord": "bug",
       "shift": 13,
       "shiftedWord": "oht",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "hot"
+      ]
     },
     {
       "inputWord": "bug",
       "shift": 23,
       "shiftedWord": "yrd",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "dry"
+      ]
     },
     {
       "inputWord": "bug",
       "shift": 25,
       "shiftedWord": "atf",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fat"
+      ]
     },
     {
       "inputWord": "bum",
       "shift": 6,
       "shiftedWord": "has",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "has"
+      ]
     },
     {
       "inputWord": "bum",
       "shift": 6,
       "shiftedWord": "has",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "ash"
+      ]
     },
     {
       "inputWord": "bum",
       "shift": 7,
       "shiftedWord": "ibt",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bit"
+      ]
     },
     {
       "inputWord": "bum",
       "shift": 19,
       "shiftedWord": "unf",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fun"
+      ]
     },
     {
       "inputWord": "bun",
       "shift": 4,
       "shiftedWord": "fyr",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fry"
+      ]
     },
     {
       "inputWord": "bun",
       "shift": 6,
       "shiftedWord": "hat",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "hat"
+      ]
     },
     {
       "inputWord": "bun",
       "shift": 19,
       "shiftedWord": "ung",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "gun"
+      ]
     },
     {
       "inputWord": "bus",
       "shift": 6,
       "shiftedWord": "hay",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "hay"
+      ]
     },
     {
       "inputWord": "bus",
       "shift": 14,
       "shiftedWord": "pig",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "pig"
+      ]
     },
     {
       "inputWord": "bus",
       "shift": 25,
       "shiftedWord": "atr",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "art",
+        "rat"
+      ]
     },
     {
       "inputWord": "but",
       "shift": 0,
       "shiftedWord": "tub",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "tub"
+      ]
     },
     {
       "inputWord": "but",
       "shift": 14,
       "shiftedWord": "pih",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "hip"
+      ]
     },
     {
       "inputWord": "buy",
       "shift": 10,
       "shiftedWord": "lei",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "lie"
+      ]
     },
     {
       "inputWord": "buy",
       "shift": 19,
       "shiftedWord": "unr",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "run"
+      ]
     },
     {
       "inputWord": "buy",
       "shift": 25,
       "shiftedWord": "atx",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "tax"
+      ]
     },
     {
       "inputWord": "bye",
       "shift": 10,
       "shiftedWord": "lio",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "oil"
+      ]
     },
     {
       "inputWord": "bye",
       "shift": 16,
       "shiftedWord": "rou",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "our"
+      ]
     },
     {
       "inputWord": "cab",
       "shift": 3,
       "shiftedWord": "fde",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fed"
+      ]
     },
     {
       "inputWord": "can",
       "shift": 13,
       "shiftedWord": "pna",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "nap",
+        "pan"
+      ]
     },
     {
       "inputWord": "can",
       "shift": 24,
       "shiftedWord": "ayl",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "lay"
+      ]
     },
     {
       "inputWord": "cap",
       "shift": 4,
       "shiftedWord": "get",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "get"
+      ]
     },
     {
       "inputWord": "cap",
       "shift": 15,
       "shiftedWord": "rpe",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "per"
+      ]
     },
     {
       "inputWord": "cap",
       "shift": 24,
       "shiftedWord": "ayn",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "any"
+      ]
     },
     {
       "inputWord": "car",
       "shift": 13,
       "shiftedWord": "pne",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pen"
+      ]
     },
     {
       "inputWord": "car",
       "shift": 24,
       "shiftedWord": "ayp",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pay"
+      ]
     },
     {
       "inputWord": "cat",
       "shift": 0,
       "shiftedWord": "act",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "act"
+      ]
     },
     {
       "inputWord": "cat",
       "shift": 1,
       "shiftedWord": "dbu",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bud"
+      ]
     },
     {
       "inputWord": "cat",
       "shift": 15,
       "shiftedWord": "rpi",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "rip"
+      ]
     },
     {
       "inputWord": "cat",
       "shift": 24,
       "shiftedWord": "ayr",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "ray"
+      ]
     },
     {
       "inputWord": "cod",
       "shift": 0,
       "shiftedWord": "doc",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "doc"
+      ]
     },
     {
       "inputWord": "cod",
       "shift": 5,
       "shiftedWord": "hti",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "hit"
+      ]
     },
     {
       "inputWord": "cod",
       "shift": 16,
       "shiftedWord": "set",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "set"
+      ]
     },
     {
       "inputWord": "cop",
       "shift": 5,
       "shiftedWord": "htu",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "hut"
+      ]
     },
     {
       "inputWord": "cop",
       "shift": 15,
       "shiftedWord": "rde",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "red"
+      ]
     },
     {
       "inputWord": "cop",
       "shift": 18,
       "shiftedWord": "ugh",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "hug"
+      ]
     },
     {
       "inputWord": "cop",
       "shift": 19,
       "shiftedWord": "vhi",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "hiv"
+      ]
     },
     {
       "inputWord": "cop",
       "shift": 24,
       "shiftedWord": "amn",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "man"
+      ]
     },
     {
       "inputWord": "cow",
       "shift": 4,
       "shiftedWord": "gsa",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "gas",
+        "sag"
+      ]
     },
     {
       "inputWord": "cow",
       "shift": 10,
       "shiftedWord": "myg",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "gym"
+      ]
     },
     {
       "inputWord": "cow",
       "shift": 22,
       "shiftedWord": "yks",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "sky"
+      ]
     },
     {
       "inputWord": "cry",
       "shift": 2,
       "shiftedWord": "eta",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "eat",
+        "tea"
+      ]
     },
     {
       "inputWord": "cry",
       "shift": 17,
       "shiftedWord": "tip",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "tip"
+      ]
     },
     {
       "inputWord": "cry",
       "shift": 17,
       "shiftedWord": "tip",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pit"
+      ]
     },
     {
       "inputWord": "cry",
       "shift": 24,
       "shiftedWord": "apw",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "paw"
+      ]
     },
     {
       "inputWord": "cup",
       "shift": 6,
       "shiftedWord": "iav",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "via"
+      ]
     },
     {
       "inputWord": "cup",
       "shift": 11,
       "shiftedWord": "nfa",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fan"
+      ]
     },
     {
       "inputWord": "cut",
       "shift": 12,
       "shiftedWord": "ogf",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fog"
+      ]
     },
     {
       "inputWord": "cut",
       "shift": 20,
       "shiftedWord": "won",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "now",
+        "own"
+      ]
     },
     {
       "inputWord": "dad",
       "shift": 0,
       "shiftedWord": "add",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "add"
+      ]
     },
     {
       "inputWord": "dad",
       "shift": 1,
       "shiftedWord": "ebe",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bee"
+      ]
     },
     {
       "inputWord": "dad",
       "shift": 8,
       "shiftedWord": "lil",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "ill"
+      ]
     },
     {
       "inputWord": "dam",
       "shift": 0,
       "shiftedWord": "mad",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "mad"
+      ]
     },
     {
       "inputWord": "day",
       "shift": 10,
       "shiftedWord": "nki",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "ink"
+      ]
     },
     {
       "inputWord": "day",
       "shift": 14,
       "shiftedWord": "rom",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "rom"
+      ]
     },
     {
       "inputWord": "did",
       "shift": 11,
       "shiftedWord": "oto",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "too"
+      ]
     },
     {
       "inputWord": "die",
       "shift": 4,
       "shiftedWord": "hmi",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "him"
+      ]
     },
     {
       "inputWord": "die",
       "shift": 10,
       "shiftedWord": "nso",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "son"
+      ]
     },
     {
       "inputWord": "die",
       "shift": 11,
       "shiftedWord": "otp",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pot",
+        "top"
+      ]
     },
     {
       "inputWord": "dig",
       "shift": 24,
       "shiftedWord": "bge",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "beg"
+      ]
     },
     {
       "inputWord": "dim",
       "shift": 14,
       "shiftedWord": "rwa",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "raw",
+        "war"
+      ]
     },
     {
       "inputWord": "dip",
       "shift": 12,
       "shiftedWord": "pub",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "pub"
+      ]
     },
     {
       "inputWord": "dip",
       "shift": 15,
       "shiftedWord": "sxe",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "sex"
+      ]
     },
     {
       "inputWord": "dna",
       "shift": 0,
       "shiftedWord": "and",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "and"
+      ]
     },
     {
       "inputWord": "dna",
       "shift": 4,
       "shiftedWord": "hre",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "her"
+      ]
     },
     {
       "inputWord": "dna",
       "shift": 14,
       "shiftedWord": "rbo",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "rob"
+      ]
     },
     {
       "inputWord": "doc",
       "shift": 0,
       "shiftedWord": "cod",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "cod"
+      ]
     },
     {
       "inputWord": "doc",
       "shift": 5,
       "shiftedWord": "ith",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "hit"
+      ]
     },
     {
       "inputWord": "doc",
       "shift": 16,
       "shiftedWord": "tes",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "set"
+      ]
     },
     {
       "inputWord": "dog",
       "shift": 0,
       "shiftedWord": "god",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "god"
+      ]
     },
     {
       "inputWord": "dog",
       "shift": 8,
       "shiftedWord": "lwo",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "low",
+        "owl"
+      ]
     },
     {
       "inputWord": "dog",
       "shift": 12,
       "shiftedWord": "pas",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "spa"
+      ]
     },
     {
       "inputWord": "dog",
       "shift": 16,
       "shiftedWord": "tew",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "wet"
+      ]
     },
     {
       "inputWord": "dot",
       "shift": 16,
       "shiftedWord": "tej",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "jet"
+      ]
     },
     {
       "inputWord": "dot",
       "shift": 21,
       "shiftedWord": "yjo",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "joy"
+      ]
     },
     {
       "inputWord": "dry",
       "shift": 2,
       "shiftedWord": "fta",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fat"
+      ]
     },
     {
       "inputWord": "dry",
       "shift": 3,
       "shiftedWord": "gub",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bug"
+      ]
     },
     {
       "inputWord": "dry",
       "shift": 9,
       "shiftedWord": "mah",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "ham"
+      ]
     },
     {
       "inputWord": "dry",
       "shift": 10,
       "shiftedWord": "nbi",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bin"
+      ]
     },
     {
       "inputWord": "dry",
       "shift": 16,
       "shiftedWord": "tho",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "hot"
+      ]
     },
     {
       "inputWord": "due",
       "shift": 10,
       "shiftedWord": "neo",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "one"
+      ]
     },
     {
       "inputWord": "due",
       "shift": 14,
       "shiftedWord": "ris",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "sir"
+      ]
     },
     {
       "inputWord": "due",
       "shift": 23,
       "shiftedWord": "arb",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bar",
+        "bra"
+      ]
     },
     {
       "inputWord": "dye",
       "shift": 14,
       "shiftedWord": "rms",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "mrs"
+      ]
     },
     {
       "inputWord": "dye",
       "shift": 16,
       "shiftedWord": "tou",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "out"
+      ]
     },
     {
       "inputWord": "ear",
       "shift": 0,
       "shiftedWord": "are",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "are"
+      ]
     },
     {
       "inputWord": "ear",
       "shift": 0,
       "shiftedWord": "era",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "era"
+      ]
     },
     {
       "inputWord": "ear",
       "shift": 23,
       "shiftedWord": "bxo",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "box"
+      ]
     },
     {
       "inputWord": "eat",
       "shift": 0,
       "shiftedWord": "tea",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "tea"
+      ]
     },
     {
       "inputWord": "eat",
       "shift": 15,
       "shiftedWord": "tpi",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pit",
+        "tip"
+      ]
     },
     {
       "inputWord": "eat",
       "shift": 22,
       "shiftedWord": "awp",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "paw"
+      ]
     },
     {
       "inputWord": "eat",
       "shift": 24,
       "shiftedWord": "cyr",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "cry"
+      ]
     },
     {
       "inputWord": "eco",
       "shift": 16,
       "shiftedWord": "use",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "use"
+      ]
     },
     {
       "inputWord": "eco",
       "shift": 16,
       "shiftedWord": "use",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "sue"
+      ]
     },
     {
       "inputWord": "era",
       "shift": 0,
       "shiftedWord": "are",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "are"
+      ]
     },
     {
       "inputWord": "era",
       "shift": 0,
       "shiftedWord": "ear",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "ear"
+      ]
     },
     {
       "inputWord": "era",
       "shift": 23,
       "shiftedWord": "box",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "box"
+      ]
     },
     {
       "inputWord": "fan",
       "shift": 15,
       "shiftedWord": "upc",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "cup"
+      ]
     },
     {
       "inputWord": "fan",
       "shift": 21,
       "shiftedWord": "avi",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "via"
+      ]
     },
     {
       "inputWord": "fat",
       "shift": 1,
       "shiftedWord": "gbu",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bug"
+      ]
     },
     {
       "inputWord": "fat",
       "shift": 7,
       "shiftedWord": "mha",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "ham"
+      ]
     },
     {
       "inputWord": "fat",
       "shift": 8,
       "shiftedWord": "nib",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bin"
+      ]
     },
     {
       "inputWord": "fat",
       "shift": 14,
       "shiftedWord": "toh",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "hot"
+      ]
     },
     {
       "inputWord": "fat",
       "shift": 24,
       "shiftedWord": "dyr",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "dry"
+      ]
     },
     {
       "inputWord": "fax",
       "shift": 3,
       "shiftedWord": "ida",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "aid"
+      ]
     },
     {
       "inputWord": "fax",
       "shift": 9,
       "shiftedWord": "ojg",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "jog"
+      ]
     },
     {
       "inputWord": "fax",
       "shift": 14,
       "shiftedWord": "tol",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "lot"
+      ]
     },
     {
       "inputWord": "fax",
       "shift": 17,
       "shiftedWord": "wro",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "row"
+      ]
     },
     {
       "inputWord": "fed",
       "shift": 23,
       "shiftedWord": "cba",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "cab"
+      ]
     },
     {
       "inputWord": "fee",
       "shift": 9,
       "shiftedWord": "onn",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "non"
+      ]
     },
     {
       "inputWord": "fit",
       "shift": 1,
       "shiftedWord": "gju",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "jug"
+      ]
     },
     {
       "inputWord": "fit",
       "shift": 7,
       "shiftedWord": "mpa",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "map"
+      ]
     },
     {
       "inputWord": "fit",
       "shift": 12,
       "shiftedWord": "ruf",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fur"
+      ]
     },
     {
       "inputWord": "fit",
       "shift": 25,
       "shiftedWord": "ehs",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "she"
+      ]
     },
     {
       "inputWord": "fix",
       "shift": 6,
       "shiftedWord": "lod",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "old"
+      ]
     },
     {
       "inputWord": "fix",
       "shift": 21,
       "shiftedWord": "ads",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "sad"
+      ]
     },
     {
       "inputWord": "fix",
       "shift": 22,
       "shiftedWord": "bet",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "bet"
+      ]
     },
     {
       "inputWord": "flu",
       "shift": 13,
       "shiftedWord": "syh",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "shy"
+      ]
     },
     {
       "inputWord": "flu",
       "shift": 21,
       "shiftedWord": "agp",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "gap"
+      ]
     },
     {
       "inputWord": "fly",
       "shift": 3,
       "shiftedWord": "iob",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bio"
+      ]
     },
     {
       "inputWord": "fly",
       "shift": 21,
       "shiftedWord": "agt",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "tag"
+      ]
     },
     {
       "inputWord": "fog",
       "shift": 8,
       "shiftedWord": "nwo",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "now",
+        "own"
+      ]
     },
     {
       "inputWord": "fog",
       "shift": 14,
       "shiftedWord": "tcu",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "cut"
+      ]
     },
     {
       "inputWord": "for",
       "shift": 21,
       "shiftedWord": "ajm",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "jam"
+      ]
     },
     {
       "inputWord": "fox",
       "shift": 3,
       "shiftedWord": "ira",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "air"
+      ]
     },
     {
       "inputWord": "fox",
       "shift": 12,
       "shiftedWord": "raj",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "jar"
+      ]
     },
     {
       "inputWord": "fox",
       "shift": 15,
       "shiftedWord": "udm",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "mud"
+      ]
     },
     {
       "inputWord": "fox",
       "shift": 25,
       "shiftedWord": "enw",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "new"
+      ]
     },
     {
       "inputWord": "fry",
       "shift": 2,
       "shiftedWord": "hta",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "hat"
+      ]
     },
     {
       "inputWord": "fry",
       "shift": 15,
       "shiftedWord": "ugn",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "gun"
+      ]
     },
     {
       "inputWord": "fry",
       "shift": 22,
       "shiftedWord": "bnu",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bun"
+      ]
     },
     {
       "inputWord": "fun",
       "shift": 7,
       "shiftedWord": "mbu",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bum"
+      ]
     },
     {
       "inputWord": "fun",
       "shift": 13,
       "shiftedWord": "sha",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "ash",
+        "has"
+      ]
     },
     {
       "inputWord": "fun",
       "shift": 14,
       "shiftedWord": "tib",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bit"
+      ]
     },
     {
       "inputWord": "fur",
       "shift": 13,
       "shiftedWord": "she",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "she"
+      ]
     },
     {
       "inputWord": "fur",
       "shift": 14,
       "shiftedWord": "tif",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fit"
+      ]
     },
     {
       "inputWord": "fur",
       "shift": 15,
       "shiftedWord": "ujg",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "jug"
+      ]
     },
     {
       "inputWord": "fur",
       "shift": 21,
       "shiftedWord": "apm",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "map"
+      ]
     },
     {
       "inputWord": "gap",
       "shift": 5,
       "shiftedWord": "lfu",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "flu"
+      ]
     },
     {
       "inputWord": "gap",
       "shift": 18,
       "shiftedWord": "ysh",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "shy"
+      ]
     },
     {
       "inputWord": "gas",
       "shift": 0,
       "shiftedWord": "sag",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "sag"
+      ]
     },
     {
       "inputWord": "gas",
       "shift": 6,
       "shiftedWord": "mgy",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "gym"
+      ]
     },
     {
       "inputWord": "gas",
       "shift": 18,
       "shiftedWord": "ysk",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "sky"
+      ]
     },
     {
       "inputWord": "gas",
       "shift": 22,
       "shiftedWord": "cwo",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "cow"
+      ]
     },
     {
       "inputWord": "gee",
       "shift": 8,
       "shiftedWord": "omm",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "mom"
+      ]
     },
     {
       "inputWord": "get",
       "shift": 11,
       "shiftedWord": "rpe",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "per"
+      ]
     },
     {
       "inputWord": "get",
       "shift": 20,
       "shiftedWord": "ayn",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "any"
+      ]
     },
     {
       "inputWord": "get",
       "shift": 22,
       "shiftedWord": "cap",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "cap"
+      ]
     },
     {
       "inputWord": "god",
       "shift": 0,
       "shiftedWord": "dog",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "dog"
+      ]
     },
     {
       "inputWord": "god",
       "shift": 8,
       "shiftedWord": "owl",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "owl"
+      ]
     },
     {
       "inputWord": "god",
       "shift": 8,
       "shiftedWord": "owl",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "low"
+      ]
     },
     {
       "inputWord": "god",
       "shift": 12,
       "shiftedWord": "sap",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "spa"
+      ]
     },
     {
       "inputWord": "god",
       "shift": 16,
       "shiftedWord": "wet",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "wet"
+      ]
     },
     {
       "inputWord": "gum",
       "shift": 0,
       "shiftedWord": "mug",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "mug"
+      ]
     },
     {
       "inputWord": "gum",
       "shift": 20,
       "shiftedWord": "aog",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "ago"
+      ]
     },
     {
       "inputWord": "gun",
       "shift": 7,
       "shiftedWord": "nbu",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bun"
+      ]
     },
     {
       "inputWord": "gun",
       "shift": 11,
       "shiftedWord": "rfy",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fry"
+      ]
     },
     {
       "inputWord": "gun",
       "shift": 13,
       "shiftedWord": "tha",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "hat"
+      ]
     },
     {
       "inputWord": "guy",
       "shift": 24,
       "shiftedWord": "esw",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "sew"
+      ]
     },
     {
       "inputWord": "gym",
       "shift": 12,
       "shiftedWord": "sky",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "sky"
+      ]
     },
     {
       "inputWord": "gym",
       "shift": 16,
       "shiftedWord": "woc",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "cow"
+      ]
     },
     {
       "inputWord": "gym",
       "shift": 20,
       "shiftedWord": "asg",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "gas",
+        "sag"
+      ]
     },
     {
       "inputWord": "had",
       "shift": 8,
       "shiftedWord": "pil",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "lip"
+      ]
     },
     {
       "inputWord": "had",
       "shift": 23,
       "shiftedWord": "exa",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "axe"
+      ]
     },
     {
       "inputWord": "ham",
       "shift": 1,
       "shiftedWord": "ibn",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bin"
+      ]
     },
     {
       "inputWord": "ham",
       "shift": 7,
       "shiftedWord": "oht",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "hot"
+      ]
     },
     {
       "inputWord": "ham",
       "shift": 17,
       "shiftedWord": "yrd",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "dry"
+      ]
     },
     {
       "inputWord": "ham",
       "shift": 19,
       "shiftedWord": "atf",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fat"
+      ]
     },
     {
       "inputWord": "ham",
       "shift": 20,
       "shiftedWord": "bug",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "bug"
+      ]
     },
     {
       "inputWord": "has",
       "shift": 0,
       "shiftedWord": "ash",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "ash"
+      ]
     },
     {
       "inputWord": "has",
       "shift": 1,
       "shiftedWord": "ibt",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bit"
+      ]
     },
     {
       "inputWord": "has",
       "shift": 13,
       "shiftedWord": "unf",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fun"
+      ]
     },
     {
       "inputWord": "has",
       "shift": 20,
       "shiftedWord": "bum",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "bum"
+      ]
     },
     {
       "inputWord": "hat",
       "shift": 13,
       "shiftedWord": "ung",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "gun"
+      ]
     },
     {
       "inputWord": "hat",
       "shift": 20,
       "shiftedWord": "bun",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "bun"
+      ]
     },
     {
       "inputWord": "hat",
       "shift": 24,
       "shiftedWord": "fyr",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fry"
+      ]
     },
     {
       "inputWord": "hay",
       "shift": 8,
       "shiftedWord": "pig",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "pig"
+      ]
     },
     {
       "inputWord": "hay",
       "shift": 19,
       "shiftedWord": "atr",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "art",
+        "rat"
+      ]
     },
     {
       "inputWord": "hay",
       "shift": 20,
       "shiftedWord": "bus",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "bus"
+      ]
     },
     {
       "inputWord": "her",
       "shift": 10,
       "shiftedWord": "rob",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "rob"
+      ]
     },
     {
       "inputWord": "her",
       "shift": 22,
       "shiftedWord": "dan",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "and",
+        "dna"
+      ]
     },
     {
       "inputWord": "him",
       "shift": 6,
       "shiftedWord": "nos",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "son"
+      ]
     },
     {
       "inputWord": "him",
       "shift": 7,
       "shiftedWord": "opt",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pot",
+        "top"
+      ]
     },
     {
       "inputWord": "him",
       "shift": 22,
       "shiftedWord": "dei",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "die"
+      ]
     },
     {
       "inputWord": "hip",
       "shift": 12,
       "shiftedWord": "tub",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "tub"
+      ]
     },
     {
       "inputWord": "hip",
       "shift": 12,
       "shiftedWord": "tub",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "but"
+      ]
     },
     {
       "inputWord": "his",
       "shift": 19,
       "shiftedWord": "abl",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "lab"
+      ]
     },
     {
       "inputWord": "hit",
       "shift": 11,
       "shiftedWord": "ste",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "set"
+      ]
     },
     {
       "inputWord": "hit",
       "shift": 21,
       "shiftedWord": "cdo",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "cod",
+        "doc"
+      ]
     },
     {
       "inputWord": "hiv",
       "shift": 5,
       "shiftedWord": "mna",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "man"
+      ]
     },
     {
       "inputWord": "hiv",
       "shift": 7,
       "shiftedWord": "opc",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "cop"
+      ]
     },
     {
       "inputWord": "hiv",
       "shift": 12,
       "shiftedWord": "tuh",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "hut"
+      ]
     },
     {
       "inputWord": "hiv",
       "shift": 22,
       "shiftedWord": "der",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "red"
+      ]
     },
     {
       "inputWord": "hiv",
       "shift": 25,
       "shiftedWord": "ghu",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "hug"
+      ]
     },
     {
       "inputWord": "hop",
       "shift": 7,
       "shiftedWord": "ovw",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "vow"
+      ]
     },
     {
       "inputWord": "hop",
       "shift": 12,
       "shiftedWord": "tab",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bat"
+      ]
     },
     {
       "inputWord": "hop",
       "shift": 15,
       "shiftedWord": "wde",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "wed"
+      ]
     },
     {
       "inputWord": "hot",
       "shift": 10,
       "shiftedWord": "ryd",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "dry"
+      ]
     },
     {
       "inputWord": "hot",
       "shift": 12,
       "shiftedWord": "taf",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fat"
+      ]
     },
     {
       "inputWord": "hot",
       "shift": 13,
       "shiftedWord": "ubg",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bug"
+      ]
     },
     {
       "inputWord": "hot",
       "shift": 19,
       "shiftedWord": "ahm",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "ham"
+      ]
     },
     {
       "inputWord": "hot",
       "shift": 20,
       "shiftedWord": "bin",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "bin"
+      ]
     },
     {
       "inputWord": "how",
       "shift": 0,
       "shiftedWord": "who",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "who"
+      ]
     },
     {
       "inputWord": "how",
       "shift": 23,
       "shiftedWord": "elt",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "let"
+      ]
     },
     {
       "inputWord": "hug",
       "shift": 1,
       "shiftedWord": "ivh",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "hiv"
+      ]
     },
     {
       "inputWord": "hug",
       "shift": 6,
       "shiftedWord": "nam",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "man"
+      ]
     },
     {
       "inputWord": "hug",
       "shift": 8,
       "shiftedWord": "pco",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "cop"
+      ]
     },
     {
       "inputWord": "hug",
       "shift": 13,
       "shiftedWord": "uht",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "hut"
+      ]
     },
     {
       "inputWord": "hug",
       "shift": 23,
       "shiftedWord": "erd",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "red"
+      ]
     },
     {
       "inputWord": "hut",
       "shift": 10,
       "shiftedWord": "red",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "red"
+      ]
     },
     {
       "inputWord": "hut",
       "shift": 13,
       "shiftedWord": "uhg",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "hug"
+      ]
     },
     {
       "inputWord": "hut",
       "shift": 14,
       "shiftedWord": "vih",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "hiv"
+      ]
     },
     {
       "inputWord": "hut",
       "shift": 19,
       "shiftedWord": "anm",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "man"
+      ]
     },
     {
       "inputWord": "hut",
       "shift": 21,
       "shiftedWord": "cpo",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "cop"
+      ]
     },
     {
       "inputWord": "ill",
       "shift": 18,
       "shiftedWord": "add",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "add"
+      ]
     },
     {
       "inputWord": "ill",
       "shift": 18,
       "shiftedWord": "add",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "dad"
+      ]
     },
     {
       "inputWord": "ill",
       "shift": 19,
       "shiftedWord": "bee",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "bee"
+      ]
     },
     {
       "inputWord": "ink",
       "shift": 4,
       "shiftedWord": "mro",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "rom"
+      ]
     },
     {
       "inputWord": "ink",
       "shift": 16,
       "shiftedWord": "yda",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "day"
+      ]
     },
     {
       "inputWord": "its",
       "shift": 0,
       "shiftedWord": "sit",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "sit"
+      ]
     },
     {
       "inputWord": "its",
       "shift": 21,
       "shiftedWord": "don",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "nod"
+      ]
     },
     {
       "inputWord": "jam",
       "shift": 5,
       "shiftedWord": "ofr",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "for"
+      ]
     },
     {
       "inputWord": "jar",
       "shift": 3,
       "shiftedWord": "mdu",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "mud"
+      ]
     },
     {
       "inputWord": "jar",
       "shift": 13,
       "shiftedWord": "wne",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "new"
+      ]
     },
     {
       "inputWord": "jar",
       "shift": 14,
       "shiftedWord": "xof",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fox"
+      ]
     },
     {
       "inputWord": "jar",
       "shift": 17,
       "shiftedWord": "ari",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "air"
+      ]
     },
     {
       "inputWord": "jaw",
       "shift": 18,
       "shiftedWord": "bso",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "sob"
+      ]
     },
     {
       "inputWord": "jet",
       "shift": 5,
       "shiftedWord": "ojy",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "joy"
+      ]
     },
     {
       "inputWord": "jet",
       "shift": 10,
       "shiftedWord": "tod",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "dot"
+      ]
     },
     {
       "inputWord": "job",
       "shift": 12,
       "shiftedWord": "van",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "van"
+      ]
     },
     {
       "inputWord": "job",
       "shift": 13,
       "shiftedWord": "wbo",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bow"
+      ]
     },
     {
       "inputWord": "jog",
       "shift": 5,
       "shiftedWord": "otl",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "lot"
+      ]
     },
     {
       "inputWord": "jog",
       "shift": 8,
       "shiftedWord": "rwo",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "row"
+      ]
     },
     {
       "inputWord": "jog",
       "shift": 17,
       "shiftedWord": "afx",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fax"
+      ]
     },
     {
       "inputWord": "jog",
       "shift": 20,
       "shiftedWord": "dia",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "aid"
+      ]
     },
     {
       "inputWord": "joy",
       "shift": 5,
       "shiftedWord": "otd",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "dot"
+      ]
     },
     {
       "inputWord": "joy",
       "shift": 21,
       "shiftedWord": "ejt",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "jet"
+      ]
     },
     {
       "inputWord": "jug",
       "shift": 6,
       "shiftedWord": "pam",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "map"
+      ]
     },
     {
       "inputWord": "jug",
       "shift": 11,
       "shiftedWord": "ufr",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fur"
+      ]
     },
     {
       "inputWord": "jug",
       "shift": 24,
       "shiftedWord": "hse",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "she"
+      ]
     },
     {
       "inputWord": "jug",
       "shift": 25,
       "shiftedWord": "itf",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fit"
+      ]
     },
     {
       "inputWord": "key",
       "shift": 20,
       "shiftedWord": "eys",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "yes"
+      ]
     },
     {
       "inputWord": "kid",
       "shift": 5,
       "shiftedWord": "pni",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pin"
+      ]
     },
     {
       "inputWord": "kid",
       "shift": 10,
       "shiftedWord": "usn",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "sun"
+      ]
     },
     {
       "inputWord": "kid",
       "shift": 24,
       "shiftedWord": "igb",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "big"
+      ]
     },
     {
       "inputWord": "kit",
       "shift": 7,
       "shiftedWord": "rpa",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "rap"
+      ]
     },
     {
       "inputWord": "kit",
       "shift": 11,
       "shiftedWord": "vte",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "vet"
+      ]
     },
     {
       "inputWord": "kit",
       "shift": 14,
       "shiftedWord": "ywh",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "why"
+      ]
     },
     {
       "inputWord": "kit",
       "shift": 22,
       "shiftedWord": "gep",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "peg"
+      ]
     },
     {
       "inputWord": "lab",
       "shift": 7,
       "shiftedWord": "shi",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "his"
+      ]
     },
     {
       "inputWord": "lap",
       "shift": 0,
       "shiftedWord": "pal",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pal"
+      ]
     },
     {
       "inputWord": "lap",
       "shift": 4,
       "shiftedWord": "pet",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "pet"
+      ]
     },
     {
       "inputWord": "lap",
       "shift": 11,
       "shiftedWord": "wla",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "law"
+      ]
     },
     {
       "inputWord": "lap",
       "shift": 15,
       "shiftedWord": "ape",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "ape"
+      ]
     },
     {
       "inputWord": "lap",
       "shift": 15,
       "shiftedWord": "ape",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pea"
+      ]
     },
     {
       "inputWord": "lap",
       "shift": 19,
       "shiftedWord": "eti",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "tie"
+      ]
     },
     {
       "inputWord": "lap",
       "shift": 23,
       "shiftedWord": "ixm",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "mix"
+      ]
     },
     {
       "inputWord": "law",
       "shift": 4,
       "shiftedWord": "pea",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "pea"
+      ]
     },
     {
       "inputWord": "law",
       "shift": 4,
       "shiftedWord": "pea",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "ape"
+      ]
     },
     {
       "inputWord": "law",
       "shift": 8,
       "shiftedWord": "tie",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "tie"
+      ]
     },
     {
       "inputWord": "law",
       "shift": 12,
       "shiftedWord": "xmi",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "mix"
+      ]
     },
     {
       "inputWord": "law",
       "shift": 15,
       "shiftedWord": "apl",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "lap",
+        "pal"
+      ]
     },
     {
       "inputWord": "law",
       "shift": 19,
       "shiftedWord": "etp",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pet"
+      ]
     },
     {
       "inputWord": "lay",
       "shift": 2,
       "shiftedWord": "nca",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "can"
+      ]
     },
     {
       "inputWord": "lay",
       "shift": 15,
       "shiftedWord": "apn",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "nap",
+        "pan"
+      ]
     },
     {
       "inputWord": "leg",
       "shift": 13,
       "shiftedWord": "yrt",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "try"
+      ]
     },
     {
       "inputWord": "leg",
       "shift": 23,
       "shiftedWord": "ibd",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bid"
+      ]
     },
     {
       "inputWord": "let",
       "shift": 3,
       "shiftedWord": "ohw",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "how",
+        "who"
+      ]
     },
     {
       "inputWord": "lid",
       "shift": 3,
       "shiftedWord": "olg",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "log"
+      ]
     },
     {
       "inputWord": "lid",
       "shift": 11,
       "shiftedWord": "wto",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "two"
+      ]
     },
     {
       "inputWord": "lid",
       "shift": 19,
       "shiftedWord": "ebw",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "web"
+      ]
     },
     {
       "inputWord": "lie",
       "shift": 9,
       "shiftedWord": "urn",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "run"
+      ]
     },
     {
       "inputWord": "lie",
       "shift": 15,
       "shiftedWord": "axt",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "tax"
+      ]
     },
     {
       "inputWord": "lie",
       "shift": 16,
       "shiftedWord": "byu",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "buy"
+      ]
     },
     {
       "inputWord": "lip",
       "shift": 15,
       "shiftedWord": "axe",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "axe"
+      ]
     },
     {
       "inputWord": "lip",
       "shift": 18,
       "shiftedWord": "dah",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "had"
+      ]
     },
     {
       "inputWord": "log",
       "shift": 8,
       "shiftedWord": "two",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "two"
+      ]
     },
     {
       "inputWord": "log",
       "shift": 16,
       "shiftedWord": "bew",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "web"
+      ]
     },
     {
       "inputWord": "log",
       "shift": 23,
       "shiftedWord": "ild",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "lid"
+      ]
     },
     {
       "inputWord": "lot",
       "shift": 3,
       "shiftedWord": "orw",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "row"
+      ]
     },
     {
       "inputWord": "lot",
       "shift": 12,
       "shiftedWord": "xaf",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fax"
+      ]
     },
     {
       "inputWord": "lot",
       "shift": 15,
       "shiftedWord": "adi",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "aid"
+      ]
     },
     {
       "inputWord": "lot",
       "shift": 21,
       "shiftedWord": "gjo",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "jog"
+      ]
     },
     {
       "inputWord": "low",
       "shift": 0,
       "shiftedWord": "owl",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "owl"
+      ]
     },
     {
       "inputWord": "low",
       "shift": 4,
       "shiftedWord": "psa",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "spa"
+      ]
     },
     {
       "inputWord": "low",
       "shift": 8,
       "shiftedWord": "twe",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "wet"
+      ]
     },
     {
       "inputWord": "low",
       "shift": 18,
       "shiftedWord": "dgo",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "dog",
+        "god"
+      ]
     },
     {
       "inputWord": "mad",
       "shift": 0,
       "shiftedWord": "dam",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "dam"
+      ]
     },
     {
       "inputWord": "man",
       "shift": 2,
       "shiftedWord": "ocp",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "cop"
+      ]
     },
     {
       "inputWord": "man",
       "shift": 7,
       "shiftedWord": "thu",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "hut"
+      ]
     },
     {
       "inputWord": "man",
       "shift": 17,
       "shiftedWord": "dre",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "red"
+      ]
     },
     {
       "inputWord": "man",
       "shift": 20,
       "shiftedWord": "guh",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "hug"
+      ]
     },
     {
       "inputWord": "man",
       "shift": 21,
       "shiftedWord": "hvi",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "hiv"
+      ]
     },
     {
       "inputWord": "map",
       "shift": 5,
       "shiftedWord": "rfu",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fur"
+      ]
     },
     {
       "inputWord": "map",
       "shift": 18,
       "shiftedWord": "esh",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "she"
+      ]
     },
     {
       "inputWord": "map",
       "shift": 19,
       "shiftedWord": "fti",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fit"
+      ]
     },
     {
       "inputWord": "map",
       "shift": 20,
       "shiftedWord": "guj",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "jug"
+      ]
     },
     {
       "inputWord": "max",
       "shift": 3,
       "shiftedWord": "pda",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pad"
+      ]
     },
     {
       "inputWord": "max",
       "shift": 7,
       "shiftedWord": "the",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "the"
+      ]
     },
     {
       "inputWord": "max",
       "shift": 20,
       "shiftedWord": "gur",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "rug"
+      ]
     },
     {
       "inputWord": "max",
       "shift": 22,
       "shiftedWord": "iwt",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "wit"
+      ]
     },
     {
       "inputWord": "mix",
       "shift": 3,
       "shiftedWord": "pla",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "lap",
+        "pal"
+      ]
     },
     {
       "inputWord": "mix",
       "shift": 7,
       "shiftedWord": "tpe",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pet"
+      ]
     },
     {
       "inputWord": "mix",
       "shift": 14,
       "shiftedWord": "awl",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "law"
+      ]
     },
     {
       "inputWord": "mix",
       "shift": 18,
       "shiftedWord": "eap",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "ape",
+        "pea"
+      ]
     },
     {
       "inputWord": "mix",
       "shift": 22,
       "shiftedWord": "iet",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "tie"
+      ]
     },
     {
       "inputWord": "mom",
       "shift": 18,
       "shiftedWord": "ege",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "gee"
+      ]
     },
     {
       "inputWord": "mrs",
       "shift": 2,
       "shiftedWord": "otu",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "out"
+      ]
     },
     {
       "inputWord": "mrs",
       "shift": 12,
       "shiftedWord": "yde",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "dye"
+      ]
     },
     {
       "inputWord": "mud",
       "shift": 10,
       "shiftedWord": "wen",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "new"
+      ]
     },
     {
       "inputWord": "mud",
       "shift": 11,
       "shiftedWord": "xfo",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fox"
+      ]
     },
     {
       "inputWord": "mud",
       "shift": 14,
       "shiftedWord": "air",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "air"
+      ]
     },
     {
       "inputWord": "mud",
       "shift": 23,
       "shiftedWord": "jra",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "jar"
+      ]
     },
     {
       "inputWord": "mug",
       "shift": 0,
       "shiftedWord": "gum",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "gum"
+      ]
     },
     {
       "inputWord": "mug",
       "shift": 20,
       "shiftedWord": "goa",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "ago"
+      ]
     },
     {
       "inputWord": "nap",
       "shift": 0,
       "shiftedWord": "pan",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pan"
+      ]
     },
     {
       "inputWord": "nap",
       "shift": 11,
       "shiftedWord": "yla",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "lay"
+      ]
     },
     {
       "inputWord": "nap",
       "shift": 13,
       "shiftedWord": "anc",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "can"
+      ]
     },
     {
       "inputWord": "net",
       "shift": 0,
       "shiftedWord": "ten",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "ten"
+      ]
     },
     {
       "inputWord": "net",
       "shift": 13,
       "shiftedWord": "arg",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "rag"
+      ]
     },
     {
       "inputWord": "new",
       "shift": 1,
       "shiftedWord": "ofx",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fox"
+      ]
     },
     {
       "inputWord": "new",
       "shift": 4,
       "shiftedWord": "ria",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "air"
+      ]
     },
     {
       "inputWord": "new",
       "shift": 13,
       "shiftedWord": "arj",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "jar"
+      ]
     },
     {
       "inputWord": "new",
       "shift": 16,
       "shiftedWord": "dum",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "mud"
+      ]
     },
     {
       "inputWord": "nod",
       "shift": 5,
       "shiftedWord": "sti",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "its",
+        "sit"
+      ]
     },
     {
       "inputWord": "non",
       "shift": 17,
       "shiftedWord": "efe",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fee"
+      ]
     },
     {
       "inputWord": "nor",
       "shift": 9,
       "shiftedWord": "wxa",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "wax"
+      ]
     },
     {
       "inputWord": "not",
       "shift": 0,
       "shiftedWord": "ton",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "ton"
+      ]
     },
     {
       "inputWord": "not",
       "shift": 13,
       "shiftedWord": "abg",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bag"
+      ]
     },
     {
       "inputWord": "now",
       "shift": 0,
       "shiftedWord": "own",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "own"
+      ]
     },
     {
       "inputWord": "now",
       "shift": 6,
       "shiftedWord": "tuc",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "cut"
+      ]
     },
     {
       "inputWord": "now",
       "shift": 18,
       "shiftedWord": "fgo",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fog"
+      ]
     },
     {
       "inputWord": "odd",
       "shift": 1,
       "shiftedWord": "pee",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "pee"
+      ]
     },
     {
       "inputWord": "odd",
       "shift": 11,
       "shiftedWord": "zoo",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "zoo"
+      ]
     },
     {
       "inputWord": "oil",
       "shift": 6,
       "shiftedWord": "uor",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "our"
+      ]
     },
     {
       "inputWord": "oil",
       "shift": 16,
       "shiftedWord": "eyb",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bye"
+      ]
     },
     {
       "inputWord": "old",
       "shift": 15,
       "shiftedWord": "das",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "sad"
+      ]
     },
     {
       "inputWord": "old",
       "shift": 16,
       "shiftedWord": "ebt",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bet"
+      ]
     },
     {
       "inputWord": "old",
       "shift": 20,
       "shiftedWord": "ifx",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fix"
+      ]
     },
     {
       "inputWord": "one",
       "shift": 4,
       "shiftedWord": "sri",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "sir"
+      ]
     },
     {
       "inputWord": "one",
       "shift": 13,
       "shiftedWord": "bar",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "bar"
+      ]
     },
     {
       "inputWord": "one",
       "shift": 13,
       "shiftedWord": "bar",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bra"
+      ]
     },
     {
       "inputWord": "one",
       "shift": 16,
       "shiftedWord": "edu",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "due"
+      ]
     },
     {
       "inputWord": "our",
       "shift": 10,
       "shiftedWord": "yeb",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bye"
+      ]
     },
     {
       "inputWord": "our",
       "shift": 20,
       "shiftedWord": "iol",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "oil"
+      ]
     },
     {
       "inputWord": "out",
       "shift": 10,
       "shiftedWord": "yed",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "dye"
+      ]
     },
     {
       "inputWord": "out",
       "shift": 24,
       "shiftedWord": "msr",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "mrs"
+      ]
     },
     {
       "inputWord": "owe",
       "shift": 22,
       "shiftedWord": "ksa",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "ask"
+      ]
     },
     {
       "inputWord": "owl",
       "shift": 0,
       "shiftedWord": "low",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "low"
+      ]
     },
     {
       "inputWord": "owl",
       "shift": 4,
       "shiftedWord": "sap",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "spa"
+      ]
     },
     {
       "inputWord": "owl",
       "shift": 8,
       "shiftedWord": "wet",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "wet"
+      ]
     },
     {
       "inputWord": "owl",
       "shift": 18,
       "shiftedWord": "god",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "god"
+      ]
     },
     {
       "inputWord": "owl",
       "shift": 18,
       "shiftedWord": "god",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "dog"
+      ]
     },
     {
       "inputWord": "own",
       "shift": 0,
       "shiftedWord": "now",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "now"
+      ]
     },
     {
       "inputWord": "own",
       "shift": 6,
       "shiftedWord": "uct",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "cut"
+      ]
     },
     {
       "inputWord": "own",
       "shift": 18,
       "shiftedWord": "gof",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fog"
+      ]
     },
     {
       "inputWord": "pad",
       "shift": 4,
       "shiftedWord": "teh",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "the"
+      ]
     },
     {
       "inputWord": "pad",
       "shift": 17,
       "shiftedWord": "gru",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "rug"
+      ]
     },
     {
       "inputWord": "pad",
       "shift": 19,
       "shiftedWord": "itw",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "wit"
+      ]
     },
     {
       "inputWord": "pad",
       "shift": 23,
       "shiftedWord": "mxa",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "max"
+      ]
     },
     {
       "inputWord": "pal",
       "shift": 0,
       "shiftedWord": "lap",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "lap"
+      ]
     },
     {
       "inputWord": "pal",
       "shift": 4,
       "shiftedWord": "tep",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pet"
+      ]
     },
     {
       "inputWord": "pal",
       "shift": 11,
       "shiftedWord": "alw",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "law"
+      ]
     },
     {
       "inputWord": "pal",
       "shift": 15,
       "shiftedWord": "epa",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "ape",
+        "pea"
+      ]
     },
     {
       "inputWord": "pal",
       "shift": 19,
       "shiftedWord": "ite",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "tie"
+      ]
     },
     {
       "inputWord": "pal",
       "shift": 23,
       "shiftedWord": "mxi",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "mix"
+      ]
     },
     {
       "inputWord": "pan",
       "shift": 0,
       "shiftedWord": "nap",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "nap"
+      ]
     },
     {
       "inputWord": "pan",
       "shift": 11,
       "shiftedWord": "aly",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "lay"
+      ]
     },
     {
       "inputWord": "pan",
       "shift": 13,
       "shiftedWord": "cna",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "can"
+      ]
     },
     {
       "inputWord": "paw",
       "shift": 2,
       "shiftedWord": "rcy",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "cry"
+      ]
     },
     {
       "inputWord": "paw",
       "shift": 4,
       "shiftedWord": "tea",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "tea"
+      ]
     },
     {
       "inputWord": "paw",
       "shift": 4,
       "shiftedWord": "tea",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "eat"
+      ]
     },
     {
       "inputWord": "paw",
       "shift": 19,
       "shiftedWord": "itp",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pit",
+        "tip"
+      ]
     },
     {
       "inputWord": "pay",
       "shift": 2,
       "shiftedWord": "rca",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "car"
+      ]
     },
     {
       "inputWord": "pay",
       "shift": 15,
       "shiftedWord": "epn",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pen"
+      ]
     },
     {
       "inputWord": "pea",
       "shift": 0,
       "shiftedWord": "ape",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "ape"
+      ]
     },
     {
       "inputWord": "pea",
       "shift": 4,
       "shiftedWord": "tie",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "tie"
+      ]
     },
     {
       "inputWord": "pea",
       "shift": 8,
       "shiftedWord": "xmi",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "mix"
+      ]
     },
     {
       "inputWord": "pea",
       "shift": 11,
       "shiftedWord": "apl",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "lap",
+        "pal"
+      ]
     },
     {
       "inputWord": "pea",
       "shift": 15,
       "shiftedWord": "etp",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pet"
+      ]
     },
     {
       "inputWord": "pea",
       "shift": 22,
       "shiftedWord": "law",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "law"
+      ]
     },
     {
       "inputWord": "pee",
       "shift": 10,
       "shiftedWord": "zoo",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "zoo"
+      ]
     },
     {
       "inputWord": "pee",
       "shift": 25,
       "shiftedWord": "odd",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "odd"
+      ]
     },
     {
       "inputWord": "peg",
       "shift": 4,
       "shiftedWord": "tik",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "kit"
+      ]
     },
     {
       "inputWord": "peg",
       "shift": 11,
       "shiftedWord": "apr",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "rap"
+      ]
     },
     {
       "inputWord": "peg",
       "shift": 15,
       "shiftedWord": "etv",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "vet"
+      ]
     },
     {
       "inputWord": "peg",
       "shift": 18,
       "shiftedWord": "hwy",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "why"
+      ]
     },
     {
       "inputWord": "pen",
       "shift": 11,
       "shiftedWord": "apy",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pay"
+      ]
     },
     {
       "inputWord": "pen",
       "shift": 13,
       "shiftedWord": "cra",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "car"
+      ]
     },
     {
       "inputWord": "per",
       "shift": 9,
       "shiftedWord": "yna",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "any"
+      ]
     },
     {
       "inputWord": "per",
       "shift": 11,
       "shiftedWord": "apc",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "cap"
+      ]
     },
     {
       "inputWord": "per",
       "shift": 15,
       "shiftedWord": "etg",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "get"
+      ]
     },
     {
       "inputWord": "pet",
       "shift": 7,
       "shiftedWord": "wla",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "law"
+      ]
     },
     {
       "inputWord": "pet",
       "shift": 11,
       "shiftedWord": "ape",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "ape"
+      ]
     },
     {
       "inputWord": "pet",
       "shift": 11,
       "shiftedWord": "ape",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pea"
+      ]
     },
     {
       "inputWord": "pet",
       "shift": 15,
       "shiftedWord": "eti",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "tie"
+      ]
     },
     {
       "inputWord": "pet",
       "shift": 19,
       "shiftedWord": "ixm",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "mix"
+      ]
     },
     {
       "inputWord": "pet",
       "shift": 22,
       "shiftedWord": "lap",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "lap"
+      ]
     },
     {
       "inputWord": "pet",
       "shift": 22,
       "shiftedWord": "lap",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pal"
+      ]
     },
     {
       "inputWord": "pie",
       "shift": 11,
       "shiftedWord": "atp",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "tap"
+      ]
     },
     {
       "inputWord": "pig",
       "shift": 11,
       "shiftedWord": "atr",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "art",
+        "rat"
+      ]
     },
     {
       "inputWord": "pig",
       "shift": 12,
       "shiftedWord": "bus",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "bus"
+      ]
     },
     {
       "inputWord": "pig",
       "shift": 18,
       "shiftedWord": "hay",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "hay"
+      ]
     },
     {
       "inputWord": "pin",
       "shift": 5,
       "shiftedWord": "uns",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "sun"
+      ]
     },
     {
       "inputWord": "pin",
       "shift": 19,
       "shiftedWord": "ibg",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "big"
+      ]
     },
     {
       "inputWord": "pin",
       "shift": 21,
       "shiftedWord": "kdi",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "kid"
+      ]
     },
     {
       "inputWord": "pit",
       "shift": 0,
       "shiftedWord": "tip",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "tip"
+      ]
     },
     {
       "inputWord": "pit",
       "shift": 7,
       "shiftedWord": "wpa",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "paw"
+      ]
     },
     {
       "inputWord": "pit",
       "shift": 9,
       "shiftedWord": "yrc",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "cry"
+      ]
     },
     {
       "inputWord": "pit",
       "shift": 11,
       "shiftedWord": "ate",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "eat",
+        "tea"
+      ]
     },
     {
       "inputWord": "pot",
       "shift": 0,
       "shiftedWord": "top",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "top"
+      ]
     },
     {
       "inputWord": "pot",
       "shift": 15,
       "shiftedWord": "edi",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "die"
+      ]
     },
     {
       "inputWord": "pot",
       "shift": 19,
       "shiftedWord": "ihm",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "him"
+      ]
     },
     {
       "inputWord": "pot",
       "shift": 25,
       "shiftedWord": "ons",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "son"
+      ]
     },
     {
       "inputWord": "pro",
       "shift": 12,
       "shiftedWord": "bda",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bad"
+      ]
     },
     {
       "inputWord": "pub",
       "shift": 3,
       "shiftedWord": "sxe",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "sex"
+      ]
     },
     {
       "inputWord": "pub",
       "shift": 14,
       "shiftedWord": "dip",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "dip"
+      ]
     },
     {
       "inputWord": "rag",
       "shift": 13,
       "shiftedWord": "ent",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "net",
+        "ten"
+      ]
     },
     {
       "inputWord": "ram",
       "shift": 0,
       "shiftedWord": "arm",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "arm"
+      ]
     },
     {
       "inputWord": "ram",
       "shift": 17,
       "shiftedWord": "ird",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "rid"
+      ]
     },
     {
       "inputWord": "ram",
       "shift": 22,
       "shiftedWord": "nwi",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "win"
+      ]
     },
     {
       "inputWord": "rap",
       "shift": 4,
       "shiftedWord": "vet",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "vet"
+      ]
     },
     {
       "inputWord": "rap",
       "shift": 7,
       "shiftedWord": "yhw",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "why"
+      ]
     },
     {
       "inputWord": "rap",
       "shift": 15,
       "shiftedWord": "gpe",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "peg"
+      ]
     },
     {
       "inputWord": "rap",
       "shift": 19,
       "shiftedWord": "kti",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "kit"
+      ]
     },
     {
       "inputWord": "rat",
       "shift": 0,
       "shiftedWord": "art",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "art"
+      ]
     },
     {
       "inputWord": "rat",
       "shift": 1,
       "shiftedWord": "sbu",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bus"
+      ]
     },
     {
       "inputWord": "rat",
       "shift": 7,
       "shiftedWord": "yha",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "hay"
+      ]
     },
     {
       "inputWord": "rat",
       "shift": 15,
       "shiftedWord": "gpi",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pig"
+      ]
     },
     {
       "inputWord": "raw",
       "shift": 0,
       "shiftedWord": "war",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "war"
+      ]
     },
     {
       "inputWord": "raw",
       "shift": 12,
       "shiftedWord": "dmi",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "dim"
+      ]
     },
     {
       "inputWord": "ray",
       "shift": 2,
       "shiftedWord": "tca",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "act",
+        "cat"
+      ]
     },
     {
       "inputWord": "ray",
       "shift": 3,
       "shiftedWord": "udb",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bud"
+      ]
     },
     {
       "inputWord": "ray",
       "shift": 17,
       "shiftedWord": "irp",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "rip"
+      ]
     },
     {
       "inputWord": "red",
       "shift": 3,
       "shiftedWord": "uhg",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "hug"
+      ]
     },
     {
       "inputWord": "red",
       "shift": 4,
       "shiftedWord": "vih",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "hiv"
+      ]
     },
     {
       "inputWord": "red",
       "shift": 9,
       "shiftedWord": "anm",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "man"
+      ]
     },
     {
       "inputWord": "red",
       "shift": 11,
       "shiftedWord": "cpo",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "cop"
+      ]
     },
     {
       "inputWord": "red",
       "shift": 16,
       "shiftedWord": "hut",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "hut"
+      ]
     },
     {
       "inputWord": "rid",
       "shift": 5,
       "shiftedWord": "wni",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "win"
+      ]
     },
     {
       "inputWord": "rid",
       "shift": 9,
       "shiftedWord": "arm",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "arm"
+      ]
     },
     {
       "inputWord": "rid",
       "shift": 9,
       "shiftedWord": "arm",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "ram"
+      ]
     },
     {
       "inputWord": "rip",
       "shift": 9,
       "shiftedWord": "ary",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "ray"
+      ]
     },
     {
       "inputWord": "rip",
       "shift": 11,
       "shiftedWord": "cta",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "act",
+        "cat"
+      ]
     },
     {
       "inputWord": "rip",
       "shift": 12,
       "shiftedWord": "dub",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bud"
+      ]
     },
     {
       "inputWord": "rob",
       "shift": 12,
       "shiftedWord": "dan",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "and",
+        "dna"
+      ]
     },
     {
       "inputWord": "rob",
       "shift": 16,
       "shiftedWord": "her",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "her"
+      ]
     },
     {
       "inputWord": "rom",
       "shift": 12,
       "shiftedWord": "day",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "day"
+      ]
     },
     {
       "inputWord": "rom",
       "shift": 22,
       "shiftedWord": "nki",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "ink"
+      ]
     },
     {
       "inputWord": "row",
       "shift": 9,
       "shiftedWord": "axf",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fax"
+      ]
     },
     {
       "inputWord": "row",
       "shift": 12,
       "shiftedWord": "dai",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "aid"
+      ]
     },
     {
       "inputWord": "row",
       "shift": 18,
       "shiftedWord": "jgo",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "jog"
+      ]
     },
     {
       "inputWord": "row",
       "shift": 23,
       "shiftedWord": "olt",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "lot"
+      ]
     },
     {
       "inputWord": "rug",
       "shift": 2,
       "shiftedWord": "twi",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "wit"
+      ]
     },
     {
       "inputWord": "rug",
       "shift": 6,
       "shiftedWord": "xam",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "max"
+      ]
     },
     {
       "inputWord": "rug",
       "shift": 9,
       "shiftedWord": "adp",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pad"
+      ]
     },
     {
       "inputWord": "rug",
       "shift": 13,
       "shiftedWord": "eht",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "the"
+      ]
     },
     {
       "inputWord": "run",
       "shift": 6,
       "shiftedWord": "xat",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "tax"
+      ]
     },
     {
       "inputWord": "run",
       "shift": 7,
       "shiftedWord": "ybu",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "buy"
+      ]
     },
     {
       "inputWord": "run",
       "shift": 17,
       "shiftedWord": "ile",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "lie"
+      ]
     },
     {
       "inputWord": "sad",
       "shift": 1,
       "shiftedWord": "tbe",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bet"
+      ]
     },
     {
       "inputWord": "sad",
       "shift": 5,
       "shiftedWord": "xfi",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fix"
+      ]
     },
     {
       "inputWord": "sad",
       "shift": 11,
       "shiftedWord": "dlo",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "old"
+      ]
     },
     {
       "inputWord": "sag",
       "shift": 0,
       "shiftedWord": "gas",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "gas"
+      ]
     },
     {
       "inputWord": "sag",
       "shift": 6,
       "shiftedWord": "ygm",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "gym"
+      ]
     },
     {
       "inputWord": "sag",
       "shift": 18,
       "shiftedWord": "ksy",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "sky"
+      ]
     },
     {
       "inputWord": "sag",
       "shift": 22,
       "shiftedWord": "owc",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "cow"
+      ]
     },
     {
       "inputWord": "saw",
       "shift": 0,
       "shiftedWord": "was",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "was"
+      ]
     },
     {
       "inputWord": "saw",
       "shift": 4,
       "shiftedWord": "wea",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "awe"
+      ]
     },
     {
       "inputWord": "say",
       "shift": 20,
       "shiftedWord": "mus",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "sum"
+      ]
     },
     {
       "inputWord": "sea",
       "shift": 8,
       "shiftedWord": "ami",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "aim"
+      ]
     },
     {
       "inputWord": "set",
       "shift": 10,
       "shiftedWord": "cod",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "cod"
+      ]
     },
     {
       "inputWord": "set",
       "shift": 10,
       "shiftedWord": "cod",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "doc"
+      ]
     },
     {
       "inputWord": "set",
       "shift": 15,
       "shiftedWord": "hti",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "hit"
+      ]
     },
     {
       "inputWord": "sew",
       "shift": 2,
       "shiftedWord": "ugy",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "guy"
+      ]
     },
     {
       "inputWord": "sex",
       "shift": 11,
       "shiftedWord": "dpi",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "dip"
+      ]
     },
     {
       "inputWord": "sex",
       "shift": 23,
       "shiftedWord": "pbu",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pub"
+      ]
     },
     {
       "inputWord": "she",
       "shift": 1,
       "shiftedWord": "tif",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fit"
+      ]
     },
     {
       "inputWord": "she",
       "shift": 2,
       "shiftedWord": "ujg",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "jug"
+      ]
     },
     {
       "inputWord": "she",
       "shift": 8,
       "shiftedWord": "apm",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "map"
+      ]
     },
     {
       "inputWord": "she",
       "shift": 13,
       "shiftedWord": "fur",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "fur"
+      ]
     },
     {
       "inputWord": "shy",
       "shift": 8,
       "shiftedWord": "apg",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "gap"
+      ]
     },
     {
       "inputWord": "shy",
       "shift": 13,
       "shiftedWord": "ful",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "flu"
+      ]
     },
     {
       "inputWord": "sir",
       "shift": 9,
       "shiftedWord": "bra",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "bra"
+      ]
     },
     {
       "inputWord": "sir",
       "shift": 9,
       "shiftedWord": "bra",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bar"
+      ]
     },
     {
       "inputWord": "sir",
       "shift": 12,
       "shiftedWord": "eud",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "due"
+      ]
     },
     {
       "inputWord": "sir",
       "shift": 22,
       "shiftedWord": "oen",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "one"
+      ]
     },
     {
       "inputWord": "sit",
       "shift": 0,
       "shiftedWord": "its",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "its"
+      ]
     },
     {
       "inputWord": "sit",
       "shift": 21,
       "shiftedWord": "ndo",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "nod"
+      ]
     },
     {
       "inputWord": "six",
       "shift": 22,
       "shiftedWord": "oet",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "toe"
+      ]
     },
     {
       "inputWord": "sky",
       "shift": 4,
       "shiftedWord": "woc",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "cow"
+      ]
     },
     {
       "inputWord": "sky",
       "shift": 8,
       "shiftedWord": "asg",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "gas",
+        "sag"
+      ]
     },
     {
       "inputWord": "sky",
       "shift": 14,
       "shiftedWord": "gym",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "gym"
+      ]
     },
     {
       "inputWord": "sob",
       "shift": 8,
       "shiftedWord": "awj",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "jaw"
+      ]
     },
     {
       "inputWord": "son",
       "shift": 1,
       "shiftedWord": "tpo",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pot",
+        "top"
+      ]
     },
     {
       "inputWord": "son",
       "shift": 16,
       "shiftedWord": "ied",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "die"
+      ]
     },
     {
       "inputWord": "son",
       "shift": 20,
       "shiftedWord": "mih",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "him"
+      ]
     },
     {
       "inputWord": "spa",
       "shift": 4,
       "shiftedWord": "wte",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "wet"
+      ]
     },
     {
       "inputWord": "spa",
       "shift": 14,
       "shiftedWord": "gdo",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "dog",
+        "god"
+      ]
     },
     {
       "inputWord": "spa",
       "shift": 22,
       "shiftedWord": "olw",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "low",
+        "owl"
+      ]
     },
     {
       "inputWord": "sue",
       "shift": 0,
       "shiftedWord": "use",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "use"
+      ]
     },
     {
       "inputWord": "sue",
       "shift": 10,
       "shiftedWord": "ceo",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "eco"
+      ]
     },
     {
       "inputWord": "sum",
       "shift": 6,
       "shiftedWord": "yas",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "say"
+      ]
     },
     {
       "inputWord": "sun",
       "shift": 14,
       "shiftedWord": "gib",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "big"
+      ]
     },
     {
       "inputWord": "sun",
       "shift": 16,
       "shiftedWord": "ikd",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "kid"
+      ]
     },
     {
       "inputWord": "sun",
       "shift": 21,
       "shiftedWord": "npi",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pin"
+      ]
     },
     {
       "inputWord": "tag",
       "shift": 5,
       "shiftedWord": "yfl",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fly"
+      ]
     },
     {
       "inputWord": "tag",
       "shift": 8,
       "shiftedWord": "bio",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "bio"
+      ]
     },
     {
       "inputWord": "tan",
       "shift": 0,
       "shiftedWord": "ant",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "ant"
+      ]
     },
     {
       "inputWord": "tap",
       "shift": 15,
       "shiftedWord": "ipe",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pie"
+      ]
     },
     {
       "inputWord": "tax",
       "shift": 1,
       "shiftedWord": "uby",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "buy"
+      ]
     },
     {
       "inputWord": "tax",
       "shift": 11,
       "shiftedWord": "eli",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "lie"
+      ]
     },
     {
       "inputWord": "tax",
       "shift": 20,
       "shiftedWord": "nur",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "run"
+      ]
     },
     {
       "inputWord": "tea",
       "shift": 0,
       "shiftedWord": "eat",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "eat"
+      ]
     },
     {
       "inputWord": "tea",
       "shift": 15,
       "shiftedWord": "itp",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pit",
+        "tip"
+      ]
     },
     {
       "inputWord": "tea",
       "shift": 22,
       "shiftedWord": "paw",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "paw"
+      ]
     },
     {
       "inputWord": "tea",
       "shift": 24,
       "shiftedWord": "rcy",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "cry"
+      ]
     },
     {
       "inputWord": "tee",
       "shift": 7,
       "shiftedWord": "all",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "all"
+      ]
     },
     {
       "inputWord": "ten",
       "shift": 0,
       "shiftedWord": "net",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "net"
+      ]
     },
     {
       "inputWord": "ten",
       "shift": 13,
       "shiftedWord": "gra",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "rag"
+      ]
     },
     {
       "inputWord": "the",
       "shift": 13,
       "shiftedWord": "gur",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "rug"
+      ]
     },
     {
       "inputWord": "the",
       "shift": 15,
       "shiftedWord": "iwt",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "wit"
+      ]
     },
     {
       "inputWord": "the",
       "shift": 19,
       "shiftedWord": "max",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "max"
+      ]
     },
     {
       "inputWord": "the",
       "shift": 22,
       "shiftedWord": "pda",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pad"
+      ]
     },
     {
       "inputWord": "tie",
       "shift": 4,
       "shiftedWord": "xmi",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "mix"
+      ]
     },
     {
       "inputWord": "tie",
       "shift": 7,
       "shiftedWord": "apl",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "lap",
+        "pal"
+      ]
     },
     {
       "inputWord": "tie",
       "shift": 11,
       "shiftedWord": "etp",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pet"
+      ]
     },
     {
       "inputWord": "tie",
       "shift": 18,
       "shiftedWord": "law",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "law"
+      ]
     },
     {
       "inputWord": "tie",
       "shift": 22,
       "shiftedWord": "pea",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "pea"
+      ]
     },
     {
       "inputWord": "tie",
       "shift": 22,
       "shiftedWord": "pea",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "ape"
+      ]
     },
     {
       "inputWord": "tin",
       "shift": 11,
       "shiftedWord": "ety",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "yet"
+      ]
     },
     {
       "inputWord": "tip",
       "shift": 0,
       "shiftedWord": "pit",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pit"
+      ]
     },
     {
       "inputWord": "tip",
       "shift": 7,
       "shiftedWord": "apw",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "paw"
+      ]
     },
     {
       "inputWord": "tip",
       "shift": 9,
       "shiftedWord": "cry",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "cry"
+      ]
     },
     {
       "inputWord": "tip",
       "shift": 11,
       "shiftedWord": "eta",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "eat",
+        "tea"
+      ]
     },
     {
       "inputWord": "toe",
       "shift": 4,
       "shiftedWord": "xsi",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "six"
+      ]
     },
     {
       "inputWord": "ton",
       "shift": 0,
       "shiftedWord": "not",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "not"
+      ]
     },
     {
       "inputWord": "ton",
       "shift": 13,
       "shiftedWord": "gba",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bag"
+      ]
     },
     {
       "inputWord": "too",
       "shift": 15,
       "shiftedWord": "idd",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "did"
+      ]
     },
     {
       "inputWord": "top",
       "shift": 0,
       "shiftedWord": "pot",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pot"
+      ]
     },
     {
       "inputWord": "top",
       "shift": 15,
       "shiftedWord": "ide",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "die"
+      ]
     },
     {
       "inputWord": "top",
       "shift": 19,
       "shiftedWord": "mhi",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "him"
+      ]
     },
     {
       "inputWord": "top",
       "shift": 25,
       "shiftedWord": "sno",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "son"
+      ]
     },
     {
       "inputWord": "try",
       "shift": 10,
       "shiftedWord": "dbi",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bid"
+      ]
     },
     {
       "inputWord": "try",
       "shift": 13,
       "shiftedWord": "gel",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "leg"
+      ]
     },
     {
       "inputWord": "tub",
       "shift": 0,
       "shiftedWord": "but",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "but"
+      ]
     },
     {
       "inputWord": "tub",
       "shift": 14,
       "shiftedWord": "hip",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "hip"
+      ]
     },
     {
       "inputWord": "tug",
       "shift": 7,
       "shiftedWord": "abn",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "ban"
+      ]
     },
     {
       "inputWord": "two",
       "shift": 8,
       "shiftedWord": "bew",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "web"
+      ]
     },
     {
       "inputWord": "two",
       "shift": 15,
       "shiftedWord": "ild",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "lid"
+      ]
     },
     {
       "inputWord": "two",
       "shift": 18,
       "shiftedWord": "log",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "log"
+      ]
     },
     {
       "inputWord": "use",
       "shift": 0,
       "shiftedWord": "sue",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "sue"
+      ]
     },
     {
       "inputWord": "use",
       "shift": 10,
       "shiftedWord": "eco",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "eco"
+      ]
     },
     {
       "inputWord": "van",
       "shift": 1,
       "shiftedWord": "wbo",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bow"
+      ]
     },
     {
       "inputWord": "van",
       "shift": 14,
       "shiftedWord": "job",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "job"
+      ]
     },
     {
       "inputWord": "vet",
       "shift": 3,
       "shiftedWord": "yhw",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "why"
+      ]
     },
     {
       "inputWord": "vet",
       "shift": 11,
       "shiftedWord": "gpe",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "peg"
+      ]
     },
     {
       "inputWord": "vet",
       "shift": 15,
       "shiftedWord": "kti",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "kit"
+      ]
     },
     {
       "inputWord": "vet",
       "shift": 22,
       "shiftedWord": "rap",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "rap"
+      ]
     },
     {
       "inputWord": "via",
       "shift": 5,
       "shiftedWord": "anf",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "fan"
+      ]
     },
     {
       "inputWord": "via",
       "shift": 20,
       "shiftedWord": "pcu",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "cup"
+      ]
     },
     {
       "inputWord": "vow",
       "shift": 5,
       "shiftedWord": "atb",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bat"
+      ]
     },
     {
       "inputWord": "vow",
       "shift": 8,
       "shiftedWord": "dwe",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "wed"
+      ]
     },
     {
       "inputWord": "vow",
       "shift": 19,
       "shiftedWord": "ohp",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "hop"
+      ]
     },
     {
       "inputWord": "war",
       "shift": 0,
       "shiftedWord": "raw",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "raw"
+      ]
     },
     {
       "inputWord": "war",
       "shift": 12,
       "shiftedWord": "imd",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "dim"
+      ]
     },
     {
       "inputWord": "was",
       "shift": 0,
       "shiftedWord": "saw",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "saw"
+      ]
     },
     {
       "inputWord": "was",
       "shift": 4,
       "shiftedWord": "aew",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "awe"
+      ]
     },
     {
       "inputWord": "wax",
       "shift": 17,
       "shiftedWord": "nro",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "nor"
+      ]
     },
     {
       "inputWord": "web",
       "shift": 7,
       "shiftedWord": "dli",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "lid"
+      ]
     },
     {
       "inputWord": "web",
       "shift": 10,
       "shiftedWord": "gol",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "log"
+      ]
     },
     {
       "inputWord": "web",
       "shift": 18,
       "shiftedWord": "owt",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "two"
+      ]
     },
     {
       "inputWord": "wed",
       "shift": 11,
       "shiftedWord": "hpo",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "hop"
+      ]
     },
     {
       "inputWord": "wed",
       "shift": 18,
       "shiftedWord": "owv",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "vow"
+      ]
     },
     {
       "inputWord": "wed",
       "shift": 23,
       "shiftedWord": "tba",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "bat"
+      ]
     },
     {
       "inputWord": "wet",
       "shift": 10,
       "shiftedWord": "god",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "god"
+      ]
     },
     {
       "inputWord": "wet",
       "shift": 10,
       "shiftedWord": "god",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "dog"
+      ]
     },
     {
       "inputWord": "wet",
       "shift": 18,
       "shiftedWord": "owl",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "owl"
+      ]
     },
     {
       "inputWord": "wet",
       "shift": 18,
       "shiftedWord": "owl",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "low"
+      ]
     },
     {
       "inputWord": "wet",
       "shift": 22,
       "shiftedWord": "sap",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "spa"
+      ]
     },
     {
       "inputWord": "who",
       "shift": 0,
       "shiftedWord": "how",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "how"
+      ]
     },
     {
       "inputWord": "who",
       "shift": 23,
       "shiftedWord": "tel",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "let"
+      ]
     },
     {
       "inputWord": "why",
       "shift": 8,
       "shiftedWord": "epg",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "peg"
+      ]
     },
     {
       "inputWord": "why",
       "shift": 12,
       "shiftedWord": "itk",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "kit"
+      ]
     },
     {
       "inputWord": "why",
       "shift": 19,
       "shiftedWord": "par",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "rap"
+      ]
     },
     {
       "inputWord": "why",
       "shift": 23,
       "shiftedWord": "tev",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "vet"
+      ]
     },
     {
       "inputWord": "win",
       "shift": 4,
       "shiftedWord": "amr",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "arm",
+        "ram"
+      ]
     },
     {
       "inputWord": "win",
       "shift": 21,
       "shiftedWord": "rdi",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "rid"
+      ]
     },
     {
       "inputWord": "wit",
       "shift": 4,
       "shiftedWord": "amx",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "max"
+      ]
     },
     {
       "inputWord": "wit",
       "shift": 7,
       "shiftedWord": "dpa",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "pad"
+      ]
     },
     {
       "inputWord": "wit",
       "shift": 11,
       "shiftedWord": "hte",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "the"
+      ]
     },
     {
       "inputWord": "wit",
       "shift": 24,
       "shiftedWord": "ugr",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "rug"
+      ]
     },
     {
       "inputWord": "yes",
       "shift": 6,
       "shiftedWord": "eky",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "key"
+      ]
     },
     {
       "inputWord": "yet",
       "shift": 15,
       "shiftedWord": "nti",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "tin"
+      ]
     },
     {
       "inputWord": "zoo",
       "shift": 15,
       "shiftedWord": "odd",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "odd"
+      ]
     },
     {
       "inputWord": "zoo",
       "shift": 16,
       "shiftedWord": "pee",
-      "matchType": "完全一致"
+      "matchType": "完全一致",
+      "matchedWords": [
+        "pee"
+      ]
     }
   ]
 }

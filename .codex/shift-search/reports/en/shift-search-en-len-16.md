@@ -5,8 +5,8 @@
 - targetWordCount: 4
 - executedWordCount: 4
 - totalHitRows: 0
-- startedAt: 2026-02-26T00:08:47.773Z
-- generatedAt: 2026-02-26T00:08:47.774Z
+- startedAt: 2026-02-27T01:56:59.515Z
+- generatedAt: 2026-02-27T01:56:59.516Z
 
-| inputWord | shift | shiftedWord | matchType |
-|---|---:|---|---|
+| inputWord | shift | shiftedWord | matchType | matchedWords |
+|---|---:|---|---|---|

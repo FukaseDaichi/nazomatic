@@ -5,16 +5,16 @@
 - targetWordCount: 551
 - executedWordCount: 551
 - totalHitRows: 8
-- startedAt: 2026-02-26T00:08:47.666Z
-- generatedAt: 2026-02-26T00:08:47.685Z
+- startedAt: 2026-02-27T01:56:59.391Z
+- generatedAt: 2026-02-27T01:56:59.419Z
 
-| inputWord | shift | shiftedWord | matchType |
-|---|---:|---|---|
-| centimeter | 0 | centimetre | アナグラム |
-| centimetre | 0 | centimeter | アナグラム |
-| impression | 0 | permission | アナグラム |
-| micrometer | 0 | micrometre | アナグラム |
-| micrometre | 0 | micrometer | アナグラム |
-| millimeter | 0 | millimetre | アナグラム |
-| millimetre | 0 | millimeter | アナグラム |
-| permission | 0 | impression | アナグラム |
+| inputWord | shift | shiftedWord | matchType | matchedWords |
+|---|---:|---|---|---|
+| centimeter | 0 | centimetre | アナグラム | centimetre |
+| centimetre | 0 | centimeter | アナグラム | centimeter |
+| impression | 0 | permission | アナグラム | permission |
+| micrometer | 0 | micrometre | アナグラム | micrometre |
+| micrometre | 0 | micrometer | アナグラム | micrometer |
+| millimeter | 0 | millimetre | アナグラム | millimetre |
+| millimetre | 0 | millimeter | アナグラム | millimeter |
+| permission | 0 | impression | アナグラム | impression |

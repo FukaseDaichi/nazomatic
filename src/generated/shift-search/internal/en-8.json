@@ -6,33 +6,45 @@
   "targetWordCount": 858,
   "executedWordCount": 858,
   "totalHitRows": 4,
-  "startedAt": "2026-02-26T00:08:47.569Z",
-  "generatedAt": "2026-02-26T00:08:47.602Z",
+  "startedAt": "2026-02-27T01:56:59.270Z",
+  "generatedAt": "2026-02-27T01:56:59.310Z",
   "rowCount": 4,
   "rows": [
     {
       "inputWord": "creation",
       "shift": 0,
       "shiftedWord": "reaction",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "reaction"
+      ]
     },
     {
       "inputWord": "generate",
       "shift": 0,
       "shiftedWord": "teenager",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "teenager"
+      ]
     },
     {
       "inputWord": "reaction",
       "shift": 0,
       "shiftedWord": "creation",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "creation"
+      ]
     },
     {
       "inputWord": "teenager",
       "shift": 0,
       "shiftedWord": "generate",
-      "matchType": "アナグラム"
+      "matchType": "アナグラム",
+      "matchedWords": [
+        "generate"
+      ]
     }
   ]
 }
