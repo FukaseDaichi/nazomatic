@@ -1,0 +1,62 @@
+{
+  "reportKey": "en-9",
+  "language": "en",
+  "length": 9,
+  "dictionary": "CEFR-J.dic",
+  "targetWordCount": 690,
+  "executedWordCount": 690,
+  "totalHitRows": 8,
+  "startedAt": "2026-02-26T00:08:47.626Z",
+  "generatedAt": "2026-02-26T00:08:47.651Z",
+  "rowCount": 8,
+  "rows": [
+    {
+      "inputWord": "introduce",
+      "shift": 0,
+      "shiftedWord": "reduction",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "kilometer",
+      "shift": 0,
+      "shiftedWord": "kilometre",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "kilometre",
+      "shift": 0,
+      "shiftedWord": "kilometer",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "presenter",
+      "shift": 0,
+      "shiftedWord": "represent",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "procedure",
+      "shift": 0,
+      "shiftedWord": "reproduce",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "reduction",
+      "shift": 0,
+      "shiftedWord": "introduce",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "represent",
+      "shift": 0,
+      "shiftedWord": "presenter",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "reproduce",
+      "shift": 0,
+      "shiftedWord": "procedure",
+      "matchType": "アナグラム"
+    }
+  ]
+}

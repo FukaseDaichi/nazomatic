@@ -1,0 +1,5864 @@
+{
+  "reportKey": "jp-8",
+  "language": "jp",
+  "length": 8,
+  "dictionary": "buta.dic",
+  "targetWordCount": 24683,
+  "executedWordCount": 24683,
+  "totalHitRows": 975,
+  "startedAt": "2026-02-26T00:08:34.877Z",
+  "generatedAt": "2026-02-26T00:08:41.597Z",
+  "rowCount": 975,
+  "rows": [
+    {
+      "inputWord": "あいかわおんせん",
+      "shift": 0,
+      "shiftedWord": "あかいわおんせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "あかいわおんせん",
+      "shift": 0,
+      "shiftedWord": "あいかわおんせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "あきゆーむれーた",
+      "shift": 0,
+      "shiftedWord": "あきゆむれーたー",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "あきゆむれーたー",
+      "shift": 0,
+      "shiftedWord": "あきゆーむれーた",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "あふいるてんそう",
+      "shift": 0,
+      "shiftedWord": "ふあいるてんそう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "あふかりぐんだん",
+      "shift": 0,
+      "shiftedWord": "あふりかぐんだん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "あふりかぐんだん",
+      "shift": 0,
+      "shiftedWord": "あふかりぐんだん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ありゆうさんえん",
+      "shift": 0,
+      "shiftedWord": "りゆうさんあえん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "あれんじふらわー",
+      "shift": 0,
+      "shiftedWord": "ふらわーあれんじ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "あんこうてんのう",
+      "shift": 0,
+      "shiftedWord": "こうあんてんのう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "あんごうつうしん",
+      "shift": 0,
+      "shiftedWord": "つうしんあんごう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "あんていかぶぬし",
+      "shift": 0,
+      "shiftedWord": "かぶぬしていあん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "いあくじようそう",
+      "shift": 0,
+      "shiftedWord": "いあくそうじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "いあくそうじよう",
+      "shift": 0,
+      "shiftedWord": "いあくじようそう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "いいんかいそしき",
+      "shift": 0,
+      "shiftedWord": "そしきいいんかい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "いきよくどうこう",
+      "shift": 0,
+      "shiftedWord": "どうこういきよく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "いじようかんかく",
+      "shift": 0,
+      "shiftedWord": "かんかくいじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "いじようせいかく",
+      "shift": 0,
+      "shiftedWord": "せいかくいじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "いじようせつきん",
+      "shift": 0,
+      "shiftedWord": "いつせんじようき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "いちろくぎんこう",
+      "shift": 0,
+      "shiftedWord": "ろくいちぎんこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "いつしいつちよう",
+      "shift": 0,
+      "shiftedWord": "いつちよういつし",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "いつしついつとく",
+      "shift": 0,
+      "shiftedWord": "いつとくいつしつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "いつせんじようき",
+      "shift": 0,
+      "shiftedWord": "いじようせつきん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "いつちよういつし",
+      "shift": 0,
+      "shiftedWord": "いつしいつちよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "いつてきけんこん",
+      "shift": 0,
+      "shiftedWord": "けんこんいつてき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "いつとくいつしつ",
+      "shift": 0,
+      "shiftedWord": "いつしついつとく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "いつぱんしやかい",
+      "shift": 0,
+      "shiftedWord": "しやかいいつぱん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "いつぽうこうつう",
+      "shift": 0,
+      "shiftedWord": "いつぽうつうこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "いつぽうつうこう",
+      "shift": 0,
+      "shiftedWord": "いつぽうこうつう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "いとーよーかどう",
+      "shift": 0,
+      "shiftedWord": "いとうよーかどー",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "いとうよーかどー",
+      "shift": 0,
+      "shiftedWord": "いとーよーかどう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ういるすかんえん",
+      "shift": 0,
+      "shiftedWord": "かんえんういるす",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "うおーたーばつく",
+      "shift": 0,
+      "shiftedWord": "ばつくうおーたー",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "うちゆうくうこう",
+      "shift": 0,
+      "shiftedWord": "こうくううちゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "うらがきじようと",
+      "shift": 0,
+      "shiftedWord": "じようとうらがき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "うらんのうしゆく",
+      "shift": 0,
+      "shiftedWord": "のうしゆくうらん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "うりようきようど",
+      "shift": 0,
+      "shiftedWord": "きようどうりよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "うんえいどりよく",
+      "shift": 0,
+      "shiftedWord": "えいようどりんく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "うんさんむしよう",
+      "shift": 0,
+      "shiftedWord": "うんしようむさん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "うんしようむさん",
+      "shift": 0,
+      "shiftedWord": "うんさんむしよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "えいがげいじゆつ",
+      "shift": 0,
+      "shiftedWord": "げいじゆつえいが",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "えいがげきじよう",
+      "shift": 0,
+      "shiftedWord": "げきじようえいが",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "えいぎようきよか",
+      "shift": 0,
+      "shiftedWord": "きよかえいぎよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "えいぎようじかん",
+      "shift": 0,
+      "shiftedWord": "じかんえいぎよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "えいせいつうしん",
+      "shift": 0,
+      "shiftedWord": "つうしんえいせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "えいせいほうそう",
+      "shift": 0,
+      "shiftedWord": "ほうそうえいせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "えいゆうじよじし",
+      "shift": 0,
+      "shiftedWord": "じしゆじようえい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "えいようせいぶん",
+      "shift": 0,
+      "shiftedWord": "せいぶんえいよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "えいようどりんく",
+      "shift": 0,
+      "shiftedWord": "うんえいどりよく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "えすえふえつくす",
+      "shift": 0,
+      "shiftedWord": "えふえすえつくす",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "えつくすえむえす",
+      "shift": 0,
+      "shiftedWord": "えむえすえつくす",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "えぬていーていー",
+      "shift": 0,
+      "shiftedWord": "ていーえぬていー",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "えねるぎーしげん",
+      "shift": 0,
+      "shiftedWord": "げんしえねるぎー",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "えふえすえつくす",
+      "shift": 0,
+      "shiftedWord": "えすえふえつくす",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "えむえすえつくす",
+      "shift": 0,
+      "shiftedWord": "えつくすえむえす",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "えんけいかいよう",
+      "shift": 0,
+      "shiftedWord": "けいかんえいよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "えんだかどるやす",
+      "shift": 0,
+      "shiftedWord": "えんやすどるだか",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "えんちゆうじよう",
+      "shift": 0,
+      "shiftedWord": "じようえんちゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "えんぼうしんりよ",
+      "shift": 0,
+      "shiftedWord": "しんぼうえんりよ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "えんぼうしんりよ",
+      "shift": 0,
+      "shiftedWord": "しんりよえんぼう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "えんめいそくさい",
+      "shift": 0,
+      "shiftedWord": "そくさいえんめい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "えんやすどるだか",
+      "shift": 0,
+      "shiftedWord": "えんだかどるやす",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "えんようこうかい",
+      "shift": 0,
+      "shiftedWord": "かいようこうえん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "おうりよくしよく",
+      "shift": 0,
+      "shiftedWord": "りよくおうしよく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "おんせいごうせい",
+      "shift": 0,
+      "shiftedWord": "ごうせいおんせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "おんせいたじゆう",
+      "shift": 0,
+      "shiftedWord": "たじゆうおんせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "おんせんりよこう",
+      "shift": 0,
+      "shiftedWord": "こりようおんせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かいがいこうけん",
+      "shift": 0,
+      "shiftedWord": "がいこうかんけい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かいがいたいけん",
+      "shift": 0,
+      "shiftedWord": "たいがいかんけい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かいきげんしよう",
+      "shift": 0,
+      "shiftedWord": "げんしきようかい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かいきしようせつ",
+      "shift": 0,
+      "shiftedWord": "せいかつようしき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かいきゆうしよう",
+      "shift": 0,
+      "shiftedWord": "しゆうきようかい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かいけいけつさん",
+      "shift": 0,
+      "shiftedWord": "けいさつかんけい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かいしやかつどう",
+      "shift": 0,
+      "shiftedWord": "しやかいかつどう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かいしやかんけい",
+      "shift": 0,
+      "shiftedWord": "しやかいかんけい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かいしやこうせい",
+      "shift": 0,
+      "shiftedWord": "こうせいかいしや",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かいしやせいかつ",
+      "shift": 0,
+      "shiftedWord": "しやかいせいかつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かいしやにんげん",
+      "shift": 0,
+      "shiftedWord": "にんげんしやかい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かいしゆうぎよう",
+      "shift": 0,
+      "shiftedWord": "ぎようしゆうかい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かいじよけいやく",
+      "shift": 0,
+      "shiftedWord": "けいやくかいじよ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かいせんせいぎよ",
+      "shift": 0,
+      "shiftedWord": "かんせいせいぎよ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かいそうしやかい",
+      "shift": 0,
+      "shiftedWord": "しやかいかいそう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かいちようしよく",
+      "shift": 0,
+      "shiftedWord": "しようかいちよく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かいちようしよく",
+      "shift": 0,
+      "shiftedWord": "ちようしよくかい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かいてんほうこう",
+      "shift": 0,
+      "shiftedWord": "こうほうかいてん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かいはつぎじゆつ",
+      "shift": 0,
+      "shiftedWord": "ぎじゆつかいはつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かいはつじぎよう",
+      "shift": 0,
+      "shiftedWord": "じぎようかいはつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かいようきしよう",
+      "shift": 0,
+      "shiftedWord": "しようかいきよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かいようこうえん",
+      "shift": 0,
+      "shiftedWord": "えんようこうかい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かいりようこうじ",
+      "shift": 0,
+      "shiftedWord": "りようかいじこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かいりよくしよく",
+      "shift": 0,
+      "shiftedWord": "りよくかいしよく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かかくきようそう",
+      "shift": 0,
+      "shiftedWord": "きようそうかかく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かがくこうぎよう",
+      "shift": 0,
+      "shiftedWord": "こうぎようかがく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かがくこうしよう",
+      "shift": 0,
+      "shiftedWord": "しようがくこうか",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かがくりよういき",
+      "shift": 0,
+      "shiftedWord": "きよういくがかり",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かきゆうかいそう",
+      "shift": 0,
+      "shiftedWord": "かそうかいきゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かきよううんどう",
+      "shift": 0,
+      "shiftedWord": "きようかうんどう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かくちようきのう",
+      "shift": 0,
+      "shiftedWord": "きのうかくちよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かくりようきゆう",
+      "shift": 0,
+      "shiftedWord": "きゆうかくりよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かこうげんりよう",
+      "shift": 0,
+      "shiftedWord": "げんりようこうか",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かこうしよくひん",
+      "shift": 0,
+      "shiftedWord": "しよくひんかこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かじようせいさん",
+      "shift": 0,
+      "shiftedWord": "せいさんかじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かそうかいきゆう",
+      "shift": 0,
+      "shiftedWord": "かきゆうかいそう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かつきんせいれい",
+      "shift": 0,
+      "shiftedWord": "せいれいかつきん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かていきよういく",
+      "shift": 0,
+      "shiftedWord": "きよういくかてい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かなやまおんせん",
+      "shift": 0,
+      "shiftedWord": "なかやまおんせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かなやまおんせん",
+      "shift": 0,
+      "shiftedWord": "やまなかおんせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かなわりおんせん",
+      "shift": 0,
+      "shiftedWord": "なりかわおんせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かぶきわかしゆう",
+      "shift": 0,
+      "shiftedWord": "わかしゆうかぶき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かぶぬしていあん",
+      "shift": 0,
+      "shiftedWord": "あんていかぶぬし",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かへいしようひん",
+      "shift": 0,
+      "shiftedWord": "しようひんかへい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かへいりゆうつう",
+      "shift": 0,
+      "shiftedWord": "りゆうつうかへい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かまさきおんせん",
+      "shift": 0,
+      "shiftedWord": "さかまきおんせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かみすわおんせん",
+      "shift": 0,
+      "shiftedWord": "すみかわおんせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かみのゆおんせん",
+      "shift": 0,
+      "shiftedWord": "ゆのかみおんせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かりよくせいあつ",
+      "shift": 0,
+      "shiftedWord": "せいあつかりよく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かろりーしようひ",
+      "shift": 0,
+      "shiftedWord": "しようひかろりー",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かわいだおんせん",
+      "shift": 0,
+      "shiftedWord": "かわだいおんせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かわだいおんせん",
+      "shift": 0,
+      "shiftedWord": "かわいだおんせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かんえんういるす",
+      "shift": 0,
+      "shiftedWord": "ういるすかんえん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かんかくいじよう",
+      "shift": 0,
+      "shiftedWord": "いじようかんかく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かんがるーねずみ",
+      "shift": 0,
+      "shiftedWord": "ねずみかんがるー",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かんきゆうちゆう",
+      "shift": 0,
+      "shiftedWord": "きゆうかんちゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かんこつだつたい",
+      "shift": 0,
+      "shiftedWord": "だつたいかんこつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かんじきよういく",
+      "shift": 0,
+      "shiftedWord": "きよういくかんじ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かんじようしゆう",
+      "shift": 0,
+      "shiftedWord": "しゆうかんじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かんせいうんどう",
+      "shift": 0,
+      "shiftedWord": "せんかいうんどう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かんせいしやげき",
+      "shift": 0,
+      "shiftedWord": "しやげきかんせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かんせいせいぎよ",
+      "shift": 0,
+      "shiftedWord": "かいせんせいぎよ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かんせつきようさ",
+      "shift": 0,
+      "shiftedWord": "きようさかんせつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かんせつこうよう",
+      "shift": 0,
+      "shiftedWord": "ようせつこうかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かんせつさぎよう",
+      "shift": 0,
+      "shiftedWord": "せんぎようさつか",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かんせんてつどう",
+      "shift": 0,
+      "shiftedWord": "てつどうかんせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かんそくききゆう",
+      "shift": 0,
+      "shiftedWord": "ききゆうかんそく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かんていしよぶん",
+      "shift": 0,
+      "shiftedWord": "ぶんしよかんてい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かんないほうそう",
+      "shift": 0,
+      "shiftedWord": "なんかいほうそう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かんりじようほう",
+      "shift": 0,
+      "shiftedWord": "じようほうかんり",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かんれいちしよう",
+      "shift": 0,
+      "shiftedWord": "しれいちようかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "かんわだいじてん",
+      "shift": 0,
+      "shiftedWord": "だいかんわじてん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "がいこうかんけい",
+      "shift": 0,
+      "shiftedWord": "かいがいこうけん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "がいこうもんだい",
+      "shift": 0,
+      "shiftedWord": "こうがいもんだい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "がいしやはんばい",
+      "shift": 0,
+      "shiftedWord": "はんばいがいしや",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "がくげいじゆつぶ",
+      "shift": 0,
+      "shiftedWord": "げいじゆつがくぶ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "がくしゆうきかん",
+      "shift": 0,
+      "shiftedWord": "しゆうがくきかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "がくしゆうじかん",
+      "shift": 0,
+      "shiftedWord": "しゆうがくじかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "がくぶきよういく",
+      "shift": 0,
+      "shiftedWord": "きよういくがくぶ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きかいこうじよう",
+      "shift": 0,
+      "shiftedWord": "こうじようきかい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ききゆうかんそく",
+      "shift": 0,
+      "shiftedWord": "かんそくききゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きこうじゆんのう",
+      "shift": 0,
+      "shiftedWord": "きゆうじんのこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きしようとくほう",
+      "shift": 0,
+      "shiftedWord": "しほうとうきよく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きつちんゆにつと",
+      "shift": 0,
+      "shiftedWord": "ゆにつときつちん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きねんしゆつぱん",
+      "shift": 0,
+      "shiftedWord": "しゆつぱんきねん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きのうかくちよう",
+      "shift": 0,
+      "shiftedWord": "かくちようきのう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きぼうしよくしゆ",
+      "shift": 0,
+      "shiftedWord": "きぼしゆくしよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きぼしゆくしよう",
+      "shift": 0,
+      "shiftedWord": "きぼうしよくしゆ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きやみそーるぶら",
+      "shift": 0,
+      "shiftedWord": "ぶらきやみそーる",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きゆうかくりよう",
+      "shift": 0,
+      "shiftedWord": "かくりようきゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きゆうかんちゆう",
+      "shift": 0,
+      "shiftedWord": "かんきゆうちゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きゆうきこうてい",
+      "shift": 0,
+      "shiftedWord": "きゆうきていこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きゆうきていこう",
+      "shift": 0,
+      "shiftedWord": "きゆうきこうてい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きゆうけいじかん",
+      "shift": 0,
+      "shiftedWord": "けいきかんじゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きゆうしようしや",
+      "shift": 0,
+      "shiftedWord": "きようしゆうしや",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きゆうしようしや",
+      "shift": 0,
+      "shiftedWord": "しゆうきようしや",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きゆうしようたい",
+      "shift": 0,
+      "shiftedWord": "きゆうたいしよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きゆうじゆうしよ",
+      "shift": 0,
+      "shiftedWord": "じようきゆうしゆ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きゆうじんのこう",
+      "shift": 0,
+      "shiftedWord": "きこうじゆんのう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きゆうせいちよう",
+      "shift": 0,
+      "shiftedWord": "ちようせいきゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きゆうせいりよく",
+      "shift": 0,
+      "shiftedWord": "せいきゆうりよく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きゆうたいしよう",
+      "shift": 0,
+      "shiftedWord": "きゆうしようたい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きよういくかてい",
+      "shift": 0,
+      "shiftedWord": "かていきよういく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きよういくかんじ",
+      "shift": 0,
+      "shiftedWord": "かんじきよういく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きよういくがかり",
+      "shift": 0,
+      "shiftedWord": "かがくりよういき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きよういくがくぶ",
+      "shift": 0,
+      "shiftedWord": "がくぶきよういく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きよういくげんば",
+      "shift": 0,
+      "shiftedWord": "げんばきよういく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きよういくじよう",
+      "shift": 0,
+      "shiftedWord": "ようじきよういく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きよういんしかく",
+      "shift": 0,
+      "shiftedWord": "しいくかんきよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きよういんしかく",
+      "shift": 0,
+      "shiftedWord": "しかんきよういく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きようかうんどう",
+      "shift": 0,
+      "shiftedWord": "かきよううんどう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きようさかんせつ",
+      "shift": 0,
+      "shiftedWord": "かんせつきようさ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きようしゆうしや",
+      "shift": 0,
+      "shiftedWord": "きゆうしようしや",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きようしゆうしや",
+      "shift": 0,
+      "shiftedWord": "しゆうきようしや",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きようしゆうしよ",
+      "shift": 0,
+      "shiftedWord": "しゆうきようしよ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きようしゆうしよ",
+      "shift": 0,
+      "shiftedWord": "しゆうしよきよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きようしよくしや",
+      "shift": 0,
+      "shiftedWord": "しようしやきよく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きようしよくせい",
+      "shift": 0,
+      "shiftedWord": "しようきよくせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きようじようもち",
+      "shift": 0,
+      "shiftedWord": "きようちようもじ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きようせいかんさ",
+      "shift": 0,
+      "shiftedWord": "きようせいさんか",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きようせいさんか",
+      "shift": 0,
+      "shiftedWord": "きようせいかんさ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きようそうかかく",
+      "shift": 0,
+      "shiftedWord": "かかくきようそう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きようちようさく",
+      "shift": 0,
+      "shiftedWord": "ちようきようさく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きようちようしん",
+      "shift": 0,
+      "shiftedWord": "きんちようしよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きようちようしん",
+      "shift": 0,
+      "shiftedWord": "しようきんちよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きようちようもじ",
+      "shift": 0,
+      "shiftedWord": "きようじようもち",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きようとだいかん",
+      "shift": 0,
+      "shiftedWord": "きよとうかいだん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きようどういんし",
+      "shift": 0,
+      "shiftedWord": "しどうきよういん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きようどうしよく",
+      "shift": 0,
+      "shiftedWord": "しよくどうきよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きようどうりよう",
+      "shift": 0,
+      "shiftedWord": "うりようきようど",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きようはくじよう",
+      "shift": 0,
+      "shiftedWord": "じはくきようよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きようはしんとう",
+      "shift": 0,
+      "shiftedWord": "しんとうきようは",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きようやくじこう",
+      "shift": 0,
+      "shiftedWord": "じようこうきやく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きようやくじこう",
+      "shift": 0,
+      "shiftedWord": "じようやくきこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きよかえいぎよう",
+      "shift": 0,
+      "shiftedWord": "えいぎようきよか",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きよくしゆうろく",
+      "shift": 0,
+      "shiftedWord": "しゆうろくきよく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きよくちようしつ",
+      "shift": 0,
+      "shiftedWord": "ちようしよくつき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きよくひつぶぶん",
+      "shift": 0,
+      "shiftedWord": "ぶぶんきよくひつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きよじゆうちいき",
+      "shift": 0,
+      "shiftedWord": "じゆうきよちいき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きよせいがんぼう",
+      "shift": 0,
+      "shiftedWord": "せんきよぼうがい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きよとうかいだん",
+      "shift": 0,
+      "shiftedWord": "きようとだいかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きんせつせんとう",
+      "shift": 0,
+      "shiftedWord": "せつきんせんとう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きんちようしよう",
+      "shift": 0,
+      "shiftedWord": "きようちようしん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きんちようしよう",
+      "shift": 0,
+      "shiftedWord": "しようきんちよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きんむじかんがい",
+      "shift": 0,
+      "shiftedWord": "じかんがいきんむ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きんむじようたい",
+      "shift": 0,
+      "shiftedWord": "むきんじようたい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きんゆうしじよう",
+      "shift": 0,
+      "shiftedWord": "しゆうきようじん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きんゆうしじよう",
+      "shift": 0,
+      "shiftedWord": "じようきゆうしん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "きんゆうしじよう",
+      "shift": 0,
+      "shiftedWord": "しんじゆうきよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぎじゆつかいはつ",
+      "shift": 0,
+      "shiftedWord": "かいはつぎじゆつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぎじゆつけいさん",
+      "shift": 0,
+      "shiftedWord": "けいさんぎじゆつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぎじゆつせつけい",
+      "shift": 0,
+      "shiftedWord": "せつけいぎじゆつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぎようしやしめい",
+      "shift": 0,
+      "shiftedWord": "しめいぎようしや",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぎようしゆうかい",
+      "shift": 0,
+      "shiftedWord": "かいしゆうぎよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぎようせいこつか",
+      "shift": 0,
+      "shiftedWord": "こつかぎようせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぎようせいしよく",
+      "shift": 0,
+      "shiftedWord": "しよくぎようせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぎようむていけい",
+      "shift": 0,
+      "shiftedWord": "ていけいぎようむ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぎようむれんらく",
+      "shift": 0,
+      "shiftedWord": "れんらくぎようむ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぎんこうとりひき",
+      "shift": 0,
+      "shiftedWord": "とりひきぎんこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぎんこうわりびき",
+      "shift": 0,
+      "shiftedWord": "わりびきぎんこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "くあればらくあり",
+      "shift": 0,
+      "shiftedWord": "らくあればくあり",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "くうかんこうせい",
+      "shift": 0,
+      "shiftedWord": "こうくうかんせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "くしようねんぶつ",
+      "shift": 0,
+      "shiftedWord": "しようねんぶつく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "くらふとぺーぱー",
+      "shift": 0,
+      "shiftedWord": "ぺーぱーくらふと",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "くんしゆせんせい",
+      "shift": 0,
+      "shiftedWord": "せんせいくんしゆ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぐらすふあいばー",
+      "shift": 0,
+      "shiftedWord": "ふあいばーぐらす",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぐんじかんきよう",
+      "shift": 0,
+      "shiftedWord": "ぐんじきようかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぐんじきようかん",
+      "shift": 0,
+      "shiftedWord": "ぐんじかんきよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "けいかくけいざい",
+      "shift": 0,
+      "shiftedWord": "けいざいけいかく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "けいかくせいさん",
+      "shift": 0,
+      "shiftedWord": "せいさんかくけい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "けいかくせいさん",
+      "shift": 0,
+      "shiftedWord": "せいさんけいかく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "けいかんえいよう",
+      "shift": 0,
+      "shiftedWord": "えんけいかいよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "けいきかんじゆう",
+      "shift": 0,
+      "shiftedWord": "きゆうけいじかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "けいきじゆんかん",
+      "shift": 0,
+      "shiftedWord": "じゆんかんきけい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "けいさつかんけい",
+      "shift": 0,
+      "shiftedWord": "かいけいけつさん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "けいさつしよぶん",
+      "shift": 0,
+      "shiftedWord": "けいさつぶんしよ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "けいさつぶんしよ",
+      "shift": 0,
+      "shiftedWord": "けいさつしよぶん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "けいさんぎじゆつ",
+      "shift": 0,
+      "shiftedWord": "ぎじゆつけいさん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "けいざいけいかく",
+      "shift": 0,
+      "shiftedWord": "けいかくけいざい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "けいざいしやかい",
+      "shift": 0,
+      "shiftedWord": "しやかいけいざい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "けいざいせいかつ",
+      "shift": 0,
+      "shiftedWord": "せいかつけいざい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "けいざいせんそう",
+      "shift": 0,
+      "shiftedWord": "せんそうけいざい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "けいざいとうせい",
+      "shift": 0,
+      "shiftedWord": "とうせいけいざい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "けいざいぶろつく",
+      "shift": 0,
+      "shiftedWord": "ぶろつくけいざい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "けいしゆうさつか",
+      "shift": 0,
+      "shiftedWord": "さいしゆうけつか",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "けいしようりやく",
+      "shift": 0,
+      "shiftedWord": "しようりやくけい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "けいじようみやく",
+      "shift": 0,
+      "shiftedWord": "じようみやくけい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "けいせいをたてる",
+      "shift": 0,
+      "shiftedWord": "せいけいをたてる",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "けいとうもんだい",
+      "shift": 0,
+      "shiftedWord": "とうけいもんだい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "けいやくかいじよ",
+      "shift": 0,
+      "shiftedWord": "かいじよけいやく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "けいやくしやかい",
+      "shift": 0,
+      "shiftedWord": "しやかいけいやく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "けつこんせいさく",
+      "shift": 0,
+      "shiftedWord": "けんせつこくさい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "けつしようこうし",
+      "shift": 0,
+      "shiftedWord": "しこうけつしよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "けつせいかんえん",
+      "shift": 0,
+      "shiftedWord": "せつかいけんえん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "けつせいしんだん",
+      "shift": 0,
+      "shiftedWord": "しんけいせつだん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "けつせいたいかい",
+      "shift": 0,
+      "shiftedWord": "せいかつけいたい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "けつせんたいかい",
+      "shift": 0,
+      "shiftedWord": "せいかつたいけん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "けんこんいつてき",
+      "shift": 0,
+      "shiftedWord": "いつてきけんこん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "けんせつこくさい",
+      "shift": 0,
+      "shiftedWord": "けつこんせいさく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "けんちくようしき",
+      "shift": 0,
+      "shiftedWord": "ようしきけんちく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "げいじゆつえいが",
+      "shift": 0,
+      "shiftedWord": "えいがげいじゆつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "げいじゆつがくぶ",
+      "shift": 0,
+      "shiftedWord": "がくげいじゆつぶ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "げきじようえいが",
+      "shift": 0,
+      "shiftedWord": "えいがげきじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "げんしえねるぎー",
+      "shift": 0,
+      "shiftedWord": "えねるぎーしげん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "げんしきようかい",
+      "shift": 0,
+      "shiftedWord": "かいきげんしよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "げんしさんぎよう",
+      "shift": 0,
+      "shiftedWord": "しげんさんぎよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "げんていせきにん",
+      "shift": 0,
+      "shiftedWord": "せいてきにんげん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "げんばきよういく",
+      "shift": 0,
+      "shiftedWord": "きよういくげんば",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "げんばちゆうけい",
+      "shift": 0,
+      "shiftedWord": "ちゆうけいげんば",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "げんりようこうか",
+      "shift": 0,
+      "shiftedWord": "かこうげんりよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうあんてんのう",
+      "shift": 0,
+      "shiftedWord": "あんこうてんのう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうかいしじよう",
+      "shift": 0,
+      "shiftedWord": "しじようこうかい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうかいしりよう",
+      "shift": 0,
+      "shiftedWord": "しかいりようこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうかんけいしき",
+      "shift": 0,
+      "shiftedWord": "こうしきけんかい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうかんぼうえき",
+      "shift": 0,
+      "shiftedWord": "ぼうえきかんこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうがいもんだい",
+      "shift": 0,
+      "shiftedWord": "がいこうもんだい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうぎようかがく",
+      "shift": 0,
+      "shiftedWord": "かがくこうぎよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうくううちゆう",
+      "shift": 0,
+      "shiftedWord": "うちゆうくうこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうくうかんせい",
+      "shift": 0,
+      "shiftedWord": "くうかんこうせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうくうだいたい",
+      "shift": 0,
+      "shiftedWord": "だいたいくうこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうげいびじゆつ",
+      "shift": 0,
+      "shiftedWord": "びじゆつこうげい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうげきへんたい",
+      "shift": 0,
+      "shiftedWord": "へんたいこうげき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうこうやきゆう",
+      "shift": 0,
+      "shiftedWord": "やこうきゆうこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうこくせんでん",
+      "shift": 0,
+      "shiftedWord": "せんでんこうこく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうしきけんかい",
+      "shift": 0,
+      "shiftedWord": "こうかんけいしき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうしゆうきせい",
+      "shift": 0,
+      "shiftedWord": "こうせいしゆうき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうしようじゆつ",
+      "shift": 0,
+      "shiftedWord": "しゆつじようこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうしよつめいん",
+      "shift": 0,
+      "shiftedWord": "しようこいんめつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうじはつちゆう",
+      "shift": 0,
+      "shiftedWord": "はつちゆうこうじ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうじようきかい",
+      "shift": 0,
+      "shiftedWord": "きかいこうじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうじようちよう",
+      "shift": 0,
+      "shiftedWord": "こうじようようち",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうじようへいき",
+      "shift": 0,
+      "shiftedWord": "へいきこうじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうじようようち",
+      "shift": 0,
+      "shiftedWord": "こうじようちよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうせいかいしや",
+      "shift": 0,
+      "shiftedWord": "かいしやこうせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうせいしゆうき",
+      "shift": 0,
+      "shiftedWord": "こうしゆうきせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうせいようけん",
+      "shift": 0,
+      "shiftedWord": "せいこうようけん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうそくかいてん",
+      "shift": 0,
+      "shiftedWord": "こうそくてんかい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうそくてんかい",
+      "shift": 0,
+      "shiftedWord": "こうそくかいてん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうたいせんしゆ",
+      "shift": 0,
+      "shiftedWord": "せんしゆこうたい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうつうぼうがい",
+      "shift": 0,
+      "shiftedWord": "つうこうぼうがい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうてんしゆうき",
+      "shift": 0,
+      "shiftedWord": "しきゆうこうてん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうどうほうしん",
+      "shift": 0,
+      "shiftedWord": "しんどうほうこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうにゆうしきん",
+      "shift": 0,
+      "shiftedWord": "しんきこうにゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうにんてんのう",
+      "shift": 0,
+      "shiftedWord": "にんこうてんのう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうぶんぶんせき",
+      "shift": 0,
+      "shiftedWord": "ぶんこうぶんせき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうほうかいてん",
+      "shift": 0,
+      "shiftedWord": "かいてんほうこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうゆうかんけい",
+      "shift": 0,
+      "shiftedWord": "ゆうこうかんけい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうりゆうじよう",
+      "shift": 0,
+      "shiftedWord": "りゆうじようこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうりゆうじんじ",
+      "shift": 0,
+      "shiftedWord": "じんじこうりゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうりようぶそく",
+      "shift": 0,
+      "shiftedWord": "ぶりよくこうそう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こうわかいじよう",
+      "shift": 0,
+      "shiftedWord": "わかいじようこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こきよりゆうばん",
+      "shift": 0,
+      "shiftedWord": "りゆうばんこきよ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こくさいきぎよう",
+      "shift": 0,
+      "shiftedWord": "こくさいきようぎ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こくさいきようぎ",
+      "shift": 0,
+      "shiftedWord": "こくさいきぎよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こくさいくうこう",
+      "shift": 0,
+      "shiftedWord": "こくさいこうくう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こくさいこうくう",
+      "shift": 0,
+      "shiftedWord": "こくさいくうこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こくないかんぜい",
+      "shift": 0,
+      "shiftedWord": "ないこくかんぜい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こくないゆうびん",
+      "shift": 0,
+      "shiftedWord": "ないこくゆうびん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こくみんせいとう",
+      "shift": 0,
+      "shiftedWord": "こくみんとうせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こくみんとうせい",
+      "shift": 0,
+      "shiftedWord": "こくみんせいとう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こしのゆおんせん",
+      "shift": 0,
+      "shiftedWord": "ゆのこしおんせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こつかぎようせい",
+      "shift": 0,
+      "shiftedWord": "ぎようせいこつか",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こづつみゆうびん",
+      "shift": 0,
+      "shiftedWord": "ゆうびんこづつみ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こりようおんせん",
+      "shift": 0,
+      "shiftedWord": "おんせんりよこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こんごうかんせん",
+      "shift": 0,
+      "shiftedWord": "せんかんこんごう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "こんべやーべると",
+      "shift": 0,
+      "shiftedWord": "べるとこんべやー",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ごうせいおんせい",
+      "shift": 0,
+      "shiftedWord": "おんせいごうせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ごうほうらいらく",
+      "shift": 0,
+      "shiftedWord": "ごうほうらくらい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ごうほうらくらい",
+      "shift": 0,
+      "shiftedWord": "ごうほうらいらく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ごうろくおんせん",
+      "shift": 0,
+      "shiftedWord": "ろくごうおんせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "さいかいもくよく",
+      "shift": 0,
+      "shiftedWord": "もくよくさいかい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "さいさいねんねん",
+      "shift": 0,
+      "shiftedWord": "ねんねんさいさい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "さいしゆうけつか",
+      "shift": 0,
+      "shiftedWord": "けいしゆうさつか",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "さいしゆうよせん",
+      "shift": 0,
+      "shiftedWord": "しゆうせいよさん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "さいじようりゆう",
+      "shift": 0,
+      "shiftedWord": "じゆうさいりよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "さいてんほうほう",
+      "shift": 0,
+      "shiftedWord": "さんていほうほう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "さいぼうこうがく",
+      "shift": 0,
+      "shiftedWord": "ぼうがいこうさく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "さいぼうこうがく",
+      "shift": 0,
+      "shiftedWord": "ぼうさいこうがく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "さかまきおんせん",
+      "shift": 0,
+      "shiftedWord": "かまさきおんせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "さぎようきじゆん",
+      "shift": 0,
+      "shiftedWord": "じゆんぎようさき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "さくさんせんいそ",
+      "shift": 38,
+      "shiftedWord": "うんうよかよりき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "さくせんかんてい",
+      "shift": 0,
+      "shiftedWord": "せいさくてんかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "さくてきれーだー",
+      "shift": 0,
+      "shiftedWord": "れーだーさくてき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "さけとばらのひび",
+      "shift": 0,
+      "shiftedWord": "ばらとさけのひび",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "さんぎようきばん",
+      "shift": 0,
+      "shiftedWord": "ばんきんさぎよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "さんていほうほう",
+      "shift": 0,
+      "shiftedWord": "さいてんほうほう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ざいさんそうぞく",
+      "shift": 0,
+      "shiftedWord": "そうぞくざいさん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しーでいしんぐる",
+      "shift": 0,
+      "shiftedWord": "しんぐるしーでい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しいくかんきよう",
+      "shift": 0,
+      "shiftedWord": "きよういんしかく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しいくかんきよう",
+      "shift": 0,
+      "shiftedWord": "しかんきよういく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しかいりようこう",
+      "shift": 0,
+      "shiftedWord": "こうかいしりよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しかんきよういく",
+      "shift": 0,
+      "shiftedWord": "きよういんしかく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しかんきよういく",
+      "shift": 0,
+      "shiftedWord": "しいくかんきよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しきゆうけいかん",
+      "shift": 0,
+      "shiftedWord": "しゆうけいきかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しきゆうこうてん",
+      "shift": 0,
+      "shiftedWord": "こうてんしゆうき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しげんさんぎよう",
+      "shift": 0,
+      "shiftedWord": "げんしさんぎよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しこうけつしよう",
+      "shift": 0,
+      "shiftedWord": "けつしようこうし",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しじようかいほう",
+      "shift": 0,
+      "shiftedWord": "じようほうしかい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しじようこうかい",
+      "shift": 0,
+      "shiftedWord": "こうかいしじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しすてむせいぎよ",
+      "shift": 0,
+      "shiftedWord": "せいぎよしすてむ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しすてむでいすく",
+      "shift": 0,
+      "shiftedWord": "でいすくしすてむ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しすてむふあいる",
+      "shift": 0,
+      "shiftedWord": "ふあいるしすてむ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しちようかくしつ",
+      "shift": 0,
+      "shiftedWord": "ちかくしようしつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しどうきよういん",
+      "shift": 0,
+      "shiftedWord": "きようどういんし",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しひようせいぶつ",
+      "shift": 0,
+      "shiftedWord": "せいぶつしひよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しほうかんちよう",
+      "shift": 0,
+      "shiftedWord": "しほうちようかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しほうちようかん",
+      "shift": 0,
+      "shiftedWord": "しほうかんちよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しほうとうきよく",
+      "shift": 0,
+      "shiftedWord": "きしようとくほう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しみゆれーしよん",
+      "shift": 0,
+      "shiftedWord": "しゆみれーしよん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しめいぎようしや",
+      "shift": 0,
+      "shiftedWord": "ぎようしやしめい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しやいんみならい",
+      "shift": 0,
+      "shiftedWord": "みならいしやいん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しやかいいつぱん",
+      "shift": 0,
+      "shiftedWord": "いつぱんしやかい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しやかいかいそう",
+      "shift": 0,
+      "shiftedWord": "かいそうしやかい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しやかいかつどう",
+      "shift": 0,
+      "shiftedWord": "かいしやかつどう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しやかいかんけい",
+      "shift": 0,
+      "shiftedWord": "かいしやかんけい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しやかいけいざい",
+      "shift": 0,
+      "shiftedWord": "けいざいしやかい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しやかいけいやく",
+      "shift": 0,
+      "shiftedWord": "けいやくしやかい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しやかいせいかつ",
+      "shift": 0,
+      "shiftedWord": "かいしやせいかつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しやかいたいせい",
+      "shift": 0,
+      "shiftedWord": "しやせいたいかい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しやかいほうがく",
+      "shift": 0,
+      "shiftedWord": "ほうしやかいがく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しやげきかんせい",
+      "shift": 0,
+      "shiftedWord": "かんせいしやげき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しやげきでんたん",
+      "shift": 0,
+      "shiftedWord": "でんたんしやげき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しやげきとうせい",
+      "shift": 0,
+      "shiftedWord": "とうせいしやげき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しやげきれーだー",
+      "shift": 0,
+      "shiftedWord": "れーだーしやげき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しやしんしりよう",
+      "shift": 0,
+      "shiftedWord": "しりようしやしん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しやしんでんそう",
+      "shift": 0,
+      "shiftedWord": "でんそうしやしん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しやせいたいかい",
+      "shift": 0,
+      "shiftedWord": "しやかいたいせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうかへいげつ",
+      "shift": 0,
+      "shiftedWord": "しゆうげつへいか",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうかへいげつ",
+      "shift": 0,
+      "shiftedWord": "へいげつしゆうか",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうかんしよう",
+      "shift": 0,
+      "shiftedWord": "しようかんしゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうかんしよう",
+      "shift": 0,
+      "shiftedWord": "しようしゆうかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうかんじよう",
+      "shift": 0,
+      "shiftedWord": "かんじようしゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうがくきかん",
+      "shift": 0,
+      "shiftedWord": "がくしゆうきかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうがくじかん",
+      "shift": 0,
+      "shiftedWord": "がくしゆうじかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうがくじどう",
+      "shift": 0,
+      "shiftedWord": "じどうがくしゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうきようかい",
+      "shift": 0,
+      "shiftedWord": "かいきゆうしよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうきようかん",
+      "shift": 0,
+      "shiftedWord": "しゆうようきかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうきようしや",
+      "shift": 0,
+      "shiftedWord": "きゆうしようしや",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうきようしや",
+      "shift": 0,
+      "shiftedWord": "きようしゆうしや",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうきようしよ",
+      "shift": 0,
+      "shiftedWord": "きようしゆうしよ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうきようしよ",
+      "shift": 0,
+      "shiftedWord": "しゆうしよきよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうきようしん",
+      "shift": 0,
+      "shiftedWord": "しんしゆうきよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうきようじん",
+      "shift": 0,
+      "shiftedWord": "きんゆうしじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうきようじん",
+      "shift": 0,
+      "shiftedWord": "じようきゆうしん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうきようじん",
+      "shift": 0,
+      "shiftedWord": "しんじゆうきよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうけいきかん",
+      "shift": 0,
+      "shiftedWord": "しきゆうけいかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうけいひよう",
+      "shift": 0,
+      "shiftedWord": "ひようしゆうけい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうけんりよう",
+      "shift": 0,
+      "shiftedWord": "しようりゆうけん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうげつへいか",
+      "shift": 0,
+      "shiftedWord": "しゆうかへいげつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうげつへいか",
+      "shift": 0,
+      "shiftedWord": "へいげつしゆうか",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうさんりごう",
+      "shift": 0,
+      "shiftedWord": "りごうしゆうさん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうしよきよう",
+      "shift": 0,
+      "shiftedWord": "きようしゆうしよ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうしよきよう",
+      "shift": 0,
+      "shiftedWord": "しゆうきようしよ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうしよくかい",
+      "shift": 0,
+      "shiftedWord": "しゆくしようかい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうしよくりつ",
+      "shift": 0,
+      "shiftedWord": "しゆくしようりつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうしんきんこ",
+      "shift": 0,
+      "shiftedWord": "しんこきんしゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうしんじかん",
+      "shift": 0,
+      "shiftedWord": "しゆうじんかんし",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうじんかんし",
+      "shift": 0,
+      "shiftedWord": "しゆうしんじかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうせいよさん",
+      "shift": 0,
+      "shiftedWord": "さいしゆうよせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうせいりよう",
+      "shift": 0,
+      "shiftedWord": "しゆうりようせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうせきじよう",
+      "shift": 0,
+      "shiftedWord": "じゆうしようせき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうせきじよう",
+      "shift": 0,
+      "shiftedWord": "じようせきしゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうようきかん",
+      "shift": 0,
+      "shiftedWord": "しゆうきようかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうようじんち",
+      "shift": 0,
+      "shiftedWord": "ちようしゆうじん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうようじんち",
+      "shift": 0,
+      "shiftedWord": "ちようじゆうしん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうりようしよ",
+      "shift": 0,
+      "shiftedWord": "りようしゆうしよ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうりようしよ",
+      "shift": 0,
+      "shiftedWord": "りようしゆしよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうりようせい",
+      "shift": 0,
+      "shiftedWord": "しゆうせいりよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆうろくきよく",
+      "shift": 0,
+      "shiftedWord": "きよくしゆうろく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆくしようかい",
+      "shift": 0,
+      "shiftedWord": "しゆうしよくかい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆくしようりつ",
+      "shift": 0,
+      "shiftedWord": "しゆうしよくりつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆくじゆうごう",
+      "shift": 0,
+      "shiftedWord": "じゆうしゆくごう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆくだいちよう",
+      "shift": 0,
+      "shiftedWord": "ちゆうしよくだい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆしようじよう",
+      "shift": 0,
+      "shiftedWord": "しようじようしゆ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆつきんじかん",
+      "shift": 0,
+      "shiftedWord": "じゆんかんきしつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆつしんちほう",
+      "shift": 0,
+      "shiftedWord": "ちほうしゆつしん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆつじようけん",
+      "shift": 0,
+      "shiftedWord": "じゆんけつしよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆつじようこう",
+      "shift": 0,
+      "shiftedWord": "こうしようじゆつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆつにゆうこく",
+      "shift": 0,
+      "shiftedWord": "にゆうしゆつこく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆつぱんきねん",
+      "shift": 0,
+      "shiftedWord": "きねんしゆつぱん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆつりしようじ",
+      "shift": 0,
+      "shiftedWord": "しりようじゆつし",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆみれーしよん",
+      "shift": 0,
+      "shiftedWord": "しみゆれーしよん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆりようじゆう",
+      "shift": 0,
+      "shiftedWord": "じようりゆうしゆ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆりようちよう",
+      "shift": 0,
+      "shiftedWord": "ちようしゆりよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しゆんせつぽんぷ",
+      "shift": 0,
+      "shiftedWord": "ぽんぷしゆんせつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しよういはんしや",
+      "shift": 0,
+      "shiftedWord": "しようしやはんい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようかいきよう",
+      "shift": 0,
+      "shiftedWord": "かいようきしよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようかいちよく",
+      "shift": 0,
+      "shiftedWord": "かいちようしよく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようかいちよく",
+      "shift": 0,
+      "shiftedWord": "ちようしよくかい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようかんしゆう",
+      "shift": 0,
+      "shiftedWord": "しゆうかんしよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようかんしゆう",
+      "shift": 0,
+      "shiftedWord": "しようしゆうかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようかんちよう",
+      "shift": 0,
+      "shiftedWord": "しようちようかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようがくこうか",
+      "shift": 0,
+      "shiftedWord": "かがくこうしよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようきよくせい",
+      "shift": 0,
+      "shiftedWord": "きようしよくせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようきんちよう",
+      "shift": 0,
+      "shiftedWord": "きようちようしん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようきんちよう",
+      "shift": 0,
+      "shiftedWord": "きんちようしよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようぎようけん",
+      "shift": 0,
+      "shiftedWord": "しようけんぎよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようぎようこう",
+      "shift": 0,
+      "shiftedWord": "しようこうぎよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようけんぎよう",
+      "shift": 0,
+      "shiftedWord": "しようぎようけん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようこいんめつ",
+      "shift": 0,
+      "shiftedWord": "こうしよつめいん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようこうぎよう",
+      "shift": 0,
+      "shiftedWord": "しようぎようこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようこうじよう",
+      "shift": 0,
+      "shiftedWord": "しようじようこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようしやきよく",
+      "shift": 0,
+      "shiftedWord": "きようしよくしや",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようしやはんい",
+      "shift": 0,
+      "shiftedWord": "しよういはんしや",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようしゆうかん",
+      "shift": 0,
+      "shiftedWord": "しゆうかんしよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようしゆうかん",
+      "shift": 0,
+      "shiftedWord": "しようかんしゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようじゆんかん",
+      "shift": 0,
+      "shiftedWord": "じゆんかんしよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようじようこう",
+      "shift": 0,
+      "shiftedWord": "しようこうじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようじようしゆ",
+      "shift": 0,
+      "shiftedWord": "しゆしようじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようじようしん",
+      "shift": 0,
+      "shiftedWord": "しようじんしよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようじようたい",
+      "shift": 0,
+      "shiftedWord": "しようたいじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようじようちや",
+      "shift": 0,
+      "shiftedWord": "ちようじようしや",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようじようほう",
+      "shift": 0,
+      "shiftedWord": "じようほうしよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようじんしよう",
+      "shift": 0,
+      "shiftedWord": "しようじようしん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようそくぎよう",
+      "shift": 0,
+      "shiftedWord": "しよくぎようそう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようたいきやく",
+      "shift": 0,
+      "shiftedWord": "たいしやくきよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようたいじよう",
+      "shift": 0,
+      "shiftedWord": "しようじようたい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようちようかん",
+      "shift": 0,
+      "shiftedWord": "しようかんちよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようねんひこう",
+      "shift": 0,
+      "shiftedWord": "ひこうしようねん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようねんぶつく",
+      "shift": 0,
+      "shiftedWord": "くしようねんぶつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようひかろりー",
+      "shift": 0,
+      "shiftedWord": "かろりーしようひ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようひこうどう",
+      "shift": 0,
+      "shiftedWord": "しようひどうこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようひどうこう",
+      "shift": 0,
+      "shiftedWord": "しようひこうどう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようひんかへい",
+      "shift": 0,
+      "shiftedWord": "かへいしようひん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようひんみほん",
+      "shift": 0,
+      "shiftedWord": "みほんしようひん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようもんじよう",
+      "shift": 0,
+      "shiftedWord": "もんじようしよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようりやくけい",
+      "shift": 0,
+      "shiftedWord": "けいしようりやく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しようりゆうけん",
+      "shift": 0,
+      "shiftedWord": "しゆうけんりよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しよくぎようせい",
+      "shift": 0,
+      "shiftedWord": "ぎようせいしよく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しよくぎようそう",
+      "shift": 0,
+      "shiftedWord": "しようそくぎよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しよくどうきよう",
+      "shift": 0,
+      "shiftedWord": "きようどうしよく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しよくひんかこう",
+      "shift": 0,
+      "shiftedWord": "かこうしよくひん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しよくひんほぞん",
+      "shift": 0,
+      "shiftedWord": "ほぞんしよくひん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しよくぶつせんい",
+      "shift": 0,
+      "shiftedWord": "せんいしよくぶつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しよくぶつせんい",
+      "shift": 0,
+      "shiftedWord": "ぶんせついしよく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しよくもつせんい",
+      "shift": 0,
+      "shiftedWord": "せんいしよくもつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しよくゆうじよう",
+      "shift": 0,
+      "shiftedWord": "しよくようじゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しよくようじゆう",
+      "shift": 0,
+      "shiftedWord": "しよくゆうじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しよくようじよう",
+      "shift": 0,
+      "shiftedWord": "ようしよくじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しよぶんとりけし",
+      "shift": 0,
+      "shiftedWord": "とりけししよぶん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しりようしやしん",
+      "shift": 0,
+      "shiftedWord": "しやしんしりよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しりようじゆつし",
+      "shift": 0,
+      "shiftedWord": "しゆつりしようじ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しりようちようさ",
+      "shift": 0,
+      "shiftedWord": "ちようさしりよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しれいちようかん",
+      "shift": 0,
+      "shiftedWord": "かんれいちしよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しんきこうにゆう",
+      "shift": 0,
+      "shiftedWord": "こうにゆうしきん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しんぐるしーでい",
+      "shift": 0,
+      "shiftedWord": "しーでいしんぐる",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しんけいせつだん",
+      "shift": 0,
+      "shiftedWord": "けつせいしんだん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しんけいまつたん",
+      "shift": 0,
+      "shiftedWord": "まつたんしんけい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しんこきんしゆう",
+      "shift": 0,
+      "shiftedWord": "しゆうしんきんこ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しんこくのうぜい",
+      "shift": 0,
+      "shiftedWord": "のうぜいしんこく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しんしゆうきよう",
+      "shift": 0,
+      "shiftedWord": "しゆうきようしん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しんじゆうきよう",
+      "shift": 0,
+      "shiftedWord": "きんゆうしじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しんじゆうきよう",
+      "shift": 0,
+      "shiftedWord": "しゆうきようじん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しんじゆうきよう",
+      "shift": 0,
+      "shiftedWord": "じようきゆうしん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しんじよてんゆう",
+      "shift": 0,
+      "shiftedWord": "しんゆうてんじよ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しんじよてんゆう",
+      "shift": 0,
+      "shiftedWord": "てんゆうしんじよ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しんだいれつしや",
+      "shift": 0,
+      "shiftedWord": "れつしやしんだい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しんでいーろーぱ",
+      "shift": 0,
+      "shiftedWord": "しんでいろーぱー",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しんでいろーぱー",
+      "shift": 0,
+      "shiftedWord": "しんでいーろーぱ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しんとうきようは",
+      "shift": 0,
+      "shiftedWord": "きようはしんとう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しんどうはじゆう",
+      "shift": 0,
+      "shiftedWord": "じゆうどうしはん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しんどうほうこう",
+      "shift": 0,
+      "shiftedWord": "こうどうほうしん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しんぼうえんりよ",
+      "shift": 0,
+      "shiftedWord": "えんぼうしんりよ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しんぼうえんりよ",
+      "shift": 0,
+      "shiftedWord": "しんりよえんぼう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しんゆうてんじよ",
+      "shift": 0,
+      "shiftedWord": "しんじよてんゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しんゆうてんじよ",
+      "shift": 0,
+      "shiftedWord": "てんゆうしんじよ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しんりようないか",
+      "shift": 0,
+      "shiftedWord": "ないかしんりよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しんりよえんぼう",
+      "shift": 0,
+      "shiftedWord": "えんぼうしんりよ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "しんりよえんぼう",
+      "shift": 0,
+      "shiftedWord": "しんぼうえんりよ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じかんえいぎよう",
+      "shift": 0,
+      "shiftedWord": "えいぎようじかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じかんがいきんむ",
+      "shift": 0,
+      "shiftedWord": "きんむじかんがい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じかんきゆうでん",
+      "shift": 0,
+      "shiftedWord": "じゆうでんきかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じかんちようせい",
+      "shift": 0,
+      "shiftedWord": "ちじようかいせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じかんちようせい",
+      "shift": 0,
+      "shiftedWord": "ちじようかんせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じぎようかいはつ",
+      "shift": 0,
+      "shiftedWord": "かいはつじぎよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じこきゆうしゆう",
+      "shift": 0,
+      "shiftedWord": "じしゆきゆうこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じしゆきゆうこう",
+      "shift": 0,
+      "shiftedWord": "じこきゆうしゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じしゆじようえい",
+      "shift": 0,
+      "shiftedWord": "えいゆうじよじし",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じせいじようたい",
+      "shift": 0,
+      "shiftedWord": "じようじせいたい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じつけんどうぶつ",
+      "shift": 0,
+      "shiftedWord": "どうぶつじつけん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じつしようりよう",
+      "shift": 0,
+      "shiftedWord": "じようしようりつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じどうがくしゆう",
+      "shift": 0,
+      "shiftedWord": "しゆうがくじどう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じはくきようよう",
+      "shift": 0,
+      "shiftedWord": "きようはくじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じゆうかんきよう",
+      "shift": 0,
+      "shiftedWord": "ゆうきかんじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じゆうきよちいき",
+      "shift": 0,
+      "shiftedWord": "きよじゆうちいき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じゆうさいりよう",
+      "shift": 0,
+      "shiftedWord": "さいじようりゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じゆうしゆくごう",
+      "shift": 0,
+      "shiftedWord": "しゆくじゆうごう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じゆうしようしや",
+      "shift": 0,
+      "shiftedWord": "じようしゆうしや",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じゆうしようせき",
+      "shift": 0,
+      "shiftedWord": "しゆうせきじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じゆうしようせき",
+      "shift": 0,
+      "shiftedWord": "じようせきしゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じゆうでんきかん",
+      "shift": 0,
+      "shiftedWord": "じかんきゆうでん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じゆうどうしはん",
+      "shift": 0,
+      "shiftedWord": "しんどうはじゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じゆうにしちよう",
+      "shift": 0,
+      "shiftedWord": "じゆうにちようし",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じゆうにちようし",
+      "shift": 0,
+      "shiftedWord": "じゆうにしちよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じゆうにめんたい",
+      "shift": 0,
+      "shiftedWord": "にじゆうめんたい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じゆうようしれい",
+      "shift": 0,
+      "shiftedWord": "じようれいしゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じゆうりよういき",
+      "shift": 0,
+      "shiftedWord": "じようりゆういき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じゆかせきじよう",
+      "shift": 0,
+      "shiftedWord": "せきじようじゆか",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じゆんかんきけい",
+      "shift": 0,
+      "shiftedWord": "けいきじゆんかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じゆんかんきしつ",
+      "shift": 0,
+      "shiftedWord": "しゆつきんじかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じゆんかんしよう",
+      "shift": 0,
+      "shiftedWord": "しようじゆんかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じゆんぎようさき",
+      "shift": 0,
+      "shiftedWord": "さぎようきじゆん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じゆんけつしよう",
+      "shift": 0,
+      "shiftedWord": "しゆつじようけん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じよういせいせき",
+      "shift": 0,
+      "shiftedWord": "せいせきじようい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようえんちゆう",
+      "shift": 0,
+      "shiftedWord": "えんちゆうじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようかんちよう",
+      "shift": 0,
+      "shiftedWord": "じようちようかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようかんちよう",
+      "shift": 0,
+      "shiftedWord": "ちようじようかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようきゆうしゆ",
+      "shift": 0,
+      "shiftedWord": "きゆうじゆうしよ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようきゆうしん",
+      "shift": 0,
+      "shiftedWord": "きんゆうしじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようきゆうしん",
+      "shift": 0,
+      "shiftedWord": "しゆうきようじん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようきゆうしん",
+      "shift": 0,
+      "shiftedWord": "しんじゆうきよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようきゆうせい",
+      "shift": 0,
+      "shiftedWord": "せいきゆうじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようこうきやく",
+      "shift": 0,
+      "shiftedWord": "きようやくじこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようこうきやく",
+      "shift": 0,
+      "shiftedWord": "じようやくきこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようこうじかん",
+      "shift": 0,
+      "shiftedWord": "じんこうかじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようしゆうしや",
+      "shift": 0,
+      "shiftedWord": "じゆうしようしや",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようしようりつ",
+      "shift": 0,
+      "shiftedWord": "じつしようりよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようじせいたい",
+      "shift": 0,
+      "shiftedWord": "じせいじようたい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようせきしゆう",
+      "shift": 0,
+      "shiftedWord": "じゆうしようせき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようせきしゆう",
+      "shift": 0,
+      "shiftedWord": "しゆうせきじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようせつきかん",
+      "shift": 0,
+      "shiftedWord": "せつきかんじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようちゆうるい",
+      "shift": 0,
+      "shiftedWord": "ちようじゆうるい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようちようかん",
+      "shift": 0,
+      "shiftedWord": "じようかんちよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようちようかん",
+      "shift": 0,
+      "shiftedWord": "ちようじようかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようちようせい",
+      "shift": 0,
+      "shiftedWord": "ようじちようせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようとうらがき",
+      "shift": 0,
+      "shiftedWord": "うらがきじようと",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようほうかんり",
+      "shift": 0,
+      "shiftedWord": "かんりじようほう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようほうしかい",
+      "shift": 0,
+      "shiftedWord": "しじようかいほう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようほうしよう",
+      "shift": 0,
+      "shiftedWord": "しようじようほう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようほうそうさ",
+      "shift": 0,
+      "shiftedWord": "そうさじようほう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようほうりろん",
+      "shift": 0,
+      "shiftedWord": "じようほうろんり",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようほうろんり",
+      "shift": 0,
+      "shiftedWord": "じようほうりろん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようみやくけい",
+      "shift": 0,
+      "shiftedWord": "けいじようみやく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようやくきこう",
+      "shift": 0,
+      "shiftedWord": "きようやくじこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようやくきこう",
+      "shift": 0,
+      "shiftedWord": "じようこうきやく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようりくぶたい",
+      "shift": 0,
+      "shiftedWord": "りくじようぶたい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようりゆういき",
+      "shift": 0,
+      "shiftedWord": "じゆうりよういき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようりゆうしゆ",
+      "shift": 0,
+      "shiftedWord": "しゆりようじゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じようれいしゆう",
+      "shift": 0,
+      "shiftedWord": "じゆうようしれい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じんいんぼしゆう",
+      "shift": 0,
+      "shiftedWord": "ぼしゆうじんいん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じんこうかじよう",
+      "shift": 0,
+      "shiftedWord": "じようこうじかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "じんじこうりゆう",
+      "shift": 0,
+      "shiftedWord": "こうりゆうじんじ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "すくりゆーぼーる",
+      "shift": 0,
+      "shiftedWord": "ぼーるすくりゆー",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "すたじおろくおん",
+      "shift": 0,
+      "shiftedWord": "ろくおんすたじお",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "すみかわおんせん",
+      "shift": 0,
+      "shiftedWord": "かみすわおんせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいあつかりよく",
+      "shift": 0,
+      "shiftedWord": "かりよくせいあつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいかくいじよう",
+      "shift": 0,
+      "shiftedWord": "いじようせいかく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいかつけいざい",
+      "shift": 0,
+      "shiftedWord": "けいざいせいかつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいかつけいたい",
+      "shift": 0,
+      "shiftedWord": "けつせいたいかい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいかつたいけん",
+      "shift": 0,
+      "shiftedWord": "けつせんたいかい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいかつようしき",
+      "shift": 0,
+      "shiftedWord": "かいきしようせつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいかんつうしん",
+      "shift": 0,
+      "shiftedWord": "つうしんかいせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいきゆうじよう",
+      "shift": 0,
+      "shiftedWord": "じようきゆうせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいきゆうりよく",
+      "shift": 0,
+      "shiftedWord": "きゆうせいりよく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいぎよしすてむ",
+      "shift": 0,
+      "shiftedWord": "しすてむせいぎよ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいけいをたてる",
+      "shift": 0,
+      "shiftedWord": "けいせいをたてる",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいげんねんれい",
+      "shift": 0,
+      "shiftedWord": "ねんれいせいげん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいこうとうてい",
+      "shift": 0,
+      "shiftedWord": "とうこうせいてい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいこうようけん",
+      "shift": 0,
+      "shiftedWord": "こうせいようけん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいさくてんかん",
+      "shift": 0,
+      "shiftedWord": "さくせんかんてい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいさんかくけい",
+      "shift": 0,
+      "shiftedWord": "けいかくせいさん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいさんかくけい",
+      "shift": 0,
+      "shiftedWord": "せいさんけいかく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいさんかじよう",
+      "shift": 0,
+      "shiftedWord": "かじようせいさん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいさんけいかく",
+      "shift": 0,
+      "shiftedWord": "けいかくせいさん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいさんけいかく",
+      "shift": 0,
+      "shiftedWord": "せいさんかくけい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいしげんりよう",
+      "shift": 0,
+      "shiftedWord": "せいりげんしよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいしこうじよう",
+      "shift": 0,
+      "shiftedWord": "せいじしようこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいしよくりよく",
+      "shift": 0,
+      "shiftedWord": "せいりよくしよく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいしんいつとう",
+      "shift": 0,
+      "shiftedWord": "せいしんとういつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいしんこうよう",
+      "shift": 0,
+      "shiftedWord": "せんいこうしよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいしんとういつ",
+      "shift": 0,
+      "shiftedWord": "せいしんいつとう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいじしようこう",
+      "shift": 0,
+      "shiftedWord": "せいしこうじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいじようさどう",
+      "shift": 0,
+      "shiftedWord": "せいじようどうさ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいじようどうさ",
+      "shift": 0,
+      "shiftedWord": "せいじようさどう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいせきじようい",
+      "shift": 0,
+      "shiftedWord": "じよういせいせき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいちようさよう",
+      "shift": 0,
+      "shiftedWord": "ちようせいさよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいちようそくど",
+      "shift": 0,
+      "shiftedWord": "そくどちようせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいてきにんげん",
+      "shift": 0,
+      "shiftedWord": "げんていせきにん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいてんはくじつ",
+      "shift": 0,
+      "shiftedWord": "はくじつせいてん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいなんしよとう",
+      "shift": 0,
+      "shiftedWord": "なんせいしよとう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいぶつこうがく",
+      "shift": 0,
+      "shiftedWord": "ぶつせいこうがく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいぶつしひよう",
+      "shift": 0,
+      "shiftedWord": "しひようせいぶつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいぶんえいよう",
+      "shift": 0,
+      "shiftedWord": "えいようせいぶん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいりげんしよう",
+      "shift": 0,
+      "shiftedWord": "せいしげんりよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいりよくしよく",
+      "shift": 0,
+      "shiftedWord": "せいしよくりよく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せいれいかつきん",
+      "shift": 0,
+      "shiftedWord": "かつきんせいれい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せきじようじゆか",
+      "shift": 0,
+      "shiftedWord": "じゆかせきじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せつかいけんえん",
+      "shift": 0,
+      "shiftedWord": "けつせいかんえん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せつきかんじよう",
+      "shift": 0,
+      "shiftedWord": "じようせつきかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せつきんせんとう",
+      "shift": 0,
+      "shiftedWord": "きんせつせんとう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せつけいぎじゆつ",
+      "shift": 0,
+      "shiftedWord": "ぎじゆつせつけい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せんいこうしよう",
+      "shift": 0,
+      "shiftedWord": "せいしんこうよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せんいしよくぶつ",
+      "shift": 0,
+      "shiftedWord": "しよくぶつせんい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せんいしよくぶつ",
+      "shift": 0,
+      "shiftedWord": "ぶんせついしよく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せんいしよくもつ",
+      "shift": 0,
+      "shiftedWord": "しよくもつせんい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せんかいうんどう",
+      "shift": 0,
+      "shiftedWord": "かんせいうんどう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せんかんこんごう",
+      "shift": 0,
+      "shiftedWord": "こんごうかんせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せんきよぼうがい",
+      "shift": 0,
+      "shiftedWord": "きよせいがんぼう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せんぎようさつか",
+      "shift": 0,
+      "shiftedWord": "かんせつさぎよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せんしゆこうたい",
+      "shift": 0,
+      "shiftedWord": "こうたいせんしゆ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せんしよばんたん",
+      "shift": 0,
+      "shiftedWord": "せんたんばんしよ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せんせいくんしゆ",
+      "shift": 0,
+      "shiftedWord": "くんしゆせんせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せんそうけいざい",
+      "shift": 0,
+      "shiftedWord": "けいざいせんそう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せんたんばんしよ",
+      "shift": 0,
+      "shiftedWord": "せんしよばんたん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せんだんたいけい",
+      "shift": 0,
+      "shiftedWord": "だんたんけいせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "せんでんこうこく",
+      "shift": 0,
+      "shiftedWord": "こうこくせんでん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "そうこうぼうぎよ",
+      "shift": 0,
+      "shiftedWord": "ぼうぎよそうこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "そうさじようほう",
+      "shift": 0,
+      "shiftedWord": "じようほうそうさ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "そうさまにゆある",
+      "shift": 0,
+      "shiftedWord": "まにゆあるそうさ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "そうしんちようく",
+      "shift": 0,
+      "shiftedWord": "ちようしんそうく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "そうぞくざいさん",
+      "shift": 0,
+      "shiftedWord": "ざいさんそうぞく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "そうちようかつじ",
+      "shift": 0,
+      "shiftedWord": "ちじようかつそう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "そくさいえんめい",
+      "shift": 0,
+      "shiftedWord": "えんめいそくさい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "そくだんそつけつ",
+      "shift": 0,
+      "shiftedWord": "そつけつそくだん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "そくどちようせい",
+      "shift": 0,
+      "shiftedWord": "せいちようそくど",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "そしきいいんかい",
+      "shift": 0,
+      "shiftedWord": "いいんかいそしき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "そつけつそくだん",
+      "shift": 0,
+      "shiftedWord": "そくだんそつけつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぞうせつめもりー",
+      "shift": 0,
+      "shiftedWord": "めもりーぞうせつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "たいがいかんけい",
+      "shift": 0,
+      "shiftedWord": "かいがいたいけん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "たいしやくきよう",
+      "shift": 0,
+      "shiftedWord": "しようたいきやく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "たいしんはたもと",
+      "shift": 0,
+      "shiftedWord": "はたもとたいしん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "たいじやくじぜん",
+      "shift": 0,
+      "shiftedWord": "たいぜんじじやく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "たいぜんじじやく",
+      "shift": 0,
+      "shiftedWord": "たいじやくじぜん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "たいめんこうつう",
+      "shift": 0,
+      "shiftedWord": "たいめんつうこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "たいめんつうこう",
+      "shift": 0,
+      "shiftedWord": "たいめんこうつう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "たじゆうおんせい",
+      "shift": 0,
+      "shiftedWord": "おんせいたじゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "たまのゆおんせん",
+      "shift": 0,
+      "shiftedWord": "ゆのまたおんせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "たんかくさいぼう",
+      "shift": 0,
+      "shiftedWord": "ぼうかんたいさく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "たんちもくひよう",
+      "shift": 0,
+      "shiftedWord": "もくひようたんち",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "だいかんわじてん",
+      "shift": 0,
+      "shiftedWord": "かんわだいじてん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "だいしゆうちよう",
+      "shift": 0,
+      "shiftedWord": "だいちようしゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "だいじゆうきよう",
+      "shift": 0,
+      "shiftedWord": "だいじようきゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "だいじようきゆう",
+      "shift": 0,
+      "shiftedWord": "だいじゆうきよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "だいたいくうこう",
+      "shift": 0,
+      "shiftedWord": "こうくうだいたい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "だいちようしゆう",
+      "shift": 0,
+      "shiftedWord": "だいしゆうちよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "だいひようかんじ",
+      "shift": 0,
+      "shiftedWord": "ひじようかいだん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "だつたいかんこつ",
+      "shift": 0,
+      "shiftedWord": "かんこつだつたい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "だんいほうしよく",
+      "shift": 0,
+      "shiftedWord": "ほうしよくだんい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "だんたんけいせい",
+      "shift": 0,
+      "shiftedWord": "せんだんたいけい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちかくしようしつ",
+      "shift": 0,
+      "shiftedWord": "しちようかくしつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちじようかいせん",
+      "shift": 0,
+      "shiftedWord": "じかんちようせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちじようかいせん",
+      "shift": 0,
+      "shiftedWord": "ちじようかんせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちじようかつそう",
+      "shift": 0,
+      "shiftedWord": "そうちようかつじ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちじようかんせい",
+      "shift": 0,
+      "shiftedWord": "じかんちようせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちじようかんせい",
+      "shift": 0,
+      "shiftedWord": "ちじようかいせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちじようゆうどう",
+      "shift": 0,
+      "shiftedWord": "どうちゆうじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちほうかんちよう",
+      "shift": 0,
+      "shiftedWord": "ちほうちようかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちほうしゆつしん",
+      "shift": 0,
+      "shiftedWord": "しゆつしんちほう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちほうちようかん",
+      "shift": 0,
+      "shiftedWord": "ちほうかんちよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちゆうきようしん",
+      "shift": 0,
+      "shiftedWord": "ちようしゆうきん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちゆうけいげんば",
+      "shift": 0,
+      "shiftedWord": "げんばちゆうけい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちゆうこうしよく",
+      "shift": 0,
+      "shiftedWord": "ちゆうしようこく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちゆうしようこく",
+      "shift": 0,
+      "shiftedWord": "ちゆうこうしよく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちゆうしよくだい",
+      "shift": 0,
+      "shiftedWord": "しゆくだいちよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちゆうようとつき",
+      "shift": 0,
+      "shiftedWord": "ちようとつきゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちようかんきせい",
+      "shift": 0,
+      "shiftedWord": "ちようせいきかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちようきようさく",
+      "shift": 0,
+      "shiftedWord": "きようちようさく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちようさしりよう",
+      "shift": 0,
+      "shiftedWord": "しりようちようさ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちようしゆうきん",
+      "shift": 0,
+      "shiftedWord": "ちゆうきようしん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちようしゆうじん",
+      "shift": 0,
+      "shiftedWord": "しゆうようじんち",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちようしゆうじん",
+      "shift": 0,
+      "shiftedWord": "ちようじゆうしん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちようしゆうはん",
+      "shift": 0,
+      "shiftedWord": "はんしゆうちよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちようしゆりよう",
+      "shift": 0,
+      "shiftedWord": "しゆりようちよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちようしよくかい",
+      "shift": 0,
+      "shiftedWord": "かいちようしよく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちようしよくかい",
+      "shift": 0,
+      "shiftedWord": "しようかいちよく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちようしよくつき",
+      "shift": 0,
+      "shiftedWord": "きよくちようしつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちようしんそうく",
+      "shift": 0,
+      "shiftedWord": "そうしんちようく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちようじゆうしん",
+      "shift": 0,
+      "shiftedWord": "しゆうようじんち",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちようじゆうしん",
+      "shift": 0,
+      "shiftedWord": "ちようしゆうじん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちようじゆうるい",
+      "shift": 0,
+      "shiftedWord": "じようちゆうるい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちようじようかん",
+      "shift": 0,
+      "shiftedWord": "じようかんちよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちようじようかん",
+      "shift": 0,
+      "shiftedWord": "じようちようかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちようじようしや",
+      "shift": 0,
+      "shiftedWord": "しようじようちや",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちようせいきかん",
+      "shift": 0,
+      "shiftedWord": "ちようかんきせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちようせいきゆう",
+      "shift": 0,
+      "shiftedWord": "きゆうせいちよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちようせいさよう",
+      "shift": 0,
+      "shiftedWord": "せいちようさよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちようとつきゆう",
+      "shift": 0,
+      "shiftedWord": "ちゆうようとつき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちんぎんけいたい",
+      "shift": 0,
+      "shiftedWord": "ちんぎんたいけい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ちんぎんたいけい",
+      "shift": 0,
+      "shiftedWord": "ちんぎんけいたい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ついかんえんばん",
+      "shift": 0,
+      "shiftedWord": "ついかんばんえん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ついかんばんえん",
+      "shift": 0,
+      "shiftedWord": "ついかんえんばん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "つうがくでんしや",
+      "shift": 0,
+      "shiftedWord": "でんしやつうがく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "つうきんでんしや",
+      "shift": 0,
+      "shiftedWord": "でんしやつうきん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "つうこうぼうがい",
+      "shift": 0,
+      "shiftedWord": "こうつうぼうがい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "つうしんあんごう",
+      "shift": 0,
+      "shiftedWord": "あんごうつうしん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "つうしんえいせい",
+      "shift": 0,
+      "shiftedWord": "えいせいつうしん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "つうしんかいせん",
+      "shift": 0,
+      "shiftedWord": "せいかんつうしん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "つるのゆおんせん",
+      "shift": 0,
+      "shiftedWord": "ゆのつるおんせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ていーえぬていー",
+      "shift": 0,
+      "shiftedWord": "えぬていーていー",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ていけいぎようむ",
+      "shift": 0,
+      "shiftedWord": "ぎようむていけい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ていとうへいしん",
+      "shift": 0,
+      "shiftedWord": "へいしんていとう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "てつきしゆうらい",
+      "shift": 0,
+      "shiftedWord": "てつきらいしゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "てつきらいしゆう",
+      "shift": 0,
+      "shiftedWord": "てつきしゆうらい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "てつどうかんせん",
+      "shift": 0,
+      "shiftedWord": "かんせんてつどう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "てんじようわらわ",
+      "shift": 0,
+      "shiftedWord": "わらわてんじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "てんねんしりよう",
+      "shift": 0,
+      "shiftedWord": "りんねてんしよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "てんゆうしんじよ",
+      "shift": 0,
+      "shiftedWord": "しんじよてんゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "てんゆうしんじよ",
+      "shift": 0,
+      "shiftedWord": "しんゆうてんじよ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "でいすくしすてむ",
+      "shift": 0,
+      "shiftedWord": "しすてむでいすく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "でんげんないぞう",
+      "shift": 0,
+      "shiftedWord": "ないぞうでんげん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "でんしやつうがく",
+      "shift": 0,
+      "shiftedWord": "つうがくでんしや",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "でんしやつうきん",
+      "shift": 0,
+      "shiftedWord": "つうきんでんしや",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "でんしようぶんか",
+      "shift": 0,
+      "shiftedWord": "ぶんかでんしよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "でんそうしやしん",
+      "shift": 0,
+      "shiftedWord": "しやしんでんそう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "でんたんしやげき",
+      "shift": 0,
+      "shiftedWord": "しやげきでんたん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "とうきまつしよう",
+      "shift": 0,
+      "shiftedWord": "まつしようとうき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "とうけいもんだい",
+      "shift": 0,
+      "shiftedWord": "けいとうもんだい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "とうこうせいてい",
+      "shift": 0,
+      "shiftedWord": "せいこうとうてい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "とうせいけいざい",
+      "shift": 0,
+      "shiftedWord": "けいざいとうせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "とうせいしやげき",
+      "shift": 0,
+      "shiftedWord": "しやげきとうせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "とうそうせいほん",
+      "shift": 0,
+      "shiftedWord": "とうほんせいそう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "とうほんせいそう",
+      "shift": 0,
+      "shiftedWord": "とうそうせいほん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "とうようのまじよ",
+      "shift": 0,
+      "shiftedWord": "ようとうのまじよ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "とくしゆめんきよ",
+      "shift": 0,
+      "shiftedWord": "めんきよしゆとく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "とくべつおんしや",
+      "shift": 0,
+      "shiftedWord": "とくべつしやおん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "とくべつしやおん",
+      "shift": 0,
+      "shiftedWord": "とくべつおんしや",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "としよりあつかい",
+      "shift": 0,
+      "shiftedWord": "とりあつかいしよ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "とものゆおんせん",
+      "shift": 0,
+      "shiftedWord": "ゆのもとおんせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "とりあつかいしよ",
+      "shift": 0,
+      "shiftedWord": "としよりあつかい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "とりけししよぶん",
+      "shift": 0,
+      "shiftedWord": "しよぶんとりけし",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "とりひきぎんこう",
+      "shift": 0,
+      "shiftedWord": "ぎんこうとりひき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "どうこういきよく",
+      "shift": 0,
+      "shiftedWord": "いきよくどうこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "どうこうはんしや",
+      "shift": 0,
+      "shiftedWord": "はんしやこうどう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "どうちゆうじよう",
+      "shift": 0,
+      "shiftedWord": "ちじようゆうどう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "どうぶつじつけん",
+      "shift": 0,
+      "shiftedWord": "じつけんどうぶつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ないかしんりよう",
+      "shift": 0,
+      "shiftedWord": "しんりようないか",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ないこくかんぜい",
+      "shift": 0,
+      "shiftedWord": "こくないかんぜい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ないこくゆうびん",
+      "shift": 0,
+      "shiftedWord": "こくないゆうびん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ないぞうでんげん",
+      "shift": 0,
+      "shiftedWord": "でんげんないぞう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "なかやまおんせん",
+      "shift": 0,
+      "shiftedWord": "かなやまおんせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "なかやまおんせん",
+      "shift": 0,
+      "shiftedWord": "やまなかおんせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "なりかわおんせん",
+      "shift": 0,
+      "shiftedWord": "かなわりおんせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "なんかいほうそう",
+      "shift": 0,
+      "shiftedWord": "かんないほうそう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "なんせいしよとう",
+      "shift": 0,
+      "shiftedWord": "せいなんしよとう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "にじゆうめんたい",
+      "shift": 0,
+      "shiftedWord": "じゆうにめんたい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "にゆーすばりゆー",
+      "shift": 0,
+      "shiftedWord": "にゆすーばりゆー",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "にゆうかいしかく",
+      "shift": 0,
+      "shiftedWord": "にゆうしかいかく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "にゆうしかいかく",
+      "shift": 0,
+      "shiftedWord": "にゆうかいしかく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "にゆうしゆつこく",
+      "shift": 0,
+      "shiftedWord": "しゆつにゆうこく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "にゆうりよくみす",
+      "shift": 0,
+      "shiftedWord": "みすにゆうりよく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "にゆうりよくもじ",
+      "shift": 0,
+      "shiftedWord": "もじにゆうりよく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "にゆすーばりゆー",
+      "shift": 0,
+      "shiftedWord": "にゆーすばりゆー",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "にんげんしやかい",
+      "shift": 0,
+      "shiftedWord": "かいしやにんげん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "にんこうてんのう",
+      "shift": 0,
+      "shiftedWord": "こうにんてんのう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ねずみかんがるー",
+      "shift": 0,
+      "shiftedWord": "かんがるーねずみ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ねんねんさいさい",
+      "shift": 0,
+      "shiftedWord": "さいさいねんねん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ねんれいせいげん",
+      "shift": 0,
+      "shiftedWord": "せいげんねんれい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "のうしゆくうらん",
+      "shift": 0,
+      "shiftedWord": "うらんのうしゆく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "のうぜいしんこく",
+      "shift": 0,
+      "shiftedWord": "しんこくのうぜい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "はいびへいりよく",
+      "shift": 0,
+      "shiftedWord": "へいりよくはいび",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "はくじつせいてん",
+      "shift": 0,
+      "shiftedWord": "せいてんはくじつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "はたもとたいしん",
+      "shift": 0,
+      "shiftedWord": "たいしんはたもと",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "はつちゆうこうじ",
+      "shift": 0,
+      "shiftedWord": "こうじはつちゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "はつばいまどぐち",
+      "shift": 0,
+      "shiftedWord": "まどぐちはつばい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "はんしやこうどう",
+      "shift": 0,
+      "shiftedWord": "どうこうはんしや",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "はんしゆうちよう",
+      "shift": 0,
+      "shiftedWord": "ちようしゆうはん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "はんすいはんせい",
+      "shift": 0,
+      "shiftedWord": "はんせいはんすい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "はんせいはんすい",
+      "shift": 0,
+      "shiftedWord": "はんすいはんせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "はんばいがいしや",
+      "shift": 0,
+      "shiftedWord": "がいしやはんばい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "はんばくたいせい",
+      "shift": 0,
+      "shiftedWord": "ばくはんたいせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ばくはんたいせい",
+      "shift": 0,
+      "shiftedWord": "はんばくたいせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ばつくうおーたー",
+      "shift": 0,
+      "shiftedWord": "うおーたーばつく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ばらとさけのひび",
+      "shift": 0,
+      "shiftedWord": "さけとばらのひび",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ばんきんさぎよう",
+      "shift": 0,
+      "shiftedWord": "さんぎようきばん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ひこうしようねん",
+      "shift": 0,
+      "shiftedWord": "しようねんひこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ひじようかいだん",
+      "shift": 0,
+      "shiftedWord": "だいひようかんじ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ひようしゆうけい",
+      "shift": 0,
+      "shiftedWord": "しゆうけいひよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ひようめんかこう",
+      "shift": 0,
+      "shiftedWord": "ひようめんこうか",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ひようめんこうか",
+      "shift": 0,
+      "shiftedWord": "ひようめんかこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "びじゆつこうげい",
+      "shift": 0,
+      "shiftedWord": "こうげいびじゆつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "びふうりようぞく",
+      "shift": 0,
+      "shiftedWord": "りようふうびぞく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "びようがいちゆう",
+      "shift": 0,
+      "shiftedWord": "びようちゆうがい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "びようちゆうがい",
+      "shift": 0,
+      "shiftedWord": "びようがいちゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぴかくれすろまん",
+      "shift": 0,
+      "shiftedWord": "ぴかれすくろまん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぴかれすくろまん",
+      "shift": 0,
+      "shiftedWord": "ぴかくれすろまん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ふあーすとれでい",
+      "shift": 0,
+      "shiftedWord": "れでいふあーすと",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ふあいばーぐらす",
+      "shift": 0,
+      "shiftedWord": "ぐらすふあいばー",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ふあいるしすてむ",
+      "shift": 0,
+      "shiftedWord": "しすてむふあいる",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ふあいるてんそう",
+      "shift": 0,
+      "shiftedWord": "あふいるてんそう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ふくごうきぎよう",
+      "shift": 0,
+      "shiftedWord": "ふくごうきようぎ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ふくごうきようぎ",
+      "shift": 0,
+      "shiftedWord": "ふくごうきぎよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ふらわーあれんじ",
+      "shift": 0,
+      "shiftedWord": "あれんじふらわー",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぶつせいこうがく",
+      "shift": 0,
+      "shiftedWord": "せいぶつこうがく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぶぶんきよくひつ",
+      "shift": 0,
+      "shiftedWord": "きよくひつぶぶん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぶらきやみそーる",
+      "shift": 0,
+      "shiftedWord": "きやみそーるぶら",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぶりよくこうそう",
+      "shift": 0,
+      "shiftedWord": "こうりようぶそく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぶろつくけいざい",
+      "shift": 0,
+      "shiftedWord": "けいざいぶろつく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぶんかでんしよう",
+      "shift": 0,
+      "shiftedWord": "でんしようぶんか",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぶんこうぶんせき",
+      "shift": 0,
+      "shiftedWord": "こうぶんぶんせき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぶんしよかんてい",
+      "shift": 0,
+      "shiftedWord": "かんていしよぶん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぶんせついしよく",
+      "shift": 0,
+      "shiftedWord": "しよくぶつせんい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぶんせついしよく",
+      "shift": 0,
+      "shiftedWord": "せんいしよくぶつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぷろとんざうるす",
+      "shift": 0,
+      "shiftedWord": "ぷろんとざうるす",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぷろんとざうるす",
+      "shift": 0,
+      "shiftedWord": "ぷろとんざうるす",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "へいきこうじよう",
+      "shift": 0,
+      "shiftedWord": "こうじようへいき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "へいげつしゆうか",
+      "shift": 0,
+      "shiftedWord": "しゆうかへいげつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "へいげつしゆうか",
+      "shift": 0,
+      "shiftedWord": "しゆうげつへいか",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "へいしんていとう",
+      "shift": 0,
+      "shiftedWord": "ていとうへいしん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "へいりよくはいび",
+      "shift": 0,
+      "shiftedWord": "はいびへいりよく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "へいわきようてい",
+      "shift": 0,
+      "shiftedWord": "わへいきようてい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "へいわじようやく",
+      "shift": 0,
+      "shiftedWord": "わへいじようやく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "へんきようちたい",
+      "shift": 0,
+      "shiftedWord": "へんたいちようき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "へんこうしゆうき",
+      "shift": 0,
+      "shiftedWord": "へんしゆうこうき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "へんしゆうこうき",
+      "shift": 0,
+      "shiftedWord": "へんこうしゆうき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "へんたいこうげき",
+      "shift": 0,
+      "shiftedWord": "こうげきへんたい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "へんたいちようき",
+      "shift": 0,
+      "shiftedWord": "へんきようちたい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "べるとこんべやー",
+      "shift": 0,
+      "shiftedWord": "こんべやーべると",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぺーぱーくらふと",
+      "shift": 0,
+      "shiftedWord": "くらふとぺーぱー",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ほうしやかいがく",
+      "shift": 0,
+      "shiftedWord": "しやかいほうがく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ほうしよくだんい",
+      "shift": 0,
+      "shiftedWord": "だんいほうしよく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ほうそうえいせい",
+      "shift": 0,
+      "shiftedWord": "えいせいほうそう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ほぞんしよくひん",
+      "shift": 0,
+      "shiftedWord": "しよくひんほぞん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぼーるすくりゆー",
+      "shift": 0,
+      "shiftedWord": "すくりゆーぼーる",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぼうえきかんこう",
+      "shift": 0,
+      "shiftedWord": "こうかんぼうえき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぼうかんたいさく",
+      "shift": 0,
+      "shiftedWord": "たんかくさいぼう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぼうがいこうさく",
+      "shift": 0,
+      "shiftedWord": "さいぼうこうがく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぼうがいこうさく",
+      "shift": 0,
+      "shiftedWord": "ぼうさいこうがく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぼうぎよそうこう",
+      "shift": 0,
+      "shiftedWord": "そうこうぼうぎよ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぼうさいこうがく",
+      "shift": 0,
+      "shiftedWord": "さいぼうこうがく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぼうさいこうがく",
+      "shift": 0,
+      "shiftedWord": "ぼうがいこうさく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぼしゆうじんいん",
+      "shift": 0,
+      "shiftedWord": "じんいんぼしゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ぽんぷしゆんせつ",
+      "shift": 0,
+      "shiftedWord": "しゆんせつぽんぷ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ましんかんきよう",
+      "shift": 0,
+      "shiftedWord": "まんきしようかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "まつしようとうき",
+      "shift": 0,
+      "shiftedWord": "とうきまつしよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "まつたんしんけい",
+      "shift": 0,
+      "shiftedWord": "しんけいまつたん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "まどぐちはつばい",
+      "shift": 0,
+      "shiftedWord": "はつばいまどぐち",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "まにぴゆれーたー",
+      "shift": 0,
+      "shiftedWord": "まにゆぴれーたー",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "まにゆあるそうさ",
+      "shift": 0,
+      "shiftedWord": "そうさまにゆある",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "まにゆぴれーたー",
+      "shift": 0,
+      "shiftedWord": "まにぴゆれーたー",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "まんきしようかん",
+      "shift": 0,
+      "shiftedWord": "ましんかんきよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "みさいるゆうどう",
+      "shift": 0,
+      "shiftedWord": "ゆうどうみさいる",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "みすにゆうりよく",
+      "shift": 0,
+      "shiftedWord": "にゆうりよくみす",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "みつゆぎようしや",
+      "shift": 0,
+      "shiftedWord": "やぎゆうみつよし",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "みならいしやいん",
+      "shift": 0,
+      "shiftedWord": "しやいんみならい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "みほんしようひん",
+      "shift": 0,
+      "shiftedWord": "しようひんみほん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "みらいいちよそく",
+      "shift": 0,
+      "shiftedWord": "みらいよそくいち",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "みらいよそくいち",
+      "shift": 0,
+      "shiftedWord": "みらいいちよそく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "みんかんきぎよう",
+      "shift": 0,
+      "shiftedWord": "みんかんきようぎ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "みんかんきようぎ",
+      "shift": 0,
+      "shiftedWord": "みんかんきぎよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "むきんじようたい",
+      "shift": 0,
+      "shiftedWord": "きんむじようたい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "めたもるふおーぜ",
+      "shift": 0,
+      "shiftedWord": "めもたるふおーぜ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "めもたるふおーぜ",
+      "shift": 0,
+      "shiftedWord": "めたもるふおーぜ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "めもりーぞうせつ",
+      "shift": 0,
+      "shiftedWord": "ぞうせつめもりー",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "めんきよしゆとく",
+      "shift": 0,
+      "shiftedWord": "とくしゆめんきよ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "もくひようたんち",
+      "shift": 0,
+      "shiftedWord": "たんちもくひよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "もくよくさいかい",
+      "shift": 0,
+      "shiftedWord": "さいかいもくよく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "もじにゆうりよく",
+      "shift": 0,
+      "shiftedWord": "にゆうりよくもじ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "もんじようしよう",
+      "shift": 0,
+      "shiftedWord": "しようもんじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "やぎゆうみつよし",
+      "shift": 0,
+      "shiftedWord": "みつゆぎようしや",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "やこうきゆうこう",
+      "shift": 0,
+      "shiftedWord": "こうこうやきゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "やまなかおんせん",
+      "shift": 0,
+      "shiftedWord": "かなやまおんせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "やまなかおんせん",
+      "shift": 0,
+      "shiftedWord": "なかやまおんせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ゆうかいさつじん",
+      "shift": 0,
+      "shiftedWord": "ゆうじんかいさつ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ゆうきかんじよう",
+      "shift": 0,
+      "shiftedWord": "じゆうかんきよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ゆうこうかんけい",
+      "shift": 0,
+      "shiftedWord": "こうゆうかんけい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ゆうじんかいさつ",
+      "shift": 0,
+      "shiftedWord": "ゆうかいさつじん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ゆうどうみさいる",
+      "shift": 0,
+      "shiftedWord": "みさいるゆうどう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ゆうびんこづつみ",
+      "shift": 0,
+      "shiftedWord": "こづつみゆうびん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ゆにつときつちん",
+      "shift": 0,
+      "shiftedWord": "きつちんゆにつと",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ゆのかみおんせん",
+      "shift": 0,
+      "shiftedWord": "かみのゆおんせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ゆのこしおんせん",
+      "shift": 0,
+      "shiftedWord": "こしのゆおんせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ゆのつるおんせん",
+      "shift": 0,
+      "shiftedWord": "つるのゆおんせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ゆのまたおんせん",
+      "shift": 0,
+      "shiftedWord": "たまのゆおんせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ゆのもとおんせん",
+      "shift": 0,
+      "shiftedWord": "とものゆおんせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ようしきけんちく",
+      "shift": 0,
+      "shiftedWord": "けんちくようしき",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ようしよくじよう",
+      "shift": 0,
+      "shiftedWord": "しよくようじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ようじきよういく",
+      "shift": 0,
+      "shiftedWord": "きよういくじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ようじちようせい",
+      "shift": 0,
+      "shiftedWord": "じようちようせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ようせつこうかん",
+      "shift": 0,
+      "shiftedWord": "かんせつこうよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ようとうのまじよ",
+      "shift": 0,
+      "shiftedWord": "とうようのまじよ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "らいらいらくらく",
+      "shift": 0,
+      "shiftedWord": "らくらくらいらい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "らくあればくあり",
+      "shift": 0,
+      "shiftedWord": "くあればらくあり",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "らくらくらいらい",
+      "shift": 0,
+      "shiftedWord": "らいらいらくらく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "りくじようぶたい",
+      "shift": 0,
+      "shiftedWord": "じようりくぶたい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "りごうしゆうさん",
+      "shift": 0,
+      "shiftedWord": "しゆうさんりごう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "りつけんせいたい",
+      "shift": 0,
+      "shiftedWord": "りつけんたいせい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "りつけんたいせい",
+      "shift": 0,
+      "shiftedWord": "りつけんせいたい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "りゆうさんあえん",
+      "shift": 0,
+      "shiftedWord": "ありゆうさんえん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "りゆうじようこう",
+      "shift": 0,
+      "shiftedWord": "こうりゆうじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "りゆうつうかへい",
+      "shift": 0,
+      "shiftedWord": "かへいりゆうつう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "りゆうばんこきよ",
+      "shift": 0,
+      "shiftedWord": "こきよりゆうばん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "りようかいじこう",
+      "shift": 0,
+      "shiftedWord": "かいりようこうじ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "りようかんきよう",
+      "shift": 0,
+      "shiftedWord": "りようようきかん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "りようかんきよう",
+      "shift": 8,
+      "shiftedWord": "いんさせくそんさ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "りようしゆうしよ",
+      "shift": 0,
+      "shiftedWord": "しゆうりようしよ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "りようしゆうしよ",
+      "shift": 0,
+      "shiftedWord": "りようしゆしよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "りようしゆしよう",
+      "shift": 0,
+      "shiftedWord": "しゆうりようしよ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "りようしゆしよう",
+      "shift": 0,
+      "shiftedWord": "りようしゆうしよ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "りようふうびぞく",
+      "shift": 0,
+      "shiftedWord": "びふうりようぞく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "りようようきかん",
+      "shift": 0,
+      "shiftedWord": "りようかんきよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "りようようきかん",
+      "shift": 8,
+      "shiftedWord": "いんさんさそせく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "りよくおうしよく",
+      "shift": 0,
+      "shiftedWord": "おうりよくしよく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "りよくかいしよく",
+      "shift": 0,
+      "shiftedWord": "かいりよくしよく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "りんねてんしよう",
+      "shift": 0,
+      "shiftedWord": "てんねんしりよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "れーだーさくてき",
+      "shift": 0,
+      "shiftedWord": "さくてきれーだー",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "れーだーしやげき",
+      "shift": 0,
+      "shiftedWord": "しやげきれーだー",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "れつしやしんだい",
+      "shift": 0,
+      "shiftedWord": "しんだいれつしや",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "れでいふあーすと",
+      "shift": 0,
+      "shiftedWord": "ふあーすとれでい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "れんらくぎようむ",
+      "shift": 0,
+      "shiftedWord": "ぎようむれんらく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ろくいちぎんこう",
+      "shift": 0,
+      "shiftedWord": "いちろくぎんこう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ろくおんすたじお",
+      "shift": 0,
+      "shiftedWord": "すたじおろくおん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ろくごうおんせん",
+      "shift": 0,
+      "shiftedWord": "ごうろくおんせん",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "わかいじようこう",
+      "shift": 0,
+      "shiftedWord": "こうわかいじよう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "わかしゆうかぶき",
+      "shift": 0,
+      "shiftedWord": "かぶきわかしゆう",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "わへいきようてい",
+      "shift": 0,
+      "shiftedWord": "へいわきようてい",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "わへいじようやく",
+      "shift": 0,
+      "shiftedWord": "へいわじようやく",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "わらわてんじよう",
+      "shift": 0,
+      "shiftedWord": "てんじようわらわ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "わりびきぎんこう",
+      "shift": 0,
+      "shiftedWord": "ぎんこうわりびき",
+      "matchType": "アナグラム"
+    }
+  ]
+}

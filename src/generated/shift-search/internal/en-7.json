@@ -1,0 +1,302 @@
+{
+  "reportKey": "en-7",
+  "language": "en",
+  "length": 7,
+  "dictionary": "CEFR-J.dic",
+  "targetWordCount": 1026,
+  "executedWordCount": 1026,
+  "totalHitRows": 48,
+  "startedAt": "2026-02-26T00:08:47.507Z",
+  "generatedAt": "2026-02-26T00:08:47.542Z",
+  "rowCount": 48,
+  "rows": [
+    {
+      "inputWord": "abandon",
+      "shift": 4,
+      "shiftedWord": "eferhsr",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "bedroom",
+      "shift": 0,
+      "shiftedWord": "boredom",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "biology",
+      "shift": 16,
+      "shiftedWord": "ryebewo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "boredom",
+      "shift": 0,
+      "shiftedWord": "bedroom",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "builder",
+      "shift": 0,
+      "shiftedWord": "rebuild",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "climber",
+      "shift": 3,
+      "shiftedWord": "folpehu",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "disease",
+      "shift": 0,
+      "shiftedWord": "seaside",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "earnest",
+      "shift": 0,
+      "shiftedWord": "eastern",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "earring",
+      "shift": 13,
+      "shiftedWord": "rneevat",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "eastern",
+      "shift": 0,
+      "shiftedWord": "earnest",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "eyebrow",
+      "shift": 10,
+      "shiftedWord": "oiolbyg",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "fluency",
+      "shift": 13,
+      "shiftedWord": "syhrapl",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "gallery",
+      "shift": 0,
+      "shiftedWord": "largely",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "gateway",
+      "shift": 0,
+      "shiftedWord": "getaway",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "getaway",
+      "shift": 0,
+      "shiftedWord": "gateway",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "hopeful",
+      "shift": 23,
+      "shiftedWord": "elmbcri",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "however",
+      "shift": 0,
+      "shiftedWord": "whoever",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "largely",
+      "shift": 0,
+      "shiftedWord": "gallery",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "leopard",
+      "shift": 23,
+      "shiftedWord": "iblmxoa",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "license",
+      "shift": 0,
+      "shiftedWord": "silence",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lowland",
+      "shift": 4,
+      "shiftedWord": "psaperh",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "mailbox",
+      "shift": 3,
+      "shiftedWord": "pdloera",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "miracle",
+      "shift": 0,
+      "shiftedWord": "reclaim",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "nuclear",
+      "shift": 0,
+      "shiftedWord": "unclear",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "painter",
+      "shift": 0,
+      "shiftedWord": "repaint",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "perfect",
+      "shift": 0,
+      "shiftedWord": "prefect",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "perhaps",
+      "shift": 22,
+      "shiftedWord": "landwlo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "plastic",
+      "shift": 11,
+      "shiftedWord": "awldetn",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "prefect",
+      "shift": 0,
+      "shiftedWord": "perfect",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "printer",
+      "shift": 0,
+      "shiftedWord": "reprint",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "rebuild",
+      "shift": 0,
+      "shiftedWord": "builder",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "reclaim",
+      "shift": 0,
+      "shiftedWord": "miracle",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "refresh",
+      "shift": 22,
+      "shiftedWord": "nabnaod",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "remains",
+      "shift": 0,
+      "shiftedWord": "seminar",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "repaint",
+      "shift": 0,
+      "shiftedWord": "painter",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "reprint",
+      "shift": 0,
+      "shiftedWord": "printer",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "reserve",
+      "shift": 0,
+      "shiftedWord": "reverse",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "reverse",
+      "shift": 0,
+      "shiftedWord": "reserve",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "seaside",
+      "shift": 0,
+      "shiftedWord": "disease",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "seminar",
+      "shift": 0,
+      "shiftedWord": "remains",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "sharply",
+      "shift": 13,
+      "shiftedWord": "funecyl",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "silence",
+      "shift": 0,
+      "shiftedWord": "license",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "theater",
+      "shift": 0,
+      "shiftedWord": "theatre",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "theatre",
+      "shift": 0,
+      "shiftedWord": "theater",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "unclear",
+      "shift": 0,
+      "shiftedWord": "nuclear",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "veteran",
+      "shift": 13,
+      "shiftedWord": "irgrena",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "wetland",
+      "shift": 15,
+      "shiftedWord": "ltiapcs",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "whoever",
+      "shift": 0,
+      "shiftedWord": "however",
+      "matchType": "アナグラム"
+    }
+  ]
+}

@@ -10,6 +10,26 @@ const MANIFEST_PATH = path.join(
   REPORT_ROOT,
   "shift-search-report-manifest.json",
 );
+const EXTERNAL_LINKS_PATH = path.join(
+  REPORT_ROOT,
+  "shift-search-external-links.json",
+);
+const EXTERNAL_ROW_THRESHOLD = 10000;
+
+function loadExternalLinks() {
+  if (!fs.existsSync(EXTERNAL_LINKS_PATH)) {
+    return {};
+  }
+  const raw = fs.readFileSync(EXTERNAL_LINKS_PATH, "utf8").trim();
+  if (!raw) {
+    return {};
+  }
+  const parsed = JSON.parse(raw);
+  if (!parsed || typeof parsed !== "object") {
+    return {};
+  }
+  return parsed;
+}
 
 function parseRequiredMatch(content, pattern, label) {
   const match = content.match(pattern);
@@ -28,7 +48,7 @@ function parseRequiredNumber(content, key) {
   return Number(raw);
 }
 
-function parseReport(filePath, language, length) {
+function parseReport(filePath, language, length, externalLinks) {
   const content = fs.readFileSync(filePath, "utf8");
   const stat = fs.statSync(filePath);
 
@@ -51,7 +71,17 @@ function parseReport(filePath, language, length) {
     "generatedAt",
   );
 
+  const reportKey = `${language}-${length}`;
+  const deliveryType =
+    totalHitRows > EXTERNAL_ROW_THRESHOLD ? "external" : "internal";
+  const externalUrlRaw = externalLinks[reportKey];
+  const externalUrl =
+    typeof externalUrlRaw === "string" && externalUrlRaw.trim()
+      ? externalUrlRaw.trim()
+      : null;
+
   return {
+    reportKey,
     language,
     length,
     dictionary,
@@ -62,10 +92,12 @@ function parseReport(filePath, language, length) {
     generatedAt,
     path: filePath.replace(/\\/g, "/"),
     sizeBytes: stat.size,
+    deliveryType,
+    externalUrl,
   };
 }
 
-function listLanguageReports(language) {
+function listLanguageReports(language, externalLinks) {
   const dirPath = path.join(REPORT_ROOT, language);
   if (!fs.existsSync(dirPath)) {
     return [];
@@ -86,7 +118,7 @@ function listLanguageReports(language) {
 
     const length = Number(match[2]);
     const filePath = path.join(dirPath, entry.name);
-    reports.push(parseReport(filePath, language, length));
+    reports.push(parseReport(filePath, language, length, externalLinks));
   }
 
   return reports.sort((a, b) => a.length - b.length);
@@ -116,12 +148,27 @@ function buildIndexTableRows(reports) {
 
 function writeManifest({ generatedAt, jpReports, enReports }) {
   const reports = [...enReports, ...jpReports];
+  const internalReports = reports.filter(
+    (report) => report.deliveryType === "internal",
+  );
+  const externalReports = reports.filter(
+    (report) => report.deliveryType === "external",
+  );
+  const unresolvedExternalReports = externalReports.filter(
+    (report) => !report.externalUrl,
+  );
   const manifest = {
     generatedAt,
     reportCount: reports.length,
+    externalRowThreshold: EXTERNAL_ROW_THRESHOLD,
     groups: {
       jp: buildGroup(jpReports),
       en: buildGroup(enReports),
+    },
+    delivery: {
+      internalCount: internalReports.length,
+      externalCount: externalReports.length,
+      unresolvedExternalCount: unresolvedExternalReports.length,
     },
     reports,
   };
@@ -171,15 +218,16 @@ function writeIndex({ generatedAt, jpReports, enReports }) {
 
 function main() {
   const generatedAt = new Date().toISOString();
-  const jpReports = listLanguageReports("jp");
-  const enReports = listLanguageReports("en");
+  const externalLinks = loadExternalLinks();
+  const jpReports = listLanguageReports("jp", externalLinks);
+  const enReports = listLanguageReports("en", externalLinks);
 
   writeManifest({ generatedAt, jpReports, enReports });
   writeIndex({ generatedAt, jpReports, enReports });
 
   // eslint-disable-next-line no-console
   console.log(
-    `[done] generated index and manifest (jp=${jpReports.length}, en=${enReports.length}, total=${jpReports.length + enReports.length})`,
+    `[done] generated index and manifest (jp=${jpReports.length}, en=${enReports.length}, total=${jpReports.length + enReports.length}, threshold=${EXTERNAL_ROW_THRESHOLD})`,
   );
 }
 

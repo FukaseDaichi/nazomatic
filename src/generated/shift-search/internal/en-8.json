@@ -1,0 +1,38 @@
+{
+  "reportKey": "en-8",
+  "language": "en",
+  "length": 8,
+  "dictionary": "CEFR-J.dic",
+  "targetWordCount": 858,
+  "executedWordCount": 858,
+  "totalHitRows": 4,
+  "startedAt": "2026-02-26T00:08:47.569Z",
+  "generatedAt": "2026-02-26T00:08:47.602Z",
+  "rowCount": 4,
+  "rows": [
+    {
+      "inputWord": "creation",
+      "shift": 0,
+      "shiftedWord": "reaction",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "generate",
+      "shift": 0,
+      "shiftedWord": "teenager",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "reaction",
+      "shift": 0,
+      "shiftedWord": "creation",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "teenager",
+      "shift": 0,
+      "shiftedWord": "generate",
+      "matchType": "アナグラム"
+    }
+  ]
+}

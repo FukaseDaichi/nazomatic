@@ -1,0 +1,62 @@
+{
+  "reportKey": "en-10",
+  "language": "en",
+  "length": 10,
+  "dictionary": "CEFR-J.dic",
+  "targetWordCount": 551,
+  "executedWordCount": 551,
+  "totalHitRows": 8,
+  "startedAt": "2026-02-26T00:08:47.666Z",
+  "generatedAt": "2026-02-26T00:08:47.685Z",
+  "rowCount": 8,
+  "rows": [
+    {
+      "inputWord": "centimeter",
+      "shift": 0,
+      "shiftedWord": "centimetre",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "centimetre",
+      "shift": 0,
+      "shiftedWord": "centimeter",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "impression",
+      "shift": 0,
+      "shiftedWord": "permission",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "micrometer",
+      "shift": 0,
+      "shiftedWord": "micrometre",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "micrometre",
+      "shift": 0,
+      "shiftedWord": "micrometer",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "millimeter",
+      "shift": 0,
+      "shiftedWord": "millimetre",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "millimetre",
+      "shift": 0,
+      "shiftedWord": "millimeter",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "permission",
+      "shift": 0,
+      "shiftedWord": "impression",
+      "matchType": "アナグラム"
+    }
+  ]
+}

@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "shift:report:meta": "node scripts/build-shift-search-report-meta.mjs",
+    "shift:report:view-assets": "node scripts/build-shift-search-view-assets.mjs"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",

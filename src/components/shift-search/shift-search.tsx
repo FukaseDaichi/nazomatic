@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { DICTIONARIES, SearchManager } from "@/class/SearchManager";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -151,7 +152,16 @@ export default function ShiftSearch() {
   return (
     <main className="min-h-screen">
       <div className="max-w-3xl mx-auto space-y-6">
-        <h1 className="text-2xl font-bold text-center">シフト検索</h1>
+        <div className="flex items-center justify-between gap-3">
+          <h1 className="text-2xl font-bold">シフト検索</h1>
+          <Button
+            asChild
+            variant="outline"
+            className="border-purple-300 bg-transparent text-purple-100 hover:bg-purple-600/20 hover:text-purple-50"
+          >
+            <Link href="/shift-search/reports">結果一覧を見る</Link>
+          </Button>
+        </div>
 
         <Card className="bg-gray-800 border-gray-700">
           <CardHeader>

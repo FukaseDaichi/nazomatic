@@ -1,7 +1,8 @@
 {
   "generatedAt": "2026-02-26T05:01:20.042Z",
-  "reportCount": 21,
+  "sourceManifestGeneratedAt": "2026-02-26T00:08:52.468Z",
   "externalRowThreshold": 10000,
+  "reportCount": 21,
   "groups": {
     "jp": {
       "reportCount": 6,
@@ -30,12 +31,11 @@
       "targetWordCount": 285,
       "executedWordCount": 285,
       "totalHitRows": 695,
-      "startedAt": "2026-02-26T00:08:47.255Z",
       "generatedAt": "2026-02-26T00:08:47.285Z",
-      "path": ".codex/shift-search/reports/en/shift-search-en-len-3.md",
       "sizeBytes": 25453,
       "deliveryType": "internal",
-      "externalUrl": null
+      "externalUrl": null,
+      "internalDataFile": "internal/en-3.json"
     },
     {
       "reportKey": "en-4",
@@ -45,12 +45,11 @@
       "targetWordCount": 818,
       "executedWordCount": 818,
       "totalHitRows": 896,
-      "startedAt": "2026-02-26T00:08:47.317Z",
       "generatedAt": "2026-02-26T00:08:47.345Z",
-      "path": ".codex/shift-search/reports/en/shift-search-en-len-4.md",
       "sizeBytes": 34692,
       "deliveryType": "internal",
-      "externalUrl": null
+      "externalUrl": null,
+      "internalDataFile": "internal/en-4.json"
     },
     {
       "reportKey": "en-5",
@@ -60,12 +59,11 @@
       "targetWordCount": 933,
       "executedWordCount": 933,
       "totalHitRows": 278,
-      "startedAt": "2026-02-26T00:08:47.371Z",
       "generatedAt": "2026-02-26T00:08:47.421Z",
-      "path": ".codex/shift-search/reports/en/shift-search-en-len-5.md",
       "sizeBytes": 11497,
       "deliveryType": "internal",
-      "externalUrl": null
+      "externalUrl": null,
+      "internalDataFile": "internal/en-5.json"
     },
     {
       "reportKey": "en-6",
@@ -75,12 +73,11 @@
       "targetWordCount": 1025,
       "executedWordCount": 1025,
       "totalHitRows": 111,
-      "startedAt": "2026-02-26T00:08:47.452Z",
       "generatedAt": "2026-02-26T00:08:47.480Z",
-      "path": ".codex/shift-search/reports/en/shift-search-en-len-6.md",
       "sizeBytes": 4977,
       "deliveryType": "internal",
-      "externalUrl": null
+      "externalUrl": null,
+      "internalDataFile": "internal/en-6.json"
     },
     {
       "reportKey": "en-7",
@@ -90,12 +87,11 @@
       "targetWordCount": 1026,
       "executedWordCount": 1026,
       "totalHitRows": 48,
-      "startedAt": "2026-02-26T00:08:47.507Z",
       "generatedAt": "2026-02-26T00:08:47.542Z",
-      "path": ".codex/shift-search/reports/en/shift-search-en-len-7.md",
       "sizeBytes": 2413,
       "deliveryType": "internal",
-      "externalUrl": null
+      "externalUrl": null,
+      "internalDataFile": "internal/en-7.json"
     },
     {
       "reportKey": "en-8",
@@ -105,12 +101,11 @@
       "targetWordCount": 858,
       "executedWordCount": 858,
       "totalHitRows": 4,
-      "startedAt": "2026-02-26T00:08:47.569Z",
       "generatedAt": "2026-02-26T00:08:47.602Z",
-      "path": ".codex/shift-search/reports/en/shift-search-en-len-8.md",
       "sizeBytes": 470,
       "deliveryType": "internal",
-      "externalUrl": null
+      "externalUrl": null,
+      "internalDataFile": "internal/en-8.json"
     },
     {
       "reportKey": "en-9",
@@ -120,12 +115,11 @@
       "targetWordCount": 690,
       "executedWordCount": 690,
       "totalHitRows": 8,
-      "startedAt": "2026-02-26T00:08:47.626Z",
       "generatedAt": "2026-02-26T00:08:47.651Z",
-      "path": ".codex/shift-search/reports/en/shift-search-en-len-9.md",
       "sizeBytes": 670,
       "deliveryType": "internal",
-      "externalUrl": null
+      "externalUrl": null,
+      "internalDataFile": "internal/en-9.json"
     },
     {
       "reportKey": "en-10",
@@ -135,12 +129,11 @@
       "targetWordCount": 551,
       "executedWordCount": 551,
       "totalHitRows": 8,
-      "startedAt": "2026-02-26T00:08:47.666Z",
       "generatedAt": "2026-02-26T00:08:47.685Z",
-      "path": ".codex/shift-search/reports/en/shift-search-en-len-10.md",
       "sizeBytes": 688,
       "deliveryType": "internal",
-      "externalUrl": null
+      "externalUrl": null,
+      "internalDataFile": "internal/en-10.json"
     },
     {
       "reportKey": "en-11",
@@ -150,12 +143,11 @@
       "targetWordCount": 316,
       "executedWordCount": 316,
       "totalHitRows": 0,
-      "startedAt": "2026-02-26T00:08:47.710Z",
       "generatedAt": "2026-02-26T00:08:47.724Z",
-      "path": ".codex/shift-search/reports/en/shift-search-en-len-11.md",
       "sizeBytes": 288,
       "deliveryType": "internal",
-      "externalUrl": null
+      "externalUrl": null,
+      "internalDataFile": "internal/en-11.json"
     },
     {
       "reportKey": "en-12",
@@ -165,12 +157,11 @@
       "targetWordCount": 166,
       "executedWordCount": 166,
       "totalHitRows": 2,
-      "startedAt": "2026-02-26T00:08:47.725Z",
       "generatedAt": "2026-02-26T00:08:47.734Z",
-      "path": ".codex/shift-search/reports/en/shift-search-en-len-12.md",
       "sizeBytes": 396,
       "deliveryType": "internal",
-      "externalUrl": null
+      "externalUrl": null,
+      "internalDataFile": "internal/en-12.json"
     },
     {
       "reportKey": "en-13",
@@ -180,12 +171,11 @@
       "targetWordCount": 111,
       "executedWordCount": 111,
       "totalHitRows": 0,
-      "startedAt": "2026-02-26T00:08:47.760Z",
       "generatedAt": "2026-02-26T00:08:47.767Z",
-      "path": ".codex/shift-search/reports/en/shift-search-en-len-13.md",
       "sizeBytes": 288,
       "deliveryType": "internal",
-      "externalUrl": null
+      "externalUrl": null,
+      "internalDataFile": "internal/en-13.json"
     },
     {
       "reportKey": "en-14",
@@ -195,12 +185,11 @@
       "targetWordCount": 30,
       "executedWordCount": 30,
       "totalHitRows": 0,
-      "startedAt": "2026-02-26T00:08:47.768Z",
       "generatedAt": "2026-02-26T00:08:47.770Z",
-      "path": ".codex/shift-search/reports/en/shift-search-en-len-14.md",
       "sizeBytes": 286,
       "deliveryType": "internal",
-      "externalUrl": null
+      "externalUrl": null,
+      "internalDataFile": "internal/en-14.json"
     },
     {
       "reportKey": "en-15",
@@ -210,12 +199,11 @@
       "targetWordCount": 10,
       "executedWordCount": 10,
       "totalHitRows": 0,
-      "startedAt": "2026-02-26T00:08:47.771Z",
       "generatedAt": "2026-02-26T00:08:47.772Z",
-      "path": ".codex/shift-search/reports/en/shift-search-en-len-15.md",
       "sizeBytes": 286,
       "deliveryType": "internal",
-      "externalUrl": null
+      "externalUrl": null,
+      "internalDataFile": "internal/en-15.json"
     },
     {
       "reportKey": "en-16",
@@ -225,12 +213,11 @@
       "targetWordCount": 4,
       "executedWordCount": 4,
       "totalHitRows": 0,
-      "startedAt": "2026-02-26T00:08:47.773Z",
       "generatedAt": "2026-02-26T00:08:47.774Z",
-      "path": ".codex/shift-search/reports/en/shift-search-en-len-16.md",
       "sizeBytes": 284,
       "deliveryType": "internal",
-      "externalUrl": null
+      "externalUrl": null,
+      "internalDataFile": "internal/en-16.json"
     },
     {
       "reportKey": "en-18",
@@ -240,12 +227,11 @@
       "targetWordCount": 1,
       "executedWordCount": 1,
       "totalHitRows": 0,
-      "startedAt": "2026-02-26T00:08:47.776Z",
       "generatedAt": "2026-02-26T00:08:47.777Z",
-      "path": ".codex/shift-search/reports/en/shift-search-en-len-18.md",
       "sizeBytes": 284,
       "deliveryType": "internal",
-      "externalUrl": null
+      "externalUrl": null,
+      "internalDataFile": "internal/en-18.json"
     },
     {
       "reportKey": "jp-3",
@@ -255,12 +241,11 @@
       "targetWordCount": 15674,
       "executedWordCount": 15674,
       "totalHitRows": 222762,
-      "startedAt": "2026-02-26T00:07:52.487Z",
       "generatedAt": "2026-02-26T00:07:54.831Z",
-      "path": ".codex/shift-search/reports/jp/shift-search-jp-len-3.md",
       "sizeBytes": 10722029,
       "deliveryType": "external",
-      "externalUrl": null
+      "externalUrl": null,
+      "internalDataFile": null
     },
     {
       "reportKey": "jp-4",
@@ -270,12 +255,11 @@
       "targetWordCount": 42814,
       "executedWordCount": 42814,
       "totalHitRows": 140159,
-      "startedAt": "2026-02-26T00:07:54.986Z",
       "generatedAt": "2026-02-26T00:08:05.316Z",
-      "path": ".codex/shift-search/reports/jp/shift-search-jp-len-4.md",
       "sizeBytes": 7623263,
       "deliveryType": "external",
-      "externalUrl": null
+      "externalUrl": null,
+      "internalDataFile": null
     },
     {
       "reportKey": "jp-5",
@@ -285,12 +269,11 @@
       "targetWordCount": 41205,
       "executedWordCount": 41205,
       "totalHitRows": 17266,
-      "startedAt": "2026-02-26T00:08:05.456Z",
       "generatedAt": "2026-02-26T00:08:15.239Z",
-      "path": ".codex/shift-search/reports/jp/shift-search-jp-len-5.md",
       "sizeBytes": 1042449,
       "deliveryType": "external",
-      "externalUrl": null
+      "externalUrl": null,
+      "internalDataFile": null
     },
     {
       "reportKey": "jp-6",
@@ -300,12 +283,11 @@
       "targetWordCount": 40045,
       "executedWordCount": 40045,
       "totalHitRows": 5054,
-      "startedAt": "2026-02-26T00:08:15.305Z",
       "generatedAt": "2026-02-26T00:08:25.696Z",
-      "path": ".codex/shift-search/reports/jp/shift-search-jp-len-6.md",
       "sizeBytes": 334435,
       "deliveryType": "internal",
-      "externalUrl": null
+      "externalUrl": null,
+      "internalDataFile": "internal/jp-6.json"
     },
     {
       "reportKey": "jp-7",
@@ -315,12 +297,11 @@
       "targetWordCount": 34639,
       "executedWordCount": 34639,
       "totalHitRows": 2124,
-      "startedAt": "2026-02-26T00:08:25.762Z",
       "generatedAt": "2026-02-26T00:08:34.812Z",
-      "path": ".codex/shift-search/reports/jp/shift-search-jp-len-7.md",
       "sizeBytes": 153263,
       "deliveryType": "internal",
-      "externalUrl": null
+      "externalUrl": null,
+      "internalDataFile": "internal/jp-7.json"
     },
     {
       "reportKey": "jp-8",
@@ -330,12 +311,11 @@
       "targetWordCount": 24683,
       "executedWordCount": 24683,
       "totalHitRows": 975,
-      "startedAt": "2026-02-26T00:08:34.877Z",
       "generatedAt": "2026-02-26T00:08:41.597Z",
-      "path": ".codex/shift-search/reports/jp/shift-search-jp-len-8.md",
       "sizeBytes": 76341,
       "deliveryType": "internal",
-      "externalUrl": null
+      "externalUrl": null,
+      "internalDataFile": "internal/jp-8.json"
     }
   ]
 }

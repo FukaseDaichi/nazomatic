@@ -1,0 +1,5390 @@
+{
+  "reportKey": "en-4",
+  "language": "en",
+  "length": 4,
+  "dictionary": "CEFR-J.dic",
+  "targetWordCount": 818,
+  "executedWordCount": 818,
+  "totalHitRows": 896,
+  "startedAt": "2026-02-26T00:08:47.317Z",
+  "generatedAt": "2026-02-26T00:08:47.345Z",
+  "rowCount": 896,
+  "rows": [
+    {
+      "inputWord": "able",
+      "shift": 9,
+      "shiftedWord": "jkun",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ache",
+      "shift": 0,
+      "shiftedWord": "each",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ache",
+      "shift": 6,
+      "shiftedWord": "gink",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "aged",
+      "shift": 4,
+      "shiftedWord": "ekih",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "aged",
+      "shift": 14,
+      "shiftedWord": "ousr",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ally",
+      "shift": 19,
+      "shiftedWord": "teer",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "also",
+      "shift": 8,
+      "shiftedWord": "itaw",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "also",
+      "shift": 12,
+      "shiftedWord": "mxea",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "army",
+      "shift": 2,
+      "shiftedWord": "ctoa",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "aunt",
+      "shift": 0,
+      "shiftedWord": "tuna",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "aunt",
+      "shift": 13,
+      "shiftedWord": "nhag",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "axis",
+      "shift": 14,
+      "shiftedWord": "olwg",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "baby",
+      "shift": 10,
+      "shiftedWord": "lkli",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "bake",
+      "shift": 0,
+      "shiftedWord": "beak",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "band",
+      "shift": 17,
+      "shiftedWord": "sreu",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "bare",
+      "shift": 0,
+      "shiftedWord": "bear",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "bare",
+      "shift": 4,
+      "shiftedWord": "fevi",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "barn",
+      "shift": 17,
+      "shiftedWord": "srie",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "base",
+      "shift": 4,
+      "shiftedWord": "fewi",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "base",
+      "shift": 10,
+      "shiftedWord": "lkco",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "beak",
+      "shift": 0,
+      "shiftedWord": "bake",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "beam",
+      "shift": 14,
+      "shiftedWord": "psoa",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "beam",
+      "shift": 18,
+      "shiftedWord": "twse",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "bean",
+      "shift": 4,
+      "shiftedWord": "fier",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "bear",
+      "shift": 0,
+      "shiftedWord": "bare",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "bear",
+      "shift": 4,
+      "shiftedWord": "fiev",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "beat",
+      "shift": 7,
+      "shiftedWord": "ilha",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "beat",
+      "shift": 14,
+      "shiftedWord": "psoh",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "beef",
+      "shift": 7,
+      "shiftedWord": "illm",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "beef",
+      "shift": 10,
+      "shiftedWord": "loop",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "beef",
+      "shift": 25,
+      "shiftedWord": "adde",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "been",
+      "shift": 13,
+      "shiftedWord": "orra",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "beer",
+      "shift": 7,
+      "shiftedWord": "illy",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "belt",
+      "shift": 7,
+      "shiftedWord": "ilsa",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "best",
+      "shift": 10,
+      "shiftedWord": "locd",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "best",
+      "shift": 13,
+      "shiftedWord": "orfg",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "bike",
+      "shift": 10,
+      "shiftedWord": "lsuo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "bind",
+      "shift": 5,
+      "shiftedWord": "gnsi",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "bird",
+      "shift": 5,
+      "shiftedWord": "gnwi",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "bird",
+      "shift": 9,
+      "shiftedWord": "kram",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "bite",
+      "shift": 16,
+      "shiftedWord": "ryju",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "bite",
+      "shift": 25,
+      "shiftedWord": "ahsd",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "blow",
+      "shift": 0,
+      "shiftedWord": "bowl",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "blue",
+      "shift": 10,
+      "shiftedWord": "lveo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "boat",
+      "shift": 14,
+      "shiftedWord": "pcoh",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "boil",
+      "shift": 3,
+      "shiftedWord": "erlo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "boil",
+      "shift": 6,
+      "shiftedWord": "huor",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "bolt",
+      "shift": 7,
+      "shiftedWord": "ivsa",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "bomb",
+      "shift": 3,
+      "shiftedWord": "erpe",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "bomb",
+      "shift": 6,
+      "shiftedWord": "hush",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "bond",
+      "shift": 1,
+      "shiftedWord": "cpoe",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "bone",
+      "shift": 16,
+      "shiftedWord": "redu",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "bone",
+      "shift": 25,
+      "shiftedWord": "anmd",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "bony",
+      "shift": 16,
+      "shiftedWord": "redo",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "bore",
+      "shift": 13,
+      "shiftedWord": "ober",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "bowl",
+      "shift": 0,
+      "shiftedWord": "blow",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "brag",
+      "shift": 0,
+      "shiftedWord": "grab",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "brag",
+      "shift": 13,
+      "shiftedWord": "oent",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "bump",
+      "shift": 2,
+      "shiftedWord": "dwor",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "bump",
+      "shift": 14,
+      "shiftedWord": "piad",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "bump",
+      "shift": 18,
+      "shiftedWord": "tmeh",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "burn",
+      "shift": 17,
+      "shiftedWord": "slie",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "bury",
+      "shift": 13,
+      "shiftedWord": "ohel",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "bury",
+      "shift": 17,
+      "shiftedWord": "slip",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "bust",
+      "shift": 25,
+      "shiftedWord": "atrs",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "busy",
+      "shift": 6,
+      "shiftedWord": "haye",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "cafe",
+      "shift": 0,
+      "shiftedWord": "face",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "cake",
+      "shift": 8,
+      "shiftedWord": "kism",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "calf",
+      "shift": 6,
+      "shiftedWord": "igrl",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "calf",
+      "shift": 8,
+      "shiftedWord": "kitn",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "call",
+      "shift": 3,
+      "shiftedWord": "fdoo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "calm",
+      "shift": 0,
+      "shiftedWord": "clam",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "calm",
+      "shift": 2,
+      "shiftedWord": "ecno",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "calm",
+      "shift": 18,
+      "shiftedWord": "usde",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "camp",
+      "shift": 2,
+      "shiftedWord": "ecor",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "care",
+      "shift": 0,
+      "shiftedWord": "race",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "care",
+      "shift": 4,
+      "shiftedWord": "gevi",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "care",
+      "shift": 22,
+      "shiftedWord": "ywna",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "case",
+      "shift": 10,
+      "shiftedWord": "mkco",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "cast",
+      "shift": 11,
+      "shiftedWord": "nlde",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "chef",
+      "shift": 6,
+      "shiftedWord": "inkl",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "chef",
+      "shift": 10,
+      "shiftedWord": "mrop",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "chef",
+      "shift": 13,
+      "shiftedWord": "purs",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "chin",
+      "shift": 0,
+      "shiftedWord": "inch",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "chin",
+      "shift": 6,
+      "shiftedWord": "inot",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "chin",
+      "shift": 24,
+      "shiftedWord": "afgl",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "chop",
+      "shift": 12,
+      "shiftedWord": "otab",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "clam",
+      "shift": 0,
+      "shiftedWord": "calm",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "clam",
+      "shift": 2,
+      "shiftedWord": "enco",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "clam",
+      "shift": 18,
+      "shiftedWord": "udse",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "clap",
+      "shift": 9,
+      "shiftedWord": "lujy",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "clap",
+      "shift": 11,
+      "shiftedWord": "nwla",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "clap",
+      "shift": 15,
+      "shiftedWord": "rape",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "clap",
+      "shift": 15,
+      "shiftedWord": "rape",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "clip",
+      "shift": 11,
+      "shiftedWord": "nwta",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "club",
+      "shift": 6,
+      "shiftedWord": "irah",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "clue",
+      "shift": 10,
+      "shiftedWord": "mveo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "coal",
+      "shift": 0,
+      "shiftedWord": "cola",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "coat",
+      "shift": 24,
+      "shiftedWord": "amyr",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "code",
+      "shift": 4,
+      "shiftedWord": "gshi",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "coin",
+      "shift": 0,
+      "shiftedWord": "icon",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "cola",
+      "shift": 0,
+      "shiftedWord": "coal",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "cold",
+      "shift": 3,
+      "shiftedWord": "frog",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "cold",
+      "shift": 16,
+      "shiftedWord": "sebt",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "cone",
+      "shift": 0,
+      "shiftedWord": "once",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "cone",
+      "shift": 16,
+      "shiftedWord": "sedu",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "cone",
+      "shift": 24,
+      "shiftedWord": "amlc",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "cook",
+      "shift": 16,
+      "shiftedWord": "seea",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "cope",
+      "shift": 25,
+      "shiftedWord": "bnod",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "core",
+      "shift": 24,
+      "shiftedWord": "ampc",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "corn",
+      "shift": 16,
+      "shiftedWord": "sehd",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "corn",
+      "shift": 24,
+      "shiftedWord": "ampl",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "cosy",
+      "shift": 20,
+      "shiftedWord": "wims",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "cozy",
+      "shift": 16,
+      "shiftedWord": "sepo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "crab",
+      "shift": 13,
+      "shiftedWord": "peno",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "crab",
+      "shift": 17,
+      "shiftedWord": "tirs",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "crab",
+      "shift": 18,
+      "shiftedWord": "ujst",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "crop",
+      "shift": 3,
+      "shiftedWord": "furs",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "crop",
+      "shift": 17,
+      "shiftedWord": "tifg",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "crow",
+      "shift": 9,
+      "shiftedWord": "laxf",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "cure",
+      "shift": 9,
+      "shiftedWord": "ldan",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "curl",
+      "shift": 20,
+      "shiftedWord": "wolf",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "curl",
+      "shift": 20,
+      "shiftedWord": "wolf",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "cute",
+      "shift": 24,
+      "shiftedWord": "asrc",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "damn",
+      "shift": 1,
+      "shiftedWord": "ebno",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "damn",
+      "shift": 17,
+      "shiftedWord": "urde",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "damp",
+      "shift": 14,
+      "shiftedWord": "road",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "damp",
+      "shift": 17,
+      "shiftedWord": "urdg",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "dare",
+      "shift": 0,
+      "shiftedWord": "dear",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "dare",
+      "shift": 0,
+      "shiftedWord": "read",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "dash",
+      "shift": 1,
+      "shiftedWord": "ebti",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "dash",
+      "shift": 17,
+      "shiftedWord": "urjy",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "date",
+      "shift": 8,
+      "shiftedWord": "libm",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "date",
+      "shift": 11,
+      "shiftedWord": "olep",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "dawn",
+      "shift": 4,
+      "shiftedWord": "hear",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "dawn",
+      "shift": 8,
+      "shiftedWord": "liev",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "dawn",
+      "shift": 11,
+      "shiftedWord": "olhy",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "daze",
+      "shift": 4,
+      "shiftedWord": "hedi",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "daze",
+      "shift": 15,
+      "shiftedWord": "spot",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "daze",
+      "shift": 15,
+      "shiftedWord": "spot",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "dead",
+      "shift": 1,
+      "shiftedWord": "efbe",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "dead",
+      "shift": 8,
+      "shiftedWord": "lmil",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "dead",
+      "shift": 11,
+      "shiftedWord": "oplo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "deaf",
+      "shift": 0,
+      "shiftedWord": "fade",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "deaf",
+      "shift": 14,
+      "shiftedWord": "rsot",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "deal",
+      "shift": 0,
+      "shiftedWord": "lead",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "deal",
+      "shift": 15,
+      "shiftedWord": "stpa",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "dear",
+      "shift": 0,
+      "shiftedWord": "dare",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "dear",
+      "shift": 0,
+      "shiftedWord": "read",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "debt",
+      "shift": 11,
+      "shiftedWord": "opme",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "deed",
+      "shift": 10,
+      "shiftedWord": "noon",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "deep",
+      "shift": 15,
+      "shiftedWord": "stte",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "deer",
+      "shift": 0,
+      "shiftedWord": "reed",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "defy",
+      "shift": 15,
+      "shiftedWord": "stun",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "deny",
+      "shift": 4,
+      "shiftedWord": "hirc",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "desk",
+      "shift": 1,
+      "shiftedWord": "eftl",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "desk",
+      "shift": 8,
+      "shiftedWord": "lmas",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "dial",
+      "shift": 3,
+      "shiftedWord": "gldo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "dial",
+      "shift": 4,
+      "shiftedWord": "hmep",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "diet",
+      "shift": 0,
+      "shiftedWord": "edit",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "diet",
+      "shift": 0,
+      "shiftedWord": "tide",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "diet",
+      "shift": 11,
+      "shiftedWord": "otpe",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "dime",
+      "shift": 10,
+      "shiftedWord": "nswo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "dime",
+      "shift": 18,
+      "shiftedWord": "vaew",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "dish",
+      "shift": 22,
+      "shiftedWord": "zeod",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "disk",
+      "shift": 4,
+      "shiftedWord": "hmwo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "dock",
+      "shift": 16,
+      "shiftedWord": "tesa",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "does",
+      "shift": 0,
+      "shiftedWord": "dose",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "does",
+      "shift": 4,
+      "shiftedWord": "hsiw",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "doom",
+      "shift": 0,
+      "shiftedWord": "mood",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "dorm",
+      "shift": 16,
+      "shiftedWord": "tehc",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "dose",
+      "shift": 0,
+      "shiftedWord": "does",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "dose",
+      "shift": 4,
+      "shiftedWord": "hswi",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "down",
+      "shift": 4,
+      "shiftedWord": "hsar",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "down",
+      "shift": 23,
+      "shiftedWord": "altk",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "doze",
+      "shift": 4,
+      "shiftedWord": "hsdi",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "drag",
+      "shift": 14,
+      "shiftedWord": "rfou",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "draw",
+      "shift": 0,
+      "shiftedWord": "ward",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "draw",
+      "shift": 4,
+      "shiftedWord": "hvea",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "draw",
+      "shift": 14,
+      "shiftedWord": "rfok",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "draw",
+      "shift": 17,
+      "shiftedWord": "uirn",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "drug",
+      "shift": 9,
+      "shiftedWord": "madp",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "drug",
+      "shift": 23,
+      "shiftedWord": "aord",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "drum",
+      "shift": 14,
+      "shiftedWord": "rfia",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "duck",
+      "shift": 10,
+      "shiftedWord": "nemu",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "duck",
+      "shift": 16,
+      "shiftedWord": "tksa",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "dude",
+      "shift": 10,
+      "shiftedWord": "neno",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "duel",
+      "shift": 10,
+      "shiftedWord": "neov",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "dumb",
+      "shift": 14,
+      "shiftedWord": "riap",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "each",
+      "shift": 0,
+      "shiftedWord": "ache",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "each",
+      "shift": 6,
+      "shiftedWord": "kgin",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "earn",
+      "shift": 0,
+      "shiftedWord": "near",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "earn",
+      "shift": 13,
+      "shiftedWord": "rnea",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ease",
+      "shift": 10,
+      "shiftedWord": "okco",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "east",
+      "shift": 0,
+      "shiftedWord": "seat",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "east",
+      "shift": 10,
+      "shiftedWord": "okcd",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "edit",
+      "shift": 0,
+      "shiftedWord": "diet",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "edit",
+      "shift": 0,
+      "shiftedWord": "tide",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "edit",
+      "shift": 11,
+      "shiftedWord": "pote",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "else",
+      "shift": 15,
+      "shiftedWord": "taht",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "envy",
+      "shift": 9,
+      "shiftedWord": "nweh",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "envy",
+      "shift": 13,
+      "shiftedWord": "rail",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "envy",
+      "shift": 13,
+      "shiftedWord": "rail",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "envy",
+      "shift": 16,
+      "shiftedWord": "udlo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "euro",
+      "shift": 10,
+      "shiftedWord": "oeby",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "euro",
+      "shift": 13,
+      "shiftedWord": "rheb",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "euro",
+      "shift": 20,
+      "shiftedWord": "yoli",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "evil",
+      "shift": 0,
+      "shiftedWord": "live",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "evil",
+      "shift": 3,
+      "shiftedWord": "hylo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "evil",
+      "shift": 18,
+      "shiftedWord": "wnad",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "evil",
+      "shift": 22,
+      "shiftedWord": "areh",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "exam",
+      "shift": 14,
+      "shiftedWord": "sloa",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "exam",
+      "shift": 22,
+      "shiftedWord": "atwi",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "exit",
+      "shift": 7,
+      "shiftedWord": "lepa",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "exit",
+      "shift": 22,
+      "shiftedWord": "atep",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "face",
+      "shift": 0,
+      "shiftedWord": "cafe",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "fact",
+      "shift": 12,
+      "shiftedWord": "rmof",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "fact",
+      "shift": 24,
+      "shiftedWord": "dyar",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "fade",
+      "shift": 0,
+      "shiftedWord": "deaf",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "fade",
+      "shift": 14,
+      "shiftedWord": "tors",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "fail",
+      "shift": 3,
+      "shiftedWord": "idlo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "fair",
+      "shift": 12,
+      "shiftedWord": "rmud",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "fare",
+      "shift": 0,
+      "shiftedWord": "fear",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "fare",
+      "shift": 14,
+      "shiftedWord": "tofs",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "farm",
+      "shift": 7,
+      "shiftedWord": "mhyt",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "fate",
+      "shift": 0,
+      "shiftedWord": "feat",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "fate",
+      "shift": 14,
+      "shiftedWord": "tohs",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "fear",
+      "shift": 0,
+      "shiftedWord": "fare",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "fear",
+      "shift": 14,
+      "shiftedWord": "tsof",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "feat",
+      "shift": 0,
+      "shiftedWord": "fate",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "feat",
+      "shift": 14,
+      "shiftedWord": "tsoh",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "feed",
+      "shift": 3,
+      "shiftedWord": "ihhg",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "feel",
+      "shift": 0,
+      "shiftedWord": "flee",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "feel",
+      "shift": 9,
+      "shiftedWord": "onnu",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "file",
+      "shift": 0,
+      "shiftedWord": "life",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "find",
+      "shift": 5,
+      "shiftedWord": "knsi",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "find",
+      "shift": 9,
+      "shiftedWord": "orwm",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "fine",
+      "shift": 7,
+      "shiftedWord": "mpul",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "fine",
+      "shift": 9,
+      "shiftedWord": "orwn",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "fire",
+      "shift": 22,
+      "shiftedWord": "bena",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "fish",
+      "shift": 6,
+      "shiftedWord": "loyn",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "fish",
+      "shift": 12,
+      "shiftedWord": "ruet",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "five",
+      "shift": 22,
+      "shiftedWord": "bera",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "flag",
+      "shift": 2,
+      "shiftedWord": "hnci",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "flag",
+      "shift": 8,
+      "shiftedWord": "ntio",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "flat",
+      "shift": 7,
+      "shiftedWord": "msha",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "flaw",
+      "shift": 19,
+      "shiftedWord": "yetp",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "flax",
+      "shift": 17,
+      "shiftedWord": "wcro",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "flea",
+      "shift": 0,
+      "shiftedWord": "leaf",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "flea",
+      "shift": 8,
+      "shiftedWord": "ntmi",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "flee",
+      "shift": 0,
+      "shiftedWord": "feel",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "flee",
+      "shift": 9,
+      "shiftedWord": "ounn",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "flip",
+      "shift": 3,
+      "shiftedWord": "iols",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "flip",
+      "shift": 9,
+      "shiftedWord": "oury",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "flow",
+      "shift": 0,
+      "shiftedWord": "wolf",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "flow",
+      "shift": 6,
+      "shiftedWord": "lruc",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "fold",
+      "shift": 25,
+      "shiftedWord": "enkc",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "folk",
+      "shift": 3,
+      "shiftedWord": "iron",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "fond",
+      "shift": 23,
+      "shiftedWord": "clka",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "food",
+      "shift": 23,
+      "shiftedWord": "clla",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "fork",
+      "shift": 3,
+      "shiftedWord": "irun",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "fork",
+      "shift": 12,
+      "shiftedWord": "radw",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "fork",
+      "shift": 16,
+      "shiftedWord": "veha",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "form",
+      "shift": 0,
+      "shiftedWord": "from",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "form",
+      "shift": 12,
+      "shiftedWord": "rady",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "form",
+      "shift": 14,
+      "shiftedWord": "tcfa",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "four",
+      "shift": 12,
+      "shiftedWord": "ragd",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "free",
+      "shift": 0,
+      "shiftedWord": "reef",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "free",
+      "shift": 9,
+      "shiftedWord": "oann",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "frog",
+      "shift": 13,
+      "shiftedWord": "sebt",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "frog",
+      "shift": 23,
+      "shiftedWord": "cold",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "from",
+      "shift": 0,
+      "shiftedWord": "form",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "from",
+      "shift": 12,
+      "shiftedWord": "rday",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "from",
+      "shift": 14,
+      "shiftedWord": "tfca",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "fuel",
+      "shift": 6,
+      "shiftedWord": "lakr",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "fuel",
+      "shift": 9,
+      "shiftedWord": "odnu",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "fund",
+      "shift": 23,
+      "shiftedWord": "crka",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "gain",
+      "shift": 2,
+      "shiftedWord": "ickp",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "gaol",
+      "shift": 0,
+      "shiftedWord": "goal",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "gear",
+      "shift": 0,
+      "shiftedWord": "rage",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "gear",
+      "shift": 13,
+      "shiftedWord": "trne",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "gift",
+      "shift": 9,
+      "shiftedWord": "proc",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "gift",
+      "shift": 12,
+      "shiftedWord": "surf",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "girl",
+      "shift": 2,
+      "shiftedWord": "iktn",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "girl",
+      "shift": 20,
+      "shiftedWord": "aclf",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "give",
+      "shift": 18,
+      "shiftedWord": "yanw",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "give",
+      "shift": 22,
+      "shiftedWord": "cera",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "glad",
+      "shift": 8,
+      "shiftedWord": "otil",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "glad",
+      "shift": 9,
+      "shiftedWord": "pujm",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "glow",
+      "shift": 12,
+      "shiftedWord": "sxai",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "goal",
+      "shift": 0,
+      "shiftedWord": "gaol",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "gold",
+      "shift": 1,
+      "shiftedWord": "hpme",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "gold",
+      "shift": 23,
+      "shiftedWord": "dlia",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "golf",
+      "shift": 8,
+      "shiftedWord": "owtn",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "gown",
+      "shift": 24,
+      "shiftedWord": "emul",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "grab",
+      "shift": 0,
+      "shiftedWord": "brag",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "grab",
+      "shift": 13,
+      "shiftedWord": "teno",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "grim",
+      "shift": 22,
+      "shiftedWord": "cnei",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "grin",
+      "shift": 0,
+      "shiftedWord": "ring",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "grin",
+      "shift": 9,
+      "shiftedWord": "parw",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "grip",
+      "shift": 9,
+      "shiftedWord": "pary",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "gulp",
+      "shift": 0,
+      "shiftedWord": "plug",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "hail",
+      "shift": 7,
+      "shiftedWord": "ohps",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "hail",
+      "shift": 19,
+      "shiftedWord": "atbe",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "hair",
+      "shift": 20,
+      "shiftedWord": "bucl",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "half",
+      "shift": 8,
+      "shiftedWord": "pitn",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "hang",
+      "shift": 13,
+      "shiftedWord": "unat",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "harm",
+      "shift": 22,
+      "shiftedWord": "dwni",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "hate",
+      "shift": 0,
+      "shiftedWord": "heat",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "have",
+      "shift": 10,
+      "shiftedWord": "rkfo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "have",
+      "shift": 13,
+      "shiftedWord": "unir",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "have",
+      "shift": 22,
+      "shiftedWord": "dwra",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "head",
+      "shift": 8,
+      "shiftedWord": "pmil",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "heal",
+      "shift": 4,
+      "shiftedWord": "liep",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "heap",
+      "shift": 4,
+      "shiftedWord": "liet",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "heap",
+      "shift": 11,
+      "shiftedWord": "spla",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "heap",
+      "shift": 19,
+      "shiftedWord": "axti",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "hear",
+      "shift": 4,
+      "shiftedWord": "liev",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "hear",
+      "shift": 7,
+      "shiftedWord": "olhy",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "hear",
+      "shift": 22,
+      "shiftedWord": "dawn",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "heat",
+      "shift": 0,
+      "shiftedWord": "hate",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "hell",
+      "shift": 3,
+      "shiftedWord": "khoo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "hell",
+      "shift": 7,
+      "shiftedWord": "olss",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "help",
+      "shift": 7,
+      "shiftedWord": "olsw",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "help",
+      "shift": 11,
+      "shiftedWord": "spwa",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "hemp",
+      "shift": 22,
+      "shiftedWord": "dail",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "hemp",
+      "shift": 25,
+      "shiftedWord": "gdlo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "herb",
+      "shift": 7,
+      "shiftedWord": "olyi",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "herb",
+      "shift": 13,
+      "shiftedWord": "ureo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "herb",
+      "shift": 23,
+      "shiftedWord": "eboy",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "hide",
+      "shift": 11,
+      "shiftedWord": "stop",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "hide",
+      "shift": 11,
+      "shiftedWord": "stop",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "hide",
+      "shift": 22,
+      "shiftedWord": "deza",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "high",
+      "shift": 23,
+      "shiftedWord": "efde",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "hike",
+      "shift": 10,
+      "shiftedWord": "rsuo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "hike",
+      "shift": 22,
+      "shiftedWord": "dega",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "hill",
+      "shift": 3,
+      "shiftedWord": "kloo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "hint",
+      "shift": 0,
+      "shiftedWord": "thin",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "hole",
+      "shift": 4,
+      "shiftedWord": "lspi",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "hole",
+      "shift": 13,
+      "shiftedWord": "ubyr",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "holy",
+      "shift": 15,
+      "shiftedWord": "wdan",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "holy",
+      "shift": 19,
+      "shiftedWord": "aher",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "holy",
+      "shift": 23,
+      "shiftedWord": "eliv",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "hood",
+      "shift": 1,
+      "shiftedWord": "ippe",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "hook",
+      "shift": 4,
+      "shiftedWord": "lsso",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "hook",
+      "shift": 23,
+      "shiftedWord": "ellh",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "hope",
+      "shift": 4,
+      "shiftedWord": "lsti",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "host",
+      "shift": 0,
+      "shiftedWord": "shot",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "host",
+      "shift": 12,
+      "shiftedWord": "taef",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "hour",
+      "shift": 20,
+      "shiftedWord": "biol",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "hour",
+      "shift": 23,
+      "shiftedWord": "elro",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "huge",
+      "shift": 13,
+      "shiftedWord": "uhtr",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "hurt",
+      "shift": 13,
+      "shiftedWord": "uheg",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "hush",
+      "shift": 20,
+      "shiftedWord": "bomb",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "hush",
+      "shift": 23,
+      "shiftedWord": "erpe",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "icon",
+      "shift": 0,
+      "shiftedWord": "coin",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "idea",
+      "shift": 11,
+      "shiftedWord": "topl",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "idol",
+      "shift": 23,
+      "shiftedWord": "fali",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "inch",
+      "shift": 0,
+      "shiftedWord": "chin",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "inch",
+      "shift": 6,
+      "shiftedWord": "otin",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "inch",
+      "shift": 24,
+      "shiftedWord": "glaf",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "into",
+      "shift": 18,
+      "shiftedWord": "aflg",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "into",
+      "shift": 20,
+      "shiftedWord": "chni",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "iron",
+      "shift": 23,
+      "shiftedWord": "folk",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "isle",
+      "shift": 9,
+      "shiftedWord": "rbun",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "item",
+      "shift": 0,
+      "shiftedWord": "time",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "item",
+      "shift": 14,
+      "shiftedWord": "whsa",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "jade",
+      "shift": 10,
+      "shiftedWord": "tkno",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "jail",
+      "shift": 3,
+      "shiftedWord": "mdlo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "july",
+      "shift": 2,
+      "shiftedWord": "lwna",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "july",
+      "shift": 6,
+      "shiftedWord": "pare",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "july",
+      "shift": 17,
+      "shiftedWord": "alcp",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "jump",
+      "shift": 17,
+      "shiftedWord": "aldg",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "jump",
+      "shift": 25,
+      "shiftedWord": "itlo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "junk",
+      "shift": 17,
+      "shiftedWord": "aleb",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "jury",
+      "shift": 9,
+      "shiftedWord": "sdah",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "jury",
+      "shift": 10,
+      "shiftedWord": "tebi",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "just",
+      "shift": 8,
+      "shiftedWord": "rcab",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "just",
+      "shift": 21,
+      "shiftedWord": "epno",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "just",
+      "shift": 25,
+      "shiftedWord": "itrs",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "keen",
+      "shift": 0,
+      "shiftedWord": "knee",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "kill",
+      "shift": 16,
+      "shiftedWord": "aybb",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "kind",
+      "shift": 5,
+      "shiftedWord": "pnsi",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "king",
+      "shift": 20,
+      "shiftedWord": "echa",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "kite",
+      "shift": 22,
+      "shiftedWord": "gepa",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "knee",
+      "shift": 0,
+      "shiftedWord": "keen",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "knit",
+      "shift": 18,
+      "shiftedWord": "cfal",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "knit",
+      "shift": 24,
+      "shiftedWord": "ilgr",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "knot",
+      "shift": 16,
+      "shiftedWord": "adej",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "know",
+      "shift": 4,
+      "shiftedWord": "orsa",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lack",
+      "shift": 3,
+      "shiftedWord": "odfn",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lady",
+      "shift": 15,
+      "shiftedWord": "apsn",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lake",
+      "shift": 0,
+      "shiftedWord": "leak",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lake",
+      "shift": 8,
+      "shiftedWord": "tism",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lamb",
+      "shift": 7,
+      "shiftedWord": "shti",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lame",
+      "shift": 0,
+      "shiftedWord": "male",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lame",
+      "shift": 0,
+      "shiftedWord": "meal",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lamp",
+      "shift": 0,
+      "shiftedWord": "palm",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lamp",
+      "shift": 2,
+      "shiftedWord": "ncor",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lamp",
+      "shift": 18,
+      "shiftedWord": "dseh",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "land",
+      "shift": 17,
+      "shiftedWord": "creu",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lane",
+      "shift": 0,
+      "shiftedWord": "lean",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lane",
+      "shift": 4,
+      "shiftedWord": "peri",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lane",
+      "shift": 7,
+      "shiftedWord": "shul",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lark",
+      "shift": 3,
+      "shiftedWord": "odun",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lark",
+      "shift": 20,
+      "shiftedWord": "fule",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "last",
+      "shift": 0,
+      "shiftedWord": "salt",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "last",
+      "shift": 19,
+      "shiftedWord": "etlm",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "late",
+      "shift": 0,
+      "shiftedWord": "tale",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lawn",
+      "shift": 4,
+      "shiftedWord": "pear",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "lawn",
+      "shift": 4,
+      "shiftedWord": "pear",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lawn",
+      "shift": 15,
+      "shiftedWord": "aplc",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lawn",
+      "shift": 24,
+      "shiftedWord": "jyul",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lazy",
+      "shift": 19,
+      "shiftedWord": "etsr",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lead",
+      "shift": 0,
+      "shiftedWord": "deal",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lead",
+      "shift": 15,
+      "shiftedWord": "atps",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "leaf",
+      "shift": 0,
+      "shiftedWord": "flea",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "leaf",
+      "shift": 8,
+      "shiftedWord": "tmin",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "leak",
+      "shift": 0,
+      "shiftedWord": "lake",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "leak",
+      "shift": 8,
+      "shiftedWord": "tmis",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lean",
+      "shift": 0,
+      "shiftedWord": "lane",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lean",
+      "shift": 4,
+      "shiftedWord": "pier",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lean",
+      "shift": 7,
+      "shiftedWord": "slhu",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "leap",
+      "shift": 0,
+      "shiftedWord": "pale",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "leap",
+      "shift": 15,
+      "shiftedWord": "atpe",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "leap",
+      "shift": 19,
+      "shiftedWord": "exti",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "left",
+      "shift": 7,
+      "shiftedWord": "slma",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "left",
+      "shift": 25,
+      "shiftedWord": "kdes",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lend",
+      "shift": 15,
+      "shiftedWord": "atcs",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "liar",
+      "shift": 0,
+      "shiftedWord": "rail",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "liar",
+      "shift": 3,
+      "shiftedWord": "oldu",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "liar",
+      "shift": 13,
+      "shiftedWord": "yvne",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "liar",
+      "shift": 22,
+      "shiftedWord": "hewn",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "life",
+      "shift": 0,
+      "shiftedWord": "file",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "like",
+      "shift": 9,
+      "shiftedWord": "urtn",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lily",
+      "shift": 19,
+      "shiftedWord": "eber",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "limb",
+      "shift": 3,
+      "shiftedWord": "olpe",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "limb",
+      "shift": 18,
+      "shiftedWord": "daet",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "limp",
+      "shift": 18,
+      "shiftedWord": "daeh",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "line",
+      "shift": 7,
+      "shiftedWord": "spul",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "line",
+      "shift": 13,
+      "shiftedWord": "yvar",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ling",
+      "shift": 2,
+      "shiftedWord": "nkpi",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "link",
+      "shift": 4,
+      "shiftedWord": "pmro",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "link",
+      "shift": 7,
+      "shiftedWord": "spur",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "link",
+      "shift": 20,
+      "shiftedWord": "fche",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lion",
+      "shift": 6,
+      "shiftedWord": "rout",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "list",
+      "shift": 22,
+      "shiftedWord": "heop",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "live",
+      "shift": 0,
+      "shiftedWord": "evil",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "live",
+      "shift": 3,
+      "shiftedWord": "olyh",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "live",
+      "shift": 18,
+      "shiftedWord": "danw",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "live",
+      "shift": 22,
+      "shiftedWord": "hera",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "loaf",
+      "shift": 8,
+      "shiftedWord": "twin",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "loaf",
+      "shift": 19,
+      "shiftedWord": "ehty",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lock",
+      "shift": 16,
+      "shiftedWord": "besa",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lock",
+      "shift": 20,
+      "shiftedWord": "fiwe",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "look",
+      "shift": 23,
+      "shiftedWord": "illh",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "loss",
+      "shift": 19,
+      "shiftedWord": "ehll",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "loss",
+      "shift": 22,
+      "shiftedWord": "hkoo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lost",
+      "shift": 0,
+      "shiftedWord": "slot",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "loud",
+      "shift": 10,
+      "shiftedWord": "vyen",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "loud",
+      "shift": 19,
+      "shiftedWord": "ehnw",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "loud",
+      "shift": 23,
+      "shiftedWord": "ilra",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "love",
+      "shift": 16,
+      "shiftedWord": "belu",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lung",
+      "shift": 6,
+      "shiftedWord": "ratm",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lush",
+      "shift": 19,
+      "shiftedWord": "enla",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "lush",
+      "shift": 23,
+      "shiftedWord": "irpe",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "mail",
+      "shift": 8,
+      "shiftedWord": "uiqt",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "main",
+      "shift": 18,
+      "shiftedWord": "esaf",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "male",
+      "shift": 0,
+      "shiftedWord": "lame",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "male",
+      "shift": 0,
+      "shiftedWord": "meal",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "mark",
+      "shift": 17,
+      "shiftedWord": "drib",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "mark",
+      "shift": 22,
+      "shiftedWord": "iwng",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "mash",
+      "shift": 19,
+      "shiftedWord": "ftla",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "mask",
+      "shift": 14,
+      "shiftedWord": "aogy",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "mate",
+      "shift": 0,
+      "shiftedWord": "meat",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "mate",
+      "shift": 0,
+      "shiftedWord": "tame",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "mate",
+      "shift": 0,
+      "shiftedWord": "team",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "math",
+      "shift": 7,
+      "shiftedWord": "thao",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "meal",
+      "shift": 0,
+      "shiftedWord": "lame",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "meal",
+      "shift": 0,
+      "shiftedWord": "male",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "mean",
+      "shift": 0,
+      "shiftedWord": "name",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "meat",
+      "shift": 0,
+      "shiftedWord": "mate",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "meat",
+      "shift": 0,
+      "shiftedWord": "tame",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "meat",
+      "shift": 0,
+      "shiftedWord": "team",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "meet",
+      "shift": 7,
+      "shiftedWord": "tlla",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "meet",
+      "shift": 10,
+      "shiftedWord": "wood",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "melt",
+      "shift": 7,
+      "shiftedWord": "tlsa",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "menu",
+      "shift": 6,
+      "shiftedWord": "skta",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "menu",
+      "shift": 16,
+      "shiftedWord": "cudk",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "milk",
+      "shift": 2,
+      "shiftedWord": "oknm",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "mill",
+      "shift": 3,
+      "shiftedWord": "ploo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "mill",
+      "shift": 18,
+      "shiftedWord": "eadd",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "mill",
+      "shift": 19,
+      "shiftedWord": "fbee",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "mint",
+      "shift": 18,
+      "shiftedWord": "eafl",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "mist",
+      "shift": 18,
+      "shiftedWord": "eakl",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "mock",
+      "shift": 16,
+      "shiftedWord": "cesa",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "mold",
+      "shift": 23,
+      "shiftedWord": "jlia",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "monk",
+      "shift": 24,
+      "shiftedWord": "kmli",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "mood",
+      "shift": 0,
+      "shiftedWord": "doom",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "move",
+      "shift": 16,
+      "shiftedWord": "celu",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "mule",
+      "shift": 2,
+      "shiftedWord": "owng",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "myth",
+      "shift": 19,
+      "shiftedWord": "frma",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "nail",
+      "shift": 7,
+      "shiftedWord": "uhps",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "nail",
+      "shift": 13,
+      "shiftedWord": "anvy",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "name",
+      "shift": 0,
+      "shiftedWord": "mean",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "nano",
+      "shift": 17,
+      "shiftedWord": "eref",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "navy",
+      "shift": 13,
+      "shiftedWord": "anil",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "navy",
+      "shift": 20,
+      "shiftedWord": "hups",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "near",
+      "shift": 0,
+      "shiftedWord": "earn",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "near",
+      "shift": 13,
+      "shiftedWord": "arne",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "neck",
+      "shift": 1,
+      "shiftedWord": "ofdl",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "nice",
+      "shift": 4,
+      "shiftedWord": "rmgi",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "none",
+      "shift": 16,
+      "shiftedWord": "dedu",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "noon",
+      "shift": 16,
+      "shiftedWord": "deed",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "note",
+      "shift": 0,
+      "shiftedWord": "tone",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "note",
+      "shift": 13,
+      "shiftedWord": "abgr",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "noun",
+      "shift": 17,
+      "shiftedWord": "efle",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "oath",
+      "shift": 19,
+      "shiftedWord": "htma",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "obey",
+      "shift": 3,
+      "shiftedWord": "rehb",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "obey",
+      "shift": 10,
+      "shiftedWord": "yloi",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "obey",
+      "shift": 16,
+      "shiftedWord": "eruo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "oily",
+      "shift": 6,
+      "shiftedWord": "uore",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "oily",
+      "shift": 16,
+      "shiftedWord": "eybo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "oily",
+      "shift": 19,
+      "shiftedWord": "hber",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "once",
+      "shift": 0,
+      "shiftedWord": "cone",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "once",
+      "shift": 16,
+      "shiftedWord": "edsu",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "once",
+      "shift": 24,
+      "shiftedWord": "mlac",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "only",
+      "shift": 6,
+      "shiftedWord": "utre",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "only",
+      "shift": 20,
+      "shiftedWord": "ihfs",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "open",
+      "shift": 4,
+      "shiftedWord": "stir",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "open",
+      "shift": 5,
+      "shiftedWord": "tujs",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "open",
+      "shift": 13,
+      "shiftedWord": "bcra",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ours",
+      "shift": 0,
+      "shiftedWord": "sour",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ours",
+      "shift": 12,
+      "shiftedWord": "agde",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ours",
+      "shift": 16,
+      "shiftedWord": "ekhi",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "oven",
+      "shift": 16,
+      "shiftedWord": "elud",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "over",
+      "shift": 22,
+      "shiftedWord": "kran",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "pace",
+      "shift": 11,
+      "shiftedWord": "alnp",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "pack",
+      "shift": 18,
+      "shiftedWord": "hsuc",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "page",
+      "shift": 4,
+      "shiftedWord": "teki",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "paid",
+      "shift": 4,
+      "shiftedWord": "temh",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "paid",
+      "shift": 12,
+      "shiftedWord": "bmup",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "paid",
+      "shift": 14,
+      "shiftedWord": "dowr",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "pain",
+      "shift": 4,
+      "shiftedWord": "temr",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "pair",
+      "shift": 12,
+      "shiftedWord": "bmud",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "pale",
+      "shift": 0,
+      "shiftedWord": "leap",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "pale",
+      "shift": 15,
+      "shiftedWord": "epat",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "pale",
+      "shift": 19,
+      "shiftedWord": "itex",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "palm",
+      "shift": 0,
+      "shiftedWord": "lamp",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "palm",
+      "shift": 2,
+      "shiftedWord": "rcno",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "palm",
+      "shift": 18,
+      "shiftedWord": "hsde",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "park",
+      "shift": 4,
+      "shiftedWord": "tevo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "part",
+      "shift": 0,
+      "shiftedWord": "trap",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "pass",
+      "shift": 19,
+      "shiftedWord": "itll",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "pass",
+      "shift": 22,
+      "shiftedWord": "lwoo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "past",
+      "shift": 11,
+      "shiftedWord": "alde",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "path",
+      "shift": 11,
+      "shiftedWord": "ales",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "path",
+      "shift": 15,
+      "shiftedWord": "epiw",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "pear",
+      "shift": 0,
+      "shiftedWord": "rape",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "pear",
+      "shift": 11,
+      "shiftedWord": "aplc",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "pear",
+      "shift": 20,
+      "shiftedWord": "jyul",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "pear",
+      "shift": 22,
+      "shiftedWord": "lawn",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "peer",
+      "shift": 3,
+      "shiftedWord": "shhu",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "peer",
+      "shift": 23,
+      "shiftedWord": "mbbo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "pick",
+      "shift": 24,
+      "shiftedWord": "ngai",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "pile",
+      "shift": 22,
+      "shiftedWord": "leha",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "pill",
+      "shift": 3,
+      "shiftedWord": "sloo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "pine",
+      "shift": 4,
+      "shiftedWord": "tmri",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "pink",
+      "shift": 24,
+      "shiftedWord": "ngli",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "pint",
+      "shift": 18,
+      "shiftedWord": "hafl",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "pipe",
+      "shift": 25,
+      "shiftedWord": "ohod",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "plan",
+      "shift": 15,
+      "shiftedWord": "eapc",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "play",
+      "shift": 19,
+      "shiftedWord": "ietr",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "plot",
+      "shift": 15,
+      "shiftedWord": "eadi",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "plug",
+      "shift": 0,
+      "shiftedWord": "gulp",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "plum",
+      "shift": 2,
+      "shiftedWord": "rnwo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "plum",
+      "shift": 19,
+      "shiftedWord": "ienf",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "plus",
+      "shift": 6,
+      "shiftedWord": "vray",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "plus",
+      "shift": 19,
+      "shiftedWord": "ienl",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "poem",
+      "shift": 15,
+      "shiftedWord": "edtb",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "poet",
+      "shift": 15,
+      "shiftedWord": "edti",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "pole",
+      "shift": 15,
+      "shiftedWord": "edat",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "pole",
+      "shift": 23,
+      "shiftedWord": "mlib",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "polo",
+      "shift": 0,
+      "shiftedWord": "pool",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "polo",
+      "shift": 15,
+      "shiftedWord": "edad",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "polo",
+      "shift": 16,
+      "shiftedWord": "febe",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "polo",
+      "shift": 23,
+      "shiftedWord": "mlil",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "pond",
+      "shift": 5,
+      "shiftedWord": "utsi",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "pool",
+      "shift": 0,
+      "shiftedWord": "polo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "pool",
+      "shift": 15,
+      "shiftedWord": "edda",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "pool",
+      "shift": 16,
+      "shiftedWord": "feeb",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "pool",
+      "shift": 23,
+      "shiftedWord": "mlli",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "pose",
+      "shift": 10,
+      "shiftedWord": "zyco",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "posh",
+      "shift": 0,
+      "shiftedWord": "shop",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "posh",
+      "shift": 12,
+      "shiftedWord": "baet",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "posh",
+      "shift": 19,
+      "shiftedWord": "ihla",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "post",
+      "shift": 0,
+      "shiftedWord": "spot",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "post",
+      "shift": 0,
+      "shiftedWord": "stop",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "post",
+      "shift": 11,
+      "shiftedWord": "azde",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "post",
+      "shift": 15,
+      "shiftedWord": "edhi",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "pray",
+      "shift": 17,
+      "shiftedWord": "girp",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "prom",
+      "shift": 3,
+      "shiftedWord": "surp",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "prom",
+      "shift": 16,
+      "shiftedWord": "fhec",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "prom",
+      "shift": 22,
+      "shiftedWord": "lnki",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "pump",
+      "shift": 25,
+      "shiftedWord": "otlo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "push",
+      "shift": 6,
+      "shiftedWord": "vayn",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "push",
+      "shift": 19,
+      "shiftedWord": "inla",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "quit",
+      "shift": 18,
+      "shiftedWord": "imal",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "quiz",
+      "shift": 14,
+      "shiftedWord": "eiwn",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "race",
+      "shift": 0,
+      "shiftedWord": "care",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "race",
+      "shift": 4,
+      "shiftedWord": "vegi",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "race",
+      "shift": 22,
+      "shiftedWord": "nwya",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "rack",
+      "shift": 3,
+      "shiftedWord": "udfn",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "rage",
+      "shift": 0,
+      "shiftedWord": "gear",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "rage",
+      "shift": 13,
+      "shiftedWord": "entr",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "rail",
+      "shift": 0,
+      "shiftedWord": "liar",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "rail",
+      "shift": 3,
+      "shiftedWord": "udlo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "rail",
+      "shift": 13,
+      "shiftedWord": "envy",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "rail",
+      "shift": 22,
+      "shiftedWord": "nweh",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "rank",
+      "shift": 4,
+      "shiftedWord": "vero",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "rape",
+      "shift": 0,
+      "shiftedWord": "pear",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "rape",
+      "shift": 11,
+      "shiftedWord": "clap",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "rape",
+      "shift": 20,
+      "shiftedWord": "lujy",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "rape",
+      "shift": 22,
+      "shiftedWord": "nwla",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "rare",
+      "shift": 0,
+      "shiftedWord": "rear",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "rash",
+      "shift": 19,
+      "shiftedWord": "ktla",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "rash",
+      "shift": 22,
+      "shiftedWord": "nwod",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "rate",
+      "shift": 0,
+      "shiftedWord": "tear",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "read",
+      "shift": 0,
+      "shiftedWord": "dare",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "read",
+      "shift": 0,
+      "shiftedWord": "dear",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "rear",
+      "shift": 0,
+      "shiftedWord": "rare",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "redo",
+      "shift": 10,
+      "shiftedWord": "bony",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "reed",
+      "shift": 0,
+      "shiftedWord": "deer",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "reef",
+      "shift": 0,
+      "shiftedWord": "free",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "reef",
+      "shift": 9,
+      "shiftedWord": "anno",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "rely",
+      "shift": 13,
+      "shiftedWord": "eryl",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "rent",
+      "shift": 13,
+      "shiftedWord": "erag",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "rest",
+      "shift": 7,
+      "shiftedWord": "ylza",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "rich",
+      "shift": 22,
+      "shiftedWord": "neyd",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ring",
+      "shift": 0,
+      "shiftedWord": "grin",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ring",
+      "shift": 9,
+      "shiftedWord": "arwp",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ripe",
+      "shift": 3,
+      "shiftedWord": "ulsh",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ripe",
+      "shift": 22,
+      "shiftedWord": "nela",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "rise",
+      "shift": 9,
+      "shiftedWord": "arbn",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "rite",
+      "shift": 0,
+      "shiftedWord": "tire",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "rite",
+      "shift": 7,
+      "shiftedWord": "ypal",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "road",
+      "shift": 3,
+      "shiftedWord": "urdg",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "road",
+      "shift": 12,
+      "shiftedWord": "damp",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "roam",
+      "shift": 22,
+      "shiftedWord": "nkwi",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "roar",
+      "shift": 13,
+      "shiftedWord": "ebne",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "role",
+      "shift": 3,
+      "shiftedWord": "uroh",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "role",
+      "shift": 23,
+      "shiftedWord": "olib",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "rope",
+      "shift": 3,
+      "shiftedWord": "ursh",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "rose",
+      "shift": 0,
+      "shiftedWord": "sore",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "rosy",
+      "shift": 20,
+      "shiftedWord": "lims",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "rude",
+      "shift": 9,
+      "shiftedWord": "admn",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "rude",
+      "shift": 10,
+      "shiftedWord": "beno",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ruin",
+      "shift": 9,
+      "shiftedWord": "adrw",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ruin",
+      "shift": 13,
+      "shiftedWord": "ehva",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ruin",
+      "shift": 23,
+      "shiftedWord": "orfk",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "rush",
+      "shift": 23,
+      "shiftedWord": "orpe",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "sack",
+      "shift": 18,
+      "shiftedWord": "ksuc",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "safe",
+      "shift": 8,
+      "shiftedWord": "ainm",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "sail",
+      "shift": 19,
+      "shiftedWord": "ltbe",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "sale",
+      "shift": 0,
+      "shiftedWord": "seal",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "sale",
+      "shift": 4,
+      "shiftedWord": "wepi",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "sale",
+      "shift": 15,
+      "shiftedWord": "hpat",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "salt",
+      "shift": 0,
+      "shiftedWord": "last",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "salt",
+      "shift": 19,
+      "shiftedWord": "ltem",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "save",
+      "shift": 0,
+      "shiftedWord": "vase",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "scar",
+      "shift": 2,
+      "shiftedWord": "uect",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "seal",
+      "shift": 0,
+      "shiftedWord": "sale",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "seal",
+      "shift": 4,
+      "shiftedWord": "wiep",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "seal",
+      "shift": 15,
+      "shiftedWord": "htpa",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "seat",
+      "shift": 0,
+      "shiftedWord": "east",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "seat",
+      "shift": 10,
+      "shiftedWord": "cokd",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "semi",
+      "shift": 18,
+      "shiftedWord": "kwea",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "shed",
+      "shift": 8,
+      "shiftedWord": "apml",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "shed",
+      "shift": 10,
+      "shiftedWord": "cron",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ship",
+      "shift": 12,
+      "shiftedWord": "etub",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "shop",
+      "shift": 0,
+      "shiftedWord": "posh",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "shop",
+      "shift": 12,
+      "shiftedWord": "etab",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "shop",
+      "shift": 19,
+      "shiftedWord": "lahi",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "shot",
+      "shift": 0,
+      "shiftedWord": "host",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "shot",
+      "shift": 12,
+      "shiftedWord": "etaf",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "shut",
+      "shift": 0,
+      "shiftedWord": "thus",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "sigh",
+      "shift": 22,
+      "shiftedWord": "oecd",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "sign",
+      "shift": 0,
+      "shiftedWord": "sing",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "sign",
+      "shift": 21,
+      "shiftedWord": "ndbi",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "sing",
+      "shift": 0,
+      "shiftedWord": "sign",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "sing",
+      "shift": 21,
+      "shiftedWord": "ndib",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "sink",
+      "shift": 0,
+      "shiftedWord": "skin",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "sink",
+      "shift": 4,
+      "shiftedWord": "wmro",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "sink",
+      "shift": 21,
+      "shiftedWord": "ndif",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "site",
+      "shift": 18,
+      "shiftedWord": "kalw",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "skim",
+      "shift": 18,
+      "shiftedWord": "kcae",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "skin",
+      "shift": 0,
+      "shiftedWord": "sink",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "skin",
+      "shift": 4,
+      "shiftedWord": "womr",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "skin",
+      "shift": 21,
+      "shiftedWord": "nfdi",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "slam",
+      "shift": 18,
+      "shiftedWord": "kdse",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "slam",
+      "shift": 19,
+      "shiftedWord": "letf",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "slap",
+      "shift": 8,
+      "shiftedWord": "atix",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "slap",
+      "shift": 15,
+      "shiftedWord": "hape",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "slap",
+      "shift": 19,
+      "shiftedWord": "leti",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "slim",
+      "shift": 6,
+      "shiftedWord": "yros",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "slip",
+      "shift": 9,
+      "shiftedWord": "bury",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "slip",
+      "shift": 22,
+      "shiftedWord": "ohel",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "slot",
+      "shift": 0,
+      "shiftedWord": "lost",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "slow",
+      "shift": 4,
+      "shiftedWord": "wpsa",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "slow",
+      "shift": 19,
+      "shiftedWord": "lehp",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "snap",
+      "shift": 0,
+      "shiftedWord": "span",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "snap",
+      "shift": 11,
+      "shiftedWord": "dyla",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "snow",
+      "shift": 8,
+      "shiftedWord": "avwe",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "snow",
+      "shift": 16,
+      "shiftedWord": "idem",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "soap",
+      "shift": 4,
+      "shiftedWord": "wset",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "soap",
+      "shift": 12,
+      "shiftedWord": "eamb",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "soar",
+      "shift": 22,
+      "shiftedWord": "okwn",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "sofa",
+      "shift": 6,
+      "shiftedWord": "yulg",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "soft",
+      "shift": 12,
+      "shiftedWord": "earf",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "soil",
+      "shift": 6,
+      "shiftedWord": "yuor",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "soil",
+      "shift": 23,
+      "shiftedWord": "plfi",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "solo",
+      "shift": 23,
+      "shiftedWord": "plil",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "song",
+      "shift": 16,
+      "shiftedWord": "iedw",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "sore",
+      "shift": 0,
+      "shiftedWord": "rose",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "sort",
+      "shift": 12,
+      "shiftedWord": "eadf",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "soul",
+      "shift": 16,
+      "shiftedWord": "iekb",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "sour",
+      "shift": 0,
+      "shiftedWord": "ours",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "sour",
+      "shift": 12,
+      "shiftedWord": "eagd",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "sour",
+      "shift": 16,
+      "shiftedWord": "iekh",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "span",
+      "shift": 0,
+      "shiftedWord": "snap",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "span",
+      "shift": 11,
+      "shiftedWord": "daly",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "spin",
+      "shift": 21,
+      "shiftedWord": "nkdi",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "spot",
+      "shift": 0,
+      "shiftedWord": "post",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "spot",
+      "shift": 0,
+      "shiftedWord": "stop",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "spot",
+      "shift": 11,
+      "shiftedWord": "daze",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "spot",
+      "shift": 15,
+      "shiftedWord": "hedi",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "spur",
+      "shift": 13,
+      "shiftedWord": "fche",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "spur",
+      "shift": 19,
+      "shiftedWord": "link",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "spur",
+      "shift": 23,
+      "shiftedWord": "pmro",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "star",
+      "shift": 1,
+      "shiftedWord": "tubs",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "stew",
+      "shift": 0,
+      "shiftedWord": "west",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "stew",
+      "shift": 8,
+      "shiftedWord": "abme",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "stew",
+      "shift": 22,
+      "shiftedWord": "opas",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "stir",
+      "shift": 1,
+      "shiftedWord": "tujs",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "stir",
+      "shift": 9,
+      "shiftedWord": "bcra",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "stir",
+      "shift": 22,
+      "shiftedWord": "open",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "stop",
+      "shift": 0,
+      "shiftedWord": "post",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "stop",
+      "shift": 0,
+      "shiftedWord": "spot",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "stop",
+      "shift": 11,
+      "shiftedWord": "deza",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "stop",
+      "shift": 15,
+      "shiftedWord": "hide",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "stun",
+      "shift": 11,
+      "shiftedWord": "defy",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "such",
+      "shift": 8,
+      "shiftedWord": "ackp",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "suck",
+      "shift": 8,
+      "shiftedWord": "acks",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "suit",
+      "shift": 21,
+      "shiftedWord": "npdo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "sure",
+      "shift": 0,
+      "shiftedWord": "user",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "sure",
+      "shift": 9,
+      "shiftedWord": "bdan",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "surf",
+      "shift": 14,
+      "shiftedWord": "gift",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "surf",
+      "shift": 23,
+      "shiftedWord": "proc",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "swan",
+      "shift": 4,
+      "shiftedWord": "waer",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "swim",
+      "shift": 6,
+      "shiftedWord": "ycos",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "tale",
+      "shift": 0,
+      "shiftedWord": "late",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "talk",
+      "shift": 3,
+      "shiftedWord": "wdon",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "talk",
+      "shift": 7,
+      "shiftedWord": "ahsr",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "tall",
+      "shift": 3,
+      "shiftedWord": "wdoo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "tall",
+      "shift": 19,
+      "shiftedWord": "mtee",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "tame",
+      "shift": 0,
+      "shiftedWord": "mate",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "tame",
+      "shift": 0,
+      "shiftedWord": "meat",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "tame",
+      "shift": 0,
+      "shiftedWord": "team",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "tape",
+      "shift": 4,
+      "shiftedWord": "xeti",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "tape",
+      "shift": 11,
+      "shiftedWord": "elap",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "task",
+      "shift": 10,
+      "shiftedWord": "dkcu",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "task",
+      "shift": 20,
+      "shiftedWord": "nume",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "taxi",
+      "shift": 7,
+      "shiftedWord": "ahep",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "taxi",
+      "shift": 11,
+      "shiftedWord": "elit",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "taxi",
+      "shift": 18,
+      "shiftedWord": "lspa",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "team",
+      "shift": 0,
+      "shiftedWord": "mate",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "team",
+      "shift": 0,
+      "shiftedWord": "meat",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "team",
+      "shift": 0,
+      "shiftedWord": "tame",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "tear",
+      "shift": 0,
+      "shiftedWord": "rate",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "tech",
+      "shift": 10,
+      "shiftedWord": "domr",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "term",
+      "shift": 22,
+      "shiftedWord": "pani",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "test",
+      "shift": 11,
+      "shiftedWord": "epde",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "that",
+      "shift": 11,
+      "shiftedWord": "esle",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "them",
+      "shift": 8,
+      "shiftedWord": "bpmu",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "them",
+      "shift": 10,
+      "shiftedWord": "drow",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "them",
+      "shift": 22,
+      "shiftedWord": "pdai",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "they",
+      "shift": 7,
+      "shiftedWord": "aolf",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "they",
+      "shift": 15,
+      "shiftedWord": "iwtn",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "thin",
+      "shift": 0,
+      "shiftedWord": "hint",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "this",
+      "shift": 19,
+      "shiftedWord": "mabl",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "thus",
+      "shift": 0,
+      "shiftedWord": "shut",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "tide",
+      "shift": 0,
+      "shiftedWord": "diet",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "tide",
+      "shift": 0,
+      "shiftedWord": "edit",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "tide",
+      "shift": 11,
+      "shiftedWord": "etop",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "tile",
+      "shift": 7,
+      "shiftedWord": "apsl",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "tile",
+      "shift": 15,
+      "shiftedWord": "ixat",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "tile",
+      "shift": 22,
+      "shiftedWord": "peha",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "till",
+      "shift": 3,
+      "shiftedWord": "wloo",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "till",
+      "shift": 7,
+      "shiftedWord": "apss",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "time",
+      "shift": 0,
+      "shiftedWord": "item",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "time",
+      "shift": 14,
+      "shiftedWord": "hwas",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "tire",
+      "shift": 0,
+      "shiftedWord": "rite",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "tire",
+      "shift": 7,
+      "shiftedWord": "apyl",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "toil",
+      "shift": 1,
+      "shiftedWord": "upjm",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "toil",
+      "shift": 18,
+      "shiftedWord": "lgad",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "tone",
+      "shift": 0,
+      "shiftedWord": "note",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "tone",
+      "shift": 13,
+      "shiftedWord": "gbar",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "tool",
+      "shift": 1,
+      "shiftedWord": "uppm",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "tour",
+      "shift": 20,
+      "shiftedWord": "niol",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "town",
+      "shift": 18,
+      "shiftedWord": "lgof",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "tram",
+      "shift": 20,
+      "shiftedWord": "nlug",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "trap",
+      "shift": 0,
+      "shiftedWord": "part",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "tree",
+      "shift": 7,
+      "shiftedWord": "ayll",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "trim",
+      "shift": 22,
+      "shiftedWord": "pnei",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "true",
+      "shift": 14,
+      "shiftedWord": "hfis",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "true",
+      "shift": 20,
+      "shiftedWord": "nloy",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "tube",
+      "shift": 14,
+      "shiftedWord": "hips",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "tuna",
+      "shift": 0,
+      "shiftedWord": "aunt",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "tuna",
+      "shift": 13,
+      "shiftedWord": "ghan",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "turn",
+      "shift": 17,
+      "shiftedWord": "klie",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "twin",
+      "shift": 11,
+      "shiftedWord": "ehty",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "twin",
+      "shift": 18,
+      "shiftedWord": "loaf",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "type",
+      "shift": 7,
+      "shiftedWord": "afwl",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ugly",
+      "shift": 20,
+      "shiftedWord": "oafs",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "undo",
+      "shift": 17,
+      "shiftedWord": "leuf",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "undo",
+      "shift": 23,
+      "shiftedWord": "rkal",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "used",
+      "shift": 8,
+      "shiftedWord": "caml",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "used",
+      "shift": 10,
+      "shiftedWord": "econ",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "user",
+      "shift": 0,
+      "shiftedWord": "sure",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "user",
+      "shift": 9,
+      "shiftedWord": "dbna",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "vain",
+      "shift": 13,
+      "shiftedWord": "inva",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "vary",
+      "shift": 13,
+      "shiftedWord": "inel",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "vary",
+      "shift": 20,
+      "shiftedWord": "puls",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "vase",
+      "shift": 0,
+      "shiftedWord": "save",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "vice",
+      "shift": 22,
+      "shiftedWord": "reya",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "visa",
+      "shift": 19,
+      "shiftedWord": "oblt",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "vote",
+      "shift": 22,
+      "shiftedWord": "rkpa",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "wait",
+      "shift": 4,
+      "shiftedWord": "aemx",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "wait",
+      "shift": 18,
+      "shiftedWord": "osal",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "wake",
+      "shift": 0,
+      "shiftedWord": "weak",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "wake",
+      "shift": 8,
+      "shiftedWord": "eism",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "walk",
+      "shift": 8,
+      "shiftedWord": "eits",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "want",
+      "shift": 15,
+      "shiftedWord": "lpci",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ward",
+      "shift": 0,
+      "shiftedWord": "draw",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ward",
+      "shift": 4,
+      "shiftedWord": "aevh",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ward",
+      "shift": 14,
+      "shiftedWord": "kofr",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "ward",
+      "shift": 17,
+      "shiftedWord": "nriu",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "wash",
+      "shift": 12,
+      "shiftedWord": "imet",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "wasp",
+      "shift": 15,
+      "shiftedWord": "lphe",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "wasp",
+      "shift": 22,
+      "shiftedWord": "swol",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "wave",
+      "shift": 8,
+      "shiftedWord": "eidm",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "wave",
+      "shift": 18,
+      "shiftedWord": "osnw",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "weak",
+      "shift": 0,
+      "shiftedWord": "wake",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "weak",
+      "shift": 8,
+      "shiftedWord": "emis",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "wear",
+      "shift": 22,
+      "shiftedWord": "sawn",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "west",
+      "shift": 0,
+      "shiftedWord": "stew",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "west",
+      "shift": 8,
+      "shiftedWord": "emab",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "west",
+      "shift": 22,
+      "shiftedWord": "saop",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "when",
+      "shift": 4,
+      "shiftedWord": "alir",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "when",
+      "shift": 7,
+      "shiftedWord": "dolu",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "when",
+      "shift": 17,
+      "shiftedWord": "nyve",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "whom",
+      "shift": 22,
+      "shiftedWord": "sdki",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "wide",
+      "shift": 10,
+      "shiftedWord": "gsno",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "wife",
+      "shift": 6,
+      "shiftedWord": "colk",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "wife",
+      "shift": 22,
+      "shiftedWord": "seba",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "wind",
+      "shift": 4,
+      "shiftedWord": "amrh",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "wine",
+      "shift": 12,
+      "shiftedWord": "iuzq",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "wing",
+      "shift": 4,
+      "shiftedWord": "amrk",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "wing",
+      "shift": 21,
+      "shiftedWord": "rdib",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "wink",
+      "shift": 4,
+      "shiftedWord": "amro",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "wipe",
+      "shift": 11,
+      "shiftedWord": "htap",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "wipe",
+      "shift": 22,
+      "shiftedWord": "sela",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "wish",
+      "shift": 22,
+      "shiftedWord": "seod",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "wolf",
+      "shift": 0,
+      "shiftedWord": "flow",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "wolf",
+      "shift": 6,
+      "shiftedWord": "curl",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "wood",
+      "shift": 16,
+      "shiftedWord": "meet",
+      "matchType": "完全一致"
+    },
+    {
+      "inputWord": "wood",
+      "shift": 23,
+      "shiftedWord": "tlla",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "wool",
+      "shift": 4,
+      "shiftedWord": "assp",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "wool",
+      "shift": 23,
+      "shiftedWord": "tlli",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "word",
+      "shift": 12,
+      "shiftedWord": "iadp",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "word",
+      "shift": 16,
+      "shiftedWord": "meht",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "word",
+      "shift": 24,
+      "shiftedWord": "umpb",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "worm",
+      "shift": 17,
+      "shiftedWord": "nfid",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "worm",
+      "shift": 22,
+      "shiftedWord": "skni",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "worn",
+      "shift": 17,
+      "shiftedWord": "nfie",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "worn",
+      "shift": 24,
+      "shiftedWord": "umpl",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "wrap",
+      "shift": 17,
+      "shiftedWord": "nirg",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "yard",
+      "shift": 2,
+      "shiftedWord": "actf",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "yard",
+      "shift": 14,
+      "shiftedWord": "mofr",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "yawn",
+      "shift": 4,
+      "shiftedWord": "cear",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "yawn",
+      "shift": 8,
+      "shiftedWord": "giev",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "yeah",
+      "shift": 20,
+      "shiftedWord": "syub",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "year",
+      "shift": 4,
+      "shiftedWord": "ciev",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "yoga",
+      "shift": 12,
+      "shiftedWord": "kasm",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "your",
+      "shift": 17,
+      "shiftedWord": "pfli",
+      "matchType": "アナグラム"
+    },
+    {
+      "inputWord": "your",
+      "shift": 20,
+      "shiftedWord": "siol",
+      "matchType": "アナグラム"
+    }
+  ]
+}
