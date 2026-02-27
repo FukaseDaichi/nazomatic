@@ -32,22 +32,11 @@ export default function ShiftSearchReportsPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         <section className="bg-gray-800 border border-gray-700 rounded-lg p-5 space-y-2">
           <h1 className="text-2xl font-bold">シフト検索 レポート一覧</h1>
-          <p className="text-sm text-gray-300">
-            閾値 {NUMBER_FORMAT.format(manifest.externalRowThreshold)}{" "}
-            行超は外部リンクで表示し、
-            それ以下は内部ページ（ページングなし）で表示します。
-          </p>
-          <div className="text-sm text-gray-300">
+          <div className="rounded-lg border border-sky-500/40 bg-sky-500/10 px-4 py-3 text-xs sm:text-sm text-sky-100 leading-relaxed">
             <p>
-              内部: {NUMBER_FORMAT.format(manifest.delivery.internalCount)} 件
-            </p>
-            <p>
-              外部: {NUMBER_FORMAT.format(manifest.delivery.externalCount)} 件
-            </p>
-            <p>
-              外部リンク未設定:{" "}
-              {NUMBER_FORMAT.format(manifest.delivery.unresolvedExternalCount)}{" "}
-              件
+              検索結果が {NUMBER_FORMAT.format(manifest.externalRowThreshold)}{" "}
+              件以上のレポートは、
+              表示が重くなりやすいためダウンロードリンクにしています。
             </p>
           </div>
         </section>

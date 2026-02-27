@@ -1,7 +1,8 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { HelpCircle } from "lucide-react";
 import { DICTIONARIES, SearchManager } from "@/class/SearchManager";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,6 +23,7 @@ import {
   SHIFT_TOTAL_RESULT_MAXCOUNT,
   type ShiftSearchResult,
 } from "@/lib/shift-search";
+import { motion } from "framer-motion";
 
 const FIRST_DIC = "buta";
 
@@ -55,6 +57,7 @@ export default function ShiftSearch() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [limitReached, setLimitReached] = useState(false);
   const [normalizedInput, setNormalizedInput] = useState("");
+  const [showHelpTooltip, setShowHelpTooltip] = useState(false);
   const dictionaryRequestIdRef = useRef(0);
 
   const loadDictionary = useCallback(
@@ -152,20 +155,71 @@ export default function ShiftSearch() {
   return (
     <main className="min-h-screen">
       <div className="max-w-3xl mx-auto space-y-6">
-        <div className="flex items-center justify-between gap-3">
-          <h1 className="text-2xl font-bold">シフト検索</h1>
-          <Button
-            asChild
-            variant="outline"
-            className="border-purple-300 bg-transparent text-purple-100 hover:bg-purple-600/20 hover:text-purple-50"
+        <div className="relative">
+          <motion.h1
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="text-2xl font-bold mb-6 text-center"
           >
-            <Link href="/shift-search/reports">結果一覧を見る</Link>
-          </Button>
+            シフト検索
+          </motion.h1>
+          <div className="absolute top-0 right-0">
+            <Button
+              asChild
+              variant="outline"
+              className="border-purple-300 bg-transparent text-purple-100 hover:bg-purple-600/20 hover:text-purple-50"
+            >
+              <Link href="/shift-search/reports">全探索結果</Link>
+            </Button>
+          </div>
         </div>
-
         <Card className="bg-gray-800 border-gray-700">
           <CardHeader>
-            <CardTitle className="text-xl text-white">検索条件</CardTitle>
+            <div className="flex items-center gap-2">
+              <CardTitle className="text-xl text-white">検索条件</CardTitle>
+              <div
+                className="relative"
+                onMouseEnter={() => setShowHelpTooltip(true)}
+                onMouseLeave={() => setShowHelpTooltip(false)}
+              >
+                <button
+                  type="button"
+                  className="inline-flex h-6 w-6 items-center justify-center rounded-full text-gray-300 transition-colors outline-none hover:text-purple-200"
+                  aria-label="シフト検索の説明"
+                  aria-expanded={showHelpTooltip}
+                  onFocus={() => setShowHelpTooltip(true)}
+                  onBlur={() => setShowHelpTooltip(false)}
+                  onClick={() => setShowHelpTooltip(true)}
+                >
+                  <HelpCircle size={20} />
+                </button>
+                {showHelpTooltip && (
+                  <div className="z-10 fixed left-1/2 -translate-x-1/2 mt-2 w-[min(90vw,26rem)]  rounded-lg border border-gray-600 bg-gray-900 p-3 text-sm leading-relaxed text-gray-100 shadow-xl sm:absolute sm:left-auto sm:-translate-x-1/2">
+                    <div className="absolute left-1/4 -top-2 h-0 w-0 -translate-x-1/2 border-l-8 border-r-8 border-b-8 border-l-transparent border-r-transparent border-b-gray-900 sm:left-1/2" />
+                    <h2 className="font-semibold text-purple-400">
+                      この検索でできること
+                    </h2>
+                    <p className="mt-2">
+                      シフト検索は、文字を一定数ずらして、辞書にある別の単語になるかを調べる検索です。
+                    </p>
+                    <p className="mt-2">
+                      アナグラムは、同じ文字を並べ替えて別の単語を作ることです。「アナグラム検索」を有効にすると、ずらした後に並べ替えた候補も探します。
+                    </p>
+                    <p className="mt-2">
+                      全パターンの探索結果は
+                      <Link
+                        href="/shift-search/reports"
+                        className="ml-1 text-purple-200 underline decoration-purple-300/70 hover:text-purple-100"
+                      >
+                        全探索結果
+                      </Link>
+                      で確認できます。
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
           </CardHeader>
           <CardContent className="space-y-5">
             <div className="space-y-2">
@@ -239,7 +293,7 @@ export default function ShiftSearch() {
         <Card className="bg-gray-800 border-gray-700">
           <CardHeader>
             <CardTitle className="text-xl text-white">
-              検索結果 ({results.length})
+              検索結果 {results?.length > 0 && "(" + results.length + ")"}
             </CardTitle>
             {normalizedInput && !errorMessage && (
               <p className="text-sm text-gray-400">

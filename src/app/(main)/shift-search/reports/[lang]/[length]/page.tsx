@@ -21,6 +21,7 @@ type PageProps = {
 };
 
 const NUMBER_FORMAT = new Intl.NumberFormat("ja-JP");
+const EXTERNAL_THRESHOLD = 10_000;
 
 export const dynamicParams = false;
 
@@ -82,9 +83,13 @@ export default function ShiftSearchReportDetailPage({ params }: PageProps) {
               className="inline-flex items-center gap-1 rounded-md bg-gray-700 px-3 py-1.5 text-xs font-medium text-gray-300 transition-colors hover:bg-gray-600 hover:text-gray-100 shrink-0"
             >
               <ArrowLeft className="h-3.5 w-3.5" />
-              一覧
+              一覧へ
             </Link>
           </div>
+          <p className="rounded-md border border-sky-500/30 bg-sky-500/10 px-3 py-2 text-xs sm:text-sm text-sky-100">
+            検索結果が {NUMBER_FORMAT.format(EXTERNAL_THRESHOLD)} 件以上のレポートは、
+            ページが重くなりやすいため一覧側で外部サイト表示に切り替えています。
+          </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-1.5 text-sm">
             <p className="text-gray-400">
               辞書: <span className="text-gray-200">{report.dictionary}</span>
@@ -102,7 +107,7 @@ export default function ShiftSearchReportDetailPage({ params }: PageProps) {
               </span>
             </p>
             <p className="text-gray-400">
-              ヒット行数:{" "}
+              ヒット件数:{" "}
               <span className="text-gray-200 tabular-nums font-medium">
                 {NUMBER_FORMAT.format(report.totalHitRows)}
               </span>
