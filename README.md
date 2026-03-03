@@ -4,6 +4,14 @@
 
 - 要件定義書: [`./.codex/specification.md`](./.codex/specification.md)
 
+## デザインルール
+
+```md
+# ルール
+- メインデザイン`bg-gradient-to-b from-gray-900 to-gray-800 text-white`
+- アクセント`purple-400`
+```
+
 ## 主な機能
 
 - しりとり最長連鎖探索
@@ -50,3 +58,5 @@ npm run shift:report:view-assets
 - Firestore 接続情報（`FIREBASE_*`）
 - 内部 API 認可（`REALTIME_INTERNAL_API_TOKEN`）
 - X 再投稿連携（`X_*`）
+- BLANK25 Editor Basic 認証（`BLANK25_EDITOR_USER`, `BLANK25_EDITOR_PASSWORD`）
+- BLANK25 Editor GitHub 反映（`GITHUB_TOKEN`, `BLANK25_EDITOR_GITHUB_OWNER`, `BLANK25_EDITOR_GITHUB_REPO`, `BLANK25_EDITOR_GITHUB_BRANCH`）

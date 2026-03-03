@@ -11,7 +11,9 @@
           "id": "blank25-001",
           "linkName": "第0問",
           "imageFile": "1.png",
-          "answers": ["かき"]
+          "answers": [
+            "かき"
+          ]
         }
       ]
     },
@@ -25,127 +27,186 @@
           "id": "blank25-002",
           "linkName": "第1問",
           "imageFile": "2.png",
-          "answers": ["クイーン", "QUEEN"]
+          "answers": [
+            "クイーン",
+            "QUEEN"
+          ]
         },
         {
           "id": "blank25-003",
           "linkName": "第2問",
           "imageFile": "3.png",
-          "answers": ["あき", "アキ"]
+          "answers": [
+            "あき",
+            "アキ"
+          ]
         },
         {
           "id": "blank25-004",
           "linkName": "第3問",
           "imageFile": "4.png",
-          "answers": ["えいち", "エイチ"]
+          "answers": [
+            "えいち",
+            "エイチ"
+          ]
         },
         {
           "id": "blank25-005",
           "linkName": "第4問",
           "imageFile": "5.png",
-          "answers": ["wing", "WING", "ウイング","羽","はね","ハネ"]
+          "answers": [
+            "wing",
+            "WING",
+            "ウイング",
+            "羽",
+            "はね",
+            "ハネ"
+          ]
         },
         {
           "id": "blank25-006",
           "linkName": "第5問",
           "imageFile": "6.png",
-          "answers": ["じしゃく"]
+          "answers": [
+            "じしゃく"
+          ]
         },
         {
           "id": "blank25-007",
           "linkName": "第6問",
           "imageFile": "7.png",
-          "answers": ["オニオン"]
+          "answers": [
+            "オニオン"
+          ]
         },
         {
           "id": "blank25-008",
           "linkName": "第7問",
           "imageFile": "8.png",
-          "answers": ["1"]
+          "answers": [
+            "1"
+          ]
         },
         {
           "id": "blank25-009",
           "linkName": "第8問",
           "imageFile": "9.png",
-          "answers": ["ホワイト"]
+          "answers": [
+            "ホワイト"
+          ]
         },
         {
           "id": "blank25-010",
           "linkName": "第9問",
           "imageFile": "10.png",
-          "answers": ["ふくおか", "福岡"]
+          "answers": [
+            "ふくおか",
+            "福岡"
+          ]
         },
         {
           "id": "blank25-011",
           "linkName": "第10問",
           "imageFile": "11.png",
-          "answers": ["ぶもん", "ブモン"]
+          "answers": [
+            "ぶもん",
+            "ブモン"
+          ]
         },
         {
           "id": "blank25-012",
           "linkName": "第11問",
           "imageFile": "12.png",
-          "answers": ["りくつ"]
+          "answers": [
+            "りくつ"
+          ]
         },
         {
           "id": "blank25-013",
           "linkName": "第12問",
           "imageFile": "13.png",
-          "answers": ["直線", "ちょくせん"]
+          "answers": [
+            "直線",
+            "ちょくせん"
+          ]
         },
         {
           "id": "blank25-014",
           "linkName": "第13問",
           "imageFile": "14.png",
-          "answers": ["おとり"]
+          "answers": [
+            "おとり"
+          ]
         },
         {
           "id": "blank25-015",
           "linkName": "第14問",
           "imageFile": "16.png",
-          "answers": ["box"]
+          "answers": [
+            "box"
+          ]
         },
         {
           "id": "blank25-016",
           "linkName": "第15問",
           "imageFile": "17.png",
-          "answers": ["かーぺっと", "カーペット"]
+          "answers": [
+            "かーぺっと",
+            "カーペット"
+          ]
         },
         {
           "id": "blank25-017",
           "linkName": "第16問",
           "imageFile": "18.png",
-          "answers": ["えはがき"]
+          "answers": [
+            "えはがき"
+          ]
         },
         {
           "id": "blank25-018",
           "linkName": "第17問",
           "imageFile": "19.png",
-          "answers": ["あにまる", "アニマル"]
+          "answers": [
+            "あにまる",
+            "アニマル"
+          ]
         },
         {
           "id": "blank25-019",
           "linkName": "第18問",
           "imageFile": "20.png",
-          "answers": ["ひかり", "ヒカリ"]
+          "answers": [
+            "ひかり",
+            "ヒカリ"
+          ]
         },
         {
           "id": "blank25-020",
           "linkName": "第19問",
           "imageFile": "21.png",
-          "answers": ["しりめつれつ", "支離滅裂"]
+          "answers": [
+            "しりめつれつ",
+            "支離滅裂"
+          ]
         },
         {
           "id": "blank25-021",
           "linkName": "第20問",
           "imageFile": "22.png",
-          "answers": ["ハト", "はと"]
+          "answers": [
+            "ハト",
+            "はと"
+          ]
         },
         {
           "id": "blank25-022",
           "linkName": "第21問",
           "imageFile": "15.png",
-          "answers": ["きくらげ", "キクラゲ"]
+          "answers": [
+            "きくらげ",
+            "キクラゲ"
+          ]
         }
       ]
     }

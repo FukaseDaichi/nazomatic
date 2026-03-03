@@ -1,79 +1,74 @@
-# BLANK25 設計方針（実装準拠 v0.3 / 2026-02-27）
+# BLANK25 設計方針（実装準拠 v1.0 / 2026-03-03）
 
 ## 1. 基本方針
 
-- 既存の NAZOMATIC（Next.js App Router / Tailwind / shadcn/ui）に **薄く追加**する。
-- ゲーム性の中核は「開封戦略」と「断片情報の統合」なので、UI は極力シンプルに保つ。
-- 問題追加は「`public/img/blank25` に画像追加 + `public/data/blank25/problems.json` 追記」で完結させる。
+- 既存の NAZOMATIC（Next.js App Router / Tailwind / shadcn/ui）へ薄く追加する。
+- ゲーム体験の中心は「見える情報量の制御」と「回答推理」に置く。
+- 問題データは `public/data/blank25/problems.json` を単一ソースとする。
 
-## 2. アーキテクチャ方針
+## 2. デザイン方針
 
-### 2.1 問題マニフェスト（JSON）
+```md
+# ルール
+- メインデザイン`bg-gradient-to-b from-gray-900 to-gray-800 text-white`
+- アクセント`purple-400`
+```
 
-- 画像一覧の列挙は行わず、`public/data/blank25/problems.json` を **単一ソース**として扱う。
-  - 現行構造は `version` + `categories[]` + `category.problems[]`。
-  - 問題数・カテゴリ順・問題順・画像ファイル名・表示名・許容回答をここで定義する。
-  - 問題 ID 重複は読み込み時にエラーとする。
+- 通常モードは `purple` 系を主要アクセントに使用。
+- 作問モードは `emerald` 系で状態差を明確化。
+- 情報密度が高い箇所でもタップ領域を確保する（モバイル優先）。
 
-### 2.2 UI 構成
+## 3. アーキテクチャ方針
 
-- 画面を「問題一覧」と「ゲーム画面」に分離する。
-  - `/blank25`: 一覧（カテゴリ + 問題カード）
-  - `/blank25/[problemId]`: ゲーム（画像 + 5×5 パネル + 回答判定）
-- ルーティングは App Router の dynamic segment を使う。
-- 実体 UI は `src/components/blank25/*` に集約する。
+### 3.1 問題マニフェスト
 
-### 2.3 状態管理
+- `public/data/blank25/problems.json` を参照し、カテゴリ階層をそのまま UI に反映する。
+- 問題 ID は全カテゴリで一意とし、読み込み時に重複を検出する。
 
-- UI 状態は **React local state**（`useState`, `useMemo`）で管理する。
-- 進行状態は `localStorage` で永続化する。
-  - キー: `blank25:v1:<manifestVersion>:<problemId>`
-- グローバル状態管理（Zustand 等）は導入しない。
+### 3.2 画面分離
 
-## 3. 重要な設計決定（現行）
+- `/blank25`: 問題一覧
+- `/blank25/[problemId]`: プレイ画面（通常 / 作問モード）
+- `/blank25/editor`: 管理画面（Basic 認証）
 
-### 3.1 パネル枚数（固定）
+### 3.3 状態管理
 
-- 25 はパネル枚数を表すため、盤面は常に 5×5（25 枚）とする。
-- 各問題は「問題画像 1 枚 + その上に 25 パネルを重ねる」構造とする。
+- UI 状態は React local state（`useState`, `useMemo`, `useCallback`）を使用。
+- 進行状態は localStorage に永続化。
+  - 通常: `blank25:v1:<manifestVersion>:<problemId>`
+  - 作問: `blank25:sakumon:v1:<manifestVersion>:<problemId>`
 
-### 3.2 回答の正規化（表記ゆれ）
+## 4. 重要な設計決定
 
-- JSON の `answers` に表記ゆれを複数列挙する前提で、入力側も正規化して比較する。
-  - 現行正規化: `NFKC`、カナのひらがな統一、`trim`、`toLowerCase`、空白除去
-- 正規化は「入力」「answers」の双方に同一処理を適用し、`Set` 比較する。
+### 4.1 盤面固定
 
-### 3.3 開封後の挙動
+- 盤面は常に 5x5（25 枚）固定。
+- 画像 1 枚に対してオーバーレイパネルを重ねる。
 
-- 開封済みパネルは **戻せない**（スコア制と整合）。
-- 正解後は盤面固定とし、未開封パネルは半透明表示に切り替える。
+### 4.2 回答正規化
 
-## 4. UI/UX ポリシー
+- 入力と `answers` に同一の正規化ロジックを適用して判定。
+- `NFKC`、かな統一、空白除去、小文字化を行う。
 
-- モバイル優先（片手操作・大きいボタン・余計な入力を要求しない）。
-- 盤面は 5×5 を崩さず、開封済みパネルは「透明・クリック不可」にする。
-- 画像上にパネルを重ねるため、レイアウトは `position: relative` + オーバーレイグリッドで実装する。
-- 正解時はクリアダイアログ + 紙吹雪演出で終了を明示する。
+### 4.3 Editor 反映フロー
 
-## 5. ディレクトリ（現行）
+- Editor API は GitHub API 経由で `problems.json` と画像を同一コミットで反映。
+- `baseManifestSha` と fast-forward 失敗の両面で競合検知を行う。
 
-- `public/data/blank25/problems.json`（問題定義）
-- `src/app/(blank25)/blank25/page.tsx`（問題一覧）
-- `src/app/(blank25)/blank25/[problemId]/page.tsx`（ゲーム）
-- `src/components/blank25/blank25-game.tsx`（盤面 + ステータス）
-- `src/components/blank25/problem-list.tsx`（一覧 UI）
-- `src/components/blank25/manifest.ts`（マニフェスト取得/検証）
-- `src/components/blank25/answer-normalize.ts`（回答正規化）
-- `src/components/blank25/clear-dialog.tsx`（クリアダイアログ）
-- `src/components/blank25/confetti.ts`（紙吹雪演出）
-- `src/components/blank25/types.ts`（Manifest/Problem/PersistedState）
+## 5. 主要ディレクトリ
 
-## 6. ログ/デバッグ方針
+- `public/data/blank25/problems.json`
+- `public/img/blank25/*`
+- `src/app/(blank25)/blank25/page.tsx`
+- `src/app/(blank25)/blank25/[problemId]/page.tsx`
+- `src/app/(blank25)/blank25/editor/page.tsx`
+- `src/app/api/internal/blank25/editor/manifest/route.ts`
+- `src/app/api/internal/blank25/editor/publish/route.ts`
+- `src/components/blank25/*`
+- `src/server/blank25/*`
 
-- v0 ではクライアントの `console` は極力増やさない（必要なら `debug` フラグで制御）。
-- `problems.json` の読み込みに失敗した場合や `problemId` が不正な場合は、UI 上に簡潔なエラーを出す（真っ白にしない）。
+## 6. 運用方針
 
-## 7. スコープ外（明示）
-
-- 作問モードは `sakumon-mode-requirements.md` で別管理し、現行通常モード実装には含めない。
-- トップナビへの導線追加（`features.json` 反映）は未実装項目として管理する。
+- 問題追加・更新は原則 Editor から実施する。
+- 既存データの互換性（`problemId` / localStorage キー）を壊さない。
+- `robots.index=false` を維持し、BLANK25 領域は検索流入を抑制する。
