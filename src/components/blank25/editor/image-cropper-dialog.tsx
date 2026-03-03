@@ -52,6 +52,32 @@ const blobToBase64 = (blob: Blob): Promise<string> =>
     reader.readAsDataURL(blob);
   });
 
+const clamp = (value: number, min: number, max: number): number =>
+  Math.min(Math.max(value, min), max);
+
+const normalizeSquareCropArea = (
+  croppedAreaPixels: Area,
+  sourceImage: HTMLImageElement,
+): Area => {
+  const roundedX = Math.round(croppedAreaPixels.x);
+  const roundedY = Math.round(croppedAreaPixels.y);
+  const roundedWidth = Math.max(1, Math.round(croppedAreaPixels.width));
+  const roundedHeight = Math.max(1, Math.round(croppedAreaPixels.height));
+
+  const side = Math.max(1, Math.min(roundedWidth, roundedHeight));
+  const centeredX = roundedX + Math.floor((roundedWidth - side) / 2);
+  const centeredY = roundedY + Math.floor((roundedHeight - side) / 2);
+  const maxX = Math.max(0, sourceImage.naturalWidth - side);
+  const maxY = Math.max(0, sourceImage.naturalHeight - side);
+
+  return {
+    x: clamp(centeredX, 0, maxX),
+    y: clamp(centeredY, 0, maxY),
+    width: side,
+    height: side,
+  };
+};
+
 const getCroppedSquareWebp = async ({
   imageUrl,
   croppedAreaPixels,
@@ -68,12 +94,16 @@ const getCroppedSquareWebp = async ({
     throw new Error("Canvas context is unavailable.");
   }
 
+  const safeCropArea = normalizeSquareCropArea(croppedAreaPixels, sourceImage);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
+
   ctx.drawImage(
     sourceImage,
-    Math.round(croppedAreaPixels.x),
-    Math.round(croppedAreaPixels.y),
-    Math.round(croppedAreaPixels.width),
-    Math.round(croppedAreaPixels.height),
+    safeCropArea.x,
+    safeCropArea.y,
+    safeCropArea.width,
+    safeCropArea.height,
     0,
     0,
     OUTPUT_SIZE,
@@ -219,7 +249,8 @@ export default function Blank25ImageCropperDialog({
                 onZoomChange={setZoom}
                 onCropComplete={onCropComplete}
                 onCropSizeChange={setCropAreaSize}
-                objectFit="cover"
+                objectFit="contain"
+                roundCropAreaPixels
                 minZoom={1}
                 maxZoom={3}
               />
