@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import Cropper, { type Area } from "react-easy-crop";
+import Cropper, { type Area, type Size } from "react-easy-crop";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -93,8 +93,24 @@ const getCroppedSquareWebp = async ({
   return { blob, previewUrl, base64 };
 };
 
-const Blank25RulerOverlay = ({ showNumbers }: { showNumbers: boolean }) => (
-  <div className="pointer-events-none absolute inset-0 z-20">
+const Blank25RulerOverlay = ({
+  showNumbers,
+  cropAreaSize,
+}: {
+  showNumbers: boolean;
+  cropAreaSize: Size | null;
+}) => (
+  <div
+    className="pointer-events-none absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2"
+    style={
+      cropAreaSize
+        ? {
+            width: cropAreaSize.width,
+            height: cropAreaSize.height,
+          }
+        : undefined
+    }
+  >
     <div
       className="absolute inset-0"
       style={{
@@ -128,6 +144,7 @@ export default function Blank25ImageCropperDialog({
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
+  const [cropAreaSize, setCropAreaSize] = useState<Size | null>(null);
   const [showNumbers, setShowNumbers] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -139,6 +156,7 @@ export default function Blank25ImageCropperDialog({
     setCrop({ x: 0, y: 0 });
     setZoom(1);
     setCroppedAreaPixels(null);
+    setCropAreaSize(null);
     setError(null);
     setSubmitting(false);
   }, [open, imageUrl]);
@@ -179,7 +197,7 @@ export default function Blank25ImageCropperDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[92vh] w-[calc(100vw-2rem)] max-w-3xl overflow-y-auto border-gray-700 bg-gray-900 text-gray-100">
+      <DialogContent className="w-[calc(100vw-1.5rem)] max-w-2xl border-gray-700 bg-gray-900 p-4 text-gray-100 sm:p-5">
         <DialogHeader>
           <DialogTitle>画像トリミング</DialogTitle>
           <DialogDescription className="text-gray-400">
@@ -187,8 +205,8 @@ export default function Blank25ImageCropperDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid gap-4">
-          <div className="relative mx-auto aspect-square w-full max-w-[560px] overflow-hidden rounded-lg border border-gray-700 bg-black">
+        <div className="grid gap-3">
+          <div className="relative mx-auto aspect-square w-full max-w-[400px] overflow-hidden rounded-lg border border-gray-700 bg-black">
             {imageUrl && (
               <Cropper
                 image={imageUrl}
@@ -200,15 +218,19 @@ export default function Blank25ImageCropperDialog({
                 onCropChange={setCrop}
                 onZoomChange={setZoom}
                 onCropComplete={onCropComplete}
-                objectFit="contain"
+                onCropSizeChange={setCropAreaSize}
+                objectFit="cover"
                 minZoom={1}
                 maxZoom={3}
               />
             )}
-            <Blank25RulerOverlay showNumbers={showNumbers} />
+            <Blank25RulerOverlay
+              showNumbers={showNumbers}
+              cropAreaSize={cropAreaSize}
+            />
           </div>
 
-          <div className="grid gap-3">
+          <div className="grid gap-2">
             <label className="text-sm text-gray-300">
               ズーム: {zoom.toFixed(2)}x
             </label>
@@ -235,7 +257,7 @@ export default function Blank25ImageCropperDialog({
           </div>
         </div>
 
-        <DialogFooter className="gap-2">
+        <DialogFooter className="gap-2 pt-1">
           <Button
             type="button"
             variant="outline"

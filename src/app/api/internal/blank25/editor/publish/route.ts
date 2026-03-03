@@ -10,6 +10,7 @@ import {
 import {
   Blank25ManifestEditorError,
   createProblemInManifest,
+  deleteProblemFromManifest,
   parseBlank25ManifestText,
   serializeBlank25Manifest,
   updateProblemInManifest,
@@ -23,7 +24,7 @@ type PublishImagePayload = {
 };
 
 type PublishRequestBody = {
-  mode: "create" | "update";
+  mode: "create" | "update" | "delete";
   problemId?: string;
   categoryId: string;
   linkName: string;
@@ -34,7 +35,7 @@ type PublishRequestBody = {
 
 type PublishSuccessResponse = {
   ok: true;
-  mode: "create" | "update";
+  mode: "create" | "update" | "delete";
   problemId: string;
   imageFile: string;
   commitSha: string;
@@ -122,20 +123,36 @@ const parseBody = (raw: unknown): PublishRequestBody => {
 
   const record = raw as Record<string, unknown>;
   const mode = toStringValue(record.mode, "mode");
-  if (mode !== "create" && mode !== "update") {
-    throw new Blank25ManifestEditorError("mode must be create or update.");
+  if (mode !== "create" && mode !== "update" && mode !== "delete") {
+    throw new Blank25ManifestEditorError("mode must be create, update or delete.");
   }
 
-  const categoryId = toStringValue(record.categoryId, "categoryId");
-  const linkName = toStringValue(record.linkName, "linkName");
-  const answers = toAnswers(record.answers);
-  const image = parseImagePayload(record.image);
   const problemId = toStringValue(record.problemId, "problemId", false);
   const baseManifestSha = toStringValue(
     record.baseManifestSha,
     "baseManifestSha",
     false,
   );
+
+  if (mode === "delete") {
+    if (!problemId) {
+      throw new Blank25ManifestEditorError("problemId is required in delete mode.");
+    }
+
+    return {
+      mode,
+      problemId,
+      categoryId: "",
+      linkName: "",
+      answers: [],
+      baseManifestSha,
+    };
+  }
+
+  const categoryId = toStringValue(record.categoryId, "categoryId");
+  const linkName = toStringValue(record.linkName, "linkName");
+  const answers = toAnswers(record.answers);
+  const image = parseImagePayload(record.image);
 
   if (mode === "create" && !image) {
     throw new Blank25ManifestEditorError("image is required in create mode.");
@@ -217,7 +234,7 @@ export async function POST(request: Request) {
         path: `public/img/blank25/${nextImageFile}`,
         base64Content: normalizeBase64(body.image.base64),
       });
-    } else {
+    } else if (body.mode === "update") {
       const updateProblemId = body.problemId ?? "";
       const updateImageFile = body.image
         ? `${updateProblemId}.${IMAGE_EXTENSION_MAP[body.image.contentType]}`
@@ -245,6 +262,17 @@ export async function POST(request: Request) {
           base64Content: normalizeBase64(body.image.base64),
         });
       }
+    } else {
+      const deleteResult = deleteProblemFromManifest({
+        manifest,
+        input: {
+          problemId: body.problemId ?? "",
+        },
+      });
+
+      nextManifest = deleteResult.manifest;
+      nextProblemId = deleteResult.problem.id;
+      nextImageFile = deleteResult.problem.imageFile;
     }
 
     const serializedManifest = serializeBlank25Manifest(nextManifest);
@@ -256,7 +284,9 @@ export async function POST(request: Request) {
     const commitMessage =
       body.mode === "create"
         ? `blank25: add ${nextProblemId}`
-        : `blank25: update ${nextProblemId}`;
+        : body.mode === "update"
+          ? `blank25: update ${nextProblemId}`
+          : `blank25: delete ${nextProblemId}`;
 
     const { commitSha } = await commitFilesToBlank25Branch({
       config,

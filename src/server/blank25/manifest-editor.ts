@@ -352,6 +352,40 @@ export const updateProblemInManifest = ({
   };
 };
 
+export type DeleteProblemInput = {
+  problemId: string;
+};
+
+export const deleteProblemFromManifest = ({
+  manifest,
+  input,
+}: {
+  manifest: Blank25Manifest;
+  input: DeleteProblemInput;
+}): {
+  manifest: Blank25Manifest;
+  problem: Blank25Problem;
+} => {
+  const location = findProblemLocation(manifest, input.problemId);
+  if (!location) {
+    throw new Blank25ManifestEditorError(
+      `Problem not found: ${input.problemId}`,
+    );
+  }
+
+  const nextManifest = cloneManifest(manifest);
+  nextManifest.categories[location.categoryIndex].problems.splice(
+    location.problemIndex,
+    1,
+  );
+  ensureUniqueProblemIds(nextManifest);
+
+  return {
+    manifest: nextManifest,
+    problem: location.problem,
+  };
+};
+
 export const createEmptyBlank25Manifest = (): Blank25Manifest => ({
   version: DEFAULT_MANIFEST_VERSION,
   categories: [],

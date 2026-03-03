@@ -8,7 +8,7 @@ import {
   type ChangeEvent,
 } from "react";
 import Image from "next/image";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, Trash2 } from "lucide-react";
 
 import Blank25ImageCropperDialog from "@/components/blank25/editor/image-cropper-dialog";
 import type {
@@ -22,6 +22,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
 type EditorMode = "create" | "update";
+type PublishMode = EditorMode | "delete";
 
 type CropPayload = {
   base64: string;
@@ -43,7 +44,7 @@ type EditorManifestResponse =
 type PublishResponse =
   | {
       ok: true;
-      mode: EditorMode;
+      mode: PublishMode;
       problemId: string;
       imageFile: string;
       commitSha: string;
@@ -147,7 +148,7 @@ export default function Blank25EditorPage() {
   );
 
   const loadManifest = useCallback(
-    async (refreshOnly: boolean) => {
+    async (refreshOnly: boolean): Promise<Blank25Category[] | null> => {
       setError(null);
       if (!refreshOnly) {
         setLoading(true);
@@ -169,12 +170,14 @@ export default function Blank25EditorPage() {
         setCategories(json.manifest.categories);
         setManifestSha(json.manifestSha);
         setCategoryId((current) => current || json.manifest.categories[0]?.id || "");
+        return json.manifest.categories;
       } catch (loadError) {
         if (loadError instanceof Error) {
           setError(loadError.message);
         } else {
           setError("Failed to load editor manifest.");
         }
+        return null;
       } finally {
         setLoading(false);
         setReloading(false);
@@ -332,6 +335,69 @@ export default function Blank25EditorPage() {
     selectedProblemId,
   ]);
 
+  const handleDelete = useCallback(async () => {
+    setFormError(null);
+    setSubmitMessage(null);
+
+    if (mode !== "update" || !selectedProblem) {
+      setFormError("削除対象を選択してください。");
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `問題「${selectedProblem.linkName}（${selectedProblem.id}）」を削除します。\nこの操作は取り消せません。`,
+    );
+    if (!confirmed) {
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const response = await fetch("/api/internal/blank25/editor/publish", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          mode: "delete",
+          problemId: selectedProblem.id,
+          baseManifestSha: manifestSha ?? undefined,
+        }),
+      });
+
+      const json = (await response.json()) as PublishResponse;
+      if (!response.ok || !json.ok) {
+        throw new Error(json.ok ? "Delete failed." : json.error);
+      }
+
+      setSubmitMessage(
+        `削除完了: ${json.problemId} / commit ${json.commitSha.slice(0, 8)}`,
+      );
+      cleanupCropImageUrl();
+      setImagePayload(null);
+
+      const nextCategories = await loadManifest(true);
+      if (nextCategories) {
+        applyCreateDefaults(nextCategories);
+      }
+    } catch (deleteError) {
+      if (deleteError instanceof Error) {
+        setFormError(deleteError.message);
+      } else {
+        setFormError("削除に失敗しました。");
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  }, [
+    applyCreateDefaults,
+    cleanupCropImageUrl,
+    loadManifest,
+    manifestSha,
+    mode,
+    selectedProblem,
+  ]);
+
   return (
     <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
       <Blank25ImageCropperDialog
@@ -352,7 +418,7 @@ export default function Blank25EditorPage() {
             BLANK25 Editor
           </h1>
           <p className="mt-2 text-sm text-gray-300">
-            画像トリミング + 回答入力で問題を作成・更新します（Basic認証保護）。
+            画像トリミング + 回答入力で問題を作成・更新・削除します（Basic認証保護）。
           </p>
         </div>
         <Button
@@ -563,6 +629,17 @@ export default function Blank25EditorPage() {
                       ? "新規公開"
                       : "更新公開"}
                 </Button>
+                {mode === "update" && (
+                  <Button
+                    type="button"
+                    onClick={handleDelete}
+                    disabled={submitting || !selectedProblem}
+                    className="bg-red-700 hover:bg-red-800"
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    問題を削除
+                  </Button>
+                )}
                 <Button
                   type="button"
                   variant="outline"
