@@ -22,6 +22,7 @@ import type {
   Blank25SakumonPhase,
 } from "@/components/blank25/types";
 import { normalizeBlank25Answer } from "@/components/blank25/answer-normalize";
+import { getBlank25ImageUrl } from "@/components/blank25/image-url";
 
 const PANEL_COUNT = 25;
 
@@ -494,7 +495,7 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
     return "正解済み";
   }, [sakumonPhase]);
 
-  const imageUrl = problem ? `/img/blank25/${problem.imageFile}` : null;
+  const imageUrl = problem ? getBlank25ImageUrl(problem.imageFile) : null;
   const jsonLd = useMemo(() => {
     if (!problem) return null;
     return generateJsonLdArticle({
@@ -636,6 +637,7 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, 600px"
                     priority
+                    unoptimized
                   />
                   <div className="absolute inset-0 grid grid-cols-5 grid-rows-5 gap-0">
                     {(isSakumonMode ? hiddenPanels : openedPanels).map((_, index) => {

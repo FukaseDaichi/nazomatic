@@ -1,4 +1,4 @@
-# BLANK25 Editor 保存方式再設計案（v0.3 / 2026-03-04）
+# BLANK25 Editor 保存方式再設計案（v0.5 / 2026-03-04）
 
 ## 1. 背景と課題
 
@@ -8,132 +8,163 @@
 - GitHub push -> デプロイ完了まで反映待ちが長い
 - 編集体験が「保存できたのに見えない」状態になりやすい
 
-## 2. 先に結論
+---
 
-- `json だけ Firebase + 画像は Git` は非推奨
-- 採用案は **C: Firestore (JSON) + Firebase Cloud Storage (画像)** に固定
-- GitHub 上の BLANK25 画像は 0 枚運用（配信元にしない）
-- GitHub へのバックアップ/ミラーは実施しない
+## 2. 採用方針（v0.5）
 
-理由:
+**D: JSON と画像を単一の専用リポジトリ（`nazomatic-storage`）で管理し、GitHub raw URL で直接配信する**
 
-- 画像を Git に残すと、デプロイ待ちと整合性ズレ（manifest 更新済みだが画像未反映）が残る
-- データと画像の更新先を分けると、障害時の切り分けと再実行が難しくなる
+- `nazomatic-storage` リポジトリに `problems.json` と全画像ファイルを格納
+- JSON / 画像を **同一コミット** で push（Git Trees API を使用）し、非アトミック更新を回避する
+- publish は force: true 相当で push し、`baseManifestSha` チェックを廃止
+- JSON は取得時にタイムスタンプをクエリパラメータとして付与し CDN キャッシュを迂回する
+- 画像は raw URL を直接参照し、`next/image` の `unoptimized` prop を指定する
 
-## 3. 方式比較
+### v0.3（Firestore + Cloud Storage）との比較
 
-| 案                                               | 反映速度             | 連続投稿耐性 | 実装コスト | コメント                                         |
-| ------------------------------------------------ | -------------------- | ------------ | ---------- | ------------------------------------------------ |
-| A. 現行 GitHub 方式 + 自動リトライ               | 遅い（デプロイ待ち） | 中           | 低         | とりあえずは改善するが本質課題は残る             |
-| B. JSON: Firestore / 画像: GitHub                | 中                   | 中           | 中         | 画像反映だけデプロイ待ちになり整合性が崩れやすい |
-| C. JSON: Firestore / 画像: Cloud Storage（採用） | 速い（即時）         | 高           | 中         | 連続投稿と即時反映を両立し、運用を一本化できる   |
+| 観点                | v0.3（Firestore + Storage）    | v0.5（単一リポ + raw URL）              |
+| ------------------- | ------------------------------ | --------------------------------------- |
+| Firebase Blaze 必要 | 必要                           | 不要                                    |
+| JSON 反映速度       | 即時                           | タイムスタンプ付き fetch で即時相当     |
+| 画像 反映速度       | 即時                           | CDN キャッシュ分の遅延あり（最大 5 分） |
+| JSON / 画像の整合性 | Firestore transaction で保証   | 同一コミットで保証                      |
+| 同時編集の競合検知  | Firestore transaction で直列化 | なし（force push = last write wins）    |
+| 実装コスト          | 中                             | 低                                      |
+| 外部依存            | Firebase                       | GitHub のみ                             |
+| 運用コスト          | Billing 管理が必要             | 無料（GitHub 無料枠内）                 |
 
-## 4. 採用アーキテクチャ（C）
+---
 
-### 4.1 保存先
+## 3. アーキテクチャ
 
-- Firestore
-  - `blank25Manifests/current`
-  - `blank25Mutations/{mutationId}`（冪等化と監査）
-  - `blank25Meta/counters`（`nextProblemNumber`）
-- Cloud Storage
-  - `blank25/{uuid}.webp`（新規・既存移行後の全画像）
-  - manifest には `imageUrl`（直リンク URL）を保持
-  - 既存 `public/img/blank25/*` は最終的に参照しない
+### 3.1 リポジトリ構成
 
-### 4.2 書き込みフロー（create/update/delete）
+```
+nazomatic-storage（専用リポジトリ / public）
+├── problems.json
+├── {problemId}.webp
+└── ...
+```
 
-1. クライアントが `mutationId`（UUID）を生成して publish API に送る
-2. API が `blank25Mutations/{mutationId}` を確認
-3. 既に適用済みなら前回結果をそのまま返す（多重送信対策）
-4. 画像ありなら先に Cloud Storage へアップロード
-5. Firestore transaction で manifest を更新
-6. `mutation` ドキュメントに結果（`problemId`, `revision`）を保存
-7. レスポンス返却
+- **パブリック** リポジトリで運用する（raw URL をトークンなしで参照するため）
+- ブランチ保護ルールは無効にしておく（force push を許容するため）
 
-補足:
+### 3.2 URL 形式
 
-- transaction が自動再試行されるため、同時更新でもサーバー側で直列化される
-- UI 側は `409` ベース運用から、基本的に「成功 or バリデーションエラー」中心へ移行できる
+```
+JSON（キャッシュバスター付き）:
+  https://raw.githubusercontent.com/FukaseDaichi/nazomatic-storage/main/problems.json?v={timestamp}
 
-### 4.3 読み取りフロー（プレイ画面）
+画像（直接参照）:
+  https://raw.githubusercontent.com/FukaseDaichi/nazomatic-storage/main/img/{problemId}.webp
+```
 
-- `/data/blank25/problems.json` 直読みを廃止
-- `GET /api/blank25/manifest`（公開 API）から Firestore の current manifest を返す
-- 画像は Cloud Storage の直リンク URL をそのまま `src` に使う（GitHub 経由なし）
-- 必要なら `next.config.js` の `images.remotePatterns` に配信ドメインを追加
+- `timestamp` は publish API が完了したタイミングの Unix ミリ秒をクライアントに返し、manifest 取得 URL の生成に使う
+- 画像 URL にはクエリパラメータを付けない（CDN キャッシュを許容する）
 
-## 5. API 変更案
+### 3.3 書き込みフロー（publish）
 
-- 既存 `GET /api/internal/blank25/editor/manifest`
-  - 返却を GitHub 由来から Firestore 由来へ置換
-- 既存 `POST /api/internal/blank25/editor/publish`
-  - リクエストへ `mutationId` 追加
-  - `baseManifestSha` は廃止、代わりに `revision`（任意）を利用
-- 新規 `GET /api/blank25/manifest`
-  - プレイ画面向けの公開 manifest 取得 API
+1. Editor が画像 base64 / ArrayBuffer と manifest 変更内容を publish API に送る
+2. API が Git Trees API で画像 blob と `problems.json` blob を同時に生成
+3. 単一コミットとして main ブランチへ force push（既存 SHA を取得後に上書き）
+4. `publishedAt` タイムスタンプをレスポンスに含めて返す（`baseManifestSha` チェックなし）
 
-## 6. 無料運用の成立条件（2026-03-04 時点）
+> **Git Trees API を使う理由**: GitHub Contents API（`PUT /repos/.../contents/...`）は 1 ファイルずつしか更新できないため、JSON と画像が別コミットになる。Trees API を使うと複数ファイルを 1 コミットで反映でき、整合性が保たれる。
 
-### 6.1 先に結論
+### 3.4 読み取りフロー（プレイ画面）
 
-- 「**従量課金が発生しない運用**」は可能
-- ただし「**Spark（支払い方法未登録）だけで完結**」は不可
-- Cloud Storage for Firebase は 2026-02-02 以降に段階適用され、遅くとも 2026-10-30 までに Blaze へのアップグレードが必要
+- `GET /api/blank25/manifest` — サーバー側で raw URL（タイムスタンプ付き）を fetch して返す
+  - タイムスタンプはサーバーの現在時刻を使う（毎回キャッシュを迂回）
+- 画像は manifest 内の `imageUrl`（raw.githubusercontent.com、クエリパラメータなし）を `<img src>` に直接渡す
+- `next/image` を使う場合は **`unoptimized` prop を必ず指定**する（Vercel 最適化クォータを消費しない）
 
-### 6.2 無料で抑えるための条件
+---
 
-- Firebase プロジェクトを Blaze に上げる（Billing 連携は必要）
-- Firestore を無料枠内に維持
-  - 1 GiB
-  - 50K reads/day
-  - 20K writes/day
-  - 20K deletes/day
-- Cloud Storage を無料枠内に維持
-  - `*.appspot.com` legacy bucket: 5 GB stored, 1 GB/day download, 20K uploads/day, 50K downloads/day
-  - `*.firebasestorage.app` / 追加 bucket: 5 GB-month, 100 GB/month download, 5K uploads/month, 50K downloads/month（対象リージョン制約あり）
-- 予算アラートを `$1`, `$5`, `$10` に設定し、上限通知で即検知
+## 4. API 変更案
 
-### 6.3 BLANK25 での実務的な目安
+| エンドポイント                              | 変更内容                                                                                                |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `GET /api/internal/blank25/editor/manifest` | `nazomatic-storage` の raw URL（タイムスタンプ付き）から `problems.json` を fetch して返す              |
+| `POST /api/internal/blank25/editor/publish` | `baseManifestSha` を廃止。Git Trees API で JSON + 画像を同一コミットで force push。`publishedAt` を返す |
+| `GET /api/blank25/manifest`（新規）         | 公開 API。raw URL（タイムスタンプ付き）をサーバー fetch して返す                                        |
 
-- 1画像あたり 200KB とすると:
-  - 1 GB/day なら約 5,000 表示/日
-  - 100 GB/month なら約 500,000 表示/月
-- ただし bucket 種別によって「転送量」ではなく「ダウンロード回数」が先に上限に達する可能性がある
+---
 
-## 7. 実装ステップ（段階移行）
+## 5. 実装ステップ
 
-### Phase 1: 即効改善（1-2日）
+### Phase 1: ストレージリポジトリ準備
 
-- editor publish に `mutationId` を追加
-- 同一 `mutationId` の多重送信を無害化
-- 保存完了後の再読み込みを Firestore に切替
+- `nazomatic-storage` リポジトリを作成（public）
+- 既存の `public/data/blank25/problems.json` を移行
+- 既存の `public/img/blank25/*` を移行
+- 環境変数を追加: `BLANK25_STORAGE_GITHUB_REPO`（既存の `BLANK25_EDITOR_GITHUB_REPO` は nazomatic 本体用として維持）
 
-### Phase 2: 本移行（2-4日）
+### Phase 2: publish API の書き換え
 
-- manifest 保存先を Firestore へ全面移行
-- 既存画像を含め、画像保存先を Cloud Storage へ全面移行
-- プレイ画面の manifest 取得を API 経由へ変更
+- `src/server/blank25/github.ts` を `nazomatic-storage` リポジトリ対応に改修
+- `baseManifestSha` ロジックを削除
+- Contents API → Git Trees API（blob 作成 → tree 作成 → commit → ref 更新）に変更
+- レスポンスに `publishedAt` を追加
 
-### Phase 3: 旧資産整理（1日）
+### Phase 3: 読み取りパスの変更
 
-- `public/img/blank25/*` の参照コードを完全撤去
-- `imageFile` 依存を廃止し `imageUrl` に統一
-- GitHub 連携コード（BLANK25向け）を削除
+- `GET /api/blank25/manifest` を新規実装（タイムスタンプ付き raw URL fetch）
+- プレイ画面 / 問題一覧の manifest 取得を `/api/blank25/manifest` に切替
+- `imageUrl` を `nazomatic-storage` の raw URL に統一
+- `next/image` コンポーネントに `unoptimized` prop を追加
 
-## 8. 影響ファイル（想定）
+### Phase 4: 旧資産の整理
+
+- `public/data/blank25/problems.json` の参照コードを撤去
+- `public/img/blank25/*` の参照コードを撤去
+- Vercel デプロイへの BLANK25 コンテンツ依存を完全に切り離す
+
+---
+
+## 6. 影響ファイル（想定）
 
 - `src/app/api/internal/blank25/editor/manifest/route.ts`
 - `src/app/api/internal/blank25/editor/publish/route.ts`
-- `src/server/blank25/*`（GitHub依存ロジックの撤去）
-- `src/components/blank25/manifest.ts`（公開 API 取得へ変更）
-- `src/components/blank25/blank25-game.tsx`（`imageUrl` 対応）
-- `src/components/blank25/problem-list.tsx`（`imageUrl` 対応）
-- `src/server/firebase/admin.ts`（Storage 初期化を追加）
+- `src/app/api/blank25/manifest/route.ts`（新規）
+- `src/server/blank25/github.ts`（Trees API 対応・ストレージリポジトリ向け改修）
+- `src/components/blank25/manifest.ts`（API 取得先変更）
+- `src/components/blank25/blank25-game.tsx`（`imageUrl` 対応・`unoptimized` prop 追加）
+- `src/components/blank25/problem-list.tsx`（`imageUrl` 対応・`unoptimized` prop 追加）
 
-## 9. この件への回答
+---
 
-- 「jsonだけFirebase、画像は別Git」はおすすめしない
-- 反映速度と整合性を優先するなら、JSON/画像を同じ Firebase 系に寄せるのが実運用で安定
-- C案（Firestore + Cloud Storage）で進めるのが最も実用的
-- 既存画像も全件 Cloud Storage 管理へ移し、GitHub 画像/バックアップ運用は行わない
+## 7. 既知の問題点
+
+### 7.1 画像の CDN キャッシュ（最大 5 分）
+
+`raw.githubusercontent.com` の画像は CDN でキャッシュされるため、push 直後は最大 5 分程度古い画像が表示される可能性がある。`problems.json` はタイムスタンプで迂回するが、画像は意図的にキャッシュを許容する方針とする。問題 ID に紐づく画像は一度 publish すると通常は変わらないため、実運用での影響は小さい。
+
+### 7.2 last write wins（競合データロスト）
+
+`baseManifestSha` チェックを廃止するため、2 つの publish が重なった場合は後からの push が前の変更を上書きする。同時編集者が複数いる運用では変更が黙って消える。1 人管理が前提であれば許容できる。
+
+### 7.3 画像削除・リネームの管理
+
+問題を更新・削除した際に旧画像ファイルが `nazomatic-storage` に残り続ける。孤立ファイルを削除する仕組みがないと Git オブジェクトが増える。publish フロー内での旧ファイル削除（Trees API に削除エントリを含める）か、定期的な手動整理が必要。
+
+### 7.4 GitHub 利用規約上のリスク
+
+`raw.githubusercontent.com` は大規模コンテンツ配信用の CDN ではない。アクセス数が増えると 429 や IP 制限が発生し得る。小規模運用では問題ないが、スケールアップ時は Cloud Storage / CDN への移行を再検討する。
+
+### 7.5 パブリックリポジトリ必須
+
+raw URL をトークンなしで参照するには `nazomatic-storage` がパブリックである必要がある。BLANK25 の未公開問題や画像を一時的に非公開にしたい場合は対応できない。
+
+### 7.6 Git Trees API の実装コスト
+
+Trees API は Contents API より手順が多い（blob 作成 → tree 作成 → commit 作成 → ref 更新の 4 ステップ）。ただし同一コミットで複数ファイルを扱える唯一の方法であり、整合性確保のために必須とする。
+
+---
+
+## 8. 結論
+
+- Firebase Blaze プランを使わずに運用できる
+- JSON と画像を同一リポジトリ・同一コミットで管理することで、v0.4 の非アトミック問題を解消する
+- JSON はタイムスタンプ付き fetch で即時相当の反映、画像は CDN キャッシュを許容する
+- 1 人管理 / 小規模アクセスの前提であれば実用的
+- アクセスが増えた場合は GitHub raw 配信から Cloud Storage / CDN への移行を再検討する

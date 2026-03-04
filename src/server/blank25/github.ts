@@ -1,17 +1,12 @@
 const GITHUB_API_BASE = "https://api.github.com";
-const MANIFEST_PATH = "public/data/blank25/problems.json";
+const STORAGE_MANIFEST_PATH = "problems.json";
+const STORAGE_IMAGE_DIR = "img";
 
 export type Blank25GitHubConfig = {
   token: string;
   owner: string;
   repo: string;
   branch: string;
-};
-
-type GitHubContentFile = {
-  sha: string;
-  content: string;
-  encoding: string;
 };
 
 type GitHubRefResponse = {
@@ -92,13 +87,15 @@ const githubRequest = async <T>(
   return (await response.json()) as T;
 };
 
-const decodeBase64Content = (content: string): string =>
-  Buffer.from(content.replace(/\n/g, ""), "base64").toString("utf8");
-
 export const encodeUtf8AsBase64 = (text: string): string =>
   Buffer.from(text, "utf8").toString("base64");
 
-export const loadBlank25GitHubConfig = (): Blank25GitHubConfig => {
+/**
+ * nazomatic-storage リポジトリへの接続設定を読み込む。
+ * 既存の BLANK25_EDITOR_GITHUB_* 環境変数をそのまま使用する。
+ * BLANK25_EDITOR_GITHUB_REPO は nazomatic-storage を指すように設定すること。
+ */
+export const loadBlank25StorageConfig = (): Blank25GitHubConfig => {
   const token = process.env.GITHUB_TOKEN;
   const owner = process.env.BLANK25_EDITOR_GITHUB_OWNER;
   const repo = process.env.BLANK25_EDITOR_GITHUB_REPO;
@@ -117,22 +114,40 @@ export const loadBlank25GitHubConfig = (): Blank25GitHubConfig => {
   return { token, owner, repo, branch };
 };
 
-export const fetchBlank25ManifestFile = async (
-  config: Blank25GitHubConfig,
-): Promise<{ manifestText: string; manifestSha: string }> => {
-  const result = await githubRequest<GitHubContentFile>(
-    config,
-    `/contents/${MANIFEST_PATH}?ref=${encodeURIComponent(config.branch)}`,
-  );
+/**
+ * storage リポジトリの raw URL ベースを返す。
+ * 例: https://raw.githubusercontent.com/FukaseDaichi/nazomatic-storage/main
+ */
+export const buildStorageRawBase = (config: Blank25GitHubConfig): string =>
+  `https://raw.githubusercontent.com/${encodeURIComponent(config.owner)}/${encodeURIComponent(config.repo)}/${encodeURIComponent(config.branch)}`;
 
-  if (result.encoding !== "base64") {
-    throw new Error(`Unsupported manifest encoding: ${result.encoding}`);
+/**
+ * 画像ファイル名から storage リポジトリ内のパスを返す。
+ * 例: "blank25-001.webp" → "img/blank25-001.webp"
+ */
+export const buildStorageImagePath = (imageFile: string): string =>
+  `${STORAGE_IMAGE_DIR}/${imageFile}`;
+
+/**
+ * raw.githubusercontent.com から problems.json を取得する。
+ * タイムスタンプをクエリパラメータとして付与し CDN キャッシュを迂回する。
+ */
+export const fetchManifestFromRaw = async (
+  config: Blank25GitHubConfig,
+): Promise<string> => {
+  const timestamp = Date.now();
+  const url = `${buildStorageRawBase(config)}/${STORAGE_MANIFEST_PATH}?v=${timestamp}`;
+  const response = await fetch(url, { cache: "no-store" });
+
+  if (!response.ok) {
+    throw new GitHubApiError(
+      `Failed to fetch manifest from raw URL: ${url}`,
+      response.status,
+      await response.text(),
+    );
   }
 
-  return {
-    manifestText: decodeBase64Content(result.content),
-    manifestSha: result.sha,
-  };
+  return response.text();
 };
 
 const fetchBranchHeadCommit = async (
@@ -223,6 +238,10 @@ const createCommit = async ({
   return result.sha;
 };
 
+/**
+ * ブランチの ref を force: true で更新する。
+ * 競合を無視して常に上書きするため baseManifestSha チェックは不要。
+ */
 const updateBranchRef = async ({
   config,
   commitSha,
@@ -240,12 +259,16 @@ const updateBranchRef = async ({
       },
       body: JSON.stringify({
         sha: commitSha,
-        force: false,
+        force: true,
       }),
     },
   );
 };
 
+/**
+ * 複数ファイルを Git Trees API で単一コミットとして push する。
+ * force: true で push するため 409 は発生しない。
+ */
 export const commitFilesToBlank25Branch = async ({
   config,
   message,
