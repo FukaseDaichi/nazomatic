@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server";
 
 import {
+  buildStorageImagePath,
   commitFilesToBlank25Branch,
   encodeUtf8AsBase64,
-  fetchBlank25ManifestFile,
+  fetchManifestFromRaw,
   GitHubApiError,
-  loadBlank25GitHubConfig,
+  loadBlank25StorageConfig,
 } from "@/server/blank25/github";
+import type { Blank25Manifest } from "@/components/blank25/types";
 import {
   Blank25ManifestEditorError,
   createProblemInManifest,
@@ -30,7 +32,6 @@ type PublishRequestBody = {
   linkName: string;
   answers: string[];
   image?: PublishImagePayload;
-  baseManifestSha?: string;
 };
 
 type PublishSuccessResponse = {
@@ -40,6 +41,7 @@ type PublishSuccessResponse = {
   imageFile: string;
   commitSha: string;
   previousImageFile?: string;
+  manifest: Blank25Manifest;
 };
 
 type PublishErrorResponse = {
@@ -128,11 +130,6 @@ const parseBody = (raw: unknown): PublishRequestBody => {
   }
 
   const problemId = toStringValue(record.problemId, "problemId", false);
-  const baseManifestSha = toStringValue(
-    record.baseManifestSha,
-    "baseManifestSha",
-    false,
-  );
 
   if (mode === "delete") {
     if (!problemId) {
@@ -145,7 +142,6 @@ const parseBody = (raw: unknown): PublishRequestBody => {
       categoryId: "",
       linkName: "",
       answers: [],
-      baseManifestSha,
     };
   }
 
@@ -169,7 +165,6 @@ const parseBody = (raw: unknown): PublishRequestBody => {
     linkName: linkName ?? "",
     answers,
     image,
-    baseManifestSha,
   };
 };
 
@@ -179,29 +174,14 @@ const normalizeBase64 = (input: string): string =>
     .replace(/^data:[^;]+;base64,/, "")
     .replace(/\s+/g, "");
 
-const isFastForwardError = (error: GitHubApiError): boolean =>
-  error.status === 422 &&
-  /fast[- ]forward|not a fast-forward|reference update failed/i.test(
-    error.details,
-  );
-
 export async function POST(request: Request) {
   try {
     const rawBody = await readJsonBody(request);
     const body = parseBody(rawBody);
-    const config = loadBlank25GitHubConfig();
+    const config = loadBlank25StorageConfig();
 
-    const { manifestText, manifestSha } = await fetchBlank25ManifestFile(config);
-    if (body.baseManifestSha && body.baseManifestSha !== manifestSha) {
-      return NextResponse.json<PublishErrorResponse>(
-        {
-          ok: false,
-          error: "Manifest was updated by someone else. Please reload and retry.",
-        },
-        { status: 409 },
-      );
-    }
-
+    // raw URL からマニフェストを取得（タイムスタンプ付きで CDN キャッシュを迂回）
+    const manifestText = await fetchManifestFromRaw(config);
     const manifest = parseBlank25ManifestText(manifestText);
 
     let nextManifest = manifest;
@@ -230,8 +210,9 @@ export async function POST(request: Request) {
       nextProblemId = createResult.problem.id;
       nextImageFile = createResult.problem.imageFile;
 
+      // 画像を nazomatic-storage の img/ 以下に配置
       filesToCommit.push({
-        path: `public/img/blank25/${nextImageFile}`,
+        path: buildStorageImagePath(nextImageFile),
         base64Content: normalizeBase64(body.image.base64),
       });
     } else if (body.mode === "update") {
@@ -258,7 +239,7 @@ export async function POST(request: Request) {
 
       if (body.image) {
         filesToCommit.push({
-          path: `public/img/blank25/${nextImageFile}`,
+          path: buildStorageImagePath(nextImageFile),
           base64Content: normalizeBase64(body.image.base64),
         });
       }
@@ -275,9 +256,10 @@ export async function POST(request: Request) {
       nextImageFile = deleteResult.problem.imageFile;
     }
 
+    // JSON と画像を同一コミットで push（Git Trees API 経由）
     const serializedManifest = serializeBlank25Manifest(nextManifest);
     filesToCommit.push({
-      path: "public/data/blank25/problems.json",
+      path: "problems.json",
       base64Content: encodeUtf8AsBase64(serializedManifest),
     });
 
@@ -301,6 +283,7 @@ export async function POST(request: Request) {
       imageFile: nextImageFile,
       commitSha,
       previousImageFile,
+      manifest: nextManifest,
     });
   } catch (error) {
     if (error instanceof Blank25ManifestEditorError) {
@@ -311,16 +294,6 @@ export async function POST(request: Request) {
     }
 
     if (error instanceof GitHubApiError) {
-      if (isFastForwardError(error)) {
-        return NextResponse.json<PublishErrorResponse>(
-          {
-            ok: false,
-            error: "Conflict detected while publishing. Please reload and retry.",
-          },
-          { status: 409 },
-        );
-      }
-
       return NextResponse.json<PublishErrorResponse>(
         { ok: false, error: `GitHub API error (${error.status}).` },
         { status: 502 },

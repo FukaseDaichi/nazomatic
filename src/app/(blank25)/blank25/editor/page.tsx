@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 
 import Blank25ImageCropperDialog from "@/components/blank25/editor/image-cropper-dialog";
+import { getBlank25ImageUrl } from "@/components/blank25/image-url";
 import type {
   Blank25Category,
   Blank25Manifest,
@@ -49,7 +50,6 @@ type CropPayload = {
 type EditorManifestResponse =
   | {
       ok: true;
-      manifestSha: string;
       manifest: Blank25Manifest;
     }
   | {
@@ -65,6 +65,7 @@ type PublishResponse =
       imageFile: string;
       commitSha: string;
       previousImageFile?: string;
+      manifest: Blank25Manifest;
     }
   | {
       ok: false;
@@ -79,7 +80,6 @@ const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 export default function Blank25EditorPage() {
   const [mode, setMode] = useState<EditorMode>("create");
   const [categories, setCategories] = useState<Blank25Category[] | null>(null);
-  const [manifestSha, setManifestSha] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [reloading, setReloading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -122,7 +122,7 @@ export default function Blank25EditorPage() {
       return imagePayload.previewUrl;
     }
     if (mode === "update" && selectedProblem) {
-      return `/img/blank25/${selectedProblem.imageFile}`;
+      return getBlank25ImageUrl(selectedProblem.imageFile);
     }
     return null;
   }, [imagePayload, mode, selectedProblem]);
@@ -174,9 +174,11 @@ export default function Blank25EditorPage() {
       }
 
       try {
-        const response = await fetch("/api/internal/blank25/editor/manifest", {
-          cache: "no-store",
-        });
+        // URL にタイムスタンプを付与してブラウザ / CDN キャッシュを完全に迂回する
+        const response = await fetch(
+          `/api/internal/blank25/editor/manifest?v=${Date.now()}`,
+          { cache: "no-store" },
+        );
         const json = (await response.json()) as EditorManifestResponse;
         if (!response.ok || !json.ok) {
           throw new Error(
@@ -185,7 +187,6 @@ export default function Blank25EditorPage() {
         }
 
         setCategories(json.manifest.categories);
-        setManifestSha(json.manifestSha);
         setCategoryId((current) => current || json.manifest.categories[0]?.id || "");
         return json.manifest.categories;
       } catch (loadError) {
@@ -304,7 +305,6 @@ export default function Blank25EditorPage() {
                 contentType: imagePayload.contentType,
               }
             : undefined,
-          baseManifestSha: manifestSha ?? undefined,
         }),
       });
 
@@ -319,7 +319,8 @@ export default function Blank25EditorPage() {
       cleanupCropImageUrl();
       setImagePayload(null);
 
-      await loadManifest(true);
+      // レスポンスに含まれる最新マニフェストを直接反映（GitHub CDN の再取得を省略）
+      setCategories(json.manifest.categories);
 
       if (json.mode === "create") {
         setMode("update");
@@ -343,8 +344,6 @@ export default function Blank25EditorPage() {
     cleanupCropImageUrl,
     imagePayload,
     linkName,
-    loadManifest,
-    manifestSha,
     mode,
     selectedProblemId,
   ]);
@@ -375,7 +374,6 @@ export default function Blank25EditorPage() {
         body: JSON.stringify({
           mode: "delete",
           problemId: selectedProblem.id,
-          baseManifestSha: manifestSha ?? undefined,
         }),
       });
 
@@ -388,10 +386,9 @@ export default function Blank25EditorPage() {
       cleanupCropImageUrl();
       setImagePayload(null);
 
-      const nextCategories = await loadManifest(true);
-      if (nextCategories) {
-        applyCreateDefaults(nextCategories);
-      }
+      // レスポンスに含まれる最新マニフェストを直接反映（GitHub CDN の再取得を省略）
+      setCategories(json.manifest.categories);
+      applyCreateDefaults(json.manifest.categories);
     } catch (deleteError) {
       if (deleteError instanceof Error) {
         setFormError(deleteError.message);
@@ -404,8 +401,6 @@ export default function Blank25EditorPage() {
   }, [
     applyCreateDefaults,
     cleanupCropImageUrl,
-    loadManifest,
-    manifestSha,
     mode,
     selectedProblem,
   ]);
@@ -447,8 +442,6 @@ export default function Blank25EditorPage() {
               BLANK25 エディタ
             </p>
             <p className="text-[11px] text-gray-500">
-              {manifestSha ? `SHA: ${manifestSha.slice(0, 10)}` : "---"}
-              {" / "}
               {flatProblems.length} 問
             </p>
           </div>
@@ -553,7 +546,7 @@ export default function Blank25EditorPage() {
                           >
                             <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-gray-800">
                               <Image
-                                src={`/img/blank25/${problem.imageFile}`}
+                                src={getBlank25ImageUrl(problem.imageFile)}
                                 alt={problem.linkName}
                                 fill
                                 className="object-cover"

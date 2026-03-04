@@ -1,10 +1,10 @@
-# BLANK25 設計方針（実装準拠 v1.0 / 2026-03-03）
+# BLANK25 設計方針（実装準拠 v1.1 / 2026-03-04）
 
 ## 1. 基本方針
 
 - 既存の NAZOMATIC（Next.js App Router / Tailwind / shadcn/ui）へ薄く追加する。
 - ゲーム体験の中心は「見える情報量の制御」と「回答推理」に置く。
-- 問題データは `public/data/blank25/problems.json` を単一ソースとする。
+- 問題データは `nazomatic-storage` リポジトリの `problems.json`（raw URL 経由）を単一ソースとする。
 
 ## 2. デザイン方針
 
@@ -22,7 +22,7 @@
 
 ### 3.1 問題マニフェスト
 
-- `public/data/blank25/problems.json` を参照し、カテゴリ階層をそのまま UI に反映する。
+- `nazomatic-storage` の raw URL（`GET /api/blank25/manifest` 経由）を参照し、カテゴリ階層をそのまま UI に反映する。
 - 問題 ID は全カテゴリで一意とし、読み込み時に重複を検出する。
 
 ### 3.2 画面分離
@@ -49,19 +49,20 @@
 
 - 入力と `answers` に同一の正規化ロジックを適用して判定。
 - `NFKC`、かな統一、空白除去、小文字化を行う。
+- 回答の保存時は **trim 後の完全一致** で重複排除する（ひらがな/カタカナは別表記として保存できる）。
 
 ### 4.3 Editor 反映フロー
 
-- Editor API は GitHub API 経由で `problems.json` と画像を同一コミットで反映。
-- `baseManifestSha` と fast-forward 失敗の両面で競合検知を行う。
+- Editor API は `nazomatic-storage` へ Git Trees API 経由で `problems.json` と画像を同一コミットで反映。
+- `force: true` で push し、競合検知（`baseManifestSha`）は行わない。
+- publish レスポンスに更新後の `manifest` を含め、Editor はそれを直接 state に反映する（CDN 再取得を省略）。
 
 ## 5. 主要ディレクトリ
 
-- `public/data/blank25/problems.json`
-- `public/img/blank25/*`
 - `src/app/(blank25)/blank25/page.tsx`
 - `src/app/(blank25)/blank25/[problemId]/page.tsx`
 - `src/app/(blank25)/blank25/editor/page.tsx`
+- `src/app/api/blank25/manifest/route.ts`
 - `src/app/api/internal/blank25/editor/manifest/route.ts`
 - `src/app/api/internal/blank25/editor/publish/route.ts`
 - `src/components/blank25/*`

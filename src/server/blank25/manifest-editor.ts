@@ -1,4 +1,3 @@
-import { normalizeBlank25Answer } from "@/components/blank25/answer-normalize";
 import type {
   Blank25Category,
   Blank25Manifest,
@@ -187,7 +186,7 @@ export const listManifestProblems = (
   );
 
 export const sanitizeBlank25Answers = (answers: string[]): string[] => {
-  const normalizedSet = new Set<string>();
+  const seen = new Set<string>();
   const result: string[] = [];
 
   for (const raw of answers) {
@@ -198,13 +197,12 @@ export const sanitizeBlank25Answers = (answers: string[]): string[] => {
     if (!trimmed) {
       continue;
     }
-
-    const normalized = normalizeBlank25Answer(trimmed);
-    if (!normalized || normalizedSet.has(normalized)) {
+    // 完全一致（trim後）でのみ重複排除。
+    // ひらがな/カタカナなど表記ゆれの正規化はゲーム実行時に行う。
+    if (seen.has(trimmed)) {
       continue;
     }
-
-    normalizedSet.add(normalized);
+    seen.add(trimmed);
     result.push(trimmed);
   }
 

@@ -6,14 +6,14 @@ import {
   loadBlank25StorageConfig,
 } from "@/server/blank25/github";
 import { parseBlank25ManifestText } from "@/server/blank25/manifest-editor";
+import type { Blank25Manifest } from "@/components/blank25/types";
 
 export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
 
 type ManifestResponse =
   | {
       ok: true;
-      manifest: ReturnType<typeof parseBlank25ManifestText>;
+      manifest: Blank25Manifest;
     }
   | {
       ok: false;
@@ -28,14 +28,19 @@ export async function GET() {
 
     return NextResponse.json<ManifestResponse>(
       { ok: true, manifest },
-      { headers: { "Cache-Control": "no-store" } },
+      {
+        headers: {
+          // クライアントキャッシュは 0、サーバー側でも毎回 raw URL から取得する
+          "Cache-Control": "no-store",
+        },
+      },
     );
   } catch (error) {
     if (error instanceof GitHubApiError) {
       return NextResponse.json<ManifestResponse>(
         {
           ok: false,
-          error: `GitHub raw fetch failed (${error.status}).`,
+          error: `Failed to fetch manifest (${error.status}).`,
         },
         { status: 502 },
       );
