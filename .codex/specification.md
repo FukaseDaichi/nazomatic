@@ -1,4 +1,4 @@
-# NAZOMATIC 要件定義書（実装準拠 / 2026-03-03）
+# NAZOMATIC 要件定義書（実装準拠 / 2026-03-04）
 
 本書は `nazomatic` リポジトリの現行実装（Next.js App Router）を基準に整理した要件定義書です。
 
@@ -96,7 +96,8 @@
 ### 4.5 BLANK25 Editor（必須）
 
 - Basic 認証: `BLANK25_EDITOR_USER`, `BLANK25_EDITOR_PASSWORD`
-- GitHub 反映: `GITHUB_TOKEN`, `BLANK25_EDITOR_GITHUB_OWNER`, `BLANK25_EDITOR_GITHUB_REPO`, `BLANK25_EDITOR_GITHUB_BRANCH`
+- GitHub 反映: `GITHUB_TOKEN`, `BLANK25_EDITOR_GITHUB_OWNER`, `BLANK25_EDITOR_GITHUB_REPO`（`nazomatic-storage` を指定）, `BLANK25_EDITOR_GITHUB_BRANCH`
+- クライアント側画像 URL: `NEXT_PUBLIC_BLANK25_STORAGE_RAW_BASE`（例: `https://raw.githubusercontent.com/FukaseDaichi/nazomatic-storage/main`）
 
 ---
 
@@ -173,9 +174,10 @@
 
 ### 6.6 BLANK25 Editor
 
-- 画像アップロード + トリミング + 回答入力で `problems.json` を更新。
+- 画像アップロード + トリミング + 回答入力で `nazomatic-storage` リポジトリを更新。
 - `react-easy-crop` による 1:1 トリミング、5x5 ルーラー表示。
-- GitHub API 経由で `public/data/blank25/problems.json` と画像を同一コミットで反映。
+- Git Trees API 経由で `problems.json` と画像を `nazomatic-storage` へ同一コミットで反映。
+- publish レスポンスに更新後 `manifest` を含め、Editor はそれを直接 state に反映（再取得不要）。
 
 ---
 
@@ -192,6 +194,9 @@
   - パラメータ: `query`, `from`, `to`, `rangeDays`。
   - 上限: `rangeDays<=60`, `MAX_RESULTS=500`。
 
+- `GET /api/blank25/manifest`
+  - `nazomatic-storage` の raw URL（タイムスタンプ付き）をサーバー fetch して返す。
+
 ### 7.2 内部 API（Realtime/X）
 
 - `POST /api/internal/realtime/register`（Bearer 必須）
@@ -201,11 +206,13 @@
 ### 7.3 BLANK25 Editor API（Basic 認証）
 
 - `GET /api/internal/blank25/editor/manifest`
-  - GitHub 上の `problems.json` と SHA を取得。
+  - `nazomatic-storage` の raw URL（タイムスタンプ付き）から `problems.json` を取得して返す。
 
 - `POST /api/internal/blank25/editor/publish`
-  - `create | update` に応じてマニフェスト更新・画像反映。
-  - `baseManifestSha` 不一致時や fast-forward 失敗時は `409`。
+  - `create | update | delete` に応じてマニフェスト更新・画像反映。
+  - Git Trees API で JSON + 画像を同一コミットとして `force: true` で push。
+  - 競合検知なし（last write wins）。
+  - 応答に更新後の `manifest` を含む。
 
 ---
 
@@ -221,7 +228,8 @@
 
 ### 8.2 BLANK25 マニフェスト
 
-- ファイル: `public/data/blank25/problems.json`
+- ファイル: `nazomatic-storage` リポジトリの `problems.json`（`BLANK25_EDITOR_GITHUB_BRANCH` ブランチ）
+- 画像: 同リポジトリの `img/` 以下
 - 構造: `version`, `categories[]`, `category.problems[]`
 - 問題 ID は全カテゴリで一意。
 

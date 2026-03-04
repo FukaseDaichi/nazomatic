@@ -1,4 +1,4 @@
-# BLANK25 アップロード編集機能 仕様書（実装準拠 v1.0 / 2026-03-03）
+# BLANK25 アップロード編集機能 仕様書（実装準拠 v1.1 / 2026-03-04）
 
 ## 1. 目的
 
@@ -7,13 +7,13 @@
 - 画像アップロード
 - 1:1 トリミング
 - 回答入力
-- GitHub への `problems.json` / 画像反映
+- `nazomatic-storage` リポジトリへの `problems.json` / 画像反映
 
 ## 2. 前提
 
 - 編集機能は管理者向け（Basic 認証必須）。
 - `(blank25)` 領域の noindex は維持する。
-- プレイ画面の参照元は引き続き `public/data/blank25/problems.json`。
+- プレイ画面の参照元は `nazomatic-storage` の raw URL（`/api/blank25/manifest` 経由）。
 - 既存 `problemId` と localStorage 互換は維持する。
 
 ## 3. デザインルール
@@ -67,24 +67,23 @@
 ### 6.2 回答制約
 
 - 1 件以上必須
-- 空文字は除外
-- `normalizeBlank25Answer` 後に重複除外
+- 空文字（trim 後）は除外
+- **trim 後の完全一致**で重複除外（ひらがな/カタカナ等の表記ゆれは重複とみなさない）
+- 表記ゆれの正規化はゲーム実行時の判定で行う
 
 ### 6.3 ID / 画像命名
 
 - 新規問題 ID: `blank25-###`（最大番号 + 1）
 - create 時の画像名: `${problemId}.webp`
 - update で画像更新時も `${problemId}.webp` を基本とする
-- 既存レガシー画像（`1.png` など）は互換維持
 
 ## 7. API 仕様
 
 ### 7.1 `GET /api/internal/blank25/editor/manifest`
 
-- 役割: GitHub 上の `problems.json` と SHA を取得
+- 役割: `nazomatic-storage` の raw URL（タイムスタンプ付き）から `problems.json` を取得
 - 応答（成功）
   - `ok: true`
-  - `manifestSha`
   - `manifest`
 
 ### 7.2 `POST /api/internal/blank25/editor/publish`
@@ -97,23 +96,23 @@
   - `linkName`（create/update 必須）
   - `answers: string[]`（create/update 必須）
   - `image?: { base64, contentType }`（create 必須 / update 任意）
-  - `baseManifestSha?`
 - 応答（成功）
   - `ok: true`
   - `mode`, `problemId`, `imageFile`, `commitSha`
+  - `manifest`（更新後の完全なマニフェスト）
 
 ### 7.3 競合制御
 
-- `baseManifestSha` が最新 SHA と不一致なら `409`。
-- GitHub ref 更新の fast-forward 失敗時も `409`。
+- 競合検知なし（`force: true` で push = last write wins）。
 
 ## 8. サーバー反映フロー
 
 1. Basic 認証済みリクエストを受信
-2. GitHub から最新 `problems.json` + SHA を取得
+2. `nazomatic-storage` の raw URL（タイムスタンプ付き）から最新 `problems.json` を取得
 3. create/update/delete 入力を検証してマニフェストを更新
-4. 画像（必要時）と `problems.json` を同一コミットで作成
-5. 対象ブランチを fast-forward 更新
+4. 画像（必要時）と `problems.json` を Git Trees API で同一コミットとして生成
+5. ブランチを `force: true` で更新
+6. 更新後の `manifest` オブジェクトをレスポンスに含めて返す
 
 ## 9. セキュリティ
 

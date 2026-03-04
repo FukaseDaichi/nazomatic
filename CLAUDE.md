@@ -48,7 +48,7 @@ npm run shift:report:view-assets
 ### データ層
 
 - **Firestore** (`src/server/firebase/admin.ts`): `realtimeEvents` コレクション。Firebase 初期化は `FIREBASE_SERVICE_ACCOUNT`（JSON 文字列）または `FIREBASE_PROJECT_ID` + `FIREBASE_CLIENT_EMAIL` + `FIREBASE_PRIVATE_KEY` のいずれか。
-- **BLANK25 マニフェスト**: `public/data/blank25/problems.json` を GitHub API 経由で更新（`src/server/blank25/github.ts`）。問題 ID は全カテゴリで一意であること。
+- **BLANK25 マニフェスト**: `nazomatic-storage` リポジトリの `problems.json` / `img/*` を Git Trees API で一括コミット（`src/server/blank25/github.ts`）。取得は raw URL 経由（タイムスタンプ付き）。問題 ID は全カテゴリで一意であること。
 
 ### 主要クラス・ユーティリティ
 
