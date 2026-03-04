@@ -174,9 +174,11 @@ export default function Blank25EditorPage() {
       }
 
       try {
-        const response = await fetch("/api/internal/blank25/editor/manifest", {
-          cache: "no-store",
-        });
+        // URL にタイムスタンプを付与してブラウザ / CDN キャッシュを完全に迂回する
+        const response = await fetch(
+          `/api/internal/blank25/editor/manifest?v=${Date.now()}`,
+          { cache: "no-store" },
+        );
         const json = (await response.json()) as EditorManifestResponse;
         if (!response.ok || !json.ok) {
           throw new Error(

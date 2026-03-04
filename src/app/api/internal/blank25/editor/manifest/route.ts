@@ -8,6 +8,7 @@ import {
 import { parseBlank25ManifestText } from "@/server/blank25/manifest-editor";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 type ManifestResponse =
   | {
@@ -25,10 +26,10 @@ export async function GET() {
     const manifestText = await fetchManifestFromRaw(config);
     const manifest = parseBlank25ManifestText(manifestText);
 
-    return NextResponse.json<ManifestResponse>({
-      ok: true,
-      manifest,
-    });
+    return NextResponse.json<ManifestResponse>(
+      { ok: true, manifest },
+      { headers: { "Cache-Control": "no-store" } },
+    );
   } catch (error) {
     if (error instanceof GitHubApiError) {
       return NextResponse.json<ManifestResponse>(
