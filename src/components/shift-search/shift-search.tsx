@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { HelpCircle } from "lucide-react";
+import { Check, HelpCircle, Sparkles } from "lucide-react";
 import { DICTIONARIES, SearchManager } from "@/class/SearchManager";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -151,10 +151,12 @@ export default function ShiftSearch() {
     },
     [loadDictionary],
   );
+  const canSearch =
+    Boolean(searchManager) && !loading && input.trim().length > 0;
 
   return (
-    <main className="min-h-screen">
-      <div className="max-w-3xl mx-auto space-y-6">
+    <main className="min-h-screen px-4 pb-10 pt-3 sm:px-6 sm:pt-6">
+      <div className="mx-auto w-full max-w-3xl space-y-4 sm:space-y-6">
         <div className="relative">
           <motion.h1
             initial={{ opacity: 0, y: -20 }}
@@ -174,7 +176,7 @@ export default function ShiftSearch() {
             </Button>
           </div>
         </div>
-        <Card className="bg-gray-800 border-gray-700">
+        <Card className="border-gray-700/90 bg-gray-800/95 shadow-[0_16px_40px_rgba(0,0,0,0.25)]">
           <CardHeader>
             <div className="flex items-center gap-2">
               <CardTitle className="text-xl text-white">検索条件</CardTitle>
@@ -221,9 +223,12 @@ export default function ShiftSearch() {
               </div>
             </div>
           </CardHeader>
-          <CardContent className="space-y-5">
-            <div className="space-y-2">
-              <Label htmlFor="shift-input" className="text-gray-200">
+          <CardContent className="space-y-4">
+            <div className="space-y-2 rounded-xl border border-gray-700 bg-gray-900/60 p-3.5">
+              <Label
+                htmlFor="shift-input"
+                className="text-sm font-semibold text-gray-200"
+              >
                 単語入力
               </Label>
               <Input
@@ -236,7 +241,7 @@ export default function ShiftSearch() {
                     void handleSearch();
                   }
                 }}
-                className="bg-gray-700 border-gray-600 text-white text-base"
+                className="h-11 border-gray-600 bg-gray-700/90 text-base text-white focus-visible:ring-purple-400 focus-visible:ring-offset-gray-900"
                 placeholder={getShiftPlaceholder(selectedDictionary)}
               />
               <p className="text-xs text-gray-400">
@@ -244,13 +249,15 @@ export default function ShiftSearch() {
               </p>
             </div>
 
-            <div className="space-y-2">
-              <Label className="text-gray-200">辞書</Label>
+            <div className="space-y-2 rounded-xl border border-gray-700 bg-gray-900/60 p-3.5">
+              <Label className="text-sm font-semibold text-gray-200">
+                辞書
+              </Label>
               <Select
                 value={selectedDictionary}
                 onValueChange={handleChangeDictionary}
               >
-                <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                <SelectTrigger className="h-11 border-gray-600 bg-gray-700/90 text-white focus:ring-purple-400">
                   <SelectValue placeholder="辞書を選択" />
                 </SelectTrigger>
                 <SelectContent className="bg-gray-700 border-gray-600 text-white">
@@ -270,28 +277,63 @@ export default function ShiftSearch() {
               </p>
             </div>
 
-            <label className="flex items-center gap-2 text-gray-200">
+            <label
+              htmlFor="include-anagram"
+              className={`group relative flex cursor-pointer items-start gap-3 rounded-xl border px-3.5 py-3 transition focus-within:ring-2 focus-within:ring-purple-400/70 ${
+                includeAnagram
+                  ? "border-purple-400/80 bg-gradient-to-r from-purple-500/20 via-purple-500/10 to-gray-900/80 shadow-[0_0_20px_rgba(168,85,247,0.18)]"
+                  : "border-gray-700 bg-gray-900/70 hover:border-purple-400/50"
+              }`}
+            >
               <input
+                id="include-anagram"
                 type="checkbox"
                 checked={includeAnagram}
                 onChange={(event) => setIncludeAnagram(event.target.checked)}
-                className="h-4 w-4"
+                className="sr-only"
               />
-              ずらした後でアナグラム検索を有効にする
+              <span
+                className={`relative mt-0.5 h-6 w-11 shrink-0 rounded-full border transition ${
+                  includeAnagram
+                    ? "border-purple-300/80 bg-purple-500/70"
+                    : "border-gray-600 bg-gray-700"
+                }`}
+              >
+                <span
+                  className={`absolute left-0.5 top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-white text-purple-600 shadow-md transition-transform duration-200 ease-out ${
+                    includeAnagram ? "translate-x-5" : "translate-x-0"
+                  }`}
+                >
+                  {includeAnagram && <Check className="h-3 w-3" />}
+                </span>
+              </span>
+              <span className="space-y-1">
+                <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-100">
+                  <Sparkles
+                    className={`h-4 w-4 ${
+                      includeAnagram ? "text-purple-300" : "text-gray-400"
+                    }`}
+                  />
+                  アナグラム検索
+                </span>
+                <span className="block text-xs leading-relaxed text-gray-300">
+                  シフト後の文字を並べ替えて探索
+                </span>
+              </span>
             </label>
 
             <Button
               onClick={() => void handleSearch()}
-              disabled={!searchManager || loading}
-              className="w-full bg-purple-400 hover:bg-purple-500 text-gray-900"
+              disabled={!canSearch}
+              className="h-11 w-full rounded-xl bg-purple-400 text-base font-semibold text-gray-900 hover:bg-purple-500 disabled:bg-gray-700 disabled:text-gray-400"
             >
               {loading ? "検索中..." : "検索"}
             </Button>
           </CardContent>
         </Card>
 
-        <Card className="bg-gray-800 border-gray-700">
-          <CardHeader>
+        <Card className="border-gray-700/90 bg-gray-800/95 shadow-[0_16px_40px_rgba(0,0,0,0.2)]">
+          <CardHeader className="pb-4">
             <CardTitle className="text-xl text-white">
               検索結果 {results?.length > 0 && "(" + results.length + ")"}
             </CardTitle>
@@ -318,15 +360,15 @@ export default function ShiftSearch() {
             ) : results.length === 0 ? (
               <p className="text-gray-400">結果がありません。</p>
             ) : (
-              <ul className="space-y-2">
+              <ul className="space-y-2.5">
                 {results.map((result, index) => (
                   <li
                     key={`${result.resultWord}-${result.shift}-${result.matchType}-${index}`}
-                    className="bg-gray-700 rounded-md p-3 text-white"
+                    className="rounded-xl border border-gray-600/80 bg-gray-700/60 p-3 text-white"
                   >
-                    <div className="flex items-center justify-between gap-2">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
                       <span className="font-semibold">{result.resultWord}</span>
-                      <div className="flex items-center gap-1">
+                      <div className="flex flex-wrap items-center gap-1">
                         <Badge className="bg-gray-600 text-gray-100 border-gray-500">
                           shift +{result.shift}
                         </Badge>
