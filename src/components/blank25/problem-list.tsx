@@ -8,6 +8,7 @@ import type { Blank25Category } from "@/components/blank25/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import Link from "next/link";
 
 export default function Blank25ProblemList() {
   const router = useRouter();
@@ -61,8 +62,10 @@ export default function Blank25ProblemList() {
 
   const totalProblems = useMemo(
     () =>
-      categories?.reduce((count, category) => count + category.problems.length, 0) ??
-      0,
+      categories?.reduce(
+        (count, category) => count + category.problems.length,
+        0,
+      ) ?? 0,
     [categories],
   );
 
@@ -272,7 +275,9 @@ export default function Blank25ProblemList() {
                         className={[
                           "group relative block w-full cursor-pointer rounded-xl text-left transition-all duration-200",
                           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/90 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900",
-                          isNavigating ? "scale-[0.98]" : "hover:-translate-y-0.5",
+                          isNavigating
+                            ? "scale-[0.98]"
+                            : "hover:-translate-y-0.5",
                           navigatingId && !isNavigating ? "opacity-70" : "",
                         ].join(" ")}
                         aria-label={`${problem.linkName} を開く`}
@@ -311,6 +316,15 @@ export default function Blank25ProblemList() {
           </div>
         </div>
       )}
+      <div className="absolute right-4 z-40 sm:right-6">
+        <Link
+          href="/blank25/editor"
+          prefetch={false}
+          className="inline-flex items-center rounded-full border border-amber-300/60 bg-gray-900/85 px-3 py-1.5 text-xs font-semibold text-amber-200 shadow-lg backdrop-blur transition-colors hover:bg-gray-800"
+        >
+          Admin
+        </Link>
+      </div>
     </main>
   );
 }
