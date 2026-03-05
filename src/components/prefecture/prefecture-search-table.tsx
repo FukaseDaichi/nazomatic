@@ -392,69 +392,105 @@ export function PrefectureSearchTableComponent() {
     const input = e.target.value;
     setCapitalSearch(input);
   };
+  const hasResults = filteredPrefectures.length > 0;
 
   return (
-    <main className="p-8">
-      <div className="max-w-[700px] mx-auto">
-        <h1 className="text-3xl font-bold mb-8 text-center">
+    <main className="px-4 py-6 sm:p-8">
+      <div className="mx-auto max-w-[700px]">
+        <h1 className="mb-6 text-center text-2xl font-bold sm:mb-8 sm:text-3xl">
           都道府県システム
         </h1>
-        <div className="flex gap-4 mb-2">
-          <div className="flex-1">
+        <div className="mb-2 grid gap-3 sm:grid-cols-2 sm:gap-4">
+          <div>
             <Input
               type="text"
               placeholder="都道府県ひらがな"
               value={prefectureSearch}
               onChange={handlePrefectureSearch}
-              className="bg-gray-700 text-white placeholder-gray-400 border-purple-400 text-base"
+              className="h-11 border-purple-400 bg-gray-700 text-base text-white placeholder-gray-400"
             />
           </div>
-          <div className="flex-1">
+          <div>
             <Input
               type="text"
               placeholder="県庁所在地ひらがな"
               value={capitalSearch}
               onChange={handleCapitalSearch}
-              className="bg-gray-700 text-white placeholder-gray-400 border-purple-400  text-base"
+              className="h-11 border-purple-400 bg-gray-700 text-base text-white placeholder-gray-400"
             />
           </div>
         </div>
-        <p className="text-xs text-gray-400 mt-1 text-center">
+        <p className="mt-1 text-center text-xs text-gray-400 sm:text-left">
           ※ アスタリスク(＊)で0文字以上、クエスチョン(？)1文字
         </p>
-        <div className="overflow-x-auto mb-8">
+
+        <div className="mb-4 mt-4 sm:hidden">
+          <div className="grid grid-cols-[3.2rem_minmax(0,1fr)_minmax(0,1fr)] gap-2 border-b border-gray-700 px-2 pb-2 text-[11px] font-semibold text-purple-300">
+            <p>地方</p>
+            <p>都道府県</p>
+            <p>県庁所在地</p>
+          </div>
+          {hasResults ? (
+            <div className="divide-y divide-gray-800 rounded-lg border border-gray-700 bg-gray-800/60">
+              {filteredPrefectures.map((prefecture) => (
+                <article
+                  key={prefecture.name}
+                  className="grid grid-cols-[3.2rem_minmax(0,1fr)_minmax(0,1fr)] gap-2 px-2 py-2.5"
+                >
+                  <p className="truncate text-xs text-purple-300">
+                    {prefecture.region}
+                  </p>
+                  <p className="truncate text-[13px] font-semibold text-white">
+                    {prefecture.hiragana}
+                    <span className="ml-1 text-[10px] font-normal text-gray-400">
+                      ({prefecture.name})
+                    </span>
+                  </p>
+                  <p className="truncate text-[13px] font-semibold text-white">
+                    {prefecture.capitalHiragana}
+                    <span className="ml-1 text-[10px] font-normal text-gray-400">
+                      ({prefecture.capital})
+                    </span>
+                  </p>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-lg border border-gray-700 bg-gray-800/70 p-4 text-sm text-gray-300">
+              条件に合う都道府県が見つかりませんでした。
+            </div>
+          )}
+        </div>
+
+        <div className="mb-8 hidden overflow-x-auto rounded-xl border border-gray-700 bg-gray-800/60 sm:block">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="hidden sm:table-cell text-purple-400">
-                  地方
-                </TableHead>
+                <TableHead className="text-purple-400">地方</TableHead>
                 <TableHead className="text-purple-400">都道府県</TableHead>
-                <TableHead className="hidden sm:table-cell text-purple-400">
-                  ひらがな
-                </TableHead>
+                <TableHead className="text-purple-400">ひらがな</TableHead>
                 <TableHead className="text-purple-400">県庁所在地</TableHead>
-                <TableHead className="hidden sm:table-cell text-purple-400">
-                  ひらがな
-                </TableHead>
+                <TableHead className="text-purple-400">ひらがな</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredPrefectures.map((prefecture) => (
-                <TableRow key={prefecture.name} className="hover:bg-gray-700">
-                  <TableCell className="hidden sm:table-cell">
-                    {prefecture.region}
-                  </TableCell>
-                  <TableCell>{prefecture.name}</TableCell>
-                  <TableCell className="hidden sm:table-cell">
-                    {prefecture.hiragana}
-                  </TableCell>
-                  <TableCell>{prefecture.capital}</TableCell>
-                  <TableCell className="hidden sm:table-cell">
-                    {prefecture.capitalHiragana}
+              {hasResults ? (
+                filteredPrefectures.map((prefecture) => (
+                  <TableRow key={prefecture.name} className="hover:bg-gray-700">
+                    <TableCell>{prefecture.region}</TableCell>
+                    <TableCell>{prefecture.name}</TableCell>
+                    <TableCell>{prefecture.hiragana}</TableCell>
+                    <TableCell>{prefecture.capital}</TableCell>
+                    <TableCell>{prefecture.capitalHiragana}</TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center text-gray-300">
+                    条件に合う都道府県が見つかりませんでした。
                   </TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </div>

@@ -1,6 +1,6 @@
 interface:
   display_name: "Nazomatic Mobile UX Overhaul"
-  short_description: "スマホ優先で画面を根本改善し実装まで完了する"
+  short_description: "スマホ優先で画面を改善し実装まで完了する"
   default_prompt: "Use $nazomatic-mobile-first-ux-overhaul to redesign a target screen with bold mobile-first UX improvements, and move long on-screen guidance into tooltip-first help UI while implementing the code end-to-end."
 
 policy:
