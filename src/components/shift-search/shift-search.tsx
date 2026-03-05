@@ -177,7 +177,7 @@ export default function ShiftSearch() {
           </div>
         </div>
         <Card className="border-gray-700/90 bg-gray-800/95 shadow-[0_16px_40px_rgba(0,0,0,0.25)]">
-          <CardHeader>
+          <CardHeader className="p-4 pb-3 sm:p-5 sm:pb-4">
             <div className="flex items-center gap-2">
               <CardTitle className="text-xl text-white">検索条件</CardTitle>
               <div
@@ -223,63 +223,65 @@ export default function ShiftSearch() {
               </div>
             </div>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2 rounded-xl border border-gray-700 bg-gray-900/60 p-3.5">
-              <Label
-                htmlFor="shift-input"
-                className="text-sm font-semibold text-gray-200"
-              >
-                単語入力
-              </Label>
-              <Input
-                id="shift-input"
-                type="text"
-                value={input}
-                onChange={(event) => setInput(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    void handleSearch();
-                  }
-                }}
-                className="h-11 border-gray-600 bg-gray-700/90 text-base text-white focus-visible:ring-purple-400 focus-visible:ring-offset-gray-900"
-                placeholder={getShiftPlaceholder(selectedDictionary)}
-              />
-              <p className="text-xs text-gray-400">
-                {SearchManager.getName(selectedDictionary)}
-              </p>
-            </div>
+          <CardContent className="space-y-3 p-4 pt-0 sm:space-y-3.5 sm:p-5 sm:pt-0">
+            <div className="grid gap-2.5 sm:grid-cols-2 sm:gap-3">
+              <div className="space-y-1.5">
+                <Label
+                  htmlFor="shift-input"
+                  className="text-xs font-semibold uppercase tracking-wide text-gray-300"
+                >
+                  単語入力
+                </Label>
+                <Input
+                  id="shift-input"
+                  type="text"
+                  value={input}
+                  onChange={(event) => setInput(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      void handleSearch();
+                    }
+                  }}
+                  className="h-10 border-gray-600 bg-gray-700/90 text-base text-white focus-visible:ring-purple-400 focus-visible:ring-offset-gray-900"
+                  placeholder={getShiftPlaceholder(selectedDictionary)}
+                />
+                <p className="text-[11px] text-gray-400">
+                  {SearchManager.getName(selectedDictionary)}
+                </p>
+              </div>
 
-            <div className="space-y-2 rounded-xl border border-gray-700 bg-gray-900/60 p-3.5">
-              <Label className="text-sm font-semibold text-gray-200">
-                辞書
-              </Label>
-              <Select
-                value={selectedDictionary}
-                onValueChange={handleChangeDictionary}
-              >
-                <SelectTrigger className="h-11 border-gray-600 bg-gray-700/90 text-white focus:ring-purple-400">
-                  <SelectValue placeholder="辞書を選択" />
-                </SelectTrigger>
-                <SelectContent className="bg-gray-700 border-gray-600 text-white">
-                  {DICTIONARIES.map((dictionary) => (
-                    <SelectItem
-                      key={dictionary.key}
-                      value={dictionary.key}
-                      className="focus:bg-gray-600"
-                    >
-                      {dictionary.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <p className="text-sm text-gray-400">
-                {SearchManager.getDescription(selectedDictionary)}
-              </p>
+              <div className="space-y-1.5">
+                <Label className="text-xs font-semibold uppercase tracking-wide text-gray-300">
+                  辞書
+                </Label>
+                <Select
+                  value={selectedDictionary}
+                  onValueChange={handleChangeDictionary}
+                >
+                  <SelectTrigger className="h-10 border-gray-600 bg-gray-700/90 text-white focus:ring-purple-400">
+                    <SelectValue placeholder="辞書を選択" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-gray-700 border-gray-600 text-white">
+                    {DICTIONARIES.map((dictionary) => (
+                      <SelectItem
+                        key={dictionary.key}
+                        value={dictionary.key}
+                        className="focus:bg-gray-600"
+                      >
+                        {dictionary.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="line-clamp-2 text-[11px] leading-relaxed text-gray-400">
+                  {SearchManager.getDescription(selectedDictionary)}
+                </p>
+              </div>
             </div>
 
             <label
               htmlFor="include-anagram"
-              className={`group relative flex cursor-pointer items-start gap-3 rounded-xl border px-3.5 py-3 transition focus-within:ring-2 focus-within:ring-purple-400/70 ${
+              className={`group relative flex cursor-pointer items-center justify-between gap-2.5 rounded-lg border px-3 py-2.5 transition focus-within:ring-2 focus-within:ring-purple-400/70 ${
                 includeAnagram
                   ? "border-purple-400/80 bg-gradient-to-r from-purple-500/20 via-purple-500/10 to-gray-900/80 shadow-[0_0_20px_rgba(168,85,247,0.18)]"
                   : "border-gray-700 bg-gray-900/70 hover:border-purple-400/50"
@@ -292,32 +294,29 @@ export default function ShiftSearch() {
                 onChange={(event) => setIncludeAnagram(event.target.checked)}
                 className="sr-only"
               />
+              <span className="inline-flex min-w-0 items-center gap-1.5">
+                <Sparkles
+                  className={`h-4 w-4 shrink-0 ${
+                    includeAnagram ? "text-purple-300" : "text-gray-400"
+                  }`}
+                />
+                <span className="truncate text-sm font-semibold text-gray-100">
+                  アナグラム検索を含める
+                </span>
+              </span>
               <span
-                className={`relative mt-0.5 h-6 w-11 shrink-0 rounded-full border transition ${
+                className={`relative h-5 w-9 shrink-0 rounded-full border transition ${
                   includeAnagram
                     ? "border-purple-300/80 bg-purple-500/70"
                     : "border-gray-600 bg-gray-700"
                 }`}
               >
                 <span
-                  className={`absolute left-0.5 top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-white text-purple-600 shadow-md transition-transform duration-200 ease-out ${
-                    includeAnagram ? "translate-x-5" : "translate-x-0"
+                  className={`absolute left-0.5 top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-white text-purple-600 shadow-md transition-transform duration-200 ease-out ${
+                    includeAnagram ? "translate-x-4" : "translate-x-0"
                   }`}
                 >
-                  {includeAnagram && <Check className="h-3 w-3" />}
-                </span>
-              </span>
-              <span className="space-y-1">
-                <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-100">
-                  <Sparkles
-                    className={`h-4 w-4 ${
-                      includeAnagram ? "text-purple-300" : "text-gray-400"
-                    }`}
-                  />
-                  アナグラム検索
-                </span>
-                <span className="block text-xs leading-relaxed text-gray-300">
-                  シフト後の文字を並べ替えて探索
+                  {includeAnagram && <Check className="h-2.5 w-2.5" />}
                 </span>
               </span>
             </label>
@@ -325,7 +324,7 @@ export default function ShiftSearch() {
             <Button
               onClick={() => void handleSearch()}
               disabled={!canSearch}
-              className="h-11 w-full rounded-xl bg-purple-400 text-base font-semibold text-gray-900 hover:bg-purple-500 disabled:bg-gray-700 disabled:text-gray-400"
+              className="h-10 w-full rounded-lg bg-purple-400 text-sm font-semibold text-gray-900 hover:bg-purple-500 disabled:bg-gray-700 disabled:text-gray-400"
             >
               {loading ? "検索中..." : "検索"}
             </Button>
