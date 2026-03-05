@@ -6,15 +6,29 @@ const patterns = [
   "bg-white text-gray-900",
   "bg-red-500 text-white",
   "bg-green-500 text-white",
-  "bg-blue-500 text white",
-  "bg-yellow-500 text white",
+  "bg-blue-500 text-white",
+  "bg-yellow-500 text-white",
 ];
 
-const getPattern = (num: any) => {
+const MIN_GRID_SIZE = 1;
+const MAX_GRID_SIZE = 20;
+
+const getPattern = (num: number) => {
   if (typeof num !== "number") {
     return patterns[0];
   }
   return patterns[num % patterns.length];
+};
+
+const clampGridSize = (value: number) =>
+  Math.min(MAX_GRID_SIZE, Math.max(MIN_GRID_SIZE, value));
+
+const parseGridSize = (value: string) => {
+  const parsed = Number.parseInt(value, 10);
+  if (Number.isNaN(parsed)) {
+    return MIN_GRID_SIZE;
+  }
+  return clampGridSize(parsed);
 };
 
 export default function GraphPaperComponent() {
@@ -30,17 +44,17 @@ export default function GraphPaperComponent() {
   const [grid, setGrid] = useState(
     Array(rows)
       .fill(null)
-      .map(() => Array(cols).fill(""))
+      .map(() => Array(cols).fill("")),
   );
   const [tmpGrid, setTmpGrid] = useState(
     Array(rows)
       .fill(null)
-      .map(() => Array(cols).fill(""))
+      .map(() => Array(cols).fill("")),
   );
   const [gridPattern, setGridPattern] = useState(
     Array(rows)
       .fill(null)
-      .map(() => Array(cols).fill(0))
+      .map(() => Array(cols).fill(0)),
   );
   const [currentCell, setCurrentCell] = useState({ row: 0, col: 0 });
   const [isComposing, setIsComposing] = useState(false);
@@ -82,7 +96,7 @@ export default function GraphPaperComponent() {
       }
       setGridPattern(newGridPattern);
     },
-    [gridPattern]
+    [gridPattern],
   );
 
   //スマートフォンタッチ操作用
@@ -100,14 +114,14 @@ export default function GraphPaperComponent() {
             .fill(null)
             .map((_, colIndex) => {
               return prevGrid[rowIndex]?.[colIndex] || "";
-            })
+            }),
         );
       return newGrid;
     });
     setTmpGrid(
       Array(rows)
         .fill(null)
-        .map(() => Array(cols).fill(""))
+        .map(() => Array(cols).fill("")),
     );
 
     //パターンの保持
@@ -119,7 +133,7 @@ export default function GraphPaperComponent() {
             .fill(null)
             .map((_, colIndex) => {
               return prevGridPattern[rowIndex]?.[colIndex] || 0;
-            })
+            }),
         );
       return newGridPattern;
     });
@@ -228,7 +242,7 @@ export default function GraphPaperComponent() {
   const handleChange = (
     row: number,
     col: number,
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     if (isComposing) {
       setTmpGrid((prevGrid) => {
@@ -252,7 +266,7 @@ export default function GraphPaperComponent() {
   const handleCompositionEnd = (
     row: number,
     col: number,
-    e: React.CompositionEvent<HTMLInputElement>
+    e: React.CompositionEvent<HTMLInputElement>,
   ) => {
     const value = tmpGrid[row][col];
     setGrid((prevGrid) => {
@@ -273,7 +287,7 @@ export default function GraphPaperComponent() {
   const handleKeyDown = (
     row: number,
     col: number,
-    e: React.KeyboardEvent<HTMLInputElement>
+    e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (e.nativeEvent.isComposing) {
       return;
@@ -316,15 +330,15 @@ export default function GraphPaperComponent() {
 
   const fillCellsWithHash = () => {
     setGrid((prevGrid) =>
-      prevGrid.map((row) => row.map((cell) => cell || "＃"))
+      prevGrid.map((row) => row.map((cell) => cell || "＃")),
     );
   };
 
   const removeHash = () => {
     setGrid((prevGrid) =>
       prevGrid.map((row) =>
-        row.map((cell) => (cell === "＃" || cell === "#" ? "" : cell))
-      )
+        row.map((cell) => (cell === "＃" || cell === "#" ? "" : cell)),
+      ),
     );
   };
 
@@ -372,7 +386,7 @@ export default function GraphPaperComponent() {
   const handleInputTouchStart = (
     row: number,
     col: number,
-    e: React.TouchEvent<HTMLInputElement>
+    e: React.TouchEvent<HTMLInputElement>,
   ) => {
     document.body.style.overflow = "hidden"; // ページのスクロールを無効化
     setDisableScroll(true);
@@ -385,7 +399,7 @@ export default function GraphPaperComponent() {
   const handleInputTouchMove = (
     row: number,
     col: number,
-    e: React.TouchEvent<HTMLInputElement>
+    e: React.TouchEvent<HTMLInputElement>,
   ) => {
     if (!touchStartPos) return;
     const touchEndPos = {
@@ -428,14 +442,22 @@ export default function GraphPaperComponent() {
     setTouchStartPos(null);
   };
 
+  const adjustRows = (delta: number) => {
+    setRows((prev) => clampGridSize(prev + delta));
+  };
+
+  const adjustCols = (delta: number) => {
+    setCols((prev) => clampGridSize(prev + delta));
+  };
+
   return (
-    <main className="flex items-center justify-center">
-      <div className="p-8 bg-gray-800 rounded-lg shadow-xl relative">
+    <main className="flex items-center justify-center px-3 py-4 sm:px-4">
+      <div className="relative max-w-3xl rounded-2xl border border-purple-500/20 bg-gradient-to-b from-gray-900 to-gray-800 p-4 shadow-xl sm:p-6">
         <h1 className="text-3xl font-bold mb-3 text-center text-purple-400">
           方眼紙
         </h1>
         {showHelp && (
-          <div className="absolute top-[100px] left-0 w-full bg-gray-800 bg-opacity-70 z-10">
+          <div className="absolute left-3 right-3 top-[94px] z-20 rounded-xl border border-gray-700 bg-gray-900/95 p-3 text-xs leading-relaxed text-gray-100 shadow-2xl sm:left-6 sm:right-6">
             {/* ここにヘルプテキストの内容を記述 */}
             <ul>
               <li>・＃でマスが黒塗りになります。</li>
@@ -465,14 +487,14 @@ export default function GraphPaperComponent() {
               </li>
               <li className="md:hidden">・→スワイプ 黄色</li>
               <li>・「黒(＃)埋め」で＃埋め/解除ができます。</li>
-              <li>・行数と列数は最大20まで設定できます。</li>
+              <li>・行数と列数は1〜20で設定できます。</li>
             </ul>
           </div>
         )}
-        <p className="text-gray-400 text-xs mb-2 justify-center flex items-center">
+        <p className="mb-3 flex items-center justify-center text-xs text-gray-400">
           <span>＃でマスが黒塗り。色変更も可能。</span>
           <button
-            className="text-purple-400 hover:text-purple-600 focus:outline-none"
+            className="text-purple-400 hover:text-purple-300 focus:outline-none"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             onTouchStart={handleTouchStart}
@@ -495,68 +517,155 @@ export default function GraphPaperComponent() {
           </button>
         </p>
 
-        <div className="mb-3 flex justify-between gap-1 text-xs">
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="autoFill"
-              checked={isAutoFill}
-              onChange={(e) => setIsAutoFill(e.target.checked)}
-              className="w-4 h-4 text-purple-600 rounded focus:ring-purple-500 text-xs text-base"
-            />
-            <label htmlFor="autoFill" className="text-gray-400 text-xs mr-1">
-              黒埋め
+        <div className="mb-3 mx-auto w-[320px] sm:w-[410px]">
+          <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
+            <label
+              htmlFor="autoFill"
+              className={`flex h-12 cursor-pointer items-center justify-between rounded-xl border px-2.5 transition focus-within:ring-2 focus-within:ring-purple-400/60 ${
+                isAutoFill
+                  ? "border-purple-400 bg-gradient-to-r from-purple-500/25 to-purple-400/10 shadow-[0_0_18px_rgba(168,85,247,0.22)]"
+                  : "border-gray-700 bg-gray-900/75 hover:border-purple-500/60"
+              }`}
+            >
+              <span className="text-sm font-semibold text-gray-100">
+                黒埋め
+              </span>
+              <span
+                className={`relative h-6 w-11 rounded-full border transition ${
+                  isAutoFill
+                    ? "border-purple-300/80 bg-purple-500/70"
+                    : "border-gray-600 bg-gray-700"
+                }`}
+              >
+                <span
+                  className={`absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-md transition-transform duration-200 ease-out will-change-transform ${
+                    isAutoFill ? "translate-x-5" : "translate-x-0"
+                  }`}
+                />
+              </span>
+              <input
+                id="autoFill"
+                type="checkbox"
+                checked={isAutoFill}
+                onChange={(e) => setIsAutoFill(e.target.checked)}
+                className="sr-only"
+              />
             </label>
-          </div>
-          <div className="flex items-center md:hidden">
-            <input
-              type="checkbox"
-              id="rock"
-              checked={isColorMode}
-              onChange={(e) => setColorMode(e.target.checked)}
-              className="w-4 h-4 text-purple-600 rounded focus:ring-purple-500 text-xs text-base"
-            />
-            <label htmlFor="rock" className="text-gray-400 text-xs mr-1">
-              色モード
-            </label>
-          </div>
 
-          <div className="flex items-center gap-1">
-            <div className="flex items-center">
-              <label className="text-gray-400 mr-1">行数:</label>
+            <label
+              htmlFor="rock"
+              className={`flex h-12 cursor-pointer items-center justify-between rounded-xl border px-2.5 transition focus-within:ring-2 focus-within:ring-purple-400/60 md:hidden ${
+                isColorMode
+                  ? "border-purple-400 bg-gradient-to-r from-purple-500/25 to-purple-400/10 shadow-[0_0_18px_rgba(168,85,247,0.22)]"
+                  : "border-gray-700 bg-gray-900/75 hover:border-purple-500/60"
+              }`}
+            >
+              <span className="text-sm font-semibold text-gray-100">
+                色モード
+              </span>
+              <span
+                className={`relative h-6 w-11 rounded-full border transition ${
+                  isColorMode
+                    ? "border-purple-300/80 bg-purple-500/70"
+                    : "border-gray-600 bg-gray-700"
+                }`}
+              >
+                <span
+                  className={`absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-md transition-transform duration-200 ease-out will-change-transform ${
+                    isColorMode ? "translate-x-5" : "translate-x-0"
+                  }`}
+                />
+              </span>
               <input
-                id="rows"
-                type="number"
-                min="1"
-                max="20"
-                value={rows}
-                onChange={(e) =>
-                  setRows(
-                    Math.min(20, Math.max(1, parseInt(e.target.value) || 1))
-                  )
-                }
-                className="w-10 px-1 py-0.5 text-black rounded text-xs text-base"
+                id="rock"
+                type="checkbox"
+                checked={isColorMode}
+                onChange={(e) => setColorMode(e.target.checked)}
+                className="sr-only"
               />
+            </label>
+
+            <div className="flex h-12 items-center justify-between rounded-xl border border-gray-700 bg-gray-900/75 px-2.5">
+              <label
+                htmlFor="rows"
+                className="text-sm font-medium text-gray-200"
+              >
+                行数
+              </label>
+              <div className="flex items-center overflow-hidden rounded-md border border-gray-600 bg-gray-950/80">
+                <input
+                  id="rows"
+                  type="number"
+                  inputMode="numeric"
+                  min={MIN_GRID_SIZE}
+                  max={MAX_GRID_SIZE}
+                  value={rows}
+                  onChange={(e) => setRows(parseGridSize(e.target.value))}
+                  className="h-9 w-11 bg-transparent px-1 text-center text-sm font-semibold text-white [appearance:textfield] focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                />
+                <div className="flex flex-col border-l border-gray-600">
+                  <button
+                    type="button"
+                    aria-label="行数を増やす"
+                    onClick={() => adjustRows(1)}
+                    disabled={rows >= MAX_GRID_SIZE}
+                    className="flex h-[18px] w-8 items-center justify-center text-[10px] text-gray-300 transition hover:bg-purple-500/30 disabled:cursor-not-allowed disabled:text-gray-600"
+                  >
+                    ▲
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="行数を減らす"
+                    onClick={() => adjustRows(-1)}
+                    disabled={rows <= MIN_GRID_SIZE}
+                    className="flex h-[18px] w-8 items-center justify-center border-t border-gray-600 text-[10px] text-gray-300 transition hover:bg-purple-500/30 disabled:cursor-not-allowed disabled:text-gray-600"
+                  >
+                    ▼
+                  </button>
+                </div>
+              </div>
             </div>
-            <div className="flex items-center">
-              <label className="text-gray-400 mr-1">列数:</label>
-              <input
-                id="cols"
-                type="number"
-                min="1"
-                max="20"
-                value={cols}
-                onChange={(e) =>
-                  setCols(
-                    Math.min(20, Math.max(1, parseInt(e.target.value) || 1))
-                  )
-                }
-                className="w-10 px-1 py-0.5 text-black rounded text-xs text-base"
-              />
+
+            <div className="flex h-12 items-center justify-between rounded-xl border border-gray-700 bg-gray-900/75 px-2.5">
+              <label
+                htmlFor="cols"
+                className="text-sm font-medium text-gray-200"
+              >
+                列数
+              </label>
+              <div className="flex items-center overflow-hidden rounded-md border border-gray-600 bg-gray-950/80">
+                <input
+                  id="cols"
+                  type="number"
+                  inputMode="numeric"
+                  min={MIN_GRID_SIZE}
+                  max={MAX_GRID_SIZE}
+                  value={cols}
+                  onChange={(e) => setCols(parseGridSize(e.target.value))}
+                  className="h-9 w-11 bg-transparent px-1 text-center text-sm font-semibold text-white [appearance:textfield] focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                />
+                <div className="flex flex-col border-l border-gray-600">
+                  <button
+                    type="button"
+                    aria-label="列数を増やす"
+                    onClick={() => adjustCols(1)}
+                    disabled={cols >= MAX_GRID_SIZE}
+                    className="flex h-[18px] w-8 items-center justify-center text-[10px] text-gray-300 transition hover:bg-purple-500/30 disabled:cursor-not-allowed disabled:text-gray-600"
+                  >
+                    ▲
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="列数を減らす"
+                    onClick={() => adjustCols(-1)}
+                    disabled={cols <= MIN_GRID_SIZE}
+                    className="flex h-[18px] w-8 items-center justify-center border-t border-gray-600 text-[10px] text-gray-300 transition hover:bg-purple-500/30 disabled:cursor-not-allowed disabled:text-gray-600"
+                  >
+                    ▼
+                  </button>
+                </div>
+              </div>
             </div>
-            <span className="hidden sm:inline text-gray-500 text-xs self-center ml-1">
-              (最大20)
-            </span>
           </div>
         </div>
         <div
@@ -602,7 +711,7 @@ export default function GraphPaperComponent() {
                 onTouchEnd={(e) => isColorMode && handleInputTouchEnd()}
                 readOnly={isColorMode}
               />
-            ))
+            )),
           )}
         </div>
       </div>
