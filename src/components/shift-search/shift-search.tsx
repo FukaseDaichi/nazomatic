@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { HelpCircle } from "lucide-react";
+import { Check, HelpCircle, Sparkles } from "lucide-react";
 import { DICTIONARIES, SearchManager } from "@/class/SearchManager";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -151,10 +151,12 @@ export default function ShiftSearch() {
     },
     [loadDictionary],
   );
+  const canSearch =
+    Boolean(searchManager) && !loading && input.trim().length > 0;
 
   return (
-    <main className="min-h-screen">
-      <div className="max-w-3xl mx-auto space-y-6">
+    <main className="min-h-screen px-4 pb-10 pt-3 sm:px-6 sm:pt-6">
+      <div className="mx-auto w-full max-w-3xl space-y-4 sm:space-y-6">
         <div className="relative">
           <motion.h1
             initial={{ opacity: 0, y: -20 }}
@@ -174,8 +176,8 @@ export default function ShiftSearch() {
             </Button>
           </div>
         </div>
-        <Card className="bg-gray-800 border-gray-700">
-          <CardHeader>
+        <Card className="border-gray-700/90 bg-gray-800/95 shadow-[0_16px_40px_rgba(0,0,0,0.25)]">
+          <CardHeader className="p-4 pb-3 sm:p-5 sm:pb-4">
             <div className="flex items-center gap-2">
               <CardTitle className="text-xl text-white">検索条件</CardTitle>
               <div
@@ -221,77 +223,116 @@ export default function ShiftSearch() {
               </div>
             </div>
           </CardHeader>
-          <CardContent className="space-y-5">
-            <div className="space-y-2">
-              <Label htmlFor="shift-input" className="text-gray-200">
-                単語入力
-              </Label>
-              <Input
-                id="shift-input"
-                type="text"
-                value={input}
-                onChange={(event) => setInput(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    void handleSearch();
-                  }
-                }}
-                className="bg-gray-700 border-gray-600 text-white text-base"
-                placeholder={getShiftPlaceholder(selectedDictionary)}
-              />
-              <p className="text-xs text-gray-400">
-                {SearchManager.getName(selectedDictionary)}
-              </p>
+          <CardContent className="space-y-3 p-4 pt-0 sm:space-y-3.5 sm:p-5 sm:pt-0">
+            <div className="grid gap-2.5 sm:grid-cols-2 sm:gap-3">
+              <div className="space-y-1.5">
+                <Label
+                  htmlFor="shift-input"
+                  className="text-xs font-semibold uppercase tracking-wide text-gray-300"
+                >
+                  単語入力
+                </Label>
+                <Input
+                  id="shift-input"
+                  type="text"
+                  value={input}
+                  onChange={(event) => setInput(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      void handleSearch();
+                    }
+                  }}
+                  className="h-10 border-gray-600 bg-gray-700/90 text-base text-white focus-visible:ring-purple-400 focus-visible:ring-offset-gray-900"
+                  placeholder={getShiftPlaceholder(selectedDictionary)}
+                />
+                <p className="text-[11px] text-gray-400">
+                  {SearchManager.getName(selectedDictionary)}
+                </p>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label className="text-xs font-semibold uppercase tracking-wide text-gray-300">
+                  辞書
+                </Label>
+                <Select
+                  value={selectedDictionary}
+                  onValueChange={handleChangeDictionary}
+                >
+                  <SelectTrigger className="h-10 border-gray-600 bg-gray-700/90 text-white focus:ring-purple-400">
+                    <SelectValue placeholder="辞書を選択" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-gray-700 border-gray-600 text-white">
+                    {DICTIONARIES.map((dictionary) => (
+                      <SelectItem
+                        key={dictionary.key}
+                        value={dictionary.key}
+                        className="focus:bg-gray-600"
+                      >
+                        {dictionary.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="line-clamp-2 text-[11px] leading-relaxed text-gray-400">
+                  {SearchManager.getDescription(selectedDictionary)}
+                </p>
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <Label className="text-gray-200">辞書</Label>
-              <Select
-                value={selectedDictionary}
-                onValueChange={handleChangeDictionary}
-              >
-                <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
-                  <SelectValue placeholder="辞書を選択" />
-                </SelectTrigger>
-                <SelectContent className="bg-gray-700 border-gray-600 text-white">
-                  {DICTIONARIES.map((dictionary) => (
-                    <SelectItem
-                      key={dictionary.key}
-                      value={dictionary.key}
-                      className="focus:bg-gray-600"
-                    >
-                      {dictionary.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <p className="text-sm text-gray-400">
-                {SearchManager.getDescription(selectedDictionary)}
-              </p>
-            </div>
-
-            <label className="flex items-center gap-2 text-gray-200">
+            <label
+              htmlFor="include-anagram"
+              className={`group relative flex cursor-pointer items-center justify-between gap-2.5 rounded-lg border px-3 py-2.5 transition focus-within:ring-2 focus-within:ring-purple-400/70 ${
+                includeAnagram
+                  ? "border-purple-400/80 bg-gradient-to-r from-purple-500/20 via-purple-500/10 to-gray-900/80 shadow-[0_0_20px_rgba(168,85,247,0.18)]"
+                  : "border-gray-700 bg-gray-900/70 hover:border-purple-400/50"
+              }`}
+            >
               <input
+                id="include-anagram"
                 type="checkbox"
                 checked={includeAnagram}
                 onChange={(event) => setIncludeAnagram(event.target.checked)}
-                className="h-4 w-4"
+                className="sr-only"
               />
-              ずらした後でアナグラム検索を有効にする
+              <span className="inline-flex min-w-0 items-center gap-1.5">
+                <Sparkles
+                  className={`h-4 w-4 shrink-0 ${
+                    includeAnagram ? "text-purple-300" : "text-gray-400"
+                  }`}
+                />
+                <span className="truncate text-sm font-semibold text-gray-100">
+                  アナグラム検索を含める
+                </span>
+              </span>
+              <span
+                className={`relative h-5 w-9 shrink-0 rounded-full border transition ${
+                  includeAnagram
+                    ? "border-purple-300/80 bg-purple-500/70"
+                    : "border-gray-600 bg-gray-700"
+                }`}
+              >
+                <span
+                  className={`absolute left-0.5 top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-white text-purple-600 shadow-md transition-transform duration-200 ease-out ${
+                    includeAnagram ? "translate-x-4" : "translate-x-0"
+                  }`}
+                >
+                  {includeAnagram && <Check className="h-2.5 w-2.5" />}
+                </span>
+              </span>
             </label>
 
             <Button
               onClick={() => void handleSearch()}
-              disabled={!searchManager || loading}
-              className="w-full bg-purple-400 hover:bg-purple-500 text-gray-900"
+              disabled={!canSearch}
+              className="h-10 w-full rounded-lg bg-purple-400 text-sm font-semibold text-gray-900 hover:bg-purple-500 disabled:bg-gray-700 disabled:text-gray-400"
             >
               {loading ? "検索中..." : "検索"}
             </Button>
           </CardContent>
         </Card>
 
-        <Card className="bg-gray-800 border-gray-700">
-          <CardHeader>
+        <Card className="border-gray-700/90 bg-gray-800/95 shadow-[0_16px_40px_rgba(0,0,0,0.2)]">
+          <CardHeader className="pb-4">
             <CardTitle className="text-xl text-white">
               検索結果 {results?.length > 0 && "(" + results.length + ")"}
             </CardTitle>
@@ -318,15 +359,15 @@ export default function ShiftSearch() {
             ) : results.length === 0 ? (
               <p className="text-gray-400">結果がありません。</p>
             ) : (
-              <ul className="space-y-2">
+              <ul className="space-y-2.5">
                 {results.map((result, index) => (
                   <li
                     key={`${result.resultWord}-${result.shift}-${result.matchType}-${index}`}
-                    className="bg-gray-700 rounded-md p-3 text-white"
+                    className="rounded-xl border border-gray-600/80 bg-gray-700/60 p-3 text-white"
                   >
-                    <div className="flex items-center justify-between gap-2">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
                       <span className="font-semibold">{result.resultWord}</span>
-                      <div className="flex items-center gap-1">
+                      <div className="flex flex-wrap items-center gap-1">
                         <Badge className="bg-gray-600 text-gray-100 border-gray-500">
                           shift +{result.shift}
                         </Badge>
