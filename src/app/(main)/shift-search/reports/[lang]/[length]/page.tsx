@@ -23,7 +23,7 @@ type PageProps = {
 
 const NUMBER_FORMAT = new Intl.NumberFormat("ja-JP");
 const RAW_REPORT_BASE_URL =
-  "https://raw.githubusercontent.com/FukaseDaichi/nazomatic/refs/heads/main/.codex/shift-search/reports";
+  "https://raw.githubusercontent.com/FukaseDaichi/nazomatic/refs/heads/main/artifacts/shift-search/reports";
 
 export const dynamicParams = false;
 

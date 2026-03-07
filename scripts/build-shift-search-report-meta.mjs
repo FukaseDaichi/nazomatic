@@ -4,7 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { EXTERNAL_THRESHOLD } from "./shift-search-threshold.mjs";
 
-const REPORT_ROOT = path.join(".codex", "shift-search", "reports");
+const REPORT_ROOT = path.join("artifacts", "shift-search", "reports");
 const REPORT_FILENAME_REGEX = /^shift-search-(jp|en)-len-(\d+)\.md$/;
 const INDEX_PATH = path.join(REPORT_ROOT, "shift-search-report-index.md");
 const MANIFEST_PATH = path.join(

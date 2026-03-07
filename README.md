@@ -2,7 +2,8 @@
 
 謎解きお助けツールをまとめた Next.js アプリです。
 
-- 要件定義書: [`./.codex/specification.md`](./.codex/specification.md)
+- 仕様書: [`./docs/specification.md`](./docs/specification.md)
+- シフト検索レポート成果物: `./artifacts/shift-search/reports`
 
 ## 主な機能
 
@@ -44,7 +45,7 @@ npm run shift:report:view-assets
 
 ## 環境変数
 
-最低限、以下の用途で環境変数を利用します（詳細は要件定義書参照）。
+最低限、以下の用途で環境変数を利用します（詳細は仕様書参照）。
 
 - `NEXT_PUBLIC_BASE_URL`
 - Firestore 接続情報（`FIREBASE_*`）

@@ -1,4 +1,6 @@
-# Yahoo!リアルタイム検索ポスト → チケット販売カレンダー化 設計方針
+# Yahoo!リアルタイム検索ポスト → チケット販売カレンダー化 設計書（初期構想 / 2026-03-07）
+
+> この文書は初期構想を含む設計書です。現行実装の正本は `docs/specification.md`, `docs/calendardoc/firebase-registration-api-specification.md`, `docs/calendardoc/github-actions-scheduling-specification.md`, `docs/calendardoc/x-repost-api-specification.md` を参照してください。
 
 ## 1. 目的とスコープ
 
@@ -90,7 +92,7 @@ Scheduler ──▶ Scraper (fetchYahooRealtime) ──▶ Raw Post Queue ──
 - **BigQuery**: 長期アーカイブや BI。リアルタイム用途には遅いが集計に向く。バッチで同期する構成がよい。
 - **推奨構成（初期）**: Firestore で運用スピード重視 + Cloud Storage に Raw HTML/JSON を保存（監査・再処理用）→ 必要に応じて Cloud SQL へ移行できるようリポジトリ層を抽象化。
 - **インデックス案**: `collection: events` に `eventTime`、`query`, `category`, `needsReview` の複合インデックス。期間検索（週/月）とクエリフィルタを両立。
-- **フィールド仕様**: Firestore で保持するフィールド詳細（`postId`, `postURL`, `hashtags`, `createdAt`, `authorId`, `authorName`, `authorImageUrl`, `rawPostText`, `eventTime` など）は `.codex/firebase-ticket-schema.md` に集約。
+- **フィールド仕様**: Firestore で保持するフィールド詳細（`postId`, `postURL`, `hashtags`, `createdAt`, `authorId`, `authorName`, `authorImageUrl`, `rawPostText`, `eventTime` など）は `docs/calendardoc/firebase-ticket-schema.md` に集約。
 
 ## 7. API / バッチ設計
 
@@ -98,7 +100,7 @@ Scheduler ──▶ Scraper (fetchYahooRealtime) ──▶ Raw Post Queue ──
 - **Normalization Worker**: Pub/Sub キュー (`raw_posts`) → Cloud Functions / Cloud Run jobs がトリガー。メッセージには `postId`, `rawText`, `capturedAt` などを格納し、`chrono-node` ベースのルールエンジンで正規化した結果を Firestore へ保存。
 - **Calendar API**: `GET /api/calendar?from=2025-11-01&to=2025-11-30&query=#謎チケ売ります`。レスポンスは日付ごと配列 or ICS 生成。`revalidate` or Redis キャッシュで 15〜30 分程度の TTL を持たせる。
 - **Admin UI**: Next.js 内で `/secret/christmas/congratulations` のようなセクションに管理画面を追加。レビュー／補正機能を提供。
-- **Firebase 登録 API 詳細**: 実装仕様は `.codex/firebase-registration-api.md` に記載。
+- **Firebase 登録 API 詳細**: 実装仕様は `docs/calendardoc/firebase-registration-api-specification.md` に記載。
 - **Prune API**: `POST /api/internal/realtime/prune` で `eventTime` が 1 日以上前のドキュメントを一括削除（`cutoffDays`/`dryRun` 指定可）。定期メンテナンス用。
 
 ## 8. カレンダー表示と UX 留意点

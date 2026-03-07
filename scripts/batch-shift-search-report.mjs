@@ -8,13 +8,13 @@ const DICTIONARIES = {
     path: path.join("public", "dic", "buta.dic"),
     type: "jp",
     label: "buta.dic",
-    defaultOutDir: path.join(".codex", "shift-search", "reports", "jp"),
+    defaultOutDir: path.join("artifacts", "shift-search", "reports", "jp"),
   },
   cefr: {
     path: path.join("public", "dic", "CEFR-J.dic"),
     type: "en",
     label: "CEFR-J.dic",
-    defaultOutDir: path.join(".codex", "shift-search", "reports", "en"),
+    defaultOutDir: path.join("artifacts", "shift-search", "reports", "en"),
   },
 };
 
