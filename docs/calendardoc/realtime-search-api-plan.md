@@ -1,5 +1,7 @@
 # Yahoo!リアルタイム検索ポスト → チケット販売カレンダー化 設計方針
 
+> この文書は初期の設計案です。現行実装の正本は `docs/specification.md`, `docs/calendardoc/firebase-registration-api.md`, `docs/calendardoc/github-actions-scheduling-plan.md`, `docs/calendardoc/x-repost-api-plan.md` を参照してください。
+
 ## 1. 目的とスコープ
 
 - `https://search.yahoo.co.jp/realtime/search` から取得できるチケット売買関連ポストを収集・正規化し、「いつ・どこで・何のチケットが販売／譲渡されるか」をカレンダービューで提示できるバックエンド＆管理フローを整える。
