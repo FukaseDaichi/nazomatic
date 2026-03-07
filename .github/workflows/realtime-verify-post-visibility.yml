@@ -20,9 +20,28 @@ jobs:
             exit 1
           fi
 
-          curl --fail --silent --show-error \
+          NORMALIZED_BASE_URL="${BASE_URL%/}"
+          TARGET_URL="$NORMALIZED_BASE_URL/api/internal/realtime/verify-post-visibility"
+          RESPONSE_FILE=$(mktemp)
+
+          echo "Target URL: $TARGET_URL"
+
+          HTTP_STATUS=$(curl --silent --show-error \
             --retry 3 --retry-delay 10 \
-            -X POST "$BASE_URL/api/internal/realtime/verify-post-visibility" \
+            -w "%{http_code}" \
+            -o "$RESPONSE_FILE" \
+            -X POST "$TARGET_URL" \
             -H "Authorization: Bearer $API_TOKEN" \
             -H "Content-Type: application/json" \
-            -d '{"batchSize":100,"maxConcurrency":5,"bootstrapScanLimit":500,"dryRun":false}'
+            -d '{"batchSize":100,"maxConcurrency":5,"bootstrapScanLimit":500,"dryRun":false}')
+
+          echo "HTTP status: $HTTP_STATUS"
+          cat "$RESPONSE_FILE"
+
+          if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
+            exit 0
+          fi
+
+          echo ""
+          echo "Request failed. REALTIME_API_BASE_URL should be the site origin, for example: https://nazomatic.vercel.app"
+          exit 1
