@@ -34,6 +34,13 @@
 | `needsReview`             | boolean                     | ✅   | 手動レビューが必要か。`confidence < 0.6` など低信頼な抽出結果で `true`。                              |
 | `reviewStatus`            | string                      | ✅   | `pending` / `approved` / `rejected`。                                                                   |
 | `lastReviewedAt`          | Firestore Timestamp \| null | 任意 | レビュー最終日時。                                                                                      |
+| `isVisible`               | boolean                     | ✅   | カレンダー / repost 候補に表示するか。削除済み Post は `false`。                                       |
+| `hiddenReason`            | string \| null              | 任意 | 非表示理由。現行実装では `syndication_deleted` を使用。                                                 |
+| `hiddenAt`                | Firestore Timestamp \| null | 任意 | 非表示にした日時。                                                                                      |
+| `syndicationStatus`       | string                      | ✅   | `pending` / `available` / `deleted` / `unknown`。                                                       |
+| `syndicationCheckedAt`    | Firestore Timestamp \| null | 任意 | syndication による最終確認日時。                                                                        |
+| `syndicationNextCheckAt`  | Firestore Timestamp \| null | 任意 | 次回確認予定日時。削除済み Post は `null`。                                                             |
+| `syndicationErrorCount`   | number                      | ✅   | `unknown` の連続回数。backoff の判断に使う。                                                            |
 | `diagnostics`（オプション） | map                        | 任意 | 開発・監視用。`matchedDateText`, `matchedPriceText` などを格納する場合に利用。                           |
 
 ### Firestore 型メモ
@@ -75,7 +82,14 @@
   "notes": "matched=\"11/10(月)20時\" | price=\"6500円\" | location=\"渋谷駅\"",
   "needsReview": false,
   "reviewStatus": "approved",
-  "lastReviewedAt": "2025-11-05T02:00:00Z"
+  "lastReviewedAt": "2025-11-05T02:00:00Z",
+  "isVisible": true,
+  "hiddenReason": null,
+  "hiddenAt": null,
+  "syndicationStatus": "available",
+  "syndicationCheckedAt": "2025-11-05T06:30:00Z",
+  "syndicationNextCheckAt": "2025-11-06T06:30:00Z",
+  "syndicationErrorCount": 0
 }
 ```
 
@@ -90,3 +104,4 @@
 - `rawPostText` には個人情報が含まれる可能性があるため、外部公開 API では部分マスクを検討。
 - 正規化ルール更新時は `normalizationEngine` のバージョンを increment。既存データの再正規化が必要なら Cloud Functions などで一括処理。
 - `authorImageUr` など旧フィールドが既存データに残る場合はマイグレーションを行い、すべて `authorImageUrl` に統一する。
+- `isVisible=false` でも `prune` の物理削除対象には残る。データを無期限保持しない方針は維持する。

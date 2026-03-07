@@ -14,8 +14,13 @@
 - Shift Search 結果ビュー: `docs/shift-search/shift-search-results-view-specification.md`
 - Calendar UI: `docs/calendardoc/calendar-ui-specification.md`
 - Calendar / Realtime API: `docs/calendardoc/firebase-registration-api-specification.md`
+- Calendar Post visibility verify API: `docs/calendardoc/realtime-verify-post-visibility-api-specification.md`
 - GitHub Actions 運用: `docs/calendardoc/github-actions-scheduling-specification.md`
 - X repost: `docs/calendardoc/x-repost-api-specification.md`
+
+## 設計・計画メモ
+
+- Calendar 削除済み Post 非表示化計画: `docs/calendardoc/calendar-deleted-post-syndication-plan.md`
 
 ## ディレクトリ
 

@@ -80,7 +80,7 @@
 ### 4.3 内部 API 認可（Realtime / X）
 
 - `REALTIME_INTERNAL_API_TOKEN`
-  - 対象: `/api/internal/realtime/register`, `/api/internal/realtime/prune`, `/api/internal/x/repost/events`
+  - 対象: `/api/internal/realtime/register`, `/api/internal/realtime/prune`, `/api/internal/realtime/verify-post-visibility`, `/api/internal/x/repost/events`
   - 形式: `Authorization: Bearer <token>`
 
 ### 4.4 X repost（利用時）
@@ -235,6 +235,7 @@
   - `eventTime >= from`
   - `eventTime < to+1day` または `from + rangeDays`
   - `sourceQuery == query`
+- `isVisible === false` の doc はレスポンスから除外する
 - キャッシュ: `Cache-Control: public, max-age=0, s-maxage=300, stale-while-revalidate=300`
 
 #### `GET /api/blank25/manifest`
@@ -266,6 +267,18 @@
 - `eventTime < cutoffDate` を対象に 500 件単位で削除する。
 - 最大 20 バッチまで処理する。
 
+#### `POST /api/internal/realtime/verify-post-visibility`
+
+- Bearer 認証必須。
+- リクエスト:
+  - `batchSize?: number` 既定 `100`、上限 `200`
+  - `maxConcurrency?: number` 既定 `5`、上限 `10`
+  - `bootstrapScanLimit?: number` 既定 `500`、上限 `2000`
+  - `dryRun?: boolean`
+- X syndication で Post の存在確認を行い、削除済みなら `isVisible=false` に更新する。
+- `available`, `deleted`, `unknown` を集計して返す。
+- 同一 `postId` の doc が複数ある場合はまとめて更新する。
+
 #### `POST /api/internal/x/repost/events`
 
 - Bearer 認証必須。
@@ -278,6 +291,7 @@
   - `hashtags array-contains hashtag variant`
   - `capturedAt desc`
   - 最大 `50` 件確認
+- `isVisible === false` の doc は候補から除外する
 - 候補なしは `204 No Content` + `X-Repost-Reason: no_candidate`
 - `dryRun=false` のときのみ X API へ repost し、`lastReviewedAt` を更新する
 
@@ -320,6 +334,8 @@
   - `price`, `quantity`, `deliveryMethod`, `location`
   - `sourceQuery`, `capturedAt`, `createdAt`
   - `normalizationEngine`, `confidence`, `notes`, `needsReview`, `reviewStatus`, `lastReviewedAt`
+  - `isVisible`, `hiddenReason`, `hiddenAt`
+  - `syndicationStatus`, `syndicationCheckedAt`, `syndicationNextCheckAt`, `syndicationErrorCount`
 
 ### 8.2 BLANK25 マニフェスト
 
@@ -345,6 +361,7 @@
 | `realtime-register.yml` | 毎時 `0 * * * *` | `#謎チケ売ります` を register |
 | `realtime-register-transfer.yml` | 毎時 `15 * * * *` | `#謎チケ譲ります` を register |
 | `realtime-register-accompany.yml` | 毎時 `30 * * * *` | `#謎解き同行者募集` を register |
+| `realtime-verify-post-visibility.yml` | 毎時 `45 * * * *` | syndication で Post 可視性を検証 |
 | `realtime-prune.yml` | 毎日 `15 0 * * *` | 古いイベントを prune |
 | `x-repost-events.yml` | 1 日 16 回 | 候補イベントを repost |
 

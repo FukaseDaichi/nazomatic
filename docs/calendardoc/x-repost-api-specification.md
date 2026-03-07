@@ -1,4 +1,4 @@
-# X Repost API 仕様書（実装準拠 / 2026-03-07）
+# X Repost API 仕様書（実装準拠 / 2026-03-08）
 
 ## 1. 概要
 
@@ -30,6 +30,7 @@
 - `hashtags` に `hashtag` もしくは `#` あり / なしの variant を含む
 - `capturedAt desc`
 - 各 variant ごとに最大 `50` 件を見る
+- `isVisible === false` の doc は候補から除外する
 
 最初に見つかった 1 件だけを対象にする。
 

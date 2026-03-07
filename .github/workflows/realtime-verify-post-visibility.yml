@@ -1,0 +1,28 @@
+name: Realtime Verify Post Visibility
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "45 * * * *" # Every hour at minute 45
+
+jobs:
+  trigger-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Invoke realtime verify post visibility API
+        env:
+          BASE_URL: ${{ secrets.REALTIME_API_BASE_URL }}
+          API_TOKEN: ${{ secrets.REALTIME_API_TOKEN }}
+        run: |
+          if [ -z "$BASE_URL" ] || [ -z "$API_TOKEN" ]; then
+            echo "Missing required secrets REALTIME_API_BASE_URL or REALTIME_API_TOKEN."
+            exit 1
+          fi
+
+          curl --fail --silent --show-error \
+            --retry 3 --retry-delay 10 \
+            -X POST "$BASE_URL/api/internal/realtime/verify-post-visibility" \
+            -H "Authorization: Bearer $API_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{"batchSize":100,"maxConcurrency":5,"bootstrapScanLimit":500,"dryRun":false}'

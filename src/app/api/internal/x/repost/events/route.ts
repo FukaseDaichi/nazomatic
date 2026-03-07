@@ -3,6 +3,7 @@ import crypto from "crypto";
 import { NextResponse } from "next/server";
 
 import { firestore } from "@/server/firebase/admin";
+import { isRealtimeEventVisible } from "@/server/realtime/syndication/visibility";
 import type { RealtimeApiErrorResponse, RateLimitInfo } from "@/types/realtime";
 
 const CAPTURE_WINDOW_MS = 24 * 60 * 60 * 1000; // 24h
@@ -104,7 +105,9 @@ async function pickCandidate(hashtag: string) {
       .limit(MAX_CANDIDATES)
       .get();
 
-    const doc = snapshot.docs[0];
+    const doc = snapshot.docs.find((entry) =>
+      isRealtimeEventVisible(entry.data())
+    );
     if (doc) {
       return doc;
     }

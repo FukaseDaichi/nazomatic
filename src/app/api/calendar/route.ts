@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { firestore } from "@/server/firebase/admin";
+import { isRealtimeEventVisible } from "@/server/realtime/syndication/visibility";
 import type { CalendarApiResponse, CalendarEvent } from "@/types/calendar";
 import type { RealtimeApiErrorResponse } from "@/types/realtime";
 
@@ -117,6 +118,10 @@ function buildFirestoreQuery({
 
 function mapDocToCalendarEvent(doc: FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>): CalendarEvent | null {
   const data = doc.data();
+  if (!isRealtimeEventVisible(data)) {
+    return null;
+  }
+
   const eventTime: FirebaseFirestore.Timestamp | undefined = data.eventTime;
   if (!eventTime) {
     return null;

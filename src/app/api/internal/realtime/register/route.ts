@@ -11,6 +11,7 @@ import {
   RULESET_VERSION,
   normalizePost,
 } from "@/server/realtime/rules/normalizePost";
+import { buildInitialSyndicationFields } from "@/server/realtime/syndication/visibility";
 import type { NormalizedRealtimeEvent } from "@/types/realtimeEvent";
 import type { RealtimeApiErrorResponse } from "@/types/realtime";
 
@@ -332,6 +333,7 @@ function convertEventToFirestoreData(event: NormalizedRealtimeEvent) {
     needsReview: event.needsReview,
     reviewStatus: event.reviewStatus,
     lastReviewedAt: event.lastReviewedAt,
+    ...buildInitialSyndicationFields(event.capturedAt),
   };
 }
 
