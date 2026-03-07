@@ -594,7 +594,11 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
                 リセット
               </Button>
             )}
-            <Button asChild variant="outline" className="bg-white text-gray-900">
+            <Button
+              asChild
+              variant="outline"
+              className="bg-white text-gray-900"
+            >
               <Link href="/blank25">
                 <List className="mr-2 h-4 w-4" />
                 一覧へ
@@ -640,62 +644,64 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
                     unoptimized
                   />
                   <div className="absolute inset-0 grid grid-cols-5 grid-rows-5 gap-0">
-                    {(isSakumonMode ? hiddenPanels : openedPanels).map((_, index) => {
-                      const number = index + 1;
+                    {(isSakumonMode ? hiddenPanels : openedPanels).map(
+                      (_, index) => {
+                        const number = index + 1;
 
-                      if (!isSakumonMode) {
-                        const isOpened = openedPanels[index];
-                        const dimmed = isCorrect && !isOpened;
+                        if (!isSakumonMode) {
+                          const isOpened = openedPanels[index];
+                          const dimmed = isCorrect && !isOpened;
+                          return (
+                            <button
+                              key={number}
+                              type="button"
+                              onClick={() => openPanel(index)}
+                              disabled={isOpened || isCorrect}
+                              aria-label={`パネル ${number}`}
+                              className={[
+                                "flex select-none items-center justify-center",
+                                "border border-gray-300 text-sm font-semibold sm:text-base",
+                                "transition-all duration-150",
+                                isOpened
+                                  ? "pointer-events-none opacity-0"
+                                  : dimmed
+                                    ? "bg-black/50 text-white/70"
+                                    : "bg-black text-gray-100 hover:bg-gray-950",
+                                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:bg-purple-700",
+                              ].join(" ")}
+                            >
+                              {number}
+                            </button>
+                          );
+                        }
+
+                        const isHidden = hiddenPanels[index];
+                        const isEditable = sakumonPhase === "draft";
+
                         return (
                           <button
                             key={number}
                             type="button"
-                            onClick={() => openPanel(index)}
-                            disabled={isOpened || isCorrect}
-                            aria-label={`パネル ${number}`}
+                            onClick={() => toggleHiddenPanel(index)}
+                            disabled={!isEditable}
+                            aria-label={`マス ${number}`}
                             className={[
                               "flex select-none items-center justify-center",
-                              "border border-gray-300 text-sm font-semibold sm:text-base",
+                              "border text-sm font-semibold sm:text-base",
                               "transition-all duration-150",
-                              isOpened
-                                ? "pointer-events-none opacity-0"
-                                : dimmed
-                                  ? "bg-black/50 text-white/70"
-                                  : "bg-black text-gray-100 hover:bg-gray-950",
-                              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:bg-purple-700",
+                              isHidden
+                                ? "border-gray-300 bg-black text-gray-100"
+                                : isEditable
+                                  ? "border-white/30 bg-transparent text-transparent hover:bg-black/45 hover:text-gray-100"
+                                  : "cursor-default border-transparent bg-transparent text-transparent",
+                              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:bg-black/60",
                             ].join(" ")}
                           >
                             {number}
                           </button>
                         );
-                      }
-
-                      const isHidden = hiddenPanels[index];
-                      const isEditable = sakumonPhase === "draft";
-
-                      return (
-                        <button
-                          key={number}
-                          type="button"
-                          onClick={() => toggleHiddenPanel(index)}
-                          disabled={!isEditable}
-                          aria-label={`マス ${number}`}
-                          className={[
-                            "flex select-none items-center justify-center",
-                            "border text-sm font-semibold sm:text-base",
-                            "transition-all duration-150",
-                            isHidden
-                              ? "border-gray-300 bg-black text-gray-100"
-                              : isEditable
-                                ? "border-white/30 bg-transparent text-transparent hover:bg-black/45 hover:text-gray-100"
-                                : "cursor-default border-transparent bg-transparent text-transparent",
-                            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:bg-black/60",
-                          ].join(" ")}
-                        >
-                          {number}
-                        </button>
-                      );
-                    })}
+                      },
+                    )}
                   </div>
                 </div>
               )}
@@ -710,7 +716,9 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
                     <span className="font-semibold text-purple-300">
                       残り {remainingCount} / 25
                     </span>
-                    <span className="ml-3 text-gray-400">開封 {openedCount}</span>
+                    <span className="ml-3 text-gray-400">
+                      開封 {openedCount}
+                    </span>
                   </div>
                 )}
 
@@ -750,6 +758,7 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
 
               <div className="mt-4 grid gap-2 sm:grid-cols-[1fr_auto]">
                 <Input
+                  className="text-base"
                   value={answerInput}
                   onChange={(e) => setAnswerInput(e.target.value)}
                   placeholder="回答を入力"
@@ -784,7 +793,9 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
                   </span>
                 )}
                 {judgeStatus.type === "empty" && (
-                  <span className="text-gray-300">回答を入力してください。</span>
+                  <span className="text-gray-300">
+                    回答を入力してください。
+                  </span>
                 )}
                 {judgeStatus.type === "wrong" && (
                   <span className="text-red-300">不正解</span>
