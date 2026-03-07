@@ -1,4 +1,4 @@
-# Realtime Register API 仕様書（実装準拠 / 2026-03-07）
+# Realtime Register API 仕様書（実装準拠 / 2026-03-08）
 
 ## 1. 概要
 
@@ -75,6 +75,14 @@
 - collection: `realtimeEvents`
 - doc ID: `${postId}:${RULESET_VERSION}`
 - `RULESET_VERSION`: `ruleset-v2025-11`
+- 初期 visibility 状態:
+  - `isVisible = true`
+  - `hiddenReason = null`
+  - `hiddenAt = null`
+  - `syndicationStatus = "pending"`
+  - `syndicationCheckedAt = null`
+  - `syndicationNextCheckAt = capturedAt + 6h`
+  - `syndicationErrorCount = 0`
 - duplicate 判定:
   - 書き込み前に既存 doc ID を取得
   - 既存なら `already_exists` で skip
