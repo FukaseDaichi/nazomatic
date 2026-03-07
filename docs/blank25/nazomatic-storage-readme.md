@@ -62,10 +62,11 @@
 
 ## 更新フロー（nazomatic 側 publish API）
 
-1. Editor が manifest の変更内容と画像を送信
-2. API が Git Trees API で `blob -> tree -> commit` を作成
-3. `main` の ref を更新（force push を許容する構成）
-4. `publishedAt` を返却し、クライアントは `problems.json?v={publishedAt}` を再取得
+1. Editor が create / update / delete の入力と画像（必要時）を送信
+2. API が raw URL から最新 `problems.json` を取得
+3. API が Git Trees API で `blob -> tree -> commit` を作成
+4. 対象 branch の ref を `force: true` で更新
+5. `commitSha` と更新後 `manifest` を返却し、クライアントはその内容で即時 UI を更新
 
 > 競合解決は `last write wins` 前提です。複数人同時編集の運用には向きません。
 
@@ -78,7 +79,7 @@
 5. `nazomatic` 側に必要な環境変数を設定
    - `GITHUB_TOKEN`
    - `BLANK25_EDITOR_GITHUB_OWNER`
-   - `BLANK25_STORAGE_GITHUB_REPO`（v0.5 設計）
+   - `BLANK25_EDITOR_GITHUB_REPO`
    - `BLANK25_EDITOR_GITHUB_BRANCH`（既定: `main`）
    - `NEXT_PUBLIC_BLANK25_STORAGE_RAW_BASE`（任意）
 

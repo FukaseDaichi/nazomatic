@@ -1,6 +1,6 @@
-# Yahoo!リアルタイム検索ポスト → チケット販売カレンダー化 設計方針
+# Yahoo!リアルタイム検索ポスト → チケット販売カレンダー化 設計書（初期構想 / 2026-03-07）
 
-> この文書は初期の設計案です。現行実装の正本は `docs/specification.md`, `docs/calendardoc/firebase-registration-api.md`, `docs/calendardoc/github-actions-scheduling-plan.md`, `docs/calendardoc/x-repost-api-plan.md` を参照してください。
+> この文書は初期構想を含む設計書です。現行実装の正本は `docs/specification.md`, `docs/calendardoc/firebase-registration-api-specification.md`, `docs/calendardoc/github-actions-scheduling-specification.md`, `docs/calendardoc/x-repost-api-specification.md` を参照してください。
 
 ## 1. 目的とスコープ
 
@@ -100,7 +100,7 @@ Scheduler ──▶ Scraper (fetchYahooRealtime) ──▶ Raw Post Queue ──
 - **Normalization Worker**: Pub/Sub キュー (`raw_posts`) → Cloud Functions / Cloud Run jobs がトリガー。メッセージには `postId`, `rawText`, `capturedAt` などを格納し、`chrono-node` ベースのルールエンジンで正規化した結果を Firestore へ保存。
 - **Calendar API**: `GET /api/calendar?from=2025-11-01&to=2025-11-30&query=#謎チケ売ります`。レスポンスは日付ごと配列 or ICS 生成。`revalidate` or Redis キャッシュで 15〜30 分程度の TTL を持たせる。
 - **Admin UI**: Next.js 内で `/secret/christmas/congratulations` のようなセクションに管理画面を追加。レビュー／補正機能を提供。
-- **Firebase 登録 API 詳細**: 実装仕様は `docs/calendardoc/firebase-registration-api.md` に記載。
+- **Firebase 登録 API 詳細**: 実装仕様は `docs/calendardoc/firebase-registration-api-specification.md` に記載。
 - **Prune API**: `POST /api/internal/realtime/prune` で `eventTime` が 1 日以上前のドキュメントを一括削除（`cutoffDays`/`dryRun` 指定可）。定期メンテナンス用。
 
 ## 8. カレンダー表示と UX 留意点

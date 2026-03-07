@@ -1,4 +1,4 @@
-# Realtime Register API 仕様（実装準拠 / 2026-03-07）
+# Realtime Register API 仕様書（実装準拠 / 2026-03-07）
 
 ## 1. 概要
 

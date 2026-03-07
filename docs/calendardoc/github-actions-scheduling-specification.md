@@ -1,4 +1,4 @@
-# GitHub Actions 運用仕様（Realtime / X, 実装準拠 / 2026-03-07）
+# GitHub Actions スケジューリング仕様書（Realtime / X, 実装準拠 / 2026-03-07）
 
 ## 1. 対象 workflow
 
