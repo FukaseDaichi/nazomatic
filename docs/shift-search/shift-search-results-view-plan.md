@@ -43,13 +43,13 @@
 ## データ構成
 
 - 既存ソース:
-  - `.codex/shift-search/reports/shift-search-report-manifest.json`
-  - `.codex/shift-search/reports/{jp|en}/shift-search-*-len-*.md`
+  - `artifacts/shift-search/reports/shift-search-report-manifest.json`
+  - `artifacts/shift-search/reports/{jp|en}/shift-search-*-len-*.md`
 - 追加生成物（Next.jsが読む公開用）:
   - `src/generated/shift-search/view-manifest.json`
   - `src/generated/shift-search/internal/{lang}-{length}.json`（内部対象のみ）
 - 外部リンク定義:
-  - `.codex/shift-search/reports/shift-search-external-links.json`
+  - `artifacts/shift-search/reports/shift-search-external-links.json`
   - 例: `{ "jp-3": "https://.../shift-search-jp-len-3.html" }`
 
 ## 生成・公開フロー（1回実行前提）

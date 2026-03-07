@@ -81,7 +81,7 @@ const filtered = useMemo(() => tabbedConstellations.filter((item) => matchSearch
 - 注意文言は `prefecture` コンポーネントと同じスタイル (`text-xs text-gray-400 text-center`) を再利用し、統一感を持たせる。
 
 ## 8. データ更新フロー
-1. `.codex/constellation-system-spec.md`（本書）を元に初期 12 星座データを定義。
+1. `docs/calendardoc/constellation-system-spec.md`（本書）を元に初期 12 星座データを定義。
 2. 88 星座リストは CSV/JSON からスクリプトで生成し、`scripts/seed-constellations.ts` で TypeScript 配列を出力する仕組みを用意すると保守が楽。
 3. 四季タブの所属判定ルールを `season` フィールドで手動設定し、後続で調整可能にしておく。
 

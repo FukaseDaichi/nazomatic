@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-02-27T09:05:59.651Z",
+  "generatedAt": "2026-03-07T13:50:58.727Z",
   "reportCount": 21,
   "externalRowThreshold": 3000,
   "groups": {
@@ -32,7 +32,7 @@
       "totalHitRows": 695,
       "startedAt": "2026-02-27T01:56:58.918Z",
       "generatedAt": "2026-02-27T01:56:58.975Z",
-      "path": ".codex/shift-search/reports/en/shift-search-en-len-3.md",
+      "path": "artifacts/shift-search/reports/en/shift-search-en-len-3.md",
       "sizeBytes": 29877,
       "deliveryType": "internal",
       "externalUrl": null
@@ -47,7 +47,7 @@
       "totalHitRows": 896,
       "startedAt": "2026-02-27T01:56:59.007Z",
       "generatedAt": "2026-02-27T01:56:59.049Z",
-      "path": ".codex/shift-search/reports/en/shift-search-en-len-4.md",
+      "path": "artifacts/shift-search/reports/en/shift-search-en-len-4.md",
       "sizeBytes": 41433,
       "deliveryType": "internal",
       "externalUrl": null
@@ -62,7 +62,7 @@
       "totalHitRows": 278,
       "startedAt": "2026-02-27T01:56:59.073Z",
       "generatedAt": "2026-02-27T01:56:59.120Z",
-      "path": ".codex/shift-search/reports/en/shift-search-en-len-5.md",
+      "path": "artifacts/shift-search/reports/en/shift-search-en-len-5.md",
       "sizeBytes": 13810,
       "deliveryType": "internal",
       "externalUrl": null
@@ -77,7 +77,7 @@
       "totalHitRows": 111,
       "startedAt": "2026-02-27T01:56:59.142Z",
       "generatedAt": "2026-02-27T01:56:59.181Z",
-      "path": ".codex/shift-search/reports/en/shift-search-en-len-6.md",
+      "path": "artifacts/shift-search/reports/en/shift-search-en-len-6.md",
       "sizeBytes": 5995,
       "deliveryType": "internal",
       "externalUrl": null
@@ -92,7 +92,7 @@
       "totalHitRows": 48,
       "startedAt": "2026-02-27T01:56:59.204Z",
       "generatedAt": "2026-02-27T01:56:59.253Z",
-      "path": ".codex/shift-search/reports/en/shift-search-en-len-7.md",
+      "path": "artifacts/shift-search/reports/en/shift-search-en-len-7.md",
       "sizeBytes": 2912,
       "deliveryType": "internal",
       "externalUrl": null
@@ -107,7 +107,7 @@
       "totalHitRows": 4,
       "startedAt": "2026-02-27T01:56:59.270Z",
       "generatedAt": "2026-02-27T01:56:59.310Z",
-      "path": ".codex/shift-search/reports/en/shift-search-en-len-8.md",
+      "path": "artifacts/shift-search/reports/en/shift-search-en-len-8.md",
       "sizeBytes": 533,
       "deliveryType": "internal",
       "externalUrl": null
@@ -122,7 +122,7 @@
       "totalHitRows": 8,
       "startedAt": "2026-02-27T01:56:59.337Z",
       "generatedAt": "2026-02-27T01:56:59.369Z",
-      "path": ".codex/shift-search/reports/en/shift-search-en-len-9.md",
+      "path": "artifacts/shift-search/reports/en/shift-search-en-len-9.md",
       "sizeBytes": 785,
       "deliveryType": "internal",
       "externalUrl": null
@@ -137,7 +137,7 @@
       "totalHitRows": 8,
       "startedAt": "2026-02-27T01:56:59.391Z",
       "generatedAt": "2026-02-27T01:56:59.419Z",
-      "path": ".codex/shift-search/reports/en/shift-search-en-len-10.md",
+      "path": "artifacts/shift-search/reports/en/shift-search-en-len-10.md",
       "sizeBytes": 811,
       "deliveryType": "internal",
       "externalUrl": null
@@ -152,7 +152,7 @@
       "totalHitRows": 0,
       "startedAt": "2026-02-27T01:56:59.440Z",
       "generatedAt": "2026-02-27T01:56:59.455Z",
-      "path": ".codex/shift-search/reports/en/shift-search-en-len-11.md",
+      "path": "artifacts/shift-search/reports/en/shift-search-en-len-11.md",
       "sizeBytes": 307,
       "deliveryType": "internal",
       "externalUrl": null
@@ -167,7 +167,7 @@
       "totalHitRows": 2,
       "startedAt": "2026-02-27T01:56:59.458Z",
       "generatedAt": "2026-02-27T01:56:59.474Z",
-      "path": ".codex/shift-search/reports/en/shift-search-en-len-12.md",
+      "path": "artifacts/shift-search/reports/en/shift-search-en-len-12.md",
       "sizeBytes": 445,
       "deliveryType": "internal",
       "externalUrl": null
@@ -182,7 +182,7 @@
       "totalHitRows": 0,
       "startedAt": "2026-02-27T01:56:59.496Z",
       "generatedAt": "2026-02-27T01:56:59.503Z",
-      "path": ".codex/shift-search/reports/en/shift-search-en-len-13.md",
+      "path": "artifacts/shift-search/reports/en/shift-search-en-len-13.md",
       "sizeBytes": 307,
       "deliveryType": "internal",
       "externalUrl": null
@@ -197,7 +197,7 @@
       "totalHitRows": 0,
       "startedAt": "2026-02-27T01:56:59.506Z",
       "generatedAt": "2026-02-27T01:56:59.510Z",
-      "path": ".codex/shift-search/reports/en/shift-search-en-len-14.md",
+      "path": "artifacts/shift-search/reports/en/shift-search-en-len-14.md",
       "sizeBytes": 305,
       "deliveryType": "internal",
       "externalUrl": null
@@ -212,7 +212,7 @@
       "totalHitRows": 0,
       "startedAt": "2026-02-27T01:56:59.512Z",
       "generatedAt": "2026-02-27T01:56:59.513Z",
-      "path": ".codex/shift-search/reports/en/shift-search-en-len-15.md",
+      "path": "artifacts/shift-search/reports/en/shift-search-en-len-15.md",
       "sizeBytes": 305,
       "deliveryType": "internal",
       "externalUrl": null
@@ -227,7 +227,7 @@
       "totalHitRows": 0,
       "startedAt": "2026-02-27T01:56:59.515Z",
       "generatedAt": "2026-02-27T01:56:59.516Z",
-      "path": ".codex/shift-search/reports/en/shift-search-en-len-16.md",
+      "path": "artifacts/shift-search/reports/en/shift-search-en-len-16.md",
       "sizeBytes": 303,
       "deliveryType": "internal",
       "externalUrl": null
@@ -242,7 +242,7 @@
       "totalHitRows": 0,
       "startedAt": "2026-02-27T01:56:59.519Z",
       "generatedAt": "2026-02-27T01:56:59.520Z",
-      "path": ".codex/shift-search/reports/en/shift-search-en-len-18.md",
+      "path": "artifacts/shift-search/reports/en/shift-search-en-len-18.md",
       "sizeBytes": 303,
       "deliveryType": "internal",
       "externalUrl": null
@@ -257,7 +257,7 @@
       "totalHitRows": 222762,
       "startedAt": "2026-02-27T01:56:59.505Z",
       "generatedAt": "2026-02-27T01:57:02.827Z",
-      "path": ".codex/shift-search/reports/jp/shift-search-jp-len-3.md",
+      "path": "artifacts/shift-search/reports/jp/shift-search-jp-len-3.md",
       "sizeBytes": 14065609,
       "deliveryType": "external",
       "externalUrl": null
@@ -272,7 +272,7 @@
       "totalHitRows": 140159,
       "startedAt": "2026-02-27T01:57:03.045Z",
       "generatedAt": "2026-02-27T01:57:14.117Z",
-      "path": ".codex/shift-search/reports/jp/shift-search-jp-len-4.md",
+      "path": "artifacts/shift-search/reports/jp/shift-search-jp-len-4.md",
       "sizeBytes": 10076969,
       "deliveryType": "external",
       "externalUrl": null
@@ -287,7 +287,7 @@
       "totalHitRows": 17266,
       "startedAt": "2026-02-27T01:57:14.292Z",
       "generatedAt": "2026-02-27T01:57:24.003Z",
-      "path": ".codex/shift-search/reports/jp/shift-search-jp-len-5.md",
+      "path": "artifacts/shift-search/reports/jp/shift-search-jp-len-5.md",
       "sizeBytes": 1368539,
       "deliveryType": "external",
       "externalUrl": null
@@ -302,7 +302,7 @@
       "totalHitRows": 5054,
       "startedAt": "2026-02-27T01:57:24.070Z",
       "generatedAt": "2026-02-27T01:57:33.376Z",
-      "path": ".codex/shift-search/reports/jp/shift-search-jp-len-6.md",
+      "path": "artifacts/shift-search/reports/jp/shift-search-jp-len-6.md",
       "sizeBytes": 441448,
       "deliveryType": "external",
       "externalUrl": null
@@ -317,7 +317,7 @@
       "totalHitRows": 2124,
       "startedAt": "2026-02-27T01:57:33.423Z",
       "generatedAt": "2026-02-27T01:57:42.218Z",
-      "path": ".codex/shift-search/reports/jp/shift-search-jp-len-7.md",
+      "path": "artifacts/shift-search/reports/jp/shift-search-jp-len-7.md",
       "sizeBytes": 204304,
       "deliveryType": "internal",
       "externalUrl": null
@@ -332,7 +332,7 @@
       "totalHitRows": 975,
       "startedAt": "2026-02-27T01:57:42.278Z",
       "generatedAt": "2026-02-27T01:57:49.186Z",
-      "path": ".codex/shift-search/reports/jp/shift-search-jp-len-8.md",
+      "path": "artifacts/shift-search/reports/jp/shift-search-jp-len-8.md",
       "sizeBytes": 102711,
       "deliveryType": "internal",
       "externalUrl": null

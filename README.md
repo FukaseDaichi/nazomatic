@@ -2,7 +2,8 @@
 
 謎解きお助けツールをまとめた Next.js アプリです。
 
-- 要件定義書: [`./.codex/specification.md`](./.codex/specification.md)
+- 要件定義書: [`./docs/specification.md`](./docs/specification.md)
+- シフト検索レポート成果物: `./artifacts/shift-search/reports`
 
 ## 主な機能
 

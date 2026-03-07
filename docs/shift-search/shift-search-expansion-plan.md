@@ -14,11 +14,11 @@
 ## 出力ファイル方針
 
 - 1条件1ファイルで分離:
-  - 日本語: `.codex/shift-search/reports/jp/shift-search-jp-len-{N}.md`
-  - 英語: `.codex/shift-search/reports/en/shift-search-en-len-{N}.md`
+  - 日本語: `artifacts/shift-search/reports/jp/shift-search-jp-len-{N}.md`
+  - 英語: `artifacts/shift-search/reports/en/shift-search-en-len-{N}.md`
 - 付帯:
-  - 目次: `.codex/shift-search/reports/shift-search-report-index.md`
-  - メタ: `.codex/shift-search/reports/shift-search-report-manifest.json`
+  - 目次: `artifacts/shift-search/reports/shift-search-report-index.md`
+  - メタ: `artifacts/shift-search/reports/shift-search-report-manifest.json`
 
 ## MDフォーマット（軽量）
 
