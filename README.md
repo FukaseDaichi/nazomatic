@@ -3,6 +3,7 @@
 謎解きお助けツールをまとめた Next.js アプリです。
 
 - 仕様書: [`./docs/specification.md`](./docs/specification.md)
+- AI 実装ルール: [`./docs/ai-coding-rules.md`](./docs/ai-coding-rules.md)
 - シフト検索レポート成果物: `./artifacts/shift-search/reports`
 
 ## 主な機能
