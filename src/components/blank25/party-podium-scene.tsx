@@ -22,8 +22,8 @@ const SLOT_LAYOUT: Record<
     x: number;
     width: number;
     height: number;
-    color: string;   // bright/light color for text & rings
-    accent: string;  // mid-tone for materials
+    color: string; // bright/light color for text & rings
+    accent: string; // mid-tone for materials
     emissive: string; // emissive color for the column body
     rimColor: string; // rim highlight color
   }
@@ -64,7 +64,8 @@ function CrownGlyph({ color }: { color: string }) {
     if (gemRef.current) {
       gemRef.current.rotation.y = state.clock.elapsedTime * 0.9;
       const mat = gemRef.current.material as THREE.MeshStandardMaterial;
-      mat.emissiveIntensity = 2.8 + Math.sin(state.clock.elapsedTime * 2.5) * 0.8;
+      mat.emissiveIntensity =
+        2.8 + Math.sin(state.clock.elapsedTime * 2.5) * 0.8;
     }
   });
   return (
@@ -126,7 +127,13 @@ function CrownGlyph({ color }: { color: string }) {
 }
 
 // --- Diamond marker for 2nd / 3rd place ---
-function DiamondMarker({ color, scale = 1 }: { color: string; scale?: number }) {
+function DiamondMarker({
+  color,
+  scale = 1,
+}: {
+  color: string;
+  scale?: number;
+}) {
   const coreRef = useRef<THREE.Mesh>(null);
   const ring1Ref = useRef<THREE.Mesh>(null);
   const ring2Ref = useRef<THREE.Mesh>(null);
@@ -344,9 +351,7 @@ function PodiumColumn({
       ))}
       {/* Top edge glow */}
       <mesh position={[0, layout.height + 0.014, 0]}>
-        <boxGeometry
-          args={[layout.width * 0.88, 0.028, layout.width * 0.88]}
-        />
+        <boxGeometry args={[layout.width * 0.88, 0.028, layout.width * 0.88]} />
         <meshStandardMaterial
           color={layout.color}
           emissive={layout.color}
@@ -384,7 +389,9 @@ function PodiumColumn({
       {/* Name panel */}
       <group position={[0, layout.height * 0.65, faceZ]}>
         <mesh>
-          <planeGeometry args={[layout.width * 0.88, slot === 1 ? 0.74 : 0.62]} />
+          <planeGeometry
+            args={[layout.width * 0.88, slot === 1 ? 0.74 : 0.62]}
+          />
           <meshStandardMaterial
             color="#050710"
             emissive={layout.emissive}
@@ -597,9 +604,7 @@ function PodiumSceneCore({ entries }: { entries: PartyPodiumEntry[] }) {
         <mesh key={r} position={[0, 0.05, 0]} rotation={[Math.PI / 2, 0, 0]}>
           <ringGeometry args={[r, r + 0.16, 80]} />
           <meshBasicMaterial
-            color={
-              i === 0 ? "#4C1D95" : i === 1 ? "#5B21B6" : "#7C3AED"
-            }
+            color={i === 0 ? "#4C1D95" : i === 1 ? "#5B21B6" : "#7C3AED"}
             transparent
             opacity={0.24 - i * 0.05}
           />
@@ -678,11 +683,7 @@ export default function PartyPodiumScene({
           intensity={18}
           color={"#CBD5E1"}
         />
-        <pointLight
-          position={[4.6, 5.5, 4]}
-          intensity={18}
-          color={"#FED7AA"}
-        />
+        <pointLight position={[4.6, 5.5, 4]} intensity={18} color={"#FED7AA"} />
         {/* Top spotlight */}
         <spotLight
           position={[0, 18, 10]}
@@ -700,7 +701,7 @@ export default function PartyPodiumScene({
           enableZoom
           enableDamping
           dampingFactor={0.08}
-          minDistance={14}
+          minDistance={2}
           maxDistance={32}
           minPolarAngle={1.0}
           maxPolarAngle={1.5}
