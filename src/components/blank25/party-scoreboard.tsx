@@ -8,7 +8,6 @@ import {
   useRef,
   useState,
 } from "react";
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -22,7 +21,6 @@ import {
   Play,
   Plus,
   RotateCcw,
-  ScanLine,
   Sparkles,
   Trash2,
   Undo2,
@@ -37,7 +35,9 @@ import {
   loadBlank25PartyState,
   saveBlank25PartyState,
 } from "@/components/blank25/party-storage";
-import { type PartyPodiumEntry } from "@/components/blank25/party-podium";
+import PartyPodium, {
+  type PartyPodiumEntry,
+} from "@/components/blank25/party-podium";
 import {
   fireBlank25Confetti,
   type ConfettiCleanup,
@@ -60,20 +60,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-
-const PartyPodiumScene = dynamic(
-  () => import("@/components/blank25/party-podium-scene"),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="flex h-[240px] w-full items-center justify-center rounded-[1.8rem] border border-gray-800 bg-gray-950/75 lg:h-[265px]">
-        <div className="rounded-full border border-purple-300/20 bg-purple-400/10 px-4 py-2 text-sm font-semibold uppercase tracking-[0.24em] text-purple-100">
-          ステージ描画中...
-        </div>
-      </div>
-    ),
-  },
-);
 
 type RankedParticipant = Blank25PartyParticipant & {
   rank: number;
@@ -1381,156 +1367,15 @@ export default function PartyScoreboard() {
             </div>
           </div>
 
-          {/* ── Stage: 左 2/3 が 3D + 右 1/3 がランキング ── */}
-          <div className="relative mt-6 overflow-hidden rounded-[2rem] border border-gray-800 bg-black/30">
-            <div className="flex flex-col lg:flex-row">
-
-              {/* ── 左: 3D ステージ (2/3) ── */}
-              <div className="relative min-w-0 lg:flex-[2]">
-                {/* タイトルオーバーレイ（左下） */}
-                <div className="absolute bottom-4 left-5 z-10">
-                  <div className="inline-flex items-center gap-1.5 rounded-full border border-purple-300/20 bg-gray-950/80 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.3em] text-purple-100 backdrop-blur">
-                    <ScanLine className="h-3 w-3" />
-                    表彰台コア
-                  </div>
-                  <h2 className="mt-2 text-3xl font-black leading-none tracking-[-0.04em] text-white xl:text-[2.8rem]">
-                    Stage
-                  </h2>
-                  <div className="mt-2 flex flex-wrap gap-1.5">
-                    <span className="rounded-full border border-gray-700 bg-gray-950/85 px-2.5 py-0.5 text-xs font-semibold text-gray-200">
-                      参加者 {participantCount}
-                    </span>
-                    <span className="rounded-full border border-gray-700 bg-gray-950/85 px-2.5 py-0.5 text-xs font-semibold text-gray-200">
-                      トップ {topScore ?? 0} pt
-                    </span>
-                    <span className="rounded-full border border-gray-700 bg-gray-950/85 px-2.5 py-0.5 text-xs font-semibold text-gray-200">
-                      {topScore === null
-                        ? "未登録"
-                        : topGroupCount > 1
-                          ? `同点 ${topGroupCount} 組`
-                          : "単独トップ"}
-                    </span>
-                  </div>
-                </div>
-
-                {/* 3D キャンバス */}
-                <PartyPodiumScene entries={podiumEntries} />
-              </div>
-
-              {/* 縦区切り線 */}
-              <div className="hidden w-px shrink-0 bg-gray-800/70 lg:block" />
-              {/* 横区切り線（モバイル） */}
-              <div className="h-px bg-gray-800/70 lg:hidden" />
-
-              {/* ── 右: ランキングパネル (1/3) ── */}
-              <div className="flex min-w-0 flex-col p-4 lg:flex-[1] lg:p-5">
-
-                {/* ヘッダー */}
-                <div className="flex items-center justify-between">
-                  <div className="text-[11px] font-semibold uppercase tracking-[0.32em] text-gray-400">
-                    上位 3 組
-                  </div>
-                  <div className="rounded-full border border-purple-300/20 bg-purple-400/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-purple-100">
-                    {participantCount} 組
-                  </div>
-                </div>
-
-                {/* 更新日時 */}
-                <div className="mt-1 text-[10px] uppercase tracking-[0.22em] text-gray-600">
-                  更新 {updatedAtLabel}
-                </div>
-
-                {/* ステータスメッセージ */}
-                <AnimatePresence initial={false}>
-                  {statusMessage && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 6 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -6 }}
-                      className="mt-2 rounded-[1rem] border border-purple-300/20 bg-purple-400/10 px-3 py-2 text-xs text-purple-50"
-                    >
-                      {statusMessage}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                {/* 上位 3 位カード */}
-                <div className="mt-3 flex flex-1 flex-col gap-2">
-                  {([1, 2, 3] as const).map((slot) => {
-                    const entry = podiumEntries.find((e) => e.slot === slot);
-                    const rs =
-                      slot === 1
-                        ? {
-                            border: "border-amber-400/28",
-                            bg: "bg-amber-400/[0.06]",
-                            numColor: "#FCD34D",
-                          }
-                        : slot === 2
-                          ? {
-                              border: "border-slate-400/22",
-                              bg: "bg-slate-400/[0.05]",
-                              numColor: "#CBD5E1",
-                            }
-                          : {
-                              border: "border-orange-400/22",
-                              bg: "bg-orange-400/[0.05]",
-                              numColor: "#FDBA74",
-                            };
-                    return (
-                      <div
-                        key={slot}
-                        className={cn(
-                          "flex flex-1 items-center gap-3 rounded-[1.1rem] border px-3 py-2.5",
-                          rs.border,
-                          rs.bg,
-                        )}
-                      >
-                        {/* 順位数字 */}
-                        <div
-                          className="w-5 shrink-0 text-center text-base font-black"
-                          style={{ color: rs.numColor }}
-                        >
-                          {slot}
-                        </div>
-                        {/* アバター */}
-                        <PartyAvatar
-                          name={entry?.participant.name ?? `#${slot}`}
-                          iconDataUrl={
-                            entry?.participant.iconDataUrl ?? null
-                          }
-                          className="h-9 w-9 shrink-0 rounded-[0.65rem]"
-                          monogramClassName="text-xs"
-                        />
-                        {/* 名前・種別 */}
-                        <div className="min-w-0 flex-1">
-                          <div className="truncate text-sm font-bold text-white">
-                            {entry?.participant.name ?? "空きスロット"}
-                          </div>
-                          <div className="text-[10px] text-gray-500">
-                            {entry
-                              ? kindLabel(entry.participant.kind)
-                              : "待機中"}
-                          </div>
-                        </div>
-                        {/* スコア */}
-                        <div className="shrink-0 text-right">
-                          <div
-                            className="text-base font-black"
-                            style={{ color: rs.numColor }}
-                          >
-                            {entry?.participant.score ?? "--"}
-                          </div>
-                          <div className="text-[9px] uppercase tracking-wider text-gray-600">
-                            pt
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-
-              </div>
-            </div>
+          <div className="mt-6">
+            <PartyPodium
+              entries={podiumEntries}
+              participantCount={participantCount}
+              topScore={topScore}
+              topGroupCount={topGroupCount}
+              updatedAtLabel={updatedAtLabel}
+              statusMessage={statusMessage}
+            />
           </div>
         </div>
       </section>

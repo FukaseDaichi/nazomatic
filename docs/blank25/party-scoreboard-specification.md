@@ -3,7 +3,7 @@
 ## 1. 目的
 
 - `/blank25/party` で、BLANK25 のチーム戦や個人戦の得点をローカル管理する。
-- 上位 3 組を 3D ステージとひな壇カードで強調し、得点管理を観戦用 UI としても成立させる。
+- 上位 3 組を 2D podium ステージで強調し、得点管理を観戦用 UI としても成立させる。
 - 保存先は `localStorage` のみとし、認証・サーバー保存・端末間同期は持たない。
 
 ## 2. スコープ
@@ -14,7 +14,7 @@
 - `/blank25` 一覧ページからの導線カード
 - 参加者の追加、名前変更、種別変更、アイコン設定
 - 得点の加減点、直接入力、Undo
-- 上位 3 組の 3D 表彰台表示
+- 上位 3 組の podium 表示
 - GM タイマー
 - `localStorage` 永続化、旧バージョン保存データの移行、破損データの初期化
 
@@ -31,8 +31,7 @@
 
 - ページ: `src/app/(blank25)/blank25/party/page.tsx`
 - 本体: `src/components/blank25/party-scoreboard.tsx`
-- ひな壇カード: `src/components/blank25/party-podium.tsx`
-- 3D ステージ: `src/components/blank25/party-podium-scene.tsx`
+- podium ステージ: `src/components/blank25/party-podium.tsx`
 - 参加者アバター: `src/components/blank25/party-avatar.tsx`
 - 保存処理: `src/components/blank25/party-storage.ts`
 - 型定義: `src/components/blank25/party-types.ts`
@@ -50,8 +49,8 @@
 
 - 左上に `/blank25` へ戻るボタンを置く。
 - 右上に `GMタイマー` ボタンと `PC 専用` バッジを置く。
-- 中央に `@react-three/fiber` / `@react-three/drei` ベースの 3D 表彰台を表示する。
-- 3D ステージ下に上位 3 組の情報カードを表示する。
+- 中央に上位 3 組の podium ステージを表示する。
+- podium 本体の下に上位 3 組のサマリーカードを表示する。
 - 参加者数、トップ得点、単独トップ / 同点数、最終更新時刻、ステータスメッセージをヘッダー内に表示する。
 
 ### 4.3 参加者一覧
@@ -120,7 +119,7 @@
 
 - 並び順は `score` 降順、`createdAt` 昇順、最後に `name.localeCompare("ja")`。
 - 同点者は同順位として扱い、`1, 2, 2, 4` のように順位を導出する。
-- 上位 3 組を `slot 1..3` に割り当て、3D ステージとひな壇カードに反映する。
+- 上位 3 組を `slot 1..3` に割り当て、podium ステージとサマリーカードに反映する。
 
 ### 5.5 首位演出
 
