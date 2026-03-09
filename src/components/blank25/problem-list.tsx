@@ -2,7 +2,16 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Grid3X3, RotateCcw, Search, X } from "lucide-react";
+import {
+  ChevronRight,
+  Grid3X3,
+  PartyPopper,
+  RotateCcw,
+  Search,
+  Trophy,
+  Users,
+  X,
+} from "lucide-react";
 import { fetchBlank25Manifest } from "@/components/blank25/manifest";
 import type { Blank25Category } from "@/components/blank25/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -169,6 +178,72 @@ export default function Blank25ProblemList() {
         問題を選んで開始します。画像の上の 25
         パネル（5×5）を開きながら推理し、回答で正誤判定します。
       </p>
+      <div className="mb-5 grid gap-4 lg:grid-cols-2">
+        <Card className="overflow-hidden border-purple-300/30 bg-[radial-gradient(circle_at_top,rgba(192,132,252,0.18),transparent_55%),linear-gradient(to_bottom,rgba(17,24,39,0.95),rgba(31,41,55,0.95))] shadow-xl shadow-black/20">
+          <CardContent className="flex h-full flex-col gap-4 p-5">
+            <div>
+              <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-purple-300/25 bg-purple-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-purple-100">
+                <PartyPopper className="h-3.5 w-3.5" />
+                Rules
+              </div>
+              <div className="flex items-center gap-2">
+                <Users className="h-5 w-5 text-purple-300" />
+                <h3 className="text-xl font-bold text-white">
+                  チーム戦ルール
+                </h3>
+              </div>
+              <p className="mt-2 text-sm text-gray-300">
+                その 1 枚、残す？ BLANK25 チーム戦の流れを、盤面ギミックつきでエンタメ寄りに説明します。
+              </p>
+            </div>
+            <div className="mt-auto">
+              <Button
+                asChild
+                className="bg-purple-400 text-gray-950 hover:bg-purple-300"
+              >
+                <Link href="/blank25/party/rules">
+                  ルールをみる
+                  <ChevronRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="overflow-hidden border-purple-300/30 bg-[radial-gradient(circle_at_top,rgba(192,132,252,0.16),transparent_55%),linear-gradient(to_bottom,rgba(17,24,39,0.95),rgba(31,41,55,0.95))] shadow-xl shadow-black/20">
+          <CardContent className="flex h-full flex-col gap-4 p-5">
+            <div>
+              <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-purple-300/25 bg-purple-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-purple-100">
+                <PartyPopper className="h-3.5 w-3.5" />
+                Score
+              </div>
+              <div className="flex items-center gap-2">
+                <Trophy className="h-5 w-5 text-purple-300" />
+                <h3 className="text-xl font-bold text-white">
+                  パーティ得点ボード
+                </h3>
+                <span className="rounded-full border border-gray-600 bg-gray-900/80 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-200">
+                  PC
+                </span>
+              </div>
+              <p className="mt-2 text-sm text-gray-300">
+                チームや個人の得点を localStorage で管理できます。トップはひな壇表示で盛り上げます。
+              </p>
+            </div>
+            <div className="mt-auto">
+              <Button
+                asChild
+                className="bg-purple-400 text-gray-950 hover:bg-purple-300"
+              >
+                <Link href="/blank25/party">
+                  パーティ機能をひらく
+                  <ChevronRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
       <div className="flex flex-wrap items-center gap-2 mb-4 text-xs">
         <span className="rounded-full bg-gray-700 px-2 py-1 text-gray-200">
           カテゴリ {categories?.length ?? 0}
@@ -216,7 +291,7 @@ export default function Blank25ProblemList() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="問題名 / ID / カテゴリ名で絞り込み"
-              className="bg-gray-800 border-gray-700 pl-9 pr-10 text-gray-100 placeholder:text-gray-400"
+              className="bg-gray-800 border-gray-700 pl-9 pr-10 text-base text-gray-100 placeholder:text-gray-400 sm:text-sm"
             />
             {searchQuery && (
               <button

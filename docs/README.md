@@ -7,6 +7,8 @@
 - 全体仕様: `docs/specification.md`
 - AI 実装ルール: `docs/ai-coding-rules.md`
 - BLANK25: `docs/blank25/specification.md`
+- BLANK25 パーティ得点表示: `docs/blank25/party-scoreboard-specification.md`
+- BLANK25 チーム戦ルール説明: `docs/blank25/team-battle-rules-site-specification.md`
 - BLANK25 Editor: `docs/blank25/upload-editor-specification.md`
 - BLANK25 Editor 保存方式: `docs/blank25/editor-storage-design.md`
 - Shift Search: `docs/shift-search/specification.md`
