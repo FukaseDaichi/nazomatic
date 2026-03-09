@@ -21,6 +21,8 @@
 ## 設計・計画メモ
 
 - Calendar 削除済み Post 非表示化計画: `docs/calendardoc/calendar-deleted-post-syndication-plan.md`
+- BLANK25 パーティ得点表示実装方針: `docs/blank25/party-scoreboard-implementation-plan.md`
+- BLANK25 チーム戦ルール説明サイト実装方針: `docs/blank25/team-battle-rules-site-implementation-plan.md`
 
 ## ディレクトリ
 
