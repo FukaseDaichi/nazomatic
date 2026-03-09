@@ -97,6 +97,21 @@ const getTopStateLabel = (topScore: number | null, topGroupCount: number) => {
   return "単独トップ";
 };
 
+const getDisplayRank = (
+  entry: PartyPodiumEntry | undefined,
+  fallbackSlot: PartyPodiumEntry["slot"],
+) => entry?.rank ?? fallbackSlot;
+
+const getVisualRank = (
+  entry: PartyPodiumEntry | undefined,
+  fallbackSlot: PartyPodiumEntry["slot"],
+): PartyPodiumEntry["slot"] => {
+  const rank = getDisplayRank(entry, fallbackSlot);
+  if (rank <= 1) return 1;
+  if (rank === 2) return 2;
+  return 3;
+};
+
 const getStandingLabel = (entry?: PartyPodiumEntry) => {
   if (!entry) return "待機中";
   return entry.isTied ? `同率 ${entry.rank} 位` : `${entry.rank} 位`;
@@ -117,7 +132,9 @@ function PodiumBlock({
   slot: PartyPodiumEntry["slot"];
   entry?: PartyPodiumEntry;
 }) {
-  const config = slotConfigByRank[slot];
+  const displayRank = getDisplayRank(entry, slot);
+  const config = slotConfigByRank[getVisualRank(entry, slot)];
+  const layoutOrderClassName = slotConfigByRank[slot].orderClassName;
   const Icon = config.icon;
 
   return (
@@ -131,7 +148,7 @@ function PodiumBlock({
       }}
       className={cn(
         "flex w-full max-w-[230px] flex-1 flex-col items-center justify-end",
-        config.orderClassName,
+        layoutOrderClassName,
       )}
     >
       <div className="mb-4 flex flex-col items-center text-center">
@@ -144,7 +161,7 @@ function PodiumBlock({
           )}
         >
           <Icon className="h-3.5 w-3.5" />
-          {config.label}
+          {entry ? getStandingLabel(entry) : config.label}
         </div>
 
         <div className="relative mt-4">
@@ -159,7 +176,7 @@ function PodiumBlock({
             <EmptyAvatar />
           )}
           <div className="absolute -bottom-2 -right-2 flex h-7 min-w-7 items-center justify-center rounded-full border border-gray-950 bg-white px-2 text-xs font-black text-gray-950 shadow-lg shadow-black/35">
-            {slot}
+            {displayRank}
           </div>
         </div>
 
@@ -215,7 +232,7 @@ function PodiumBlock({
                 config.bodyNumberClassName,
               )}
             >
-              {slot}
+              {displayRank}
             </div>
             <div
               className={cn(
@@ -241,7 +258,7 @@ function PodiumSummaryCard({
   slot: PartyPodiumEntry["slot"];
   entry?: PartyPodiumEntry;
 }) {
-  const config = slotConfigByRank[slot];
+  const config = slotConfigByRank[getVisualRank(entry, slot)];
   const Icon = config.icon;
 
   return (
@@ -260,7 +277,7 @@ function PodiumSummaryCard({
           )}
         >
           <Icon className="h-3.5 w-3.5" />
-          {config.label}
+          {entry ? getStandingLabel(entry) : config.label}
         </span>
         <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-gray-400">
           {getStandingLabel(entry)}
