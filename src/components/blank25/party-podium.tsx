@@ -28,6 +28,8 @@ type SlotConfig = {
   label: string;
   bodyHeightClassName: string;
   bodyGradientClassName: string;
+  bodyNumberClassName: string;
+  bodyRankClassName: string;
   glowClassName: string;
   badgeClassName: string;
   accentTextClassName: string;
@@ -44,6 +46,8 @@ const slotConfigByRank: Record<PartyPodiumEntry["slot"], SlotConfig> = {
     label: "1 位",
     bodyHeightClassName: "h-40 xl:h-52",
     bodyGradientClassName: "from-amber-300/75 via-purple-300/25 to-gray-950",
+    bodyNumberClassName: "text-[6.6rem] xl:text-[8.5rem]",
+    bodyRankClassName: "text-xl xl:text-2xl",
     glowClassName: "shadow-[0_0_56px_rgba(251,191,36,0.2)]",
     badgeClassName: "border-amber-300/35 bg-amber-300/14 text-amber-50",
     accentTextClassName: "text-amber-200",
@@ -57,6 +61,8 @@ const slotConfigByRank: Record<PartyPodiumEntry["slot"], SlotConfig> = {
     label: "2 位",
     bodyHeightClassName: "h-32 xl:h-44",
     bodyGradientClassName: "from-slate-200/70 via-slate-300/18 to-gray-950",
+    bodyNumberClassName: "text-[5.2rem] xl:text-[6.8rem]",
+    bodyRankClassName: "text-lg xl:text-xl",
     glowClassName: "shadow-[0_0_44px_rgba(203,213,225,0.18)]",
     badgeClassName: "border-slate-300/30 bg-slate-300/12 text-slate-100",
     accentTextClassName: "text-slate-200",
@@ -70,6 +76,8 @@ const slotConfigByRank: Record<PartyPodiumEntry["slot"], SlotConfig> = {
     label: "3 位",
     bodyHeightClassName: "h-28 xl:h-36",
     bodyGradientClassName: "from-orange-300/70 via-orange-400/18 to-gray-950",
+    bodyNumberClassName: "text-[4.7rem] xl:text-[6rem]",
+    bodyRankClassName: "text-base xl:text-lg",
     glowClassName: "shadow-[0_0_44px_rgba(251,146,60,0.18)]",
     badgeClassName: "border-orange-300/30 bg-orange-300/12 text-orange-50",
     accentTextClassName: "text-orange-200",
@@ -197,17 +205,25 @@ function PodiumBlock({
           <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-white/20 to-transparent" />
           <div className="absolute inset-y-0 left-0 w-5 bg-gradient-to-r from-black/28 to-transparent" />
           <div className="absolute inset-y-0 right-0 w-5 bg-gradient-to-l from-black/28 to-transparent" />
-          <div className="relative flex h-full flex-col justify-between">
-            <div className="text-[10px] font-semibold uppercase tracking-[0.32em] text-white/80">
-              Stage
+          <div className="absolute left-4 top-4 text-[10px] font-semibold uppercase tracking-[0.32em] text-white/80">
+            Stage
+          </div>
+          <div className="absolute inset-x-0 top-1/2 flex -translate-y-1/2 flex-col items-center justify-center px-4 text-center">
+            <div
+              className={cn(
+                "font-black leading-none tracking-[-0.08em] text-white/95 drop-shadow-[0_12px_40px_rgba(0,0,0,0.42)]",
+                config.bodyNumberClassName,
+              )}
+            >
+              {slot}
             </div>
-            <div className="pb-3">
-              <div className="text-4xl font-black leading-none tracking-[-0.06em] text-white/95 xl:text-5xl">
-                {slot}
-              </div>
-              <div className="mt-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-white/75">
-                {getStandingLabel(entry)}
-              </div>
+            <div
+              className={cn(
+                "mt-1 font-semibold uppercase tracking-[0.18em] text-white/82",
+                config.bodyRankClassName,
+              )}
+            >
+              {getStandingLabel(entry)}
             </div>
           </div>
           <div className="absolute inset-x-0 bottom-0 h-3 bg-black/25" />
@@ -304,70 +320,84 @@ export default function PartyPodium({
 
   return (
     <Card className="overflow-hidden border-purple-300/20 bg-[radial-gradient(circle_at_top,rgba(192,132,252,0.16),transparent_52%),linear-gradient(to_bottom,rgba(2,6,23,0.98),rgba(17,24,39,0.96))] shadow-[0_30px_120px_rgba(0,0,0,0.45)]">
-      <CardContent className="p-5 xl:p-6">
-        <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
-          <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.34em] text-purple-200/80">
-              表彰台
+      <CardContent className="p-0">
+        <div className="flex flex-col lg:flex-row">
+          <div className="relative min-w-0 border-b border-gray-800/80 lg:flex-[2] lg:border-b-0 lg:border-r">
+            <div className="absolute inset-x-12 top-8 h-28 rounded-full bg-purple-400/12 blur-3xl" />
+            <div className="absolute inset-x-10 bottom-0 h-24 rounded-full bg-purple-400/10 blur-3xl" />
+            <div className="absolute inset-0 bg-[linear-gradient(rgba(192,132,252,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(192,132,252,0.04)_1px,transparent_1px)] bg-[size:42px_42px] opacity-30" />
+
+            <div className="absolute inset-x-5 top-5 z-20 flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between xl:inset-x-6 xl:top-6">
+              <div>
+                <div className="text-[11px] font-semibold uppercase tracking-[0.34em] text-purple-200/80">
+                  表彰台
+                </div>
+                <h2 className="mt-2 text-3xl font-black tracking-[-0.05em] text-white xl:text-[2.8rem]">
+                  Stage
+                </h2>
+              </div>
+
+              <div className="flex flex-wrap gap-2 xl:max-w-[40rem] xl:justify-end">
+                <div className="rounded-full border border-purple-300/20 bg-purple-400/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-purple-100">
+                  参加者 {participantCount}
+                </div>
+                <div className="rounded-full border border-gray-700 bg-gray-950/85 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-gray-100">
+                  トップ{" "}
+                  {topScore === null ? "--" : topScore.toLocaleString("ja-JP")}{" "}
+                  pt
+                </div>
+                <div className="rounded-full border border-gray-700 bg-gray-950/85 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-gray-100">
+                  {getTopStateLabel(topScore, topGroupCount)}
+                </div>
+                <div className="rounded-full border border-gray-700 bg-gray-950/85 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-gray-100">
+                  更新 {updatedAtLabel}
+                </div>
+              </div>
             </div>
-            <h2 className="mt-2 text-3xl font-black tracking-[-0.05em] text-white xl:text-[2.8rem]">
-              Stage
-            </h2>
+
+            <div className="relative flex min-h-[30rem] items-end justify-center gap-3 px-4 pb-6 pt-32 lg:gap-4 lg:px-6 lg:pb-7 lg:pt-36 xl:gap-6 xl:px-8 xl:pb-8">
+              {DISPLAY_SLOT_ORDER.map((slot) => (
+                <PodiumBlock
+                  key={slot}
+                  slot={slot}
+                  entry={entryBySlot.get(slot)}
+                />
+              ))}
+            </div>
           </div>
 
-          <div className="flex flex-wrap gap-2 xl:max-w-[40rem] xl:justify-end">
-            <div className="rounded-full border border-purple-300/20 bg-purple-400/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-purple-100">
-              参加者 {participantCount}
+          <div className="flex min-w-0 flex-col bg-[linear-gradient(to_bottom,rgba(2,6,23,0.92),rgba(17,24,39,0.94))] p-4 lg:flex-[1] lg:p-5">
+            <div className="flex items-center justify-between gap-3">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.32em] text-gray-400">
+                上位 3 組
+              </div>
+              <div className="rounded-full border border-purple-300/20 bg-purple-400/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-purple-100">
+                {participantCount} 組
+              </div>
             </div>
-            <div className="rounded-full border border-gray-700 bg-gray-950/85 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-gray-100">
-              トップ{" "}
-              {topScore === null ? "--" : topScore.toLocaleString("ja-JP")} pt
-            </div>
-            <div className="rounded-full border border-gray-700 bg-gray-950/85 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-gray-100">
-              {getTopStateLabel(topScore, topGroupCount)}
-            </div>
-            <div className="rounded-full border border-gray-700 bg-gray-950/85 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-gray-100">
-              更新 {updatedAtLabel}
+
+            {statusMessage ? (
+              <motion.div
+                key={statusMessage}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+                className="mt-3 rounded-[1rem] border border-purple-300/20 bg-purple-400/10 px-3.5 py-2.5 text-sm text-purple-50"
+              >
+                {statusMessage}
+              </motion.div>
+            ) : null}
+
+            <div className="mt-3 flex flex-1 flex-col gap-3">
+              {([1, 2, 3] as const).map((slot) => (
+                <PodiumSummaryCard
+                  key={slot}
+                  slot={slot}
+                  entry={entryBySlot.get(slot)}
+                />
+              ))}
             </div>
           </div>
-        </div>
-
-        {statusMessage ? (
-          <motion.div
-            key={statusMessage}
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            className="mt-4 rounded-[1rem] border border-purple-300/20 bg-purple-400/10 px-3.5 py-2.5 text-sm text-purple-50"
-          >
-            {statusMessage}
-          </motion.div>
-        ) : null}
-
-        <div className="relative mt-5 overflow-hidden rounded-[2rem] border border-gray-800 bg-[radial-gradient(circle_at_top,rgba(192,132,252,0.14),transparent_54%),linear-gradient(to_bottom,rgba(3,7,18,0.96),rgba(2,6,23,0.94))] px-4 py-6 xl:px-8 xl:py-8">
-          <div className="absolute inset-x-12 top-6 h-28 rounded-full bg-purple-400/12 blur-3xl" />
-          <div className="absolute inset-x-10 bottom-0 h-24 rounded-full bg-purple-400/10 blur-3xl" />
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(192,132,252,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(192,132,252,0.04)_1px,transparent_1px)] bg-[size:42px_42px] opacity-30" />
-
-          <div className="relative flex min-h-[28rem] items-end justify-center gap-3 pt-24 xl:gap-6">
-            {DISPLAY_SLOT_ORDER.map((slot) => (
-              <PodiumBlock
-                key={slot}
-                slot={slot}
-                entry={entryBySlot.get(slot)}
-              />
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-4 grid gap-3 xl:grid-cols-3">
-          {([1, 2, 3] as const).map((slot) => (
-            <PodiumSummaryCard
-              key={slot}
-              slot={slot}
-              entry={entryBySlot.get(slot)}
-            />
-          ))}
         </div>
       </CardContent>
     </Card>
