@@ -68,7 +68,7 @@ const PartyPodiumScene = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="flex h-[280px] w-full items-center justify-center rounded-[1.8rem] border border-gray-800 bg-gray-950/75 lg:h-[300px]">
+      <div className="flex h-[360px] w-full items-center justify-center rounded-[1.8rem] border border-gray-800 bg-gray-950/75 lg:h-[400px]">
         <div className="rounded-full border border-purple-300/20 bg-purple-400/10 px-4 py-2 text-sm font-semibold uppercase tracking-[0.24em] text-purple-100">
           ステージ描画中...
         </div>
