@@ -518,6 +518,359 @@ function ParticipantCard({
   );
 }
 
+function GmScoreEditorCard({
+  participant,
+  draftScore,
+  isDirty,
+  onAdjustDraftScore,
+  onDraftScoreChange,
+}: {
+  participant: RankedParticipant;
+  draftScore: string;
+  isDirty: boolean;
+  onAdjustDraftScore: (participantId: string, delta: number) => void;
+  onDraftScoreChange: (participantId: string, value: string) => void;
+}) {
+  return (
+    <motion.article
+      layout
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
+      className={cn(
+        "rounded-[1.4rem] border bg-[linear-gradient(to_bottom,rgba(3,7,18,0.96),rgba(17,24,39,0.92))] p-3 shadow-xl shadow-black/20",
+        isDirty ? "border-purple-300/30" : "border-gray-800",
+      )}
+    >
+      <div className="flex items-start gap-3">
+        <PartyAvatar
+          name={participant.name}
+          iconDataUrl={participant.iconDataUrl}
+          className="h-12 w-12 rounded-[1rem]"
+          monogramClassName="text-sm"
+        />
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="rounded-full border border-purple-300/20 bg-purple-400/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-purple-100">
+              {participant.rank} 位
+            </span>
+            {participant.isTied && (
+              <span className="rounded-full border border-gray-600 bg-gray-800 px-2 py-1 text-[11px] text-gray-200">
+                同点
+              </span>
+            )}
+            {isDirty && (
+              <span className="rounded-full border border-purple-300/25 bg-purple-400/10 px-2 py-1 text-[11px] font-semibold text-purple-100">
+                未反映
+              </span>
+            )}
+          </div>
+          <div className="mt-1.5 truncate text-base font-black tracking-tight text-white">
+            {participant.name}
+          </div>
+        </div>
+        <div className="min-w-[82px] rounded-[1rem] border border-purple-300/18 bg-[radial-gradient(circle_at_top,rgba(192,132,252,0.18),transparent_70%),rgba(3,7,18,0.92)] px-2.5 py-2 text-center">
+          <div className="text-[9px] font-semibold uppercase tracking-[0.22em] text-gray-500">
+            現在
+          </div>
+          <div className="mt-1 flex items-end justify-center gap-1">
+            <span className="font-mono text-[1.7rem] font-black leading-none tracking-[-0.06em] text-white">
+              {participant.score}
+            </span>
+            <span className="pb-0.5 text-[9px] font-semibold uppercase tracking-[0.22em] text-purple-200">
+              pt
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-3 grid gap-2 sm:grid-cols-[minmax(0,1fr)_112px]">
+        <div className="grid grid-cols-4 gap-1.5">
+          <Button
+            type="button"
+            variant="outline"
+            className="h-9 border-gray-700 bg-gray-950 px-0 text-xs text-white hover:border-purple-300 hover:bg-gray-800"
+            onClick={() => onAdjustDraftScore(participant.id, -5)}
+          >
+            -5
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            className="h-9 border-gray-700 bg-gray-950 px-0 text-xs text-white hover:border-purple-300 hover:bg-gray-800"
+            onClick={() => onAdjustDraftScore(participant.id, -1)}
+          >
+            <Minus className="mr-1 h-3.5 w-3.5" />
+            -1
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            className="h-9 border-purple-300/35 bg-purple-400/10 px-0 text-xs text-purple-100 hover:bg-purple-400/20 hover:text-white"
+            onClick={() => onAdjustDraftScore(participant.id, 1)}
+          >
+            <Plus className="mr-1 h-3.5 w-3.5" />
+            +1
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            className="h-9 border-purple-300/35 bg-purple-400/10 px-0 text-xs text-purple-100 hover:bg-purple-400/20 hover:text-white"
+            onClick={() => onAdjustDraftScore(participant.id, 5)}
+          >
+            <Sparkles className="mr-1 h-3.5 w-3.5" />
+            +5
+          </Button>
+        </div>
+        <Input
+          type="number"
+          inputMode="numeric"
+          value={draftScore}
+          onChange={(event) =>
+            onDraftScoreChange(participant.id, event.target.value)
+          }
+          className={cn(
+            "h-9 border-gray-700 bg-gray-900/90 text-base font-semibold text-white placeholder:text-gray-500 focus-visible:ring-purple-400",
+            isDirty && "border-purple-300/35 bg-purple-400/10 text-purple-50",
+          )}
+          placeholder="直接入力"
+          aria-label={`${participant.name} の得点`}
+        />
+      </div>
+    </motion.article>
+  );
+}
+
+function GmScoreEditorControl({
+  participants,
+  topScore,
+  updatedAtLabel,
+  canUndo,
+  onSetScore,
+  onUndo,
+}: {
+  participants: RankedParticipant[];
+  topScore: number | null;
+  updatedAtLabel: string;
+  canUndo: boolean;
+  onSetScore: (participantId: string, nextScore: number) => void;
+  onUndo: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [scoreDrafts, setScoreDrafts] = useState<Record<string, string>>({});
+
+  const totalScore = useMemo(
+    () => participants.reduce((sum, participant) => sum + participant.score, 0),
+    [participants],
+  );
+
+  useEffect(() => {
+    if (!open) return;
+    setScoreDrafts(
+      Object.fromEntries(
+        participants.map((participant) => [
+          participant.id,
+          String(participant.score),
+        ]),
+      ),
+    );
+  }, [open, participants]);
+
+  const updateDraftScore = useCallback(
+    (participantId: string, value: string) => {
+      setScoreDrafts((previousDrafts) => ({
+        ...previousDrafts,
+        [participantId]: value,
+      }));
+    },
+    [],
+  );
+
+  const adjustDraftScore = useCallback(
+    (participantId: string, delta: number) => {
+      const participant = participants.find(
+        (item) => item.id === participantId,
+      );
+      if (!participant) return;
+
+      setScoreDrafts((previousDrafts) => {
+        const currentDraft =
+          previousDrafts[participantId] ?? String(participant.score);
+        const nextScore = coerceBlank25PartyScore(
+          parseScoreInput(currentDraft, participant.score) + delta,
+        );
+
+        return {
+          ...previousDrafts,
+          [participantId]: String(nextScore),
+        };
+      });
+    },
+    [participants],
+  );
+
+  const pendingDraftCount = useMemo(
+    () =>
+      participants.filter((participant) => {
+        const draftValue =
+          scoreDrafts[participant.id] ?? String(participant.score);
+        return (
+          parseScoreInput(draftValue, participant.score) !== participant.score
+        );
+      }).length,
+    [participants, scoreDrafts],
+  );
+
+  const hasPendingDrafts = pendingDraftCount > 0;
+
+  const applyAllScoreDrafts = useCallback(
+    (event?: React.FormEvent<HTMLFormElement>) => {
+      event?.preventDefault();
+
+      participants.forEach((participant) => {
+        const draftValue =
+          scoreDrafts[participant.id] ?? String(participant.score);
+        const nextScore = parseScoreInput(draftValue, participant.score);
+
+        if (nextScore !== participant.score) {
+          onSetScore(participant.id, nextScore);
+        }
+      });
+    },
+    [onSetScore, participants, scoreDrafts],
+  );
+
+  return (
+    <>
+      <Button
+        type="button"
+        variant="outline"
+        className="h-10 border-gray-700 bg-gray-950/80 px-4 text-white hover:bg-gray-800"
+        onClick={() => setOpen(true)}
+      >
+        <Sparkles className="mr-2 h-4 w-4" />
+        <span className="font-semibold">GM得点編集</span>
+      </Button>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="w-[calc(100vw-2rem)] max-w-[1120px] overflow-hidden border-gray-700 bg-[radial-gradient(circle_at_top,rgba(192,132,252,0.2),transparent_55%),linear-gradient(to_bottom,rgba(2,6,23,0.98),rgba(17,24,39,0.96))] p-0 text-white">
+          <div className="relative max-h-[88vh] overflow-hidden rounded-[1.8rem] p-5 sm:p-6">
+            <div className="absolute inset-0 bg-[linear-gradient(rgba(192,132,252,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(192,132,252,0.06)_1px,transparent_1px)] bg-[size:42px_42px] opacity-30" />
+            <div className="relative">
+              <DialogHeader>
+                <div className="flex flex-wrap items-start justify-between gap-4">
+                  <div className="min-w-0">
+                    <div className="inline-flex items-center gap-2 rounded-full border border-purple-300/20 bg-purple-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-purple-100">
+                      <Sparkles className="h-3.5 w-3.5" />
+                      GM Score Edit
+                    </div>
+                    <DialogTitle className="mt-4 text-3xl font-black tracking-[-0.04em] text-white xl:text-4xl">
+                      得点コントロール
+                    </DialogTitle>
+                    <DialogDescription className="mt-3 max-w-2xl text-sm text-gray-300">
+                      各チームの得点をまとめて調整して、最後に一括反映できます。
+                    </DialogDescription>
+                  </div>
+                  <div className="rounded-full border border-purple-300/20 bg-purple-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-purple-100">
+                    {participants.length} 組
+                  </div>
+                </div>
+              </DialogHeader>
+
+              {participants.length === 0 ? (
+                <div className="mt-6 rounded-[1.8rem] border border-dashed border-gray-700 bg-gray-950/55 px-5 py-14 text-center text-sm text-gray-300">
+                  まだ参加者がいません。操作デッキからチームを追加すると、ここで得点を一括管理できます。
+                </div>
+              ) : (
+                <form onSubmit={applyAllScoreDrafts}>
+                  <div className="mt-6 flex flex-wrap gap-2">
+                    <span className="rounded-full border border-gray-700 bg-gray-950/82 px-3 py-1 text-xs font-semibold text-gray-200">
+                      トップ {topScore ?? 0} pt
+                    </span>
+                    <span className="rounded-full border border-gray-700 bg-gray-950/82 px-3 py-1 text-xs font-semibold text-gray-200">
+                      合計 {totalScore} pt
+                    </span>
+                    <span className="rounded-full border border-gray-700 bg-gray-950/82 px-3 py-1 text-xs font-semibold text-gray-200">
+                      更新 {updatedAtLabel}
+                    </span>
+                    {hasPendingDrafts && (
+                      <span className="rounded-full border border-purple-300/25 bg-purple-400/10 px-3 py-1 text-xs font-semibold text-purple-100">
+                        未反映 {pendingDraftCount} 件
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="mt-4 max-h-[62vh] overflow-y-auto pr-1">
+                    <motion.div
+                      layout
+                      className="grid gap-2.5 lg:grid-cols-2 xl:grid-cols-3"
+                    >
+                      <AnimatePresence initial={false}>
+                        {participants.map((participant) => (
+                          <GmScoreEditorCard
+                            key={participant.id}
+                            participant={participant}
+                            draftScore={
+                              scoreDrafts[participant.id] ??
+                              String(participant.score)
+                            }
+                            isDirty={
+                              parseScoreInput(
+                                scoreDrafts[participant.id] ??
+                                  String(participant.score),
+                                participant.score,
+                              ) !== participant.score
+                            }
+                            onAdjustDraftScore={adjustDraftScore}
+                            onDraftScoreChange={updateDraftScore}
+                          />
+                        ))}
+                      </AnimatePresence>
+                    </motion.div>
+                  </div>
+
+                  <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="h-10 border-gray-700 bg-gray-950 text-white hover:bg-gray-800"
+                      onClick={onUndo}
+                      disabled={!canUndo}
+                    >
+                      <Undo2 className="mr-2 h-4 w-4" />
+                      1つ戻す
+                    </Button>
+                    <div className="flex flex-col gap-2 sm:flex-row">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="h-10 border-gray-700 bg-gray-950 text-white hover:bg-gray-800"
+                        onClick={() => setOpen(false)}
+                      >
+                        閉じる
+                      </Button>
+                      <Button
+                        type="submit"
+                        className="h-10 bg-purple-400 px-5 text-gray-950 hover:bg-purple-300"
+                        disabled={!hasPendingDrafts}
+                      >
+                        {hasPendingDrafts
+                          ? `${pendingDraftCount}件をまとめて反映`
+                          : "まとめて反映"}
+                      </Button>
+                    </div>
+                  </div>
+                </form>
+              )}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
+
 function GmTimerControl({ onFinish }: { onFinish: () => void }) {
   const defaultDurationMs = DEFAULT_PARTY_TIMER_SECONDS * 1000;
   const [open, setOpen] = useState(false);
@@ -692,7 +1045,9 @@ function GmTimerControl({ onFinish }: { onFinish: () => void }) {
                     <div className="mt-5 h-3 overflow-hidden rounded-full border border-gray-800 bg-gray-950/90">
                       <motion.div
                         className="h-full rounded-full bg-[linear-gradient(90deg,rgba(250,245,255,0.95),rgba(192,132,252,0.92),rgba(168,85,247,0.9))] shadow-[0_0_30px_rgba(192,132,252,0.45)]"
-                        animate={{ width: `${Math.max(progress * 100, hasFinished ? 0 : 4)}%` }}
+                        animate={{
+                          width: `${Math.max(progress * 100, hasFinished ? 0 : 4)}%`,
+                        }}
                         transition={{ ease: "easeOut", duration: 0.2 }}
                       />
                     </div>
@@ -734,7 +1089,9 @@ function GmTimerControl({ onFinish }: { onFinish: () => void }) {
                           min={0}
                           max={99}
                           value={minutesInput}
-                          onChange={(event) => setMinutesInput(event.target.value)}
+                          onChange={(event) =>
+                            setMinutesInput(event.target.value)
+                          }
                           className="h-11 border-gray-700 bg-gray-900/90 text-base text-white focus-visible:ring-purple-400"
                         />
                       </div>
@@ -748,7 +1105,9 @@ function GmTimerControl({ onFinish }: { onFinish: () => void }) {
                           min={0}
                           max={59}
                           value={secondsInput}
-                          onChange={(event) => setSecondsInput(event.target.value)}
+                          onChange={(event) =>
+                            setSecondsInput(event.target.value)
+                          }
                           className="h-11 border-gray-700 bg-gray-900/90 text-base text-white focus-visible:ring-purple-400"
                         />
                       </div>
@@ -962,6 +1321,14 @@ export default function PartyScoreboard() {
       }));
   }, [partyState.events, partyState.participants]);
 
+  const triggerConfetti = useCallback(
+    (variant: "celebration" | "petals" = "celebration") => {
+      confettiCleanupRef.current?.();
+      confettiCleanupRef.current = fireBlank25Confetti({ variant });
+    },
+    [],
+  );
+
   useEffect(() => {
     if (!hydrated) return;
 
@@ -972,13 +1339,12 @@ export default function PartyScoreboard() {
     }
 
     if (soleLeaderId && soleLeaderId !== previousSoleLeaderIdRef.current) {
-      confettiCleanupRef.current?.();
-      confettiCleanupRef.current = fireBlank25Confetti();
+      triggerConfetti();
       setStatusMessage("首位が入れ替わりました。");
     }
 
     previousSoleLeaderIdRef.current = soleLeaderId;
-  }, [hydrated, soleLeaderId]);
+  }, [hydrated, soleLeaderId, triggerConfetti]);
 
   const addParticipant = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
@@ -1296,6 +1662,10 @@ export default function PartyScoreboard() {
   const handleTimerFinish = useCallback(() => {
     setStatusMessage("GMタイマーが終了しました。");
   }, []);
+  const handlePetalShower = useCallback(() => {
+    triggerConfetti("petals");
+    setStatusMessage("花吹雪を表示しました。");
+  }, [triggerConfetti]);
 
   if (!hydrated || isDesktop === null) {
     return (
@@ -1358,8 +1728,27 @@ export default function PartyScoreboard() {
                 一覧へ戻る
               </Link>
             </Button>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center justify-end gap-2">
+              <GmScoreEditorControl
+                participants={rankedParticipants}
+                topScore={topScore}
+                updatedAtLabel={updatedAtLabel}
+                canUndo={partyState.events.length > 0}
+                onSetScore={setParticipantScore}
+                onUndo={undoLastScoreEvent}
+              />
               <GmTimerControl onFinish={handleTimerFinish} />
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                className="border-purple-300/25 bg-purple-400/10 text-purple-100 hover:bg-purple-400/20 hover:text-white"
+                onClick={handlePetalShower}
+                aria-label="花吹雪を表示"
+                title="花吹雪を表示"
+              >
+                <PartyPopper className="h-4 w-4" />
+              </Button>
               <div className="inline-flex items-center gap-2 rounded-full border border-purple-300/20 bg-purple-400/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.32em] text-purple-100">
                 <PartyPopper className="h-3.5 w-3.5" />
                 PC 専用

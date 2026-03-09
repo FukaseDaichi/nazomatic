@@ -1,10 +1,22 @@
 import confetti from "canvas-confetti";
 
 const Z_INDEX = 60;
+const PETAL_COLORS = [
+  "#faf5ff",
+  "#f5d0fe",
+  "#e9d5ff",
+  "#d8b4fe",
+  "#c084fc",
+] as const;
 
 export type ConfettiCleanup = () => void;
+export type Blank25ConfettiVariant = "celebration" | "petals";
 
-export const fireBlank25Confetti = (): ConfettiCleanup => {
+export const fireBlank25Confetti = ({
+  variant = "celebration",
+}: {
+  variant?: Blank25ConfettiVariant;
+} = {}): ConfettiCleanup => {
   if (typeof window === "undefined") {
     return () => {};
   }
@@ -33,15 +45,31 @@ export const fireBlank25Confetti = (): ConfettiCleanup => {
   let fadeTimeoutId: ReturnType<typeof setTimeout> | null = null;
   let removeTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
-  const durationMs = 4000;
+  const isPetalVariant = variant === "petals";
+  const durationMs = isPetalVariant ? 4400 : 4000;
   const end = Date.now() + durationMs;
 
-  myConfetti({
-    particleCount: 120,
-    spread: 70,
-    startVelocity: 45,
-    origin: { x: 0.5, y: 0.65 },
-  });
+  if (isPetalVariant) {
+    myConfetti({
+      particleCount: 80,
+      angle: 270,
+      spread: 58,
+      startVelocity: 14,
+      gravity: 0.48,
+      ticks: 340,
+      scalar: 1.1,
+      shapes: ["circle"],
+      colors: [...PETAL_COLORS],
+      origin: { x: 0.5, y: 0.08 },
+    });
+  } else {
+    myConfetti({
+      particleCount: 120,
+      spread: 70,
+      startVelocity: 45,
+      origin: { x: 0.5, y: 0.65 },
+    });
+  }
 
   const frame = () => {
     const timeLeft = end - Date.now();
@@ -49,21 +77,69 @@ export const fireBlank25Confetti = (): ConfettiCleanup => {
       return;
     }
 
-    const particleCount = Math.max(2, Math.floor(10 * (timeLeft / durationMs)));
-    myConfetti({
-      particleCount,
-      spread: 65,
-      startVelocity: 30,
-      ticks: 260,
-      origin: { x: 0.08, y: 0.7 },
-    });
-    myConfetti({
-      particleCount,
-      spread: 65,
-      startVelocity: 30,
-      ticks: 260,
-      origin: { x: 0.92, y: 0.7 },
-    });
+    if (isPetalVariant) {
+      const particleCount = Math.max(
+        2,
+        Math.floor(12 * (timeLeft / durationMs)),
+      );
+      myConfetti({
+        particleCount,
+        angle: 300,
+        spread: 26,
+        startVelocity: 16,
+        gravity: 0.52,
+        drift: 0.2,
+        ticks: 340,
+        scalar: 1.05,
+        shapes: ["circle"],
+        colors: [...PETAL_COLORS],
+        origin: { x: 0.14, y: -0.04 },
+      });
+      myConfetti({
+        particleCount,
+        angle: 240,
+        spread: 26,
+        startVelocity: 16,
+        gravity: 0.52,
+        drift: -0.2,
+        ticks: 340,
+        scalar: 1.05,
+        shapes: ["circle"],
+        colors: [...PETAL_COLORS],
+        origin: { x: 0.86, y: -0.04 },
+      });
+      myConfetti({
+        particleCount: Math.max(1, Math.floor(particleCount / 2)),
+        angle: 270,
+        spread: 34,
+        startVelocity: 10,
+        gravity: 0.46,
+        ticks: 320,
+        scalar: 0.92,
+        shapes: ["circle"],
+        colors: [...PETAL_COLORS],
+        origin: { x: 0.5, y: -0.08 },
+      });
+    } else {
+      const particleCount = Math.max(
+        2,
+        Math.floor(10 * (timeLeft / durationMs)),
+      );
+      myConfetti({
+        particleCount,
+        spread: 65,
+        startVelocity: 30,
+        ticks: 260,
+        origin: { x: 0.08, y: 0.7 },
+      });
+      myConfetti({
+        particleCount,
+        spread: 65,
+        startVelocity: 30,
+        ticks: 260,
+        origin: { x: 0.92, y: 0.7 },
+      });
+    }
 
     rafId = window.requestAnimationFrame(frame);
   };
