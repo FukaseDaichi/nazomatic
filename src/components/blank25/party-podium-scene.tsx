@@ -574,12 +574,14 @@ function PodiumSceneCore({ entries }: { entries: PartyPodiumEntry[] }) {
       state.pointer.y * 0.045,
       0.04,
     );
+    // -3.0 はベースオフセット。useFrame が position.y を毎フレーム上書きするため
+    // JSX の position prop ではなくここで設定する。
     rootRef.current.position.y =
-      Math.sin(state.clock.elapsedTime * 0.45) * 0.07;
+      -3.0 + Math.sin(state.clock.elapsedTime * 0.45) * 0.07;
   });
 
   return (
-    <group ref={rootRef} position={[0, -2.5, 0]}>
+    <group ref={rootRef}>
       {/* Background sparkles */}
       <Sparkles
         count={160}
@@ -646,12 +648,12 @@ export default function PartyPodiumScene({
   entries: PartyPodiumEntry[];
 }) {
   return (
-    <div className="h-[360px] w-full lg:h-[400px]">
+    <div className="h-[240px] w-full lg:h-[265px]">
       <Canvas
         dpr={[1, 2]}
         shadows
         gl={{ alpha: true, antialias: true }}
-        camera={{ position: [0, 7.2, 25.0], fov: 47 }}
+        camera={{ position: [0, 5.5, 24.5], fov: 50 }}
       >
         <color attach="background" args={["#020308"]} />
         <fog attach="fog" args={["#020308", 22, 36]} />
