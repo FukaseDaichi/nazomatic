@@ -79,7 +79,7 @@ export default function TeamBattleRetrySimulator() {
               Retry Simulator
             </div>
             <CardTitle className="mt-3 text-2xl font-black tracking-tight text-white">
-              全滅したら、何が残る？
+              全員チームが答えられなければ、もう 1 回
             </CardTitle>
           </div>
           <Tooltip>

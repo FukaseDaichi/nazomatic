@@ -1,10 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { HelpCircle, Minus, Plus, Sparkles } from "lucide-react";
 import TeamBattleTutorialImageBoard from "@/components/blank25/team-battle-tutorial-image-board";
 import {
+  TEAM_BATTLE_PANEL_ORDER,
   TEAM_BATTLE_PANEL_TOTAL,
   getTeamBattleHiddenPanels,
 } from "@/components/blank25/team-battle-board";
@@ -17,6 +18,7 @@ import {
 } from "@/components/ui/tooltip";
 
 const presetCounts = [5, 9, 13, 17];
+const reverseTeamBattlePanelOrder = [...TEAM_BATTLE_PANEL_ORDER].reverse();
 
 const describeAttackLevel = (hiddenCount: number) => {
   if (hiddenCount <= 5) {
@@ -51,14 +53,45 @@ const describeAttackLevel = (hiddenCount: number) => {
 };
 
 export default function TeamBattleChickenMeter() {
-  const [hiddenCount, setHiddenCount] = useState(9);
-  const hiddenPanels = useMemo(
-    () => getTeamBattleHiddenPanels(hiddenCount),
-    [hiddenCount],
+  const [hiddenPanels, setHiddenPanels] = useState<number[]>(() =>
+    getTeamBattleHiddenPanels(9),
   );
+  const hiddenPanelSet = useMemo(() => new Set(hiddenPanels), [hiddenPanels]);
+  const hiddenCount = hiddenPanels.length;
   const score = hiddenCount;
   const attackLevel = describeAttackLevel(hiddenCount);
   const attackRatio = (hiddenCount / TEAM_BATTLE_PANEL_TOTAL) * 100;
+  const toggleHiddenPanel = useCallback((panelNumber: number) => {
+    setHiddenPanels((current) =>
+      current.includes(panelNumber)
+        ? current.filter((value) => value !== panelNumber)
+        : [...current, panelNumber],
+    );
+  }, []);
+  const addRecommendedPanel = useCallback(() => {
+    setHiddenPanels((current) => {
+      const currentSet = new Set(current);
+      const nextPanel = TEAM_BATTLE_PANEL_ORDER.find(
+        (panelNumber) => !currentSet.has(panelNumber),
+      );
+
+      if (!nextPanel) return current;
+
+      return [...current, nextPanel];
+    });
+  }, []);
+  const removeRecommendedPanel = useCallback(() => {
+    setHiddenPanels((current) => {
+      const currentSet = new Set(current);
+      const removablePanel = reverseTeamBattlePanelOrder.find((panelNumber) =>
+        currentSet.has(panelNumber),
+      );
+
+      if (!removablePanel) return current;
+
+      return current.filter((panelNumber) => panelNumber !== removablePanel);
+    });
+  }, []);
 
   return (
     <Card className="overflow-hidden border-purple-300/20 bg-[radial-gradient(circle_at_top,rgba(192,132,252,0.14),transparent_58%),linear-gradient(to_bottom,rgba(2,6,23,0.98),rgba(17,24,39,0.94))] shadow-2xl shadow-black/30">
@@ -143,9 +176,7 @@ export default function TeamBattleChickenMeter() {
                 type="button"
                 variant="outline"
                 className="h-11 w-11 border-gray-700 bg-gray-950 text-white hover:border-purple-300 hover:bg-gray-800"
-                onClick={() =>
-                  setHiddenCount((current) => Math.max(0, current - 1))
-                }
+                onClick={removeRecommendedPanel}
               >
                 <Minus className="h-4 w-4" />
               </Button>
@@ -153,30 +184,35 @@ export default function TeamBattleChickenMeter() {
                 type="button"
                 variant="outline"
                 className="h-11 w-11 border-purple-300/30 bg-purple-400/10 text-purple-100 hover:bg-purple-400/20 hover:text-white"
-                onClick={() =>
-                  setHiddenCount((current) =>
-                    Math.min(TEAM_BATTLE_PANEL_TOTAL, current + 1),
-                  )
-                }
+                onClick={addRecommendedPanel}
               >
                 <Plus className="h-4 w-4" />
               </Button>
               <div className="ml-1 flex flex-wrap gap-2">
-                {presetCounts.map((presetCount) => (
-                  <button
-                    key={presetCount}
-                    type="button"
-                    onClick={() => setHiddenCount(presetCount)}
-                    className={[
-                      "rounded-full border px-3 py-2 text-sm font-semibold transition-colors",
-                      hiddenCount === presetCount
-                        ? "border-purple-300/35 bg-purple-400 text-gray-950"
-                        : "border-gray-700 bg-gray-950/80 text-gray-200 hover:border-purple-300/30 hover:text-white",
-                    ].join(" ")}
-                  >
-                    {presetCount} 枚隠し
-                  </button>
-                ))}
+                {presetCounts.map((presetCount) => {
+                  const presetPanels = getTeamBattleHiddenPanels(presetCount);
+                  const isPresetActive =
+                    presetPanels.length === hiddenPanels.length &&
+                    presetPanels.every((panelNumber) =>
+                      hiddenPanelSet.has(panelNumber),
+                    );
+
+                  return (
+                    <button
+                      key={presetCount}
+                      type="button"
+                      onClick={() => setHiddenPanels(presetPanels)}
+                      className={[
+                        "rounded-full border px-3 py-2 text-sm font-semibold transition-colors",
+                        isPresetActive
+                          ? "border-purple-300/35 bg-purple-400 text-gray-950"
+                          : "border-gray-700 bg-gray-950/80 text-gray-200 hover:border-purple-300/30 hover:text-white",
+                      ].join(" ")}
+                    >
+                      {presetCount} 枚隠し
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -207,6 +243,7 @@ export default function TeamBattleChickenMeter() {
             <div className="rounded-[1.75rem] border border-gray-800 bg-black/25 p-4 sm:p-5">
               <TeamBattleTutorialImageBoard
                 hiddenPanels={hiddenPanels}
+                onPanelToggle={toggleHiddenPanel}
                 className="mx-auto max-w-[22rem]"
               />
               <div className="mt-4 grid gap-2 sm:grid-cols-2">
@@ -218,9 +255,9 @@ export default function TeamBattleChickenMeter() {
                 </div>
                 <div className="rounded-2xl border border-gray-700 bg-gray-950/75 px-4 py-3 text-sm text-gray-300">
                   <span className="font-semibold text-white">
-                    見える情報は減る
+                    盤面を直接タップ
                   </span>{" "}
-                  ので、得点を伸ばすほど難度も上がる。
+                  して、隠す場所を入れ替えられる。
                 </div>
               </div>
             </div>

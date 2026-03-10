@@ -8,7 +8,6 @@ import {
   ChevronRight,
   HelpCircle,
   PartyPopper,
-  RotateCcw,
   Sparkles,
   Target,
   type LucideIcon,
@@ -16,14 +15,8 @@ import {
 import TeamBattleChickenMeter from "@/components/blank25/team-battle-chicken-meter";
 import TeamBattleRetrySimulator from "@/components/blank25/team-battle-retry-simulator";
 import TeamBattleRoundFlow from "@/components/blank25/team-battle-round-flow";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 type HeroRule = {
   label: string;
@@ -35,20 +28,20 @@ type HeroRule = {
 const heroRules: HeroRule[] = [
   {
     label: "チームの出題者・回答者を決定",
-    title: "事前準備",
-    body: "出題者は、作問時間にうつります。謎解きのパネルを隠す役です。",
+    title: "出題者が作問",
+    body: "出題者・回答者に別れ、出題者はまず作問します。謎解きのパネルを隠す役です。",
     icon: Target,
   },
   {
-    label: "正解したら",
-    title: "隠した数がポイントとなる",
-    body: "出題者が作成した問題を、回答者は答えます。攻めるほど見返りは増える。でも読み違えた瞬間に全部消える。",
+    label: "隠した数がポイントとなる",
+    title: "回答者が回答",
+    body: "出題者が作成した問題を、回答者は答えます。正解なら HIDE 数ぶん得点、不正解なら 0 点。",
     icon: HelpCircle,
   },
   {
     label: "逆転チャンス",
-    title: "MVPの場合は順位倍率",
-    body: "最もパネルを隠して答えられたら、順位×隠した数のポイントが入る。",
+    title: "MVPの場合は順位倍率！",
+    body: "最もパネルを隠して答えられたら、獲得得点は現在の順位倍率分入る。",
     icon: AlertTriangle,
   },
 ];
@@ -99,7 +92,7 @@ export default function TeamBattleRules() {
                         まずこの 3 つだけ。
                       </h1>
                       <p className="mt-3 text-sm leading-6 text-gray-300 sm:text-base sm:leading-7">
-                        空気感そのままに、先に押さえるべきなのは「何点入るか」「逆転するにはどうするのか」だけです。
+                        先に押さえるべきなのは「問題の出し方」「何点入るか」「逆転するにはどうするのか」だけです。
                       </p>
                     </div>
                   </div>
@@ -143,6 +136,26 @@ export default function TeamBattleRules() {
             </motion.div>
           </div>
         </section>
+        <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-black/30">
+          <div className="relative aspect-[5/6] sm:aspect-[16/10] lg:aspect-[16/8]">
+            <Image
+              src="/img/blank25/blank25teambattle-rules.png"
+              alt="BLANK25 チーム戦のルール画像"
+              fill
+              priority
+              sizes="(max-width: 640px) 100vw, (max-width: 1280px) 92vw, 1200px"
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/20 to-transparent" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(192,132,252,0.14),transparent_60%)]" />
+            <div className="absolute left-4 top-4 sm:left-6 sm:top-6">
+              <div className="inline-flex items-center gap-2 rounded-full border border-purple-300/20 bg-gray-950/70 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.28em] text-purple-100 backdrop-blur">
+                <PartyPopper className="h-3.5 w-3.5" />
+                BLANK25 Team Battle
+              </div>
+            </div>
+          </div>
+        </div>
 
         <section id="attack-meter" className="mt-8 scroll-mt-24">
           <TeamBattleChickenMeter />

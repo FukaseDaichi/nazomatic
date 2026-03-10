@@ -8,6 +8,7 @@ type TeamBattleTutorialImageBoardProps = {
   newlyOpenedPanels?: readonly number[];
   className?: string;
   showLegendLabels?: boolean;
+  onPanelToggle?: (panelNumber: number) => void;
 };
 
 export default function TeamBattleTutorialImageBoard({
@@ -16,10 +17,12 @@ export default function TeamBattleTutorialImageBoard({
   newlyOpenedPanels = [],
   className,
   showLegendLabels = false,
+  onPanelToggle,
 }: TeamBattleTutorialImageBoardProps) {
   const hiddenSet = new Set(hiddenPanels);
   const lockedOpenSet = new Set(lockedOpenPanels);
   const newlyOpenedSet = new Set(newlyOpenedPanels);
+  const isInteractive = typeof onPanelToggle === "function";
 
   return (
     <div
@@ -41,15 +44,16 @@ export default function TeamBattleTutorialImageBoard({
           const isHidden = hiddenSet.has(panelNumber);
           const isLockedOpen = !isHidden && lockedOpenSet.has(panelNumber);
           const isNewlyOpened = !isHidden && newlyOpenedSet.has(panelNumber);
-
-          return (
-            <div
-              key={panelNumber}
-              className={cn(
-                "relative flex items-center justify-center border border-white/15 text-[11px] font-black transition-colors",
-              )}
-            >
-              <div className="absolute inset-0 bg-transparent" />
+          const panelContent = (
+            <>
+              <div
+                className={cn(
+                  "absolute inset-0 bg-transparent",
+                  isInteractive &&
+                    !isHidden &&
+                    "transition-colors group-hover:bg-black/35 group-focus-visible:bg-black/35",
+                )}
+              />
               {isHidden && (
                 <div className="absolute inset-0 bg-black shadow-[inset_0_1px_0_rgba(255,255,255,0.14)]" />
               )}
@@ -79,6 +83,34 @@ export default function TeamBattleTutorialImageBoard({
                   NEW
                 </span>
               )}
+            </>
+          );
+
+          if (onPanelToggle) {
+            return (
+              <button
+                key={panelNumber}
+                type="button"
+                onClick={() => onPanelToggle(panelNumber)}
+                aria-label={`パネル ${panelNumber} を${isHidden ? "戻す" : "隠す"}`}
+                aria-pressed={isHidden}
+                className={cn(
+                  "group relative flex items-center justify-center border text-[11px] font-black transition-colors",
+                  isHidden ? "border-white" : "border-white/15",
+                  "cursor-pointer focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400/80",
+                )}
+              >
+                {panelContent}
+              </button>
+            );
+          }
+
+          return (
+            <div
+              key={panelNumber}
+              className="relative flex items-center justify-center border border text-[11px] font-black transition-colors"
+            >
+              {panelContent}
             </div>
           );
         })}
