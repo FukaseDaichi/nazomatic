@@ -136,27 +136,6 @@ export default function TeamBattleRules() {
             </motion.div>
           </div>
         </section>
-        <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-black/30">
-          <div className="relative aspect-[5/6] sm:aspect-[16/10] lg:aspect-[16/8]">
-            <Image
-              src="/img/blank25/blank25teambattle-rules.png"
-              alt="BLANK25 チーム戦のルール画像"
-              fill
-              priority
-              sizes="(max-width: 640px) 100vw, (max-width: 1280px) 92vw, 1200px"
-              className="object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/20 to-transparent" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(192,132,252,0.14),transparent_60%)]" />
-            <div className="absolute left-4 top-4 sm:left-6 sm:top-6">
-              <div className="inline-flex items-center gap-2 rounded-full border border-purple-300/20 bg-gray-950/70 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.28em] text-purple-100 backdrop-blur">
-                <PartyPopper className="h-3.5 w-3.5" />
-                BLANK25 Team Battle
-              </div>
-            </div>
-          </div>
-        </div>
-
         <section id="attack-meter" className="mt-8 scroll-mt-24">
           <TeamBattleChickenMeter />
         </section>
