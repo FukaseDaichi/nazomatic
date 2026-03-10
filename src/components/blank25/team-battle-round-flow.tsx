@@ -4,10 +4,10 @@ import { motion } from "framer-motion";
 import {
   Grid3X3,
   HelpCircle,
-  RotateCcw,
   Trophy,
   UserRound,
   Users,
+  BadgeAlert,
   type LucideIcon,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -148,14 +148,42 @@ export default function TeamBattleRoundFlow() {
         <div className="mt-5 rounded-[1.6rem] border border-purple-300/20 bg-purple-400/10 p-4">
           <div className="flex items-start gap-3">
             <div className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-purple-300/25 bg-gray-950/80 text-purple-100">
-              <RotateCcw className="h-5 w-5" />
+              <BadgeAlert className="h-5 w-5" />
+            </div>
+            <div>
+              <h3 className="text-base font-black text-white">MVPの場合</h3>
+              <p className="mt-1 text-sm leading-6 text-purple-50/90">
+                最もパネルを隠して答えられたら、獲得得点は現在の順位倍率分入る。3位のチームがパネル20枚隠してMVPなら得点は60点になる。MVPは複数チーム発生することもある。
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="mt-5 rounded-[1.6rem] border border-purple-300/20 bg-purple-400/10 p-4">
+          <div className="flex items-start gap-3">
+            <div className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-purple-300/25 bg-gray-950/80 text-purple-100">
+              <BadgeAlert className="h-5 w-5" />
             </div>
             <div>
               <h3 className="text-base font-black text-white">
-                そして全滅したら、もう 1 回
+                全員チームが答えられなければ、もう 1 回
               </h3>
               <p className="mt-1 text-sm leading-6 text-purple-50/90">
-                ただし、前回見えていた情報は置いていけない。次の作問は、その情報を背負ってやり直す。
+                ただし、前回見えていた情報はそのまま。次の作問は、その情報を背負ってやり直す。
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="mt-5 rounded-[1.6rem] border border-purple-300/20 bg-purple-400/10 p-4">
+          <div className="flex items-start gap-3">
+            <div className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-purple-300/25 bg-gray-950/80 text-purple-100">
+              <BadgeAlert className="h-5 w-5" />
+            </div>
+            <div>
+              <h3 className="text-base font-black text-white">
+                作問待っている間の回答者
+              </h3>
+              <p className="mt-1 text-sm leading-6 text-purple-50/90">
+                暇にならないように、ボーナスとして、数枚開けて考えるオプションもあり。
               </p>
             </div>
           </div>
