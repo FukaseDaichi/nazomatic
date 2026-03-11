@@ -4,7 +4,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { CheckCircle2, List, RotateCcw } from "lucide-react";
+import {
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  List,
+  RotateCcw,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -134,6 +140,7 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
   const isSakumonMode = currentMode === "sakumon";
 
   const [problem, setProblem] = useState<Blank25Problem | null>(null);
+  const [problemSequence, setProblemSequence] = useState<Blank25Problem[]>([]);
   const [manifestVersion, setManifestVersion] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -243,10 +250,9 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
         return;
       }
       setManifestVersion(result.manifest.version);
-      const found =
-        result.manifest.categories
-          .flatMap((c) => c.problems)
-          .find((p) => p.id === problemId) ?? null;
+      const allProblems = result.manifest.categories.flatMap((c) => c.problems);
+      setProblemSequence(allProblems);
+      const found = allProblems.find((p) => p.id === problemId) ?? null;
       if (!found) {
         setError(`指定された問題が見つかりません: ${problemId}`);
         return;
@@ -496,6 +502,24 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
   }, [sakumonPhase]);
 
   const imageUrl = problem ? getBlank25ImageUrl(problem.imageFile) : null;
+  const currentProblemIndex = useMemo(
+    () => problemSequence.findIndex((item) => item.id === problemId),
+    [problemId, problemSequence],
+  );
+  const previousProblem =
+    currentProblemIndex > 0 ? problemSequence[currentProblemIndex - 1] : null;
+  const nextProblem =
+    currentProblemIndex >= 0 && currentProblemIndex < problemSequence.length - 1
+      ? problemSequence[currentProblemIndex + 1]
+      : null;
+  const navigationSearch = searchParams.toString();
+  const navigationSuffix = navigationSearch ? `?${navigationSearch}` : "";
+  const previousProblemPath = previousProblem
+    ? `/blank25/${encodeURIComponent(previousProblem.id)}${navigationSuffix}`
+    : null;
+  const nextProblemPath = nextProblem
+    ? `/blank25/${encodeURIComponent(nextProblem.id)}${navigationSuffix}`
+    : null;
   const jsonLd = useMemo(() => {
     if (!problem) return null;
     return generateJsonLdArticle({
@@ -607,6 +631,78 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
           </div>
         </div>
       </div>
+
+      {problemSequence.length > 0 && currentProblemIndex >= 0 && (
+        <Card className="mb-4 border-gray-700 bg-gray-800">
+          <CardContent className="py-3">
+            <div className="flex items-center gap-2 rounded-xl border border-gray-700 bg-gray-900/60 p-2">
+              {previousProblemPath ? (
+                <Button
+                  asChild
+                  variant="outline"
+                  className="h-9 min-w-0 flex-1 justify-center gap-1.5 border-gray-600 bg-gray-900/80 px-2 text-xs text-gray-100 hover:border-purple-400 hover:bg-gray-800 hover:text-white sm:px-3 sm:text-sm"
+                >
+                  <Link href={previousProblemPath} aria-label="前の問題へ移動">
+                    <ChevronLeft className="h-4 w-4 shrink-0" />
+                    <span className="whitespace-nowrap sm:hidden">前へ</span>
+                    <span className="hidden whitespace-nowrap sm:inline">
+                      前の問題
+                    </span>
+                  </Link>
+                </Button>
+              ) : (
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled
+                  className="h-9 min-w-0 flex-1 justify-center gap-1.5 border-gray-700 bg-gray-900/40 px-2 text-xs text-gray-500 sm:px-3 sm:text-sm"
+                  aria-label="前の問題はありません"
+                >
+                  <ChevronLeft className="h-4 w-4 shrink-0" />
+                  <span className="whitespace-nowrap sm:hidden">前へ</span>
+                  <span className="hidden whitespace-nowrap sm:inline">
+                    前の問題
+                  </span>
+                </Button>
+              )}
+
+              <div className="shrink-0 rounded-lg border border-gray-700 bg-gray-950/70 px-2 py-2 text-center text-xs font-semibold tabular-nums text-gray-200 sm:min-w-[4.5rem] sm:px-3 sm:text-sm">
+                {currentProblemIndex + 1}/{problemSequence.length}
+              </div>
+
+              {nextProblemPath ? (
+                <Button
+                  asChild
+                  variant="outline"
+                  className="h-9 min-w-0 flex-1 justify-center gap-1.5 border-gray-600 bg-gray-900/80 px-2 text-xs text-gray-100 hover:border-purple-400 hover:bg-gray-800 hover:text-white sm:px-3 sm:text-sm"
+                >
+                  <Link href={nextProblemPath} aria-label="次の問題へ移動">
+                    <span className="whitespace-nowrap sm:hidden">次へ</span>
+                    <span className="hidden whitespace-nowrap sm:inline">
+                      次の問題
+                    </span>
+                    <ChevronRight className="h-4 w-4 shrink-0" />
+                  </Link>
+                </Button>
+              ) : (
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled
+                  className="h-9 min-w-0 flex-1 justify-center gap-1.5 border-gray-700 bg-gray-900/40 px-2 text-xs text-gray-500 sm:px-3 sm:text-sm"
+                  aria-label="次の問題はありません"
+                >
+                  <span className="whitespace-nowrap sm:hidden">次へ</span>
+                  <span className="hidden whitespace-nowrap sm:inline">
+                    次の問題
+                  </span>
+                  <ChevronRight className="h-4 w-4 shrink-0" />
+                </Button>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {error && (
         <Card className="border-gray-700 bg-gray-800">
