@@ -632,78 +632,6 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
         </div>
       </div>
 
-      {problemSequence.length > 0 && currentProblemIndex >= 0 && (
-        <Card className="mb-4 border-gray-700 bg-gray-800">
-          <CardContent className="py-3">
-            <div className="flex items-center gap-2 rounded-xl border border-gray-700 bg-gray-900/60 p-2">
-              {previousProblemPath ? (
-                <Button
-                  asChild
-                  variant="outline"
-                  className="h-9 min-w-0 flex-1 justify-center gap-1.5 border-gray-600 bg-gray-900/80 px-2 text-xs text-gray-100 hover:border-purple-400 hover:bg-gray-800 hover:text-white sm:px-3 sm:text-sm"
-                >
-                  <Link href={previousProblemPath} aria-label="前の問題へ移動">
-                    <ChevronLeft className="h-4 w-4 shrink-0" />
-                    <span className="whitespace-nowrap sm:hidden">前へ</span>
-                    <span className="hidden whitespace-nowrap sm:inline">
-                      前の問題
-                    </span>
-                  </Link>
-                </Button>
-              ) : (
-                <Button
-                  type="button"
-                  variant="outline"
-                  disabled
-                  className="h-9 min-w-0 flex-1 justify-center gap-1.5 border-gray-700 bg-gray-900/40 px-2 text-xs text-gray-500 sm:px-3 sm:text-sm"
-                  aria-label="前の問題はありません"
-                >
-                  <ChevronLeft className="h-4 w-4 shrink-0" />
-                  <span className="whitespace-nowrap sm:hidden">前へ</span>
-                  <span className="hidden whitespace-nowrap sm:inline">
-                    前の問題
-                  </span>
-                </Button>
-              )}
-
-              <div className="shrink-0 rounded-lg border border-gray-700 bg-gray-950/70 px-2 py-2 text-center text-xs font-semibold tabular-nums text-gray-200 sm:min-w-[4.5rem] sm:px-3 sm:text-sm">
-                {currentProblemIndex + 1}/{problemSequence.length}
-              </div>
-
-              {nextProblemPath ? (
-                <Button
-                  asChild
-                  variant="outline"
-                  className="h-9 min-w-0 flex-1 justify-center gap-1.5 border-gray-600 bg-gray-900/80 px-2 text-xs text-gray-100 hover:border-purple-400 hover:bg-gray-800 hover:text-white sm:px-3 sm:text-sm"
-                >
-                  <Link href={nextProblemPath} aria-label="次の問題へ移動">
-                    <span className="whitespace-nowrap sm:hidden">次へ</span>
-                    <span className="hidden whitespace-nowrap sm:inline">
-                      次の問題
-                    </span>
-                    <ChevronRight className="h-4 w-4 shrink-0" />
-                  </Link>
-                </Button>
-              ) : (
-                <Button
-                  type="button"
-                  variant="outline"
-                  disabled
-                  className="h-9 min-w-0 flex-1 justify-center gap-1.5 border-gray-700 bg-gray-900/40 px-2 text-xs text-gray-500 sm:px-3 sm:text-sm"
-                  aria-label="次の問題はありません"
-                >
-                  <span className="whitespace-nowrap sm:hidden">次へ</span>
-                  <span className="hidden whitespace-nowrap sm:inline">
-                    次の問題
-                  </span>
-                  <ChevronRight className="h-4 w-4 shrink-0" />
-                </Button>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
       {error && (
         <Card className="border-gray-700 bg-gray-800">
           <CardHeader>
@@ -926,6 +854,84 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
               )}
             </CardContent>
           </Card>
+          {problemSequence.length > 0 && currentProblemIndex >= 0 && (
+            <Card className="mb-4 border-gray-700 bg-gray-800">
+              <CardContent className="py-3">
+                <div className="flex items-center gap-2 rounded-xl border border-gray-700 bg-gray-900/60 p-2">
+                  {previousProblemPath ? (
+                    <Button
+                      asChild
+                      variant="outline"
+                      className="h-9 min-w-0 flex-1 justify-center gap-1.5 border-gray-600 bg-gray-900/80 px-2 text-xs text-gray-100 hover:border-purple-400 hover:bg-gray-800 hover:text-white sm:px-3 sm:text-sm"
+                    >
+                      <Link
+                        href={previousProblemPath}
+                        aria-label="前の問題へ移動"
+                      >
+                        <ChevronLeft className="h-4 w-4 shrink-0" />
+                        <span className="whitespace-nowrap sm:hidden">
+                          前へ
+                        </span>
+                        <span className="hidden whitespace-nowrap sm:inline">
+                          前の問題
+                        </span>
+                      </Link>
+                    </Button>
+                  ) : (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      disabled
+                      className="h-9 min-w-0 flex-1 justify-center gap-1.5 border-gray-700 bg-gray-900/40 px-2 text-xs text-gray-500 sm:px-3 sm:text-sm"
+                      aria-label="前の問題はありません"
+                    >
+                      <ChevronLeft className="h-4 w-4 shrink-0" />
+                      <span className="whitespace-nowrap sm:hidden">前へ</span>
+                      <span className="hidden whitespace-nowrap sm:inline">
+                        前の問題
+                      </span>
+                    </Button>
+                  )}
+
+                  <div className="shrink-0 rounded-lg border border-gray-700 bg-gray-950/70 px-2 py-2 text-center text-xs font-semibold tabular-nums text-gray-200 sm:min-w-[4.5rem] sm:px-3 sm:text-sm">
+                    {currentProblemIndex + 1}/{problemSequence.length}
+                  </div>
+
+                  {nextProblemPath ? (
+                    <Button
+                      asChild
+                      variant="outline"
+                      className="h-9 min-w-0 flex-1 justify-center gap-1.5 border-gray-600 bg-gray-900/80 px-2 text-xs text-gray-100 hover:border-purple-400 hover:bg-gray-800 hover:text-white sm:px-3 sm:text-sm"
+                    >
+                      <Link href={nextProblemPath} aria-label="次の問題へ移動">
+                        <span className="whitespace-nowrap sm:hidden">
+                          次へ
+                        </span>
+                        <span className="hidden whitespace-nowrap sm:inline">
+                          次の問題
+                        </span>
+                        <ChevronRight className="h-4 w-4 shrink-0" />
+                      </Link>
+                    </Button>
+                  ) : (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      disabled
+                      className="h-9 min-w-0 flex-1 justify-center gap-1.5 border-gray-700 bg-gray-900/40 px-2 text-xs text-gray-500 sm:px-3 sm:text-sm"
+                      aria-label="次の問題はありません"
+                    >
+                      <span className="whitespace-nowrap sm:hidden">次へ</span>
+                      <span className="hidden whitespace-nowrap sm:inline">
+                        次の問題
+                      </span>
+                      <ChevronRight className="h-4 w-4 shrink-0" />
+                    </Button>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           <Card className="border-gray-700 bg-gray-800">
             <CardHeader>

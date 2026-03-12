@@ -12,6 +12,7 @@
 
 ```md
 # ルール
+
 - メインデザイン`bg-gradient-to-b from-gray-900 to-gray-800 text-white`
 - アクセント`purple-400`
 ```
@@ -103,36 +104,36 @@
 
 ### 5.1 メイン領域（`(main)`）
 
-| パス | 機能 |
-| --- | --- |
-| `/` | トップページ |
-| `/shiritori` | しりとり最長連鎖探索 |
-| `/dice` | サイコロ展開図 + 3D |
-| `/alphabet` | アルファベット / 数字相互変換 |
-| `/prefectures` | 都道府県 / 県庁所在地検索 |
-| `/graphpaper` | 方眼紙エディタ |
-| `/anagram` | 辞書検索 |
-| `/calendar` | 謎チケカレンダー |
-| `/constellation` | 星座検索 |
-| `/shift-search` | シフト検索 |
-| `/shift-search/reports` | シフト検索レポート一覧 |
+| パス                                    | 機能                                      |
+| --------------------------------------- | ----------------------------------------- |
+| `/`                                     | トップページ                              |
+| `/shiritori`                            | しりとり最長連鎖探索                      |
+| `/dice`                                 | サイコロ展開図 + 3D                       |
+| `/alphabet`                             | アルファベット / 数字相互変換             |
+| `/prefectures`                          | 都道府県 / 県庁所在地検索                 |
+| `/graphpaper`                           | 方眼紙エディタ                            |
+| `/anagram`                              | 辞書検索                                  |
+| `/calendar`                             | 謎チケカレンダー                          |
+| `/constellation`                        | 星座検索                                  |
+| `/shift-search`                         | シフト検索                                |
+| `/shift-search/reports`                 | シフト検索レポート一覧                    |
 | `/shift-search/reports/[lang]/[length]` | シフト検索レポート詳細 / ダウンロード案内 |
 
 ### 5.2 BLANK25 領域（`(blank25)`）
 
-| パス | 機能 |
-| --- | --- |
-| `/blank25` | 問題一覧 |
-| `/blank25/[problemId]` | ゲーム（通常 / 作問モード） |
-| `/blank25/editor` | 管理用アップロード編集画面（Basic 認証） |
+| パス                   | 機能                                     |
+| ---------------------- | ---------------------------------------- |
+| `/blank25`             | 問題一覧                                 |
+| `/blank25/[problemId]` | ゲーム（通常 / 作問モード）              |
+| `/blank25/editor`      | 管理用アップロード編集画面（Basic 認証） |
 
 ### 5.3 シークレット領域（`(secret)`）
 
-| パス | 機能 |
-| --- | --- |
-| `/secret/christmas` | Google 風 UI + 音声入力 |
-| `/secret/christmas/congratulations` | 演出ページ |
-| `/secret/ponpoppo/[productId]` | クイズ表示 |
+| パス                                | 機能                    |
+| ----------------------------------- | ----------------------- |
+| `/secret/christmas`                 | Google 風 UI + 音声入力 |
+| `/secret/christmas/congratulations` | 演出ページ              |
+| `/secret/ponpoppo/[productId]`      | クイズ表示              |
 
 ## 6. 主要機能要件
 
@@ -356,14 +357,14 @@
 
 ## 9. バッチ運用（GitHub Actions）
 
-| Workflow | スケジュール (UTC) | 内容 |
-| --- | --- | --- |
-| `realtime-register.yml` | 毎時 `0 * * * *` | `#謎チケ売ります` を register |
-| `realtime-register-transfer.yml` | 毎時 `15 * * * *` | `#謎チケ譲ります` を register |
-| `realtime-register-accompany.yml` | 毎時 `30 * * * *` | `#謎解き同行者募集` を register |
-| `realtime-verify-post-visibility.yml` | 毎時 `45 * * * *` | syndication で Post 可視性を検証 |
-| `realtime-prune.yml` | 毎日 `15 0 * * *` | 古いイベントを prune |
-| `x-repost-events.yml` | 1 日 16 回 | 候補イベントを repost |
+| Workflow                              | スケジュール (UTC) | 内容                             |
+| ------------------------------------- | ------------------ | -------------------------------- |
+| `realtime-register.yml`               | 毎時 `0 * * * *`   | `#謎チケ売ります` を register    |
+| `realtime-register-transfer.yml`      | 毎時 `15 * * * *`  | `#謎チケ譲ります` を register    |
+| `realtime-register-accompany.yml`     | 毎時 `30 * * * *`  | `#謎解き同行者募集` を register  |
+| `realtime-verify-post-visibility.yml` | 毎時 `45 * * * *`  | syndication で Post 可視性を検証 |
+| `realtime-prune.yml`                  | 毎日 `15 0 * * *`  | 古いイベントを prune             |
+| `x-repost-events.yml`                 | 1 日 16 回         | 候補イベントを repost            |
 
 利用 Secrets:
 
