@@ -2,11 +2,13 @@ name: X Repost Events
 
 on:
   workflow_dispatch:
-  schedule:
-    # 00:00, 03:00, 06:00, 09:00, 12:00, 15:00, 18:00, 21:00 (UTC)
-    - cron: "0 0,3,6,9,12,15,18,21 * * *"
-    # 01:30, 04:30, 07:30, 10:30, 13:30, 16:30, 19:30, 22:30 (UTC)
-    - cron: "30 1,4,7,10,13,16,19,22 * * *"
+  # Automatic reposts are temporarily disabled while X posting credits are unavailable.
+  # Manual execution via workflow_dispatch remains available.
+  # schedule:
+  #   # 00:00, 03:00, 06:00, 09:00, 12:00, 15:00, 18:00, 21:00 (UTC)
+  #   - cron: "0 0,3,6,9,12,15,18,21 * * *"
+  #   # 01:30, 04:30, 07:30, 10:30, 13:30, 16:30, 19:30, 22:30 (UTC)
+  #   - cron: "30 1,4,7,10,13,16,19,22 * * *"
 
 jobs:
   repost-latest-event:
