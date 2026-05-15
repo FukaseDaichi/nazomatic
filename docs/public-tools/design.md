@@ -23,6 +23,7 @@
 | `/graphpaper` | `src/app/(main)/graphpaper/page.tsx`、`src/components/graphpaper/graph-paper-component.tsx` | クライアント状態 |
 | `/anagram` | `src/app/(main)/anagram/page.tsx`、`src/components/anagram/anagram-search.tsx` | `SearchManager` と `public/dic/*.dic` |
 | `/constellation` | `src/app/(main)/constellation/page.tsx`、`src/components/constellation/ConstellationSearchTable.tsx` | `src/lib/constellation/*`、`src/lib/json/constellations-data.json` |
+| `/character-pick-search` | `src/app/(main)/character-pick-search/page.tsx`、`src/components/character-pick-search/character-pick-search.tsx` | `src/lib/character-pick-search.ts` と `SearchManager` |
 
 ## 辞書検索
 
@@ -41,6 +42,8 @@
 - 正規表現的な繰り返し指定
 
 Shift Search も同じ `SearchManager` を使います。Shift Search 固有の仕様は `docs/shift-search/design.md` を参照します。
+
+文字拾い検索も同じ辞書を使います。登録語から指定文字数ずつ拾って作れる辞書語を判定し、候補語の文字順は問わないためアナグラムも結果に含みます。詳細は `docs/character-pick-search/design.md` を参照します。
 
 ## しりとり
 

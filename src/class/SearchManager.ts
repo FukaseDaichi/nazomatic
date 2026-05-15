@@ -65,7 +65,7 @@ function replaceMarks(inputString: string): string {
  * @param word 単語
  * @returns 正規化された単語
  */
-function normalizeWord(word: string): string {
+export function normalizeSearchWord(word: string): string {
   // 小さい文字を大きいひらがなに変換
   const convertedWord = word
     .replace(/ゃ/g, "や")
@@ -121,7 +121,7 @@ function normalizeRegexPattern(pattern: string): string {
   }
 
   const normalized = fullWidthToHalfWidth(pattern);
-  return normalizeWord(normalized);
+  return normalizeSearchWord(normalized);
 }
 
 function generateRegex(pattern: string): RegExp {
@@ -335,6 +335,10 @@ export class SearchManager {
     this.preprocessDictionary(); // 辞書を前処理
   }
 
+  public getWords(): string[] {
+    return this.dictionary.words;
+  }
+
   /**
    * ファクトリーメソッド：キーからAnagramManagerのインスタンスを生成する
    * @param key 辞書のキー
@@ -376,7 +380,7 @@ export class SearchManager {
         .split("\n")
         .map((w) => w.trim())
         .filter(Boolean)
-        .map(normalizeWord);
+        .map(normalizeSearchWord);
 
       const dictionary: Dictionary = {
         key: key,
@@ -428,7 +432,7 @@ export class SearchManager {
   public findAnagramsAsync(input: string): Promise<string[]> {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const normalizedInput = normalizeWord(input);
+        const normalizedInput = normalizeSearchWord(input);
         const inputLength = normalizedInput.length;
 
         if (normalizedInput.includes("?")) {
@@ -497,7 +501,7 @@ export class SearchManager {
   public findExactWordAsync(input: string): Promise<boolean> {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const normalizedInput = normalizeWord(input);
+        const normalizedInput = normalizeSearchWord(input);
         resolve(this.wordSet.has(normalizedInput));
       }, 0);
     });
@@ -526,8 +530,8 @@ export class SearchManager {
           (this.dictionary.type === "jp" && markReplaceRegex.test(input));
 
         const normalizedInput = isContainMark
-          ? fullWidthToHalfWidth(normalizeWord(replaceMarks(input)))
-          : fullWidthToHalfWidth(normalizeWord(input));
+          ? fullWidthToHalfWidth(normalizeSearchWord(replaceMarks(input)))
+          : fullWidthToHalfWidth(normalizeSearchWord(input));
 
         // console.log("normalizedInput:" + normalizedInput);
 

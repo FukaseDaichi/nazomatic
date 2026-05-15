@@ -53,6 +53,12 @@
       "title": "シフト検索",
       "description": "入力語を文字ずらしして辞書検索。必要ならずらし後アナグラムも検索！",
       "path": "/shift-search"
+    },
+    {
+      "iconName": "Combine",
+      "title": "文字拾い検索",
+      "description": "登録した単語から文字を拾って作れる単語を検索！",
+      "path": "/character-pick-search"
     }
   ]
 }
