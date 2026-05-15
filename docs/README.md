@@ -1,6 +1,6 @@
 # NAZOMATIC ドキュメント索引
 
-この `docs/` 配下は、人間向けの仕様書・設計書・補助資料をまとめる領域です。実装と生成物は分けて管理します。
+この `docs/` 配下は、NAZOMATIC の設計書と運用上の判断材料をまとめる領域です。ソースコードを正とし、ドキュメントは実装に追従します。
 
 ## AGENTS.md との役割分担
 
@@ -9,50 +9,39 @@
 - AI 向けの必須実装ルールは `docs/ai-coding-rules.md` を正本とします。
 - 仕様や運用ルールを変更した場合は、該当ドキュメントとこの索引の更新要否を確認します。
 
-## 現在の正本
+## 読む順番
 
-- 全体仕様: `docs/specification.md`
-- AI 実装ルール: `docs/ai-coding-rules.md`
-- BLANK25: `docs/blank25/specification.md`
-- BLANK25 パーティ得点表示: `docs/blank25/party-scoreboard-specification.md`
-- BLANK25 チーム戦ルール説明: `docs/blank25/team-battle-rules-site-specification.md`
-- BLANK25 Editor: `docs/blank25/upload-editor-specification.md`
-- BLANK25 Editor 保存方式: `docs/blank25/editor-storage-design.md`
-- Shift Search: `docs/shift-search/specification.md`
-- Shift Search レポート生成: `docs/shift-search/shift-search-report-generation-specification.md`
-- Shift Search 結果ビュー: `docs/shift-search/shift-search-results-view-specification.md`
-- Calendar UI 仕様: `docs/calendardoc/calendar-ui-specification.md`
-- Calendar / Realtime API 仕様: `docs/calendardoc/firebase-registration-api-specification.md`
-- Calendar Post 可視性検証 API: `docs/calendardoc/realtime-verify-post-visibility-api-specification.md`
-- GitHub Actions 運用: `docs/calendardoc/github-actions-scheduling-specification.md`
-- X 再投稿: `docs/calendardoc/x-repost-api-specification.md`
+1. 全体像を知る: `docs/system-design.md`
+2. 開発・環境変数・生成手順を確認する: `docs/development-guide.md`
+3. サブシステムを変更する: 対象ディレクトリの設計書を読む
+4. AI が UI やフォームを触る: `docs/ai-coding-rules.md` を必ず守る
 
-## 設計・計画メモ
+## 設計書
 
-- Calendar 削除済み Post 非表示化計画: `docs/calendardoc/calendar-deleted-post-syndication-plan.md`
+| 文書 | 内容 |
+|---|---|
+| `docs/system-design.md` | 全体アーキテクチャ、ルート、API、データ境界、SEO、認証境界 |
+| `docs/development-guide.md` | セットアップ、コマンド、環境変数、検証、ドキュメント運用 |
+| `docs/public-tools/design.md` | しりとり、サイコロ、アルファベット、都道府県、方眼紙、辞書検索、星座検索 |
+| `docs/blank25/design.md` | BLANK25 本体、作問モード、パーティ得点表示、Editor、外部 storage 連携 |
+| `docs/calendar-realtime/design.md` | 謎チケカレンダー、Realtime 取得、Firestore、内部 API、GitHub Actions、X 再投稿 |
+| `docs/shift-search/design.md` | シフト検索、辞書検索連携、レポート成果物、表示用生成 assets |
+| `docs/ai-coding-rules.md` | AI 実装時の必須ルール |
 
-## ディレクトリ
+## ディレクトリと生成物
 
-- `docs/`
-  - 全体仕様と AI 向け共通ルール。
-- `docs/blank25`
-  - BLANK25 本体、Editor、storage 連携の仕様書・設計書・補助資料。
-- `docs/calendardoc`
-  - Calendar / realtime 系の仕様書・設計書・スキーマ。
-- `docs/shift-search`
-  - Shift Search 本体とレポート生成 / 表示まわりの仕様書。
+| パス | 役割 |
+|---|---|
+| `docs/` | 日本語の設計書と運用資料 |
+| `src/` | 実装の正本 |
+| `src/generated/shift-search/` | Next.js が読む Shift Search 表示用生成 assets |
+| `artifacts/shift-search/reports/` | Shift Search レポート元成果物 |
+| `scripts/` | レポート生成・同期などの補助スクリプト |
 
-## 生成物との境界
+## 保守ルール
 
-- Shift Search のレポート成果物: `artifacts/shift-search/reports`
-- Next.js が読む生成済み view assets: `src/generated/shift-search`
-
-## 文書の見方
-
-- `specification` / `実装準拠`: 現在コードと揃える前提の文書。
-- `design`: 構成、責務分離、保存方式などの設計文書。
-- `schema` / `readme` / `規約`: データ定義や外部リポジトリ運用の補助文書。
-- `ai-coding-rules`: AI が必ず守る共通実装ルール。
-- 例:
-  - `docs/calendardoc/realtime-search-system-design.md` は初期構想を含む設計書
-  - `docs/shift-search/shift-search-report-generation-specification.md` はレポート生成仕様書
+- ドキュメントは日本語で書く。
+- 実装と矛盾した場合は、ソースコードを正としてドキュメントを直す。
+- 新しい設計判断を追加するときは、最も近い設計書へ追記する。
+- 新しい設計書を追加したときは、この索引も更新する。
+- 古い実装計画や重複した仕様書は、現行設計書へ統合して残さない。

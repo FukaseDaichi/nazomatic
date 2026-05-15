@@ -5,7 +5,8 @@ Keep this file short and operational. Put durable project details in Japanese do
 ## Required References
 
 - Follow `docs/ai-coding-rules.md` as the source of truth for AI implementation rules, especially UI and form work.
-- Use `docs/specification.md` for architecture, environment variables, routes, data sources, and batch jobs.
+- Use `docs/system-design.md` for architecture, routes, APIs, data boundaries, SEO, and authentication boundaries.
+- Use `docs/development-guide.md` for setup, commands, environment variables, verification, and generated assets.
 - Use `docs/README.md` to find subsystem documents.
 - Keep `AGENTS.md` in English. Keep files under `docs/` in Japanese.
 
