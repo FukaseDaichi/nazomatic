@@ -1,6 +1,13 @@
-# NAZOMATIC Docs Index
+# NAZOMATIC ドキュメント索引
 
 この `docs/` 配下は、人間向けの仕様書・設計書・補助資料をまとめる領域です。実装と生成物は分けて管理します。
+
+## AGENTS.md との役割分担
+
+- `AGENTS.md` は、AI エージェントが作業開始時に読む短い英語の実行ルールとして管理します。
+- 詳細な仕様、設計、環境変数、バッチ運用、サブシステム固有の判断材料は、この `docs/` 配下の日本語ドキュメントに置きます。
+- AI 向けの必須実装ルールは `docs/ai-coding-rules.md` を正本とします。
+- 仕様や運用ルールを変更した場合は、該当ドキュメントとこの索引の更新要否を確認します。
 
 ## 現在の正本
 
@@ -14,11 +21,11 @@
 - Shift Search: `docs/shift-search/specification.md`
 - Shift Search レポート生成: `docs/shift-search/shift-search-report-generation-specification.md`
 - Shift Search 結果ビュー: `docs/shift-search/shift-search-results-view-specification.md`
-- Calendar UI: `docs/calendardoc/calendar-ui-specification.md`
-- Calendar / Realtime API: `docs/calendardoc/firebase-registration-api-specification.md`
-- Calendar Post visibility verify API: `docs/calendardoc/realtime-verify-post-visibility-api-specification.md`
+- Calendar UI 仕様: `docs/calendardoc/calendar-ui-specification.md`
+- Calendar / Realtime API 仕様: `docs/calendardoc/firebase-registration-api-specification.md`
+- Calendar Post 可視性検証 API: `docs/calendardoc/realtime-verify-post-visibility-api-specification.md`
 - GitHub Actions 運用: `docs/calendardoc/github-actions-scheduling-specification.md`
-- X repost: `docs/calendardoc/x-repost-api-specification.md`
+- X 再投稿: `docs/calendardoc/x-repost-api-specification.md`
 
 ## 設計・計画メモ
 
