@@ -3,12 +3,12 @@ name: Realtime Verify Post Visibility
 on:
   workflow_dispatch:
   schedule:
-    - cron: "45 * * * *" # Every hour at minute 45
+    - cron: "10,45 * * * *" # Twice per hour at minutes 10 and 45
 
 jobs:
   trigger-verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
       - name: Invoke realtime verify post visibility API
         env:
