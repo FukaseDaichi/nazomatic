@@ -33,7 +33,7 @@ jobs:
             -X POST "$TARGET_URL" \
             -H "Authorization: Bearer $API_TOKEN" \
             -H "Content-Type: application/json" \
-            -d '{"batchSize":100,"maxConcurrency":5,"bootstrapScanLimit":500,"dryRun":false}')
+            -d '{"batchSize":40,"maxConcurrency":5,"bootstrapScanLimit":200,"dryRun":false}')
 
           echo "HTTP status: $HTTP_STATUS"
           cat "$RESPONSE_FILE"
