@@ -16,13 +16,14 @@ import {
 } from "@/server/realtime/syndication/verifyPost";
 import type { RealtimeApiErrorResponse } from "@/types/realtime";
 
-const DEFAULT_BATCH_SIZE = 100;
-const MAX_BATCH_SIZE = 200;
+const DEFAULT_BATCH_SIZE = 10;
+const MAX_BATCH_SIZE = 10;
 const DEFAULT_MAX_CONCURRENCY = 5;
-const MAX_MAX_CONCURRENCY = 10;
-const DEFAULT_BOOTSTRAP_SCAN_LIMIT = 500;
-const MAX_BOOTSTRAP_SCAN_LIMIT = 2000;
+const MAX_MAX_CONCURRENCY = 5;
+const DEFAULT_BOOTSTRAP_SCAN_LIMIT = 50;
+const MAX_BOOTSTRAP_SCAN_LIMIT = 100;
 const MAX_BATCH_OPERATIONS = 450;
+const POST_ID_QUERY_CHUNK_SIZE = 10;
 const ACTIVE_EVENT_LOOKBACK_DAYS = 1;
 const SCHEDULED_SCAN_MULTIPLIER = 3;
 
@@ -48,6 +49,7 @@ type VerifyPostVisibilityResponse = {
 };
 
 export const runtime = "nodejs";
+export const maxDuration = 10;
 
 export async function POST(request: Request) {
   try {
@@ -227,18 +229,30 @@ async function applyVerificationResults(
   results: Array<{ postId: string; status: VerifiedPostAvailability }>,
   now: Date
 ) {
+  const statusByPostId = new Map(
+    results.map((result) => [result.postId, result.status])
+  );
+  const postIds = results.map((result) => result.postId);
   let updatedDocs = 0;
   let operationCount = 0;
   let batch = firestore.batch();
 
-  for (const result of results) {
+  for (const postIdChunk of chunkArray(postIds, POST_ID_QUERY_CHUNK_SIZE)) {
     const snapshot = await firestore
       .collection("realtimeEvents")
-      .where("postId", "==", result.postId)
+      .where("postId", "in", postIdChunk)
       .get();
 
     for (const doc of snapshot.docs) {
-      batch.update(doc.ref, buildUpdatePayload(doc.data(), result.status, now));
+      const data = doc.data();
+      const postId = extractPostId(data);
+      const status = postId ? statusByPostId.get(postId) : undefined;
+
+      if (!status) {
+        continue;
+      }
+
+      batch.update(doc.ref, buildUpdatePayload(data, status, now));
       updatedDocs += 1;
       operationCount += 1;
 
@@ -255,6 +269,16 @@ async function applyVerificationResults(
   }
 
   return updatedDocs;
+}
+
+function chunkArray<T>(items: T[], chunkSize: number) {
+  const chunks: T[][] = [];
+
+  for (let index = 0; index < items.length; index += chunkSize) {
+    chunks.push(items.slice(index, index + chunkSize));
+  }
+
+  return chunks;
 }
 
 function buildUpdatePayload(
