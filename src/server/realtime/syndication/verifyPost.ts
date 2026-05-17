@@ -1,7 +1,7 @@
 export type VerifiedPostAvailability = "available" | "deleted" | "unknown";
 
 const SYNDICATION_BASE_URL = "https://cdn.syndication.twimg.com/tweet-result";
-const FETCH_TIMEOUT_MS = 5000;
+const FETCH_TIMEOUT_MS = 2000;
 
 type SyndicationResponse = {
   __typename?: string;
