@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "x:browser-post": "node scripts/x-browser-post-events.mjs",
     "shift:report:meta": "node scripts/build-shift-search-report-meta.mjs",
     "shift:report:view-assets": "node scripts/build-shift-search-view-assets.mjs"
   },
@@ -54,6 +55,7 @@
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.0.3",
+    "playwright": "^1.60.0",
     "postcss": "^8",
     "tailwindcss": "^3.3.0",
     "typescript": "^5"

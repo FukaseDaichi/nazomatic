@@ -1,0 +1,411 @@
+#!/usr/bin/env node
+
+import fs from "fs/promises";
+import path from "path";
+import { createInterface } from "readline/promises";
+import { stdin as input, stdout as output } from "process";
+
+import { loadBrowserPostConfig } from "./x-browser-posting/config.mjs";
+import {
+  SELECTOR_PROFILE_VERSION,
+  assertSubmitReady,
+  fillComposer,
+  openComposer,
+  submitPost,
+  verifyLoggedInAccount,
+} from "./x-browser-posting/xComposerPage.mjs";
+
+async function main() {
+  const config = loadBrowserPostConfig(process.argv.slice(2));
+  if (config.execute) {
+    await assertLocalRateLimit(config);
+  }
+  const prepared = await prepareCandidate(config);
+
+  if (!prepared) {
+    console.log("No browser post candidate found.");
+    return;
+  }
+
+  if (!prepared.postURL) {
+    throw new Error("Prepared candidate does not have a postURL");
+  }
+
+  const quoteText = config.comment || prepared.suggestedComment;
+  const composedText = `${quoteText.trim()}\n\n${prepared.postURL}`;
+  const browserRuntime = await loadPlaywright();
+  const session = await openBrowserSession(browserRuntime, config);
+  let confirmed = false;
+  let postSubmitted = false;
+
+  try {
+    await openComposer(session.page);
+    const verifiedHandle = await verifyLoggedInAccount(
+      session.page,
+      config.accountHandle
+    );
+    await fillComposer(session.page, composedText);
+    await assertSubmitReady(session.page);
+    const screenshotPath = await saveScreenshot(
+      session.page,
+      config,
+      config.execute ? "ready" : "dry-run"
+    );
+
+    printPreparedSummary({
+      prepared,
+      quoteText,
+      composedText,
+      verifiedHandle,
+      screenshotPath,
+      config,
+    });
+
+    if (!config.execute) {
+      console.log(
+        "Dry-run complete. No post was submitted and DB was not updated."
+      );
+      return;
+    }
+
+    if (config.confirmationMode === "interactive") {
+      const allowed = await promptForConfirmation();
+      if (!allowed) {
+        await confirmCandidate(config, prepared, {
+          status: "failed",
+          quoteText,
+          error: "cancelled_by_user",
+        });
+        confirmed = true;
+        console.log("Cancelled. Reservation was released as failed.");
+        return;
+      }
+    }
+
+    const postedPostURL = await submitPost(session.page, config.accountHandle);
+    postSubmitted = true;
+    await confirmCandidate(config, prepared, {
+      status: "posted",
+      quoteText,
+      postedPostURL,
+    });
+    await updateLocalRateState(config);
+    confirmed = true;
+    console.log("Posted via X browser session.");
+    if (postedPostURL) {
+      console.log(`Posted URL: ${postedPostURL}`);
+    }
+  } catch (error) {
+    await saveScreenshot(session.page, config, "error").catch(() => null);
+    if (config.execute && !config.dryRun && !confirmed && !postSubmitted) {
+      await confirmCandidate(config, prepared, {
+        status: "failed",
+        quoteText,
+        error: error instanceof Error ? error.message : String(error),
+      }).catch((confirmError) => {
+        console.error("Failed to release reservation:", confirmError);
+      });
+    }
+    if (config.execute && postSubmitted && !confirmed) {
+      await writePendingConfirm(config, prepared, {
+        status: "posted",
+        quoteText,
+        error: error instanceof Error ? error.message : String(error),
+      }).catch(() => null);
+      console.error(
+        "The post may have been submitted, but DB confirmation failed. A pending confirmation file was written under local/x-browser-posting/pending."
+      );
+    }
+    throw error;
+  } finally {
+    if (!config.keepOpen) {
+      await session.close();
+    }
+  }
+}
+
+async function prepareCandidate(config) {
+  const response = await postJson(
+    config,
+    "/api/internal/x/browser-post/events/prepare",
+    {
+      hashtag: config.hashtag,
+      accountHandle: config.accountHandle,
+      dryRun: config.dryRun,
+      reservedBy: config.reservedBy,
+      cooldownMinutes: config.cooldownMinutes,
+      dailyLimit: config.dailyLimit,
+      maxPerRun: config.maxPerRun,
+    },
+    true
+  );
+
+  if (response.status === 204) {
+    return null;
+  }
+  return response.body;
+}
+
+async function confirmCandidate(config, prepared, result) {
+  return postJson(
+    config,
+    "/api/internal/x/browser-post/events/confirm",
+    {
+      eventId: prepared.pickedEventId,
+      reservationId: prepared.reservationId,
+      accountHandle: config.accountHandle,
+      status: result.status,
+      quoteText: result.quoteText,
+      quoteMode: "post_url",
+      postedPostURL: result.postedPostURL ?? null,
+      postedPostId: parsePostId(result.postedPostURL),
+      confirmationMode: config.confirmationMode,
+      selectorProfileVersion: SELECTOR_PROFILE_VERSION,
+      error: result.error ?? null,
+    },
+    false
+  );
+}
+
+async function postJson(config, pathname, payload, allowNoContent) {
+  const response = await fetch(`${config.apiBaseUrl}${pathname}`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${config.internalToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (response.status === 204 && allowNoContent) {
+    return { status: 204, body: null };
+  }
+
+  const text = await response.text();
+  const body = text ? safeJsonParse(text) : null;
+  if (!response.ok) {
+    const details =
+      body && typeof body === "object" ? JSON.stringify(body) : text;
+    throw new Error(`API ${pathname} failed (${response.status}): ${details}`);
+  }
+
+  return { status: response.status, body };
+}
+
+async function loadPlaywright() {
+  try {
+    return await import("playwright");
+  } catch {
+    throw new Error(
+      "Playwright is not installed. Run `npm install` after pulling this change."
+    );
+  }
+}
+
+async function openBrowserSession(playwright, config) {
+  const launchOptions = {
+    headless: config.headless,
+  };
+  const contextOptions = {
+    viewport: { width: 1365, height: 900 },
+  };
+  if (config.browserChannel) {
+    launchOptions.channel = config.browserChannel;
+  }
+
+  if (config.userDataDir) {
+    const context = await playwright.chromium.launchPersistentContext(
+      config.userDataDir,
+      {
+        ...launchOptions,
+        ...contextOptions,
+      }
+    );
+    return {
+      page: context.pages()[0] ?? (await context.newPage()),
+      close: () => context.close(),
+    };
+  }
+
+  const browser = await playwright.chromium.launch(launchOptions);
+  const context = await browser.newContext({
+    storageState: config.storageState,
+    ...contextOptions,
+  });
+  const page = await context.newPage();
+  return {
+    page,
+    close: () => browser.close(),
+  };
+}
+
+async function saveScreenshot(page, config, label) {
+  const dir = path.join(config.cwd, "local/x-browser-posting/screenshots");
+  await fs.mkdir(dir, { recursive: true });
+  const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+  const filePath = path.join(dir, `${stamp}-${label}.png`);
+  await page.screenshot({ path: filePath, fullPage: true });
+  return filePath;
+}
+
+async function writePendingConfirm(config, prepared, result) {
+  const dir = path.join(config.cwd, "local/x-browser-posting/pending");
+  await fs.mkdir(dir, { recursive: true });
+  const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+  const filePath = path.join(dir, `${stamp}-${prepared.pickedEventId}.json`);
+  await fs.writeFile(
+    filePath,
+    JSON.stringify(
+      {
+        apiBaseUrl: config.apiBaseUrl,
+        eventId: prepared.pickedEventId,
+        reservationId: prepared.reservationId,
+        accountHandle: config.accountHandle,
+        status: result.status,
+        quoteText: result.quoteText,
+        quoteMode: "post_url",
+        confirmationMode: config.confirmationMode,
+        selectorProfileVersion: SELECTOR_PROFILE_VERSION,
+        error: result.error,
+      },
+      null,
+      2
+    )
+  );
+  return filePath;
+}
+
+async function assertLocalRateLimit(config) {
+  const state = await readLocalRateState(config);
+  const account = state.accounts?.[config.accountHandle] ?? {};
+  const now = new Date();
+
+  if (account.lastPostedAt) {
+    const lastPostedAt = new Date(account.lastPostedAt);
+    const nextAllowedAt = new Date(
+      lastPostedAt.getTime() + config.cooldownMinutes * 60 * 1000
+    );
+    if (nextAllowedAt.getTime() > now.getTime()) {
+      throw new Error(
+        `Local cooldown is active until ${nextAllowedAt.toISOString()}`
+      );
+    }
+  }
+
+  const dailyKey = now.toISOString().slice(0, 10);
+  const dailyCount =
+    account.dailyKey === dailyKey && Number.isFinite(account.dailyCount)
+      ? account.dailyCount
+      : 0;
+  if (dailyCount >= config.dailyLimit) {
+    throw new Error("Local daily browser post limit has been reached");
+  }
+}
+
+async function updateLocalRateState(config) {
+  const state = await readLocalRateState(config);
+  const now = new Date();
+  const dailyKey = now.toISOString().slice(0, 10);
+  const account = state.accounts?.[config.accountHandle] ?? {};
+  const dailyCount =
+    account.dailyKey === dailyKey && Number.isFinite(account.dailyCount)
+      ? account.dailyCount + 1
+      : 1;
+
+  const nextState = {
+    ...state,
+    accounts: {
+      ...(state.accounts ?? {}),
+      [config.accountHandle]: {
+        lastPostedAt: now.toISOString(),
+        dailyKey,
+        dailyCount,
+      },
+    },
+  };
+
+  const filePath = getLocalRateStatePath(config);
+  await fs.mkdir(path.dirname(filePath), { recursive: true });
+  await fs.writeFile(filePath, JSON.stringify(nextState, null, 2));
+}
+
+async function readLocalRateState(config) {
+  const filePath = getLocalRateStatePath(config);
+  try {
+    const text = await fs.readFile(filePath, "utf8");
+    const parsed = JSON.parse(text);
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+function getLocalRateStatePath(config) {
+  return path.join(config.cwd, "local/x-browser-posting/rate-state.json");
+}
+
+function printPreparedSummary({
+  prepared,
+  quoteText,
+  composedText,
+  verifiedHandle,
+  screenshotPath,
+  config,
+}) {
+  console.log("");
+  console.log("X browser post candidate");
+  console.log(`Mode: ${config.execute ? config.confirmationMode : "dry-run"}`);
+  console.log(`Account: @${verifiedHandle}`);
+  console.log(`Event doc: ${prepared.pickedEventId}`);
+  console.log(`Source post: ${prepared.postURL}`);
+  if (prepared.ticketTitle) {
+    console.log(`Ticket: ${prepared.ticketTitle}`);
+  }
+  if (prepared.eventTime) {
+    console.log(`Event time: ${prepared.eventTime}`);
+  }
+  console.log("");
+  console.log("Quote comment:");
+  console.log(quoteText.trim());
+  console.log("");
+  console.log("Composed text:");
+  console.log(composedText);
+  console.log("");
+  console.log(`Screenshot: ${screenshotPath}`);
+  console.log("");
+}
+
+async function promptForConfirmation() {
+  if (!process.stdin.isTTY) {
+    throw new Error("Interactive confirmation requires a TTY");
+  }
+
+  const rl = createInterface({ input, output });
+  try {
+    const answer = await rl.question('Type "post" to submit, or anything else to cancel: ');
+    return answer.trim() === "post";
+  } finally {
+    rl.close();
+  }
+}
+
+function parsePostId(postedPostURL) {
+  if (!postedPostURL) {
+    return null;
+  }
+  const match = /\/status\/([0-9]+)/.exec(postedPostURL);
+  return match ? match[1] : null;
+}
+
+function safeJsonParse(text) {
+  try {
+    return JSON.parse(text);
+  } catch {
+    return null;
+  }
+}
+
+main().catch((error) => {
+  console.error(error instanceof Error ? error.message : error);
+  process.exitCode = 1;
+});

@@ -70,6 +70,8 @@ Yahoo!リアルタイム検索の取得結果を返す公開 API です。現在
 | `POST /api/internal/realtime/prune` | `cutoffDays`, `dryRun` | `eventTime` が古いイベントを削除 |
 | `POST /api/internal/realtime/verify-post-visibility` | `batchSize`, `maxConcurrency`, `bootstrapScanLimit`, `dryRun` | Post の可視性を検証し syndication fields を更新 |
 | `POST /api/internal/x/repost/events` | `hashtag`, `dryRun` | 条件に合うイベントを X で再投稿 |
+| `POST /api/internal/x/browser-post/events/prepare` | `hashtag`, `accountHandle`, `dryRun` | ローカルブラウザ投稿用の候補予約 |
+| `POST /api/internal/x/browser-post/events/confirm` | `eventId`, `reservationId`, `accountHandle`, `status` | ローカルブラウザ投稿結果を Firestore に反映 |
 
 ### 登録 API
 
@@ -104,6 +106,8 @@ Firestore doc id は `{postId}:{RULESET_VERSION}` です。
 ### X 再投稿 API
 
 `lastReviewedAt == null`、指定 hashtag を含む、過去 24 時間に captured された表示可能イベントから候補を選びます。候補がない場合は `204` を返します。実投稿後は対象 document の `lastReviewedAt` を更新します。
+
+この API は X API による通常 Repost です。X API を使わずローカルのログイン済みブラウザセッションから引用投稿する機能は `docs/x-browser-posting/design.md` に分けます。
 
 ## Firestore スキーマ
 
@@ -154,3 +158,4 @@ Workflow secrets:
 - Firestore の複合 index は query 追加時に必要になる場合がある。
 - `x-repost-events.yml` の自動実行は現在停止中。
 - `lastReviewedAt` は X repost 候補の重複防止にも使われるため、別用途で更新すると候補選定に影響する。
+- ローカルブラウザ投稿案を実装する場合も、`lastReviewedAt` の意味を崩さず、投稿済みまたは明示 skip の重複防止に限定する。
