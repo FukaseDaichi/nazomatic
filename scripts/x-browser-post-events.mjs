@@ -26,6 +26,7 @@ async function main() {
   if (config.execute) {
     await assertLocalRateLimit(config);
   }
+  await prepareAutomationRuntime(config);
   const prepared = await prepareCandidate(config);
 
   if (!prepared) {
@@ -210,8 +211,9 @@ async function openAutomationSession(config) {
       throw new Error(
         [
           `Could not connect to Chrome at ${config.cdpUrl}.`,
-          "Start Chrome with `npm run x:browser-post -- --login-only` and keep it open while running this command.",
-          "If an older Chrome window is already using the profile, close it first.",
+          "The script tried to prepare Chrome before reserving a candidate, but CDP was still unavailable.",
+          "Run `npm run x:browser-post -- --login-only` once, log in manually, then retry.",
+          "If an older Chrome window is already using the same profile without CDP, close it first.",
           error instanceof Error ? error.message : String(error),
         ].join("\n")
       );
@@ -245,6 +247,52 @@ async function openAutomationSession(config) {
     saveScreenshot: (label) => saveScreenshot(session.page, config, label),
     close: () => session.close(),
   };
+}
+
+async function prepareAutomationRuntime(config) {
+  if (!config.cdpUrl) {
+    return;
+  }
+
+  await ensureCdpChromeAvailable(config);
+
+  if (config.cleanupComposeTabs) {
+    const closedCount = await closeStaleComposeTabs(config.cdpUrl);
+    if (closedCount > 0) {
+      console.log(`Closed stale X compose tabs: ${closedCount}`);
+    }
+  }
+}
+
+async function ensureCdpChromeAvailable(config) {
+  if (await isCdpAvailable(config.cdpUrl)) {
+    return;
+  }
+
+  if (!config.autoStartChrome) {
+    throw new Error(
+      [
+        `Could not connect to Chrome at ${config.cdpUrl}.`,
+        "X_BROWSER_POST_AUTO_START_CHROME=false, so Chrome was not started automatically.",
+        "Start Chrome with `npm run x:browser-post -- --login-only` and keep it open, or enable auto start.",
+      ].join("\n")
+    );
+  }
+
+  await launchCdpChrome(config, "https://x.com/home");
+  await waitForCdpAvailable(config.cdpUrl, config.chromeStartupTimeoutMs).catch(
+    (error) => {
+      throw new Error(
+        [
+          `Chrome was started, but ${config.cdpUrl} did not become available.`,
+          "If an existing Chrome window is already using the same profile, close it and retry.",
+          "For first-time setup, run `npm run x:browser-post -- --login-only` and complete manual login.",
+          error instanceof Error ? error.message : String(error),
+        ].join("\n")
+      );
+    }
+  );
+  console.log(`Started Chrome for X browser posting: ${config.cdpUrl}`);
 }
 
 async function openBrowserSession(playwright, config) {
@@ -289,25 +337,7 @@ async function openBrowserSession(playwright, config) {
 }
 
 async function openLoginOnlyBrowser(config) {
-  if (!config.chromeExecutablePath) {
-    throw new Error(
-      "Set X_BROWSER_POST_CHROME_EXECUTABLE_PATH for --login-only so normal Chrome can be launched directly"
-    );
-  }
-
-  const child = spawn(
-    config.chromeExecutablePath,
-    [
-      `--user-data-dir=${config.userDataDir}`,
-      `--remote-debugging-port=${config.remoteDebuggingPort}`,
-      "https://x.com/login",
-    ],
-    {
-      detached: true,
-      stdio: "ignore",
-    }
-  );
-  child.unref();
+  await launchCdpChrome(config, "https://x.com/login");
 
   console.log("");
   console.log("Normal Chrome login-only mode is open.");
@@ -315,8 +345,104 @@ async function openLoginOnlyBrowser(config) {
   console.log(`Profile: ${config.userDataDir}`);
   console.log(`CDP: ${config.cdpUrl}`);
   console.log("Log in to X manually in the opened Chrome window.");
-  console.log("Keep that Chrome window open while running npm run x:browser-post.");
+  console.log("After that, keep this Chrome open or let --execute auto-start it next time.");
   console.log("");
+}
+
+async function launchCdpChrome(config, url) {
+  if (!config.chromeExecutablePath) {
+    throw new Error(
+      "Set X_BROWSER_POST_CHROME_EXECUTABLE_PATH so normal Chrome can be launched directly"
+    );
+  }
+  if (!config.userDataDir) {
+    throw new Error(
+      "Set X_BROWSER_POST_USER_DATA_DIR so the login session can be saved in a dedicated Chrome profile"
+    );
+  }
+
+  await fs.access(config.chromeExecutablePath).catch(() => {
+    throw new Error(
+      `Chrome executable was not found: ${config.chromeExecutablePath}`
+    );
+  });
+  await fs.mkdir(config.userDataDir, { recursive: true });
+
+  const child = spawn(
+    config.chromeExecutablePath,
+    [
+      `--user-data-dir=${config.userDataDir}`,
+      `--remote-debugging-port=${config.remoteDebuggingPort}`,
+      url,
+    ],
+    {
+      detached: true,
+      stdio: "ignore",
+    }
+  );
+  child.on("error", () => {});
+  child.unref();
+}
+
+async function isCdpAvailable(cdpUrl) {
+  return Boolean(await fetchCdpJson(cdpUrl, "/json/version", 1000));
+}
+
+async function waitForCdpAvailable(cdpUrl, timeoutMs) {
+  const startedAt = Date.now();
+  while (Date.now() - startedAt < timeoutMs) {
+    if (await isCdpAvailable(cdpUrl)) {
+      return;
+    }
+    await wait(500);
+  }
+  throw new Error(`Timed out after ${timeoutMs}ms waiting for Chrome CDP`);
+}
+
+async function closeStaleComposeTabs(cdpUrl) {
+  const targets = await fetchCdpJson(cdpUrl, "/json/list", 2000);
+  if (!Array.isArray(targets)) {
+    return 0;
+  }
+
+  const composeTargets = targets.filter(
+    (target) =>
+      target?.type === "page" &&
+      /^https:\/\/(x|twitter)\.com\/compose\/post(?:[?#].*)?$/.test(
+        target.url ?? ""
+      )
+  );
+
+  for (const target of composeTargets) {
+    await fetchCdpJson(
+      cdpUrl,
+      `/json/close/${encodeURIComponent(target.id)}`,
+      1000
+    );
+  }
+  return composeTargets.length;
+}
+
+async function fetchCdpJson(cdpUrl, pathname, timeoutMs) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(`${cdpUrl.replace(/\/+$/, "")}${pathname}`, {
+      signal: controller.signal,
+    });
+    if (!response.ok) {
+      return null;
+    }
+    return response.json();
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+function wait(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 async function saveScreenshot(page, config, label) {

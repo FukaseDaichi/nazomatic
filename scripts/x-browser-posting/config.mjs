@@ -11,6 +11,7 @@ export const DEFAULT_MAX_PER_RUN = 1;
 export const DEFAULT_CHROME_EXECUTABLE_PATH =
   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 export const DEFAULT_REMOTE_DEBUGGING_PORT = 9222;
+export const DEFAULT_CHROME_STARTUP_TIMEOUT_MS = 20000;
 export const MIN_COOLDOWN_MINUTES = 30;
 export const MAX_DAILY_LIMIT = 8;
 export const MAX_PER_RUN = 1;
@@ -34,8 +35,16 @@ export function loadBrowserPostConfig(argv, cwd = process.cwd()) {
     env.X_BROWSER_POST_ALLOW_UNATTENDED,
     false
   );
-  const confirmationMode =
-    !requireConfirmation && allowUnattended ? "unattended" : "interactive";
+  const autoExecuteAllowed = readBoolean(
+    env.X_BROWSER_POST_AUTO_EXECUTE_ALLOWED,
+    false
+  );
+  const confirmationMode = resolveConfirmationMode({
+    value: args.confirmationMode ?? env.X_BROWSER_POST_CONFIRMATION_MODE ?? "",
+    requireConfirmation,
+    allowUnattended,
+    autoExecuteAllowed,
+  });
 
   const accountHandle = normalizeHandle(
     args.accountHandle ?? env.X_BROWSER_POST_ACCOUNT_HANDLE ?? ""
@@ -76,6 +85,10 @@ export function loadBrowserPostConfig(argv, cwd = process.cwd()) {
   const remoteDebuggingPort = readInteger(
     args.remoteDebuggingPort ?? env.X_BROWSER_POST_REMOTE_DEBUGGING_PORT,
     DEFAULT_REMOTE_DEBUGGING_PORT
+  );
+  const chromeStartupTimeoutMs = readInteger(
+    args.chromeStartupTimeoutMs ?? env.X_BROWSER_POST_CHROME_STARTUP_TIMEOUT_MS,
+    DEFAULT_CHROME_STARTUP_TIMEOUT_MS
   );
 
   assertLimits({ cooldownMinutes, dailyLimit, maxPerRun });
@@ -135,6 +148,15 @@ export function loadBrowserPostConfig(argv, cwd = process.cwd()) {
       `http://127.0.0.1:${remoteDebuggingPort}`
     ),
     remoteDebuggingPort,
+    chromeStartupTimeoutMs,
+    autoStartChrome: readBoolean(
+      args.autoStartChrome ?? env.X_BROWSER_POST_AUTO_START_CHROME,
+      true
+    ),
+    cleanupComposeTabs: readBoolean(
+      args.cleanupComposeTabs ?? env.X_BROWSER_POST_CLEANUP_COMPOSE_TABS,
+      true
+    ),
     headless: readBoolean(args.headless ?? env.X_BROWSER_POST_HEADLESS, false),
     keepOpen: readBoolean(
       args.keepOpen ?? env.X_BROWSER_POST_KEEP_OPEN,
@@ -158,6 +180,14 @@ function parseArgs(argv) {
       args.headless = true;
     } else if (arg === "--keep-open") {
       args.keepOpen = true;
+    } else if (arg === "--auto-start-chrome") {
+      args.autoStartChrome = true;
+    } else if (arg === "--no-auto-start-chrome") {
+      args.autoStartChrome = false;
+    } else if (arg === "--cleanup-compose-tabs") {
+      args.cleanupComposeTabs = true;
+    } else if (arg === "--no-cleanup-compose-tabs") {
+      args.cleanupComposeTabs = false;
     } else if (arg === "--login-only") {
       args.loginOnly = true;
     } else if (arg.startsWith("--")) {
@@ -248,6 +278,35 @@ function readInteger(value, fallback) {
   }
   const parsed = Number.parseInt(value, 10);
   return Number.isFinite(parsed) ? parsed : fallback;
+}
+
+function resolveConfirmationMode({
+  value,
+  requireConfirmation,
+  allowUnattended,
+  autoExecuteAllowed,
+}) {
+  const normalized = String(value).trim().toLowerCase();
+  if (normalized) {
+    if (["interactive", "manual"].includes(normalized)) {
+      return "interactive";
+    }
+    if (["auto", "unattended"].includes(normalized)) {
+      if (!autoExecuteAllowed) {
+        throw new Error(
+          "X_BROWSER_POST_CONFIRMATION_MODE=auto requires X_BROWSER_POST_AUTO_EXECUTE_ALLOWED=true"
+        );
+      }
+      return "unattended";
+    }
+    throw new Error(
+      "X_BROWSER_POST_CONFIRMATION_MODE must be interactive or auto"
+    );
+  }
+
+  return !requireConfirmation && allowUnattended
+    ? "unattended"
+    : "interactive";
 }
 
 function assertLimits({ cooldownMinutes, dailyLimit, maxPerRun }) {

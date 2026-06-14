@@ -70,8 +70,12 @@ GitHub Actions では `REALTIME_API_TOKEN` secret として同じ値を渡しま
 | `X_BROWSER_POST_CHROME_EXECUTABLE_PATH` | 通常 Chrome の実行ファイル path。`--login-only` ではこれを直接起動する |
 | `X_BROWSER_POST_CDP_URL` | 起動済み通常 Chrome へ接続する DevTools URL |
 | `X_BROWSER_POST_REMOTE_DEBUGGING_PORT` | `--login-only` で通常 Chrome を起動するときの remote debugging port |
+| `X_BROWSER_POST_AUTO_START_CHROME` | CDP 接続できないときに通常 Chrome を自動起動するか。既定 `true` |
+| `X_BROWSER_POST_CLEANUP_COMPOSE_TABS` | 実行開始時に古い X 投稿作成タブを閉じるか。既定 `true` |
 | `X_BROWSER_POST_REQUIRE_CONFIRMATION` | 投稿前確認を要求するか。既定 `true` |
-| `X_BROWSER_POST_ALLOW_UNATTENDED` | 確認なし投稿 mode を許可するか。既定 `false` |
+| `X_BROWSER_POST_ALLOW_UNATTENDED` | 互換用の確認なし投稿許可。既定 `false` |
+| `X_BROWSER_POST_CONFIRMATION_MODE` | `interactive` または `auto`。既定 `interactive` |
+| `X_BROWSER_POST_AUTO_EXECUTE_ALLOWED` | `CONFIRMATION_MODE=auto` を有効にする二重ロック |
 | `X_BROWSER_POST_MAX_PER_RUN` | 1 実行あたりの投稿上限 |
 | `X_BROWSER_POST_COOLDOWN_MINUTES` | cooldown 分数 |
 | `X_BROWSER_POST_DAILY_LIMIT` | 1 日投稿上限 |
@@ -82,11 +86,12 @@ GitHub Actions では `REALTIME_API_TOKEN` secret として同じ値を渡しま
 cp .env.x-browser-posting.example .env.x-browser-posting.local
 npm run x:browser-post -- --login-only
 npm run x:browser-post
+npm run x:browser-post -- --execute
 ```
 
-`--login-only` は候補取得や内部 API 呼び出しをせず、`X_BROWSER_POST_CHROME_EXECUTABLE_PATH` の通常 Chrome を直接起動し、`X_BROWSER_POST_USER_DATA_DIR` の Chrome プロファイルで `https://x.com/login` を開きます。Chrome for Testing を避けたい初回ログイン用です。通常投稿時は、この Chrome を開いたまま `X_BROWSER_POST_CDP_URL` へ接続します。
+`--login-only` は候補取得や内部 API 呼び出しをせず、`X_BROWSER_POST_CHROME_EXECUTABLE_PATH` の通常 Chrome を直接起動し、`X_BROWSER_POST_USER_DATA_DIR` の Chrome プロファイルで `https://x.com/login` を開きます。Chrome for Testing を避けたい初回ログイン用です。初回ログイン後は、通常投稿時に `X_BROWSER_POST_CDP_URL` へ接続し、接続できなければ `X_BROWSER_POST_AUTO_START_CHROME=true` で同じ専用 profile の通常 Chrome を自動起動します。
 
-実投稿時は `--execute` を付けます。人間確認を省略するには `.env.x-browser-posting.local` で `X_BROWSER_POST_ALLOW_UNATTENDED=true` と `X_BROWSER_POST_REQUIRE_CONFIRMATION=false` を両方指定します。
+実投稿時は `--execute` を付けます。人間確認を省略するには `.env.x-browser-posting.local` で `X_BROWSER_POST_CONFIRMATION_MODE=auto` と `X_BROWSER_POST_AUTO_EXECUTE_ALLOWED=true` を両方指定します。
 
 #### 現行 X API 再投稿
 

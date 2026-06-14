@@ -213,7 +213,7 @@ Provider 方針:
 - 文字数上限を超えていないか。
 - 追加認証、警告、制限表示が出ていないか。
 
-実投稿には常に `--execute` を要求します。人間確認を省略する場合は、Git 管理外 `.env` で `X_BROWSER_POST_ALLOW_UNATTENDED=true` と `X_BROWSER_POST_REQUIRE_CONFIRMATION=false` を両方指定したときだけ許可します。
+実投稿には常に `--execute` を要求します。人間確認を省略する場合は、Git 管理外 `.env` で `X_BROWSER_POST_CONFIRMATION_MODE=auto` と `X_BROWSER_POST_AUTO_EXECUTE_ALLOWED=true` を両方指定したときだけ許可します。既存互換として、`X_BROWSER_POST_ALLOW_UNATTENDED=true` と `X_BROWSER_POST_REQUIRE_CONFIRMATION=false` の組み合わせも `unattended` として扱います。
 
 確認モード:
 
@@ -237,7 +237,7 @@ npm run x:browser-post
 npm run x:browser-post -- --execute
 ```
 
-`--login-only` は初回ログイン用で、候補取得や内部 API 呼び出しをせず、`X_BROWSER_POST_CHROME_EXECUTABLE_PATH` の通常 Chrome を直接起動して `https://x.com/login` を開きます。ログイン状態を保存するため、`X_BROWSER_POST_USER_DATA_DIR` を使います。通常投稿時はこの Chrome を開いたまま `X_BROWSER_POST_CDP_URL` へ接続します。`--execute` を付けない通常実行は dry-run です。X 投稿ボタンは押さず、DB の `posted` 更新もしません。
+`--login-only` は初回ログイン用で、候補取得や内部 API 呼び出しをせず、`X_BROWSER_POST_CHROME_EXECUTABLE_PATH` の通常 Chrome を直接起動して `https://x.com/login` を開きます。ログイン状態を保存するため、`X_BROWSER_POST_USER_DATA_DIR` を使います。通常投稿時は `X_BROWSER_POST_CDP_URL` へ接続し、接続できない場合は `X_BROWSER_POST_AUTO_START_CHROME=true` により同じ専用 profile の通常 Chrome を自動起動してから接続します。`--execute` を付けない通常実行は dry-run です。X 投稿ボタンは押さず、DB の `posted` 更新もしません。
 
 設定例:
 
@@ -249,8 +249,13 @@ X_BROWSER_POST_BROWSER_CHANNEL=chrome
 X_BROWSER_POST_CHROME_EXECUTABLE_PATH=/Applications/Google Chrome.app/Contents/MacOS/Google Chrome
 X_BROWSER_POST_CDP_URL=http://127.0.0.1:9222
 X_BROWSER_POST_REMOTE_DEBUGGING_PORT=9222
+X_BROWSER_POST_AUTO_START_CHROME=true
+X_BROWSER_POST_CHROME_STARTUP_TIMEOUT_MS=20000
+X_BROWSER_POST_CLEANUP_COMPOSE_TABS=true
 X_BROWSER_POST_REQUIRE_CONFIRMATION=true
 X_BROWSER_POST_ALLOW_UNATTENDED=false
+X_BROWSER_POST_CONFIRMATION_MODE=interactive
+X_BROWSER_POST_AUTO_EXECUTE_ALLOWED=false
 X_BROWSER_POST_MAX_PER_RUN=1
 X_BROWSER_POST_COOLDOWN_MINUTES=120
 X_BROWSER_POST_DAILY_LIMIT=6
@@ -267,15 +272,20 @@ X_BROWSER_POST_DAILY_LIMIT=6
 | `X_BROWSER_POST_CHROME_EXECUTABLE_PATH` | 任意 | 通常 Chrome の実行ファイル path。`--login-only` ではこれを直接起動する |
 | `X_BROWSER_POST_CDP_URL` | 任意 | 起動済み通常 Chrome へ接続する DevTools URL |
 | `X_BROWSER_POST_REMOTE_DEBUGGING_PORT` | 任意 | `--login-only` で通常 Chrome を起動するときの remote debugging port |
+| `X_BROWSER_POST_AUTO_START_CHROME` | 任意 | `true` なら CDP 接続できないときに通常 Chrome を自動起動する。既定 `true` |
+| `X_BROWSER_POST_CHROME_STARTUP_TIMEOUT_MS` | 任意 | Chrome 自動起動後に CDP 接続を待つ最大時間。既定 `20000` |
+| `X_BROWSER_POST_CLEANUP_COMPOSE_TABS` | 任意 | `true` なら実行開始時に古い X 投稿作成タブを閉じる。既定 `true` |
 | `X_BROWSER_POST_REQUIRE_CONFIRMATION` | 任意 | `true` なら投稿前に人間確認を要求する。既定 `true` |
-| `X_BROWSER_POST_ALLOW_UNATTENDED` | 任意 | `true` なら確認省略 mode を許可する。既定 `false` |
+| `X_BROWSER_POST_ALLOW_UNATTENDED` | 任意 | 互換用。`true` なら確認省略 mode を許可する。既定 `false` |
+| `X_BROWSER_POST_CONFIRMATION_MODE` | 任意 | `interactive` または `auto`。既定 `interactive` |
+| `X_BROWSER_POST_AUTO_EXECUTE_ALLOWED` | 任意 | `CONFIRMATION_MODE=auto` を有効にする二重ロック。既定 `false` |
 | `X_BROWSER_POST_MAX_PER_RUN` | 任意 | 1 実行あたりの上限。既定 1、hard limit 1 |
 | `X_BROWSER_POST_COOLDOWN_MINUTES` | 任意 | cooldown 分数。既定 120、hard limit 30 分以上 |
 | `X_BROWSER_POST_DAILY_LIMIT` | 任意 | 1 日上限。既定 6、hard limit 8 以下 |
 
 `X_BROWSER_POST_ACCOUNT_HANDLE` は認証情報ではありませんが、誤爆防止の重要な設定です。Playwright が X を開いたあと、ページ上のログイン中 handle とこの値が一致しなければ停止します。アカウント切り替え UI を自動操作して一致させることはしません。
 
-`X_BROWSER_POST_ALLOW_UNATTENDED=true` だけでは確認省略にしません。`X_BROWSER_POST_REQUIRE_CONFIRMATION=false` も同時に必要です。どちらか片方だけの場合は安全側に倒して `interactive` とします。
+`X_BROWSER_POST_CONFIRMATION_MODE=auto` だけでは確認省略にしません。`X_BROWSER_POST_AUTO_EXECUTE_ALLOWED=true` も同時に必要です。どちらか片方だけの場合は安全側に倒して停止または `interactive` とします。既存互換の `X_BROWSER_POST_ALLOW_UNATTENDED=true` も、単独では確認省略になりません。
 
 ## DB 更新設計
 
@@ -360,9 +370,9 @@ storage state 方式:
 
 browser profile 方式:
 
-1. `local/x-browser-posting/user-data-dir/` を作る。
-2. 初回だけ headful で起動し、ユーザーが手動ログインする。
-3. `.env.x-browser-posting.local` の `X_BROWSER_POST_USER_DATA_DIR` に path を定義する。
+1. `.env.x-browser-posting.local` の `X_BROWSER_POST_USER_DATA_DIR` に専用 profile path を定義する。
+2. 初回だけ `npm run x:browser-post -- --login-only` を実行し、通常 Chrome 上でユーザーが手動ログインする。
+3. 以後は `npm run x:browser-post -- --execute` が同じ profile の通常 Chrome を自動起動し、CDP 接続して投稿操作を行う。
 
 注意:
 
@@ -370,6 +380,8 @@ browser profile 方式:
 - `.env.x-browser-posting.local` も Git 管理外として扱う。
 - storage state は Cookie / localStorage を含むため、パスワードと同じ強度で扱う。
 - 共有端末や CI では使わない。
+- 通常使いの Chrome profile ではなく、`local/x-browser-posting/chrome-profile` のような投稿専用 profile を使う。
+- `X_BROWSER_POST_CLEANUP_COMPOSE_TABS=true` は専用 profile 内の古い投稿作成タブを閉じる前提のため、手作業の下書きと混在させない。
 
 ## 失敗時の扱い
 
@@ -406,6 +418,8 @@ browser profile 方式:
 - 完了。`interactive` と `unattended` の確認モードを実装し、どちらも対象アカウント一致を必須にする。
 - 完了。投稿成功検出後に confirm API で `posted` 更新する。
 - 完了。cooldown / daily limit を Firestore transaction で強制する。
+- 完了。CDP 接続できない場合に通常 Chrome を自動起動し、接続待機してから候補予約へ進む。
+- 完了。実行開始時に古い X 投稿作成タブを閉じ、入力対象のズレを抑える。
 
 ### Phase 4: コメント品質改善
 
