@@ -2,12 +2,9 @@ import crypto from "crypto";
 
 import { NextResponse } from "next/server";
 
-import { firestore } from "@/server/firebase/admin";
-import { isRealtimeEventVisible } from "@/server/realtime/syndication/visibility";
+import { pickRealtimeEventCandidate } from "@/server/x-browser-posting/candidate";
 import type { RealtimeApiErrorResponse, RateLimitInfo } from "@/types/realtime";
 
-const CAPTURE_WINDOW_MS = 24 * 60 * 60 * 1000; // 24h
-const MAX_CANDIDATES = 50;
 const X_API_BASE_URL = "https://api.twitter.com/2";
 
 export const runtime = "nodejs";
@@ -47,7 +44,7 @@ export async function POST(request: Request) {
     const body = await parseBody(request);
     const params = validateBody(body);
 
-    const candidate = await pickCandidate(params.hashtag);
+    const candidate = await pickRealtimeEventCandidate(params.hashtag);
 
     if (!candidate) {
       return new NextResponse(null, {
@@ -89,49 +86,6 @@ export async function POST(request: Request) {
   } catch (error) {
     return handleError(error);
   }
-}
-
-async function pickCandidate(hashtag: string) {
-  const variants = buildHashtagVariants(hashtag);
-  const cutoff = new Date(Date.now() - CAPTURE_WINDOW_MS);
-
-  for (const variant of variants) {
-    const snapshot = await firestore
-      .collection("realtimeEvents")
-      .where("capturedAt", ">=", cutoff)
-      .where("lastReviewedAt", "==", null)
-      .where("hashtags", "array-contains", variant)
-      .orderBy("capturedAt", "desc")
-      .limit(MAX_CANDIDATES)
-      .get();
-
-    const doc = snapshot.docs.find((entry) =>
-      isRealtimeEventVisible(entry.data())
-    );
-    if (doc) {
-      return doc;
-    }
-  }
-
-  return null;
-}
-
-function buildHashtagVariants(rawHashtag: string) {
-  const trimmed = rawHashtag.trim();
-  if (!trimmed) {
-    return [] as string[];
-  }
-
-  const withHash = trimmed.startsWith("#") ? trimmed : `#${trimmed}`;
-  const withoutHash = withHash.replace(/^#/, "");
-
-  const variants = new Map<string, true>();
-  variants.set(withHash, true);
-  if (withoutHash && withoutHash !== withHash) {
-    variants.set(withoutHash, true);
-  }
-
-  return Array.from(variants.keys());
 }
 
 function mapDocToResponse(

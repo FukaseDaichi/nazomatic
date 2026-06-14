@@ -25,6 +25,7 @@
 | `docs/public-tools/design.md` | しりとり、サイコロ、アルファベット、都道府県、方眼紙、辞書検索、星座検索 |
 | `docs/blank25/design.md` | BLANK25 本体、作問モード、パーティ得点表示、Editor、外部 storage 連携 |
 | `docs/calendar-realtime/design.md` | 謎チケカレンダー、Realtime 取得、Firestore、内部 API、GitHub Actions、X 再投稿 |
+| `docs/x-browser-posting/design.md` | X API を使わないローカルブラウザ投稿自動化の要件、実装、運用リスク |
 | `docs/shift-search/design.md` | シフト検索、辞書検索連携、レポート成果物、表示用生成 assets |
 | `docs/character-pick-search/design.md` | 文字拾い検索の仕様、登録語、文字幅指定、検索判定 |
 | `docs/ai-coding-rules.md` | AI 実装時の必須ルール |

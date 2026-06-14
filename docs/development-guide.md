@@ -21,6 +21,7 @@ npm run dev
 | `npm run build` | production build |
 | `npm run start` | production server を起動 |
 | `npm run lint` | ESLint |
+| `npm run x:browser-post` | X API を使わないローカルブラウザ投稿 CLI |
 | `npm run shift:report:meta` | Shift Search レポート元成果物から manifest / index を生成 |
 | `npm run shift:report:view-assets` | Shift Search レポート表示用 JSON を `src/generated/shift-search` に生成 |
 
@@ -49,11 +50,50 @@ npm run dev
 
 | 変数 | 用途 |
 |---|---|
-| `REALTIME_INTERNAL_API_TOKEN` | `/api/internal/realtime/*` と `/api/internal/x/repost/events` の Bearer 認証 |
+| `REALTIME_INTERNAL_API_TOKEN` | `/api/internal/realtime/*`、`/api/internal/x/repost/events`、`/api/internal/x/browser-post/*` の Bearer 認証 |
 
 GitHub Actions では `REALTIME_API_TOKEN` secret として同じ値を渡します。
 
 ### X 再投稿
+
+現行の `x-repost-events.yml` は X API を使う実装です。X API を使わずローカルのログイン済みブラウザセッションで投稿する実装は `npm run x:browser-post` から実行し、詳細は `docs/x-browser-posting/design.md` に置きます。
+
+#### ローカルブラウザ投稿案
+
+ローカルブラウザ投稿では、X の認証情報ではなく、投稿を許可するアカウント handle や確認モードだけを Git 管理外の `.env.x-browser-posting.local` に置きます。`storage state` や `user data dir` は認証済みセッション相当の秘密情報として扱います。
+
+| 変数 | 用途 |
+|---|---|
+| `X_BROWSER_POST_ACCOUNT_HANDLE` | 投稿を許可する X handle。ログイン中アカウント照合に使う |
+| `X_BROWSER_POST_STORAGE_STATE` | Playwright storage state path |
+| `X_BROWSER_POST_USER_DATA_DIR` | Playwright persistent context の user data dir |
+| `X_BROWSER_POST_CHROME_EXECUTABLE_PATH` | 通常 Chrome の実行ファイル path。`--login-only` ではこれを直接起動する |
+| `X_BROWSER_POST_CDP_URL` | 起動済み通常 Chrome へ接続する DevTools URL |
+| `X_BROWSER_POST_REMOTE_DEBUGGING_PORT` | `--login-only` で通常 Chrome を起動するときの remote debugging port |
+| `X_BROWSER_POST_AUTO_START_CHROME` | CDP 接続できないときに通常 Chrome を自動起動するか。既定 `true` |
+| `X_BROWSER_POST_CLEANUP_COMPOSE_TABS` | 実行開始時に古い X 投稿作成タブを閉じるか。既定 `true` |
+| `X_BROWSER_POST_REQUIRE_CONFIRMATION` | 投稿前確認を要求するか。既定 `true` |
+| `X_BROWSER_POST_ALLOW_UNATTENDED` | 互換用の確認なし投稿許可。既定 `false` |
+| `X_BROWSER_POST_CONFIRMATION_MODE` | `interactive` または `auto`。既定 `interactive` |
+| `X_BROWSER_POST_AUTO_EXECUTE_ALLOWED` | `CONFIRMATION_MODE=auto` を有効にする二重ロック |
+| `X_BROWSER_POST_MAX_PER_RUN` | 1 実行あたりの投稿上限 |
+| `X_BROWSER_POST_COOLDOWN_MINUTES` | cooldown 分数 |
+| `X_BROWSER_POST_DAILY_LIMIT` | 1 日投稿上限 |
+
+設定の雛形は `.env.x-browser-posting.example` です。dry-run は投稿ボタン押下と DB 更新をしません。
+
+```bash
+cp .env.x-browser-posting.example .env.x-browser-posting.local
+npm run x:browser-post -- --login-only
+npm run x:browser-post
+npm run x:browser-post -- --execute
+```
+
+`--login-only` は候補取得や内部 API 呼び出しをせず、`X_BROWSER_POST_CHROME_EXECUTABLE_PATH` の通常 Chrome を直接起動し、`X_BROWSER_POST_USER_DATA_DIR` の Chrome プロファイルで `https://x.com/login` を開きます。Chrome for Testing を避けたい初回ログイン用です。初回ログイン後は、通常投稿時に `X_BROWSER_POST_CDP_URL` へ接続し、接続できなければ `X_BROWSER_POST_AUTO_START_CHROME=true` で同じ専用 profile の通常 Chrome を自動起動します。
+
+実投稿時は `--execute` を付けます。人間確認を省略するには `.env.x-browser-posting.local` で `X_BROWSER_POST_CONFIRMATION_MODE=auto` と `X_BROWSER_POST_AUTO_EXECUTE_ALLOWED=true` を両方指定します。
+
+#### 現行 X API 再投稿
 
 | 変数 | 用途 |
 |---|---|
