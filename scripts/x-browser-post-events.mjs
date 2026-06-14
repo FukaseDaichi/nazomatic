@@ -2,10 +2,12 @@
 
 import fs from "fs/promises";
 import path from "path";
+import { spawn } from "child_process";
 import { createInterface } from "readline/promises";
 import { stdin as input, stdout as output } from "process";
 
 import { loadBrowserPostConfig } from "./x-browser-posting/config.mjs";
+import { openCdpChromePage } from "./x-browser-posting/cdpChromePage.mjs";
 import {
   SELECTOR_PROFILE_VERSION,
   assertSubmitReady,
@@ -17,6 +19,10 @@ import {
 
 async function main() {
   const config = loadBrowserPostConfig(process.argv.slice(2));
+  if (config.loginOnly) {
+    await openLoginOnlyBrowser(config);
+    return;
+  }
   if (config.execute) {
     await assertLocalRateLimit(config);
   }
@@ -33,22 +39,18 @@ async function main() {
 
   const quoteText = config.comment || prepared.suggestedComment;
   const composedText = `${quoteText.trim()}\n\n${prepared.postURL}`;
-  const browserRuntime = await loadPlaywright();
-  const session = await openBrowserSession(browserRuntime, config);
+  const session = await openAutomationSession(config);
   let confirmed = false;
   let postSubmitted = false;
 
   try {
-    await openComposer(session.page);
-    const verifiedHandle = await verifyLoggedInAccount(
-      session.page,
+    await session.openComposer();
+    const verifiedHandle = await session.verifyLoggedInAccount(
       config.accountHandle
     );
-    await fillComposer(session.page, composedText);
-    await assertSubmitReady(session.page);
-    const screenshotPath = await saveScreenshot(
-      session.page,
-      config,
+    await session.fillComposer(composedText);
+    await session.assertSubmitReady();
+    const screenshotPath = await session.saveScreenshot(
       config.execute ? "ready" : "dry-run"
     );
 
@@ -82,7 +84,7 @@ async function main() {
       }
     }
 
-    const postedPostURL = await submitPost(session.page, config.accountHandle);
+    const postedPostURL = await session.submitPost(config.accountHandle);
     postSubmitted = true;
     await confirmCandidate(config, prepared, {
       status: "posted",
@@ -96,7 +98,7 @@ async function main() {
       console.log(`Posted URL: ${postedPostURL}`);
     }
   } catch (error) {
-    await saveScreenshot(session.page, config, "error").catch(() => null);
+    await session.saveScreenshot("error").catch(() => null);
     if (config.execute && !config.dryRun && !confirmed && !postSubmitted) {
       await confirmCandidate(config, prepared, {
         status: "failed",
@@ -202,6 +204,49 @@ async function loadPlaywright() {
   }
 }
 
+async function openAutomationSession(config) {
+  if (config.cdpUrl) {
+    const page = await openCdpChromePage(config.cdpUrl).catch((error) => {
+      throw new Error(
+        [
+          `Could not connect to Chrome at ${config.cdpUrl}.`,
+          "Start Chrome with `npm run x:browser-post -- --login-only` and keep it open while running this command.",
+          "If an older Chrome window is already using the profile, close it first.",
+          error instanceof Error ? error.message : String(error),
+        ].join("\n")
+      );
+    });
+    return {
+      async openComposer() {
+        await page.goto("https://x.com/compose/post");
+        await page.assertNoBlockingState();
+      },
+      verifyLoggedInAccount: (accountHandle) =>
+        page.verifyLoggedInAccount(accountHandle),
+      fillComposer: (text) => page.fillComposer(text),
+      assertSubmitReady: () => page.assertSubmitReady(),
+      submitPost: (accountHandle) => page.submitPost(accountHandle),
+      saveScreenshot: (label) => saveCdpScreenshot(page, config, label),
+      close: () => page.close(),
+    };
+  }
+
+  const browserRuntime = await loadPlaywright();
+  const session = await openBrowserSession(browserRuntime, config);
+  return {
+    async openComposer() {
+      await openComposer(session.page);
+    },
+    verifyLoggedInAccount: (accountHandle) =>
+      verifyLoggedInAccount(session.page, accountHandle),
+    fillComposer: (text) => fillComposer(session.page, text),
+    assertSubmitReady: () => assertSubmitReady(session.page),
+    submitPost: (accountHandle) => submitPost(session.page, accountHandle),
+    saveScreenshot: (label) => saveScreenshot(session.page, config, label),
+    close: () => session.close(),
+  };
+}
+
 async function openBrowserSession(playwright, config) {
   const launchOptions = {
     headless: config.headless,
@@ -211,6 +256,10 @@ async function openBrowserSession(playwright, config) {
   };
   if (config.browserChannel) {
     launchOptions.channel = config.browserChannel;
+  }
+  if (config.chromeExecutablePath) {
+    delete launchOptions.channel;
+    launchOptions.executablePath = config.chromeExecutablePath;
   }
 
   if (config.userDataDir) {
@@ -239,12 +288,52 @@ async function openBrowserSession(playwright, config) {
   };
 }
 
+async function openLoginOnlyBrowser(config) {
+  if (!config.chromeExecutablePath) {
+    throw new Error(
+      "Set X_BROWSER_POST_CHROME_EXECUTABLE_PATH for --login-only so normal Chrome can be launched directly"
+    );
+  }
+
+  const child = spawn(
+    config.chromeExecutablePath,
+    [
+      `--user-data-dir=${config.userDataDir}`,
+      `--remote-debugging-port=${config.remoteDebuggingPort}`,
+      "https://x.com/login",
+    ],
+    {
+      detached: true,
+      stdio: "ignore",
+    }
+  );
+  child.unref();
+
+  console.log("");
+  console.log("Normal Chrome login-only mode is open.");
+  console.log(`Chrome: ${config.chromeExecutablePath}`);
+  console.log(`Profile: ${config.userDataDir}`);
+  console.log(`CDP: ${config.cdpUrl}`);
+  console.log("Log in to X manually in the opened Chrome window.");
+  console.log("Keep that Chrome window open while running npm run x:browser-post.");
+  console.log("");
+}
+
 async function saveScreenshot(page, config, label) {
   const dir = path.join(config.cwd, "local/x-browser-posting/screenshots");
   await fs.mkdir(dir, { recursive: true });
   const stamp = new Date().toISOString().replace(/[:.]/g, "-");
   const filePath = path.join(dir, `${stamp}-${label}.png`);
   await page.screenshot({ path: filePath, fullPage: true });
+  return filePath;
+}
+
+async function saveCdpScreenshot(page, config, label) {
+  const dir = path.join(config.cwd, "local/x-browser-posting/screenshots");
+  await fs.mkdir(dir, { recursive: true });
+  const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+  const filePath = path.join(dir, `${stamp}-${label}.png`);
+  await page.screenshot(filePath);
   return filePath;
 }
 
@@ -405,7 +494,11 @@ function safeJsonParse(text) {
   }
 }
 
-main().catch((error) => {
-  console.error(error instanceof Error ? error.message : error);
-  process.exitCode = 1;
-});
+main()
+  .then(() => {
+    process.exit(0);
+  })
+  .catch((error) => {
+    console.error(error instanceof Error ? error.message : error);
+    process.exit(1);
+  });

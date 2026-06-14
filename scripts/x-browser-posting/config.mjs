@@ -8,12 +8,16 @@ export const DEFAULT_API_BASE_URL = "http://localhost:3000";
 export const DEFAULT_COOLDOWN_MINUTES = 120;
 export const DEFAULT_DAILY_LIMIT = 6;
 export const DEFAULT_MAX_PER_RUN = 1;
+export const DEFAULT_CHROME_EXECUTABLE_PATH =
+  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+export const DEFAULT_REMOTE_DEBUGGING_PORT = 9222;
 export const MIN_COOLDOWN_MINUTES = 30;
 export const MAX_DAILY_LIMIT = 8;
 export const MAX_PER_RUN = 1;
 
 export function loadBrowserPostConfig(argv, cwd = process.cwd()) {
   const args = parseArgs(argv);
+  const loginOnly = args.loginOnly === true;
   const envFile = args.envFile ?? DEFAULT_ENV_FILE;
   const env = {
     ...readEnvFile(path.join(cwd, ".env.local")),
@@ -36,7 +40,7 @@ export function loadBrowserPostConfig(argv, cwd = process.cwd()) {
   const accountHandle = normalizeHandle(
     args.accountHandle ?? env.X_BROWSER_POST_ACCOUNT_HANDLE ?? ""
   );
-  if (!accountHandle) {
+  if (!accountHandle && !loginOnly) {
     throw new Error(
       "X_BROWSER_POST_ACCOUNT_HANDLE is required in .env.x-browser-posting.local"
     );
@@ -51,6 +55,11 @@ export function loadBrowserPostConfig(argv, cwd = process.cwd()) {
       "Set X_BROWSER_POST_STORAGE_STATE or X_BROWSER_POST_USER_DATA_DIR"
     );
   }
+  if (loginOnly && !userDataDir) {
+    throw new Error(
+      "--login-only requires X_BROWSER_POST_USER_DATA_DIR so the login session can be saved"
+    );
+  }
 
   const cooldownMinutes = readInteger(
     args.cooldownMinutes ?? env.X_BROWSER_POST_COOLDOWN_MINUTES,
@@ -63,6 +72,10 @@ export function loadBrowserPostConfig(argv, cwd = process.cwd()) {
   const maxPerRun = readInteger(
     args.maxPerRun ?? env.X_BROWSER_POST_MAX_PER_RUN,
     DEFAULT_MAX_PER_RUN
+  );
+  const remoteDebuggingPort = readInteger(
+    args.remoteDebuggingPort ?? env.X_BROWSER_POST_REMOTE_DEBUGGING_PORT,
+    DEFAULT_REMOTE_DEBUGGING_PORT
   );
 
   assertLimits({ cooldownMinutes, dailyLimit, maxPerRun });
@@ -84,7 +97,7 @@ export function loadBrowserPostConfig(argv, cwd = process.cwd()) {
     ""
   );
 
-  if (!internalToken) {
+  if (!internalToken && !loginOnly) {
     throw new Error(
       "Set REALTIME_INTERNAL_API_TOKEN or X_BROWSER_POST_INTERNAL_TOKEN"
     );
@@ -95,6 +108,7 @@ export function loadBrowserPostConfig(argv, cwd = process.cwd()) {
     envFile,
     execute,
     dryRun: !execute,
+    loginOnly,
     confirmationMode,
     accountHandle,
     hashtag: args.hashtag ?? env.X_BROWSER_POST_HASHTAG ?? DEFAULT_HASHTAG,
@@ -108,6 +122,19 @@ export function loadBrowserPostConfig(argv, cwd = process.cwd()) {
     maxPerRun,
     browserChannel:
       args.browserChannel ?? env.X_BROWSER_POST_BROWSER_CHANNEL ?? "",
+    chromeExecutablePath: firstNonEmpty(
+      args.chromeExecutablePath,
+      env.X_BROWSER_POST_CHROME_EXECUTABLE_PATH,
+      fs.existsSync(DEFAULT_CHROME_EXECUTABLE_PATH)
+        ? DEFAULT_CHROME_EXECUTABLE_PATH
+        : ""
+    ),
+    cdpUrl: firstNonEmpty(
+      args.cdpUrl,
+      env.X_BROWSER_POST_CDP_URL,
+      `http://127.0.0.1:${remoteDebuggingPort}`
+    ),
+    remoteDebuggingPort,
     headless: readBoolean(args.headless ?? env.X_BROWSER_POST_HEADLESS, false),
     keepOpen: readBoolean(
       args.keepOpen ?? env.X_BROWSER_POST_KEEP_OPEN,
@@ -131,6 +158,8 @@ function parseArgs(argv) {
       args.headless = true;
     } else if (arg === "--keep-open") {
       args.keepOpen = true;
+    } else if (arg === "--login-only") {
+      args.loginOnly = true;
     } else if (arg.startsWith("--")) {
       const key = toCamelCase(arg.slice(2));
       const next = argv[index + 1];

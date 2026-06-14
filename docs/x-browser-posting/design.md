@@ -232,18 +232,23 @@ Provider 方針:
 
 ```bash
 cp .env.x-browser-posting.example .env.x-browser-posting.local
+npm run x:browser-post -- --login-only
 npm run x:browser-post
 npm run x:browser-post -- --execute
 ```
 
-`--execute` を付けない場合は dry-run です。X 投稿ボタンは押さず、DB の `posted` 更新もしません。
+`--login-only` は初回ログイン用で、候補取得や内部 API 呼び出しをせず、`X_BROWSER_POST_CHROME_EXECUTABLE_PATH` の通常 Chrome を直接起動して `https://x.com/login` を開きます。ログイン状態を保存するため、`X_BROWSER_POST_USER_DATA_DIR` を使います。通常投稿時はこの Chrome を開いたまま `X_BROWSER_POST_CDP_URL` へ接続します。`--execute` を付けない通常実行は dry-run です。X 投稿ボタンは押さず、DB の `posted` 更新もしません。
 
 設定例:
 
 ```bash
 X_BROWSER_POST_ACCOUNT_HANDLE=nazomatic
-X_BROWSER_POST_STORAGE_STATE=local/x-browser-posting/storage-state.json
-X_BROWSER_POST_USER_DATA_DIR=
+X_BROWSER_POST_STORAGE_STATE=
+X_BROWSER_POST_USER_DATA_DIR=local/x-browser-posting/chrome-profile
+X_BROWSER_POST_BROWSER_CHANNEL=chrome
+X_BROWSER_POST_CHROME_EXECUTABLE_PATH=/Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+X_BROWSER_POST_CDP_URL=http://127.0.0.1:9222
+X_BROWSER_POST_REMOTE_DEBUGGING_PORT=9222
 X_BROWSER_POST_REQUIRE_CONFIRMATION=true
 X_BROWSER_POST_ALLOW_UNATTENDED=false
 X_BROWSER_POST_MAX_PER_RUN=1
@@ -258,6 +263,10 @@ X_BROWSER_POST_DAILY_LIMIT=6
 | `X_BROWSER_POST_ACCOUNT_HANDLE` | 必須 | 投稿を許可する X handle。`@` はあってもなくてもよい |
 | `X_BROWSER_POST_STORAGE_STATE` | 任意 | Playwright storage state path |
 | `X_BROWSER_POST_USER_DATA_DIR` | 任意 | Playwright persistent context の user data dir |
+| `X_BROWSER_POST_BROWSER_CHANNEL` | 任意 | Playwright が使う browser channel。通常 Chrome を使う場合は `chrome` |
+| `X_BROWSER_POST_CHROME_EXECUTABLE_PATH` | 任意 | 通常 Chrome の実行ファイル path。`--login-only` ではこれを直接起動する |
+| `X_BROWSER_POST_CDP_URL` | 任意 | 起動済み通常 Chrome へ接続する DevTools URL |
+| `X_BROWSER_POST_REMOTE_DEBUGGING_PORT` | 任意 | `--login-only` で通常 Chrome を起動するときの remote debugging port |
 | `X_BROWSER_POST_REQUIRE_CONFIRMATION` | 任意 | `true` なら投稿前に人間確認を要求する。既定 `true` |
 | `X_BROWSER_POST_ALLOW_UNATTENDED` | 任意 | `true` なら確認省略 mode を許可する。既定 `false` |
 | `X_BROWSER_POST_MAX_PER_RUN` | 任意 | 1 実行あたりの上限。既定 1、hard limit 1 |
