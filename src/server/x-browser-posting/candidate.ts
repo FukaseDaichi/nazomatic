@@ -557,13 +557,7 @@ function buildPrepareResponse({
   };
 }): PrepareBrowserPostResult {
   const candidate = mapDocToCandidateSummary(doc);
-  const suggestedComment = suggestBrowserPostComment({
-    postId: candidate.postId,
-    ticketTitle: candidate.ticketTitle,
-    eventTime: candidate.eventTime ? new Date(candidate.eventTime) : null,
-    location: candidate.location,
-    category: candidate.category,
-  });
+  const suggestedComment = suggestBrowserPostComment();
   const composedText = candidate.postURL
     ? composeBrowserPostText(suggestedComment, candidate.postURL)
     : suggestedComment;

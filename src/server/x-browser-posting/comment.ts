@@ -1,40 +1,19 @@
-const DEFAULT_COMMENT = "気になる方はぜひチェックしてみてください。";
+import { randomInt } from "crypto";
 
-type BrowserPostCommentInput = {
-  postId?: string | null;
-  ticketTitle?: string | null;
-  eventTime?: Date | null;
-  location?: string | null;
-  category?: string | null;
-};
+import commentPatterns from "./comment-patterns.json";
 
-const COMMENT_TEMPLATES = [
-  "気になる方はぜひチェックしてみてください。",
-  "予定が合う方、ぜひ。",
-  "謎解き予定に合いそうな方はぜひ！",
-  "探している方に届きますように。",
-  "条件が合う方はぜひ確認してみてください。",
-  "参加予定を探している方はぜひ。",
-];
+const FALLBACK_COMMENT = "気になる方はぜひ！";
+const DEFAULT_COMMENT = commentPatterns[0] ?? FALLBACK_COMMENT;
 
-export function suggestBrowserPostComment(input: BrowserPostCommentInput) {
-  const seed = input.postId ?? input.ticketTitle ?? input.location ?? "";
-  if (!seed) {
+export function suggestBrowserPostComment() {
+  if (commentPatterns.length === 0) {
     return DEFAULT_COMMENT;
   }
 
-  return COMMENT_TEMPLATES[pickTemplateIndex(seed)];
+  return commentPatterns[randomInt(commentPatterns.length)] ?? DEFAULT_COMMENT;
 }
 
 export function composeBrowserPostText(comment: string, postURL: string) {
   const normalizedComment = comment.trim() || DEFAULT_COMMENT;
   return `${normalizedComment}\n\n${postURL.trim()}`;
-}
-
-function pickTemplateIndex(seed: string) {
-  let hash = 0;
-  for (const char of seed) {
-    hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
-  }
-  return hash % COMMENT_TEMPLATES.length;
 }
