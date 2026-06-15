@@ -76,11 +76,12 @@ GitHub Actions では `REALTIME_API_TOKEN` secret として同じ値を渡しま
 | `X_BROWSER_POST_ALLOW_UNATTENDED` | 互換用の確認なし投稿許可。既定 `false` |
 | `X_BROWSER_POST_CONFIRMATION_MODE` | `interactive` または `auto`。既定 `interactive` |
 | `X_BROWSER_POST_AUTO_EXECUTE_ALLOWED` | `CONFIRMATION_MODE=auto` を有効にする二重ロック |
+| `X_BROWSER_POST_COMMENT` | 静的テンプレートのランダム選択を使わず、固定コメントで上書きする場合の文面。空欄または空白だけなら静的テンプレートを使う |
 | `X_BROWSER_POST_MAX_PER_RUN` | 1 実行あたりの投稿上限 |
 | `X_BROWSER_POST_COOLDOWN_MINUTES` | cooldown 分数 |
 | `X_BROWSER_POST_DAILY_LIMIT` | 1 日投稿上限 |
 
-設定の雛形は `.env.x-browser-posting.example` です。dry-run は投稿ボタン押下と DB 更新をしません。
+設定の雛形は `.env.x-browser-posting.example` です。dry-run は投稿ボタン押下と DB 更新をしません。フォローコメントは通常 `src/server/x-browser-posting/comment-patterns.json` の 50 パターンからランダム選択され、`--comment` または `X_BROWSER_POST_COMMENT` が空白除去後に空でない場合だけその文面で上書きします。
 
 ```bash
 cp .env.x-browser-posting.example .env.x-browser-posting.local

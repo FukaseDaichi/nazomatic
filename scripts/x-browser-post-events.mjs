@@ -38,8 +38,8 @@ async function main() {
     throw new Error("Prepared candidate does not have a postURL");
   }
 
-  const quoteText = config.comment || prepared.suggestedComment;
-  const composedText = `${quoteText.trim()}\n\n${prepared.postURL}`;
+  const quoteText = config.comment.trim() || prepared.suggestedComment;
+  const composedText = `${quoteText}\n\n${prepared.postURL}`;
   const session = await openAutomationSession(config);
   let confirmed = false;
   let postSubmitted = false;
