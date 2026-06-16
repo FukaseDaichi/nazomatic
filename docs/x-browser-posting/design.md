@@ -116,7 +116,7 @@ flowchart LR
 | config loader     | `scripts/x-browser-posting/config.mjs`                        | Git 管理外 `.env` を読み、アカウント・確認モード・上限値を検証  |
 | selector registry | `scripts/x-browser-posting/selectors.mjs`                     | X UI セレクタを集中管理                                        |
 | page object       | `scripts/x-browser-posting/xComposerPage.mjs`                 | X 投稿画面の操作を隠蔽                                         |
-| local state       | `local/x-browser-posting/`                                    | storage state、スクリーンショット、実行ログ、ローカル lock     |
+| local state       | `local/x-browser-posting/`                                    | storage state、エラー時スクリーンショット、実行ログ、ローカル lock |
 
 既存の `src/app/api/internal/x/repost/events/route.ts` は X API による通常 Repost なので、ブラウザ投稿用 API とは分けます。候補選定ロジックだけは共通化し、X API 認証情報への依存をブラウザ投稿側へ持ち込まないようにします。
 
@@ -300,7 +300,7 @@ X_BROWSER_POST_DAILY_LIMIT=6
 | `xBrowserPost.selectorProfileVersion` | 使用した selector registry version                   |
 | `xBrowserPost.error`                  | 失敗時の概要。秘密情報は入れない                     |
 
-`postedPostURL` が取得できない場合でも、X UI 上で投稿成功 toast または遷移を確認できたときは `status=posted` にできます。ただし、その場合は `postedPostURL=null` とし、実行ログのスクリーンショットで追跡できるようにします。
+`postedPostURL` が取得できない場合でも、X UI 上で投稿成功 toast または遷移を確認できたときは `status=posted` にできます。ただし、その場合は `postedPostURL=null` とし、実行ログの source URL と DB の投稿結果で追跡します。スクリーンショットは失敗時の診断用に限定します。
 
 ## Rate Limit / Cooldown
 
@@ -402,7 +402,7 @@ browser profile 方式:
 - 完了。`.env.x-browser-posting.local` から対象アカウント、session path、確認モード、rate limit を読む。
 - 完了。storage state / userDataDir を指定できる Playwright CLI を追加した。
 - 完了。X compose 画面への入力までを dry-run で確認できる。
-- 完了。セレクタ registry、スクリーンショット保存、blocking state detection を実装した。
+- 完了。セレクタ registry、エラー時スクリーンショット保存、blocking state detection を実装した。
 
 ### Phase 3: 人間確認つき実投稿
 
