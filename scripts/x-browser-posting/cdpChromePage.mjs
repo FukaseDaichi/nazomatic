@@ -1,6 +1,10 @@
 import fs from "fs/promises";
 
-import { BLOCKING_TEXT_PATTERNS, SELECTOR_PROFILE_VERSION } from "./selectors.mjs";
+import {
+  SELECTOR_PROFILE_VERSION,
+  findBlockingTextMatch,
+  formatBlockingStateError,
+} from "./selectors.mjs";
 
 const DEFAULT_TIMEOUT_MS = 15000;
 
@@ -38,10 +42,9 @@ export async function openCdpChromePage(cdpUrl) {
         );
       }
 
-      for (const pattern of BLOCKING_TEXT_PATTERNS) {
-        if (pattern.test(result.text)) {
-          throw new Error(`X blocking state detected: ${pattern}`);
-        }
+      const blockingMatch = findBlockingTextMatch(result.text);
+      if (blockingMatch) {
+        throw new Error(formatBlockingStateError(blockingMatch));
       }
     },
 

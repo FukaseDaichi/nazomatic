@@ -51,16 +51,12 @@ async function main() {
     );
     await session.fillComposer(composedText);
     await session.assertSubmitReady();
-    const screenshotPath = await session.saveScreenshot(
-      config.execute ? "ready" : "dry-run"
-    );
 
     printPreparedSummary({
       prepared,
       quoteText,
       composedText,
       verifiedHandle,
-      screenshotPath,
       config,
     });
 
@@ -99,7 +95,12 @@ async function main() {
       console.log(`Posted URL: ${postedPostURL}`);
     }
   } catch (error) {
-    await session.saveScreenshot("error").catch(() => null);
+    const errorScreenshotPath = await session
+      .saveScreenshot("error")
+      .catch(() => null);
+    if (errorScreenshotPath) {
+      console.error(`Error screenshot: ${errorScreenshotPath}`);
+    }
     if (config.execute && !config.dryRun && !confirmed && !postSubmitted) {
       await confirmCandidate(config, prepared, {
         status: "failed",
@@ -564,7 +565,6 @@ function printPreparedSummary({
   quoteText,
   composedText,
   verifiedHandle,
-  screenshotPath,
   config,
 }) {
   console.log("");
@@ -585,8 +585,6 @@ function printPreparedSummary({
   console.log("");
   console.log("Composed text:");
   console.log(composedText);
-  console.log("");
-  console.log(`Screenshot: ${screenshotPath}`);
   console.log("");
 }
 

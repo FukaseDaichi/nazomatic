@@ -1,7 +1,8 @@
 import {
-  BLOCKING_TEXT_PATTERNS,
   SELECTOR_PROFILE_VERSION,
   SUBMIT_BUTTON_NAMES,
+  findBlockingTextMatch,
+  formatBlockingStateError,
 } from "./selectors.mjs";
 
 export async function openComposer(page) {
@@ -97,15 +98,13 @@ export async function assertNoBlockingState(page) {
     throw new Error("X login form is visible; login automation is not allowed");
   }
 
-  for (const pattern of BLOCKING_TEXT_PATTERNS) {
-    const visible = await page
-      .getByText(pattern)
-      .first()
-      .isVisible({ timeout: 1000 })
-      .catch(() => false);
-    if (visible) {
-      throw new Error(`X blocking state detected: ${pattern}`);
-    }
+  const bodyText = await page
+    .locator("body")
+    .innerText({ timeout: 1000 })
+    .catch(() => "");
+  const blockingMatch = findBlockingTextMatch(bodyText);
+  if (blockingMatch) {
+    throw new Error(formatBlockingStateError(blockingMatch));
   }
 }
 
