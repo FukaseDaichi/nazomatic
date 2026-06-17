@@ -102,6 +102,8 @@ npm run x:browser-post:weekend-summary -- --copy-pattern ai_self_deprecation --l
 
 週末サマリ投稿も実投稿時は `--execute` を付けます。`--line` または `X_BROWSER_POST_WEEKEND_SUMMARY_LINE` で一言を上書きできます。文案パターンを固定したい場合は `--copy-pattern` または `X_BROWSER_POST_WEEKEND_SUMMARY_COPY_PATTERN` を使います。指定しない場合は、prepare API が返すローカル候補文を使います。投稿結果は Firestore に保存せず、同一 PC の二重投稿防止用に `local/x-browser-posting/weekend-summary-state.json` へ最小限のキーだけ保存します。
 
+ローカルブラウザ投稿 CLI は、通常投稿と週末サマリ投稿のどちらも実行ログを Git 管理外の `log/` に保存します。ログには開始時刻、実行コマンド、標準出力、標準エラー、終了時刻、終了ステータスを残します。
+
 #### 現行 X API 再投稿
 
 | 変数 | 用途 |
