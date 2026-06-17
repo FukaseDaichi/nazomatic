@@ -5,7 +5,7 @@ import { baseURL } from "@/app/config";
 
 declare global {
   interface Window {
-    adsbygoogle: any[];
+    adsbygoogle?: any[];
   }
 }
 
@@ -37,8 +37,8 @@ export const AdComponent = () => {
     setShowAds(true);
 
     try {
-      const adsbygoogle = window.adsbygoogle || [];
-      adsbygoogle.push({});
+      window.adsbygoogle = window.adsbygoogle || [];
+      window.adsbygoogle.push({});
     } catch (e) {
       console.error("AdSense initialization error:", e);
     }
