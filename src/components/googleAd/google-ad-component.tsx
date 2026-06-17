@@ -9,6 +9,8 @@ declare global {
   }
 }
 
+const X_BROWSER_SESSION_KEY = "nazomatic-hide-ads-for-x";
+
 export const AdComponent = () => {
   const [showAds, setShowAds] = useState(false);
 
@@ -22,6 +24,11 @@ export const AdComponent = () => {
     // PWA(standalone) で起動しているか判定
     if (window.matchMedia?.("(display-mode: standalone)").matches) {
       // PWA のときは広告を表示しない
+      setShowAds(false);
+      return;
+    }
+
+    if (isXBrowserSession()) {
       setShowAds(false);
       return;
     }
@@ -62,3 +69,50 @@ export const AdComponent = () => {
 };
 
 export default AdComponent;
+
+function isXBrowserSession() {
+  if (readSessionFlag(X_BROWSER_SESSION_KEY)) {
+    return true;
+  }
+
+  const referrer = document.referrer;
+  const referrerHost = getHostname(referrer);
+  const userAgent = navigator.userAgent.toLowerCase();
+  const isFromX =
+    referrerHost === "x.com" ||
+    referrerHost.endsWith(".x.com") ||
+    referrerHost === "twitter.com" ||
+    referrerHost.endsWith(".twitter.com") ||
+    referrerHost === "t.co" ||
+    userAgent.includes("twitter");
+
+  if (isFromX) {
+    writeSessionFlag(X_BROWSER_SESSION_KEY);
+  }
+
+  return isFromX;
+}
+
+function getHostname(url: string) {
+  try {
+    return new URL(url).hostname.toLowerCase();
+  } catch {
+    return "";
+  }
+}
+
+function readSessionFlag(key: string) {
+  try {
+    return sessionStorage.getItem(key) === "true";
+  } catch {
+    return false;
+  }
+}
+
+function writeSessionFlag(key: string) {
+  try {
+    sessionStorage.setItem(key, "true");
+  } catch {
+    // Storage can be unavailable in restricted browser modes.
+  }
+}
