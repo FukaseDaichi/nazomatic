@@ -28,6 +28,10 @@ npm run dev
 
 テストフレームワークは未設定です。変更内容に応じて `npm run lint`、`npm run build`、ブラウザでの手動確認を使い分けます。
 
+## 広告表示
+
+公開メイン領域の Google Ad は `src/components/googleAd/google-ad-component.tsx` で表示します。localhost、PWA standalone、X アプリ内ブラウザまたは `x.com` / `twitter.com` / `t.co` 経由で開かれたセッションでは広告を表示しません。
+
 ## 環境変数
 
 ### 共通

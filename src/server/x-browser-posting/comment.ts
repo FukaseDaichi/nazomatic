@@ -2,7 +2,7 @@ import { randomInt } from "crypto";
 
 import commentPatterns from "./comment-patterns.json";
 
-const FALLBACK_COMMENT = "気になる方はぜひ！";
+const FALLBACK_COMMENT = "私は行けないので、行ける人に届いてほしい。";
 const DEFAULT_COMMENT = commentPatterns[0] ?? FALLBACK_COMMENT;
 
 export function suggestBrowserPostComment() {

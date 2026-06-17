@@ -5,9 +5,11 @@ import { baseURL } from "@/app/config";
 
 declare global {
   interface Window {
-    adsbygoogle: any[];
+    adsbygoogle?: any[];
   }
 }
+
+const X_BROWSER_SESSION_KEY = "nazomatic-hide-ads-for-x";
 
 export const AdComponent = () => {
   const [showAds, setShowAds] = useState(false);
@@ -26,12 +28,17 @@ export const AdComponent = () => {
       return;
     }
 
+    if (isXBrowserSession()) {
+      setShowAds(false);
+      return;
+    }
+
     // 通常ブラウザ表示のときだけ広告を出す
     setShowAds(true);
 
     try {
-      const adsbygoogle = window.adsbygoogle || [];
-      adsbygoogle.push({});
+      window.adsbygoogle = window.adsbygoogle || [];
+      window.adsbygoogle.push({});
     } catch (e) {
       console.error("AdSense initialization error:", e);
     }
@@ -62,3 +69,50 @@ export const AdComponent = () => {
 };
 
 export default AdComponent;
+
+function isXBrowserSession() {
+  if (readSessionFlag(X_BROWSER_SESSION_KEY)) {
+    return true;
+  }
+
+  const referrer = document.referrer;
+  const referrerHost = getHostname(referrer);
+  const userAgent = navigator.userAgent.toLowerCase();
+  const isFromX =
+    referrerHost === "x.com" ||
+    referrerHost.endsWith(".x.com") ||
+    referrerHost === "twitter.com" ||
+    referrerHost.endsWith(".twitter.com") ||
+    referrerHost === "t.co" ||
+    userAgent.includes("twitter");
+
+  if (isFromX) {
+    writeSessionFlag(X_BROWSER_SESSION_KEY);
+  }
+
+  return isFromX;
+}
+
+function getHostname(url: string) {
+  try {
+    return new URL(url).hostname.toLowerCase();
+  } catch {
+    return "";
+  }
+}
+
+function readSessionFlag(key: string) {
+  try {
+    return sessionStorage.getItem(key) === "true";
+  } catch {
+    return false;
+  }
+}
+
+function writeSessionFlag(key: string) {
+  try {
+    sessionStorage.setItem(key, "true");
+  } catch {
+    // Storage can be unavailable in restricted browser modes.
+  }
+}
