@@ -72,6 +72,7 @@ Yahoo!リアルタイム検索の取得結果を返す公開 API です。現在
 | `POST /api/internal/x/repost/events` | `hashtag`, `dryRun` | 条件に合うイベントを X で再投稿 |
 | `POST /api/internal/x/browser-post/events/prepare` | `hashtag`, `accountHandle`, `dryRun` | ローカルブラウザ投稿用の候補予約 |
 | `POST /api/internal/x/browser-post/events/confirm` | `eventId`, `reservationId`, `accountHandle`, `status` | ローカルブラウザ投稿結果を Firestore に反映 |
+| `POST /api/internal/x/browser-post/weekend-ticket-summary/prepare` | `hashtag`, `timezone`, `runDate`, `weekendStartDate`, `postWhenZero`, `copyPattern` | 週末サマリ投稿用の土日別件数と文案材料を返す |
 
 ### 登録 API
 
@@ -108,6 +109,8 @@ Firestore doc id は `{postId}:{RULESET_VERSION}` です。
 `lastReviewedAt == null`、指定 hashtag を含む、過去 24 時間に captured された表示可能イベントから候補を選びます。候補がない場合は `204` を返します。実投稿後は対象 document の `lastReviewedAt` を更新します。
 
 この API は X API による通常 Repost です。X API を使わずローカルのログイン済みブラウザセッションから引用投稿する機能は `docs/x-browser-posting/design.md` に分けます。
+
+週末サマリ投稿の prepare API は、投稿結果を Firestore に保存しません。ローカル CLI が投稿文入力、投稿前確認、実投稿、同一 PC の二重投稿防止用 state 更新を担当します。詳細は `docs/x-browser-posting/weekend-ticket-summary.md` を参照します。
 
 ## Firestore スキーマ
 

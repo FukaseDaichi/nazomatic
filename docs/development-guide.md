@@ -22,6 +22,7 @@ npm run dev
 | `npm run start` | production server を起動 |
 | `npm run lint` | ESLint |
 | `npm run x:browser-post` | X API を使わないローカルブラウザ投稿 CLI |
+| `npm run x:browser-post:weekend-summary` | `#謎チケ売ります` の週末土日別件数をローカルブラウザで投稿する CLI |
 | `npm run shift:report:meta` | Shift Search レポート元成果物から manifest / index を生成 |
 | `npm run shift:report:view-assets` | Shift Search レポート表示用 JSON を `src/generated/shift-search` に生成 |
 
@@ -77,6 +78,9 @@ GitHub Actions では `REALTIME_API_TOKEN` secret として同じ値を渡しま
 | `X_BROWSER_POST_CONFIRMATION_MODE` | `interactive` または `auto`。既定 `interactive` |
 | `X_BROWSER_POST_AUTO_EXECUTE_ALLOWED` | `CONFIRMATION_MODE=auto` を有効にする二重ロック |
 | `X_BROWSER_POST_COMMENT` | 静的テンプレートのランダム選択を使わず、固定コメントで上書きする場合の文面。空欄または空白だけなら静的テンプレートを使う |
+| `X_BROWSER_POST_WEEKEND_SUMMARY_LINE` | 週末サマリ投稿の一言。空欄ならローカル候補文を使う |
+| `X_BROWSER_POST_WEEKEND_SUMMARY_COPY_PATTERN` | 週末サマリ投稿の文案パターン固定。空欄ならランダム |
+| `X_BROWSER_POST_WEEKEND_SUMMARY_POST_WHEN_ZERO` | `true` なら土日合計0件でも週末サマリを投稿候補にする |
 | `X_BROWSER_POST_MAX_PER_RUN` | 1 実行あたりの投稿上限 |
 | `X_BROWSER_POST_COOLDOWN_MINUTES` | cooldown 分数 |
 | `X_BROWSER_POST_DAILY_LIMIT` | 1 日投稿上限 |
@@ -88,11 +92,15 @@ cp .env.x-browser-posting.example .env.x-browser-posting.local
 npm run x:browser-post -- --login-only
 npm run x:browser-post
 npm run x:browser-post -- --execute
+npm run x:browser-post:weekend-summary
+npm run x:browser-post:weekend-summary -- --copy-pattern ai_self_deprecation --line "AIの私は現地に行けないので、今日も一人でXとにらめっこしています。"
 ```
 
 `--login-only` は候補取得や内部 API 呼び出しをせず、`X_BROWSER_POST_CHROME_EXECUTABLE_PATH` の通常 Chrome を直接起動し、`X_BROWSER_POST_USER_DATA_DIR` の Chrome プロファイルで `https://x.com/login` を開きます。Chrome for Testing を避けたい初回ログイン用です。初回ログイン後は、通常投稿時に `X_BROWSER_POST_CDP_URL` へ接続し、接続できなければ `X_BROWSER_POST_AUTO_START_CHROME=true` で同じ専用 profile の通常 Chrome を自動起動します。
 
 実投稿時は `--execute` を付けます。人間確認を省略するには `.env.x-browser-posting.local` で `X_BROWSER_POST_CONFIRMATION_MODE=auto` と `X_BROWSER_POST_AUTO_EXECUTE_ALLOWED=true` を両方指定します。
+
+週末サマリ投稿も実投稿時は `--execute` を付けます。`--line` または `X_BROWSER_POST_WEEKEND_SUMMARY_LINE` で一言を上書きできます。文案パターンを固定したい場合は `--copy-pattern` または `X_BROWSER_POST_WEEKEND_SUMMARY_COPY_PATTERN` を使います。指定しない場合は、prepare API が返すローカル候補文を使います。投稿結果は Firestore に保存せず、同一 PC の二重投稿防止用に `local/x-browser-posting/weekend-summary-state.json` へ最小限のキーだけ保存します。
 
 #### 現行 X API 再投稿
 

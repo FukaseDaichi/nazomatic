@@ -6,6 +6,8 @@
 
 **ステータス: 実装済みです。** 実装の正本は `src/` と `scripts/`、既存の X API 再投稿仕様は `docs/calendar-realtime/design.md` を参照します。
 
+`#謎チケ売ります` の週末土日別件数を投稿するサマリ自動化は、個別イベントの引用投稿と分けて `docs/x-browser-posting/weekend-ticket-summary.md` に置きます。
+
 関連する現行実装:
 
 - `.github/workflows/x-repost-events.yml`
