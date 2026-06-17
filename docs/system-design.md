@@ -197,6 +197,7 @@ flowchart LR
 - BLANK25: `docs/blank25/design.md`
 - 謎チケカレンダー / Realtime: `docs/calendar-realtime/design.md`
 - X ブラウザ投稿自動化: `docs/x-browser-posting/design.md`
+- `#謎チケ売ります` 週末サマリ投稿案: `docs/x-browser-posting/weekend-ticket-summary.md`
 - Shift Search: `docs/shift-search/design.md`
 - 文字拾い検索: `docs/character-pick-search/design.md`
 - AI 実装ルール: `docs/ai-coding-rules.md`
