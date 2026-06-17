@@ -35,6 +35,8 @@ flowchart LR
 | なし | `src/hooks/useCalendarData.ts` | `/api/calendar` 取得 |
 | なし | `src/components/calendar/EventDetailDialog.tsx` | イベント詳細表示 |
 
+`/calendar` はページ専用の OGP / X カード metadata を `src/app/(main)/calendar/page.tsx` で定義します。画像は `public/img/calendar-ogp.png` を使い、ほかの公開ページは `(main)` layout の共通 OGP を継承します。
+
 ## 公開 API
 
 ### `GET /api/calendar`

@@ -16,6 +16,7 @@ import {
   submitPost,
   verifyLoggedInAccount,
 } from "./x-browser-posting/xComposerPage.mjs";
+import { runWithLocalLog } from "./x-browser-posting/runLog.mjs";
 
 async function main() {
   const { configArgv, weekendArgs } = splitWeekendSummaryArgs(
@@ -796,11 +797,19 @@ function firstNonEmpty(...values) {
   return null;
 }
 
-main()
-  .then(() => {
-    process.exit(0);
-  })
-  .catch((error) => {
-    console.error(error instanceof Error ? error.message : error);
-    process.exit(1);
-  });
+const exitStatus = await runWithLocalLog(
+  {
+    cwd: process.cwd(),
+    logPrefix: "x-browser-post-weekend-summary",
+    command: buildLoggedCommand("x:browser-post:weekend-summary"),
+  },
+  main
+);
+process.exit(exitStatus);
+
+function buildLoggedCommand(defaultLifecycleEvent) {
+  const lifecycleEvent =
+    process.env.npm_lifecycle_event || defaultLifecycleEvent;
+  const args = process.argv.slice(2);
+  return `npm run ${lifecycleEvent}${args.length ? ` -- ${args.join(" ")}` : ""}`;
+}

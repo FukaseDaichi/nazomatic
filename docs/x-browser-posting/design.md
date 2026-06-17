@@ -118,7 +118,8 @@ flowchart LR
 | config loader     | `scripts/x-browser-posting/config.mjs`                        | Git 管理外 `.env` を読み、アカウント・確認モード・上限値を検証  |
 | selector registry | `scripts/x-browser-posting/selectors.mjs`                     | X UI セレクタを集中管理                                        |
 | page object       | `scripts/x-browser-posting/xComposerPage.mjs`                 | X 投稿画面の操作を隠蔽                                         |
-| local state       | `local/x-browser-posting/`                                    | storage state、エラー時スクリーンショット、実行ログ、ローカル lock |
+| local state       | `local/x-browser-posting/`                                    | storage state、エラー時スクリーンショット、ローカル lock |
+| local logs        | `log/`                                                        | Git 管理外の CLI 実行ログ |
 
 既存の `src/app/api/internal/x/repost/events/route.ts` は X API による通常 Repost なので、ブラウザ投稿用 API とは分けます。候補選定ロジックだけは共通化し、X API 認証情報への依存をブラウザ投稿側へ持ち込まないようにします。
 
