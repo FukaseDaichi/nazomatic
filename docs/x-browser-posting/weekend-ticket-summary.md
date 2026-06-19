@@ -2,7 +2,7 @@
 
 ## 位置づけ
 
-この文書は、`#謎チケ売ります` の週末分を土日別に集計し、短い一言と謎チケカレンダー URL を添えて X に毎日投稿する自動化をまとめます。
+この文書は、`#謎チケ売ります` の週末分を土日別に集計し、ハッシュタグを本文に含めない短い一言と謎チケカレンダー URL を添えて X に毎日投稿する自動化をまとめます。
 
 **ステータス: 実装済みです。** 既存のローカルブラウザ投稿自動化は `docs/x-browser-posting/design.md`、Realtime 取得と Firestore 保存は `docs/calendar-realtime/design.md` を正本とします。
 
@@ -11,7 +11,7 @@
 基本形は固定します。Codex などの AI に任せるのは「なにか一言」の行だけです。1行目のラベルは、対象週末に合わせて `今週末` または `次の週末` を使います。
 
 ```text
-{weekendLabel}の #謎チケ売ります
+{weekendLabel}の「謎チケ売ります」情報！
 {m}/{d}(土) {saturdayCount}件
 {m}/{d}(日) {sundayCount}件
 
@@ -22,7 +22,7 @@ https://nazomatic.vercel.app/calendar
 投稿例:
 
 ```text
-今週末の #謎チケ売ります
+今週末の「謎チケ売ります」情報！
 6/20(土) 8件
 6/21(日) 5件
 
@@ -33,7 +33,7 @@ https://nazomatic.vercel.app/calendar
 土曜または日曜に実行して翌週を対象にする場合:
 
 ```text
-次の週末の #謎チケ売ります
+次の週末の「謎チケ売ります」情報！
 6/27(土) 4件
 6/28(日) 7件
 
@@ -45,7 +45,7 @@ https://nazomatic.vercel.app/calendar
 
 | 要素 | 内容 |
 |---|---|
-| 1行目 | 対象週末ラベルと hashtag を明示する |
+| 1行目 | 対象週末ラベルと `謎チケ売ります` 情報であることを示す。ハッシュタグは本文に含めない |
 | 土曜行 | 対象週末の土曜に `eventTime` がある表示可能な対象 Post 数 |
 | 日曜行 | 対象週末の日曜に `eventTime` がある表示可能な対象 Post 数 |
 | 一言 | Codex などの AI に書かせる短文。日本語100文字未満 |
@@ -154,8 +154,8 @@ Response:
   "sampleTicketTitles": ["地下迷宮からの脱出", "ある屋敷からの招待状"],
   "suggestedLine": "値段下がったら買おうかな、と思った頃にはだいたい誰かの週末になっています。",
   "copyPrompt": "Codex に渡す文案生成 prompt",
-  "templateText": "今週末の #謎チケ売ります\n6/20(土) 8件\n6/21(日) 5件\n\n{line}\nhttps://nazomatic.vercel.app/calendar",
-  "composedText": "今週末の #謎チケ売ります\n6/20(土) 8件\n6/21(日) 5件\n\n値段下がったら買おうかな、と思った頃にはだいたい誰かの週末になっています。\nhttps://nazomatic.vercel.app/calendar"
+  "templateText": "今週末の「謎チケ売ります」情報！\n6/20(土) 8件\n6/21(日) 5件\n\n{line}\nhttps://nazomatic.vercel.app/calendar",
+  "composedText": "今週末の「謎チケ売ります」情報！\n6/20(土) 8件\n6/21(日) 5件\n\n値段下がったら買おうかな、と思った頃にはだいたい誰かの週末になっています。\nhttps://nazomatic.vercel.app/calendar"
 }
 ```
 
@@ -253,7 +253,7 @@ Prompt 例:
 以下の投稿本文の「なにか一言」に入れる文だけを作ってください。
 
 投稿本文:
-今週末の #謎チケ売ります
+今週末の「謎チケ売ります」情報！
 6/20(土) 8件
 6/21(日) 5件
 
@@ -320,7 +320,7 @@ https://nazomatic.vercel.app/calendar
 AI自虐:
 
 ```text
-今週末の #謎チケ売ります
+今週末の「謎チケ売ります」情報！
 6/20(土) 8件
 6/21(日) 5件
 
@@ -331,7 +331,7 @@ https://nazomatic.vercel.app/calendar
 謎解きチケット譲渡あるある:
 
 ```text
-今週末の #謎チケ売ります
+今週末の「謎チケ売ります」情報！
 6/20(土) 1件
 6/21(日) 2件
 
@@ -342,7 +342,7 @@ https://nazomatic.vercel.app/calendar
 イベント名ツッコミ:
 
 ```text
-今週末の #謎チケ売ります
+今週末の「謎チケ売ります」情報！
 6/20(土) 18件
 6/21(日) 14件
 
@@ -353,7 +353,7 @@ https://nazomatic.vercel.app/calendar
 0件を投稿する場合:
 
 ```text
-今週末の #謎チケ売ります
+今週末の「謎チケ売ります」情報！
 6/20(土) 0件
 6/21(日) 0件
 
@@ -364,7 +364,7 @@ https://nazomatic.vercel.app/calendar
 避けたい例:
 
 ```text
-今週末の #謎チケ売ります
+今週末の「謎チケ売ります」情報！
 6/20(土) 8件
 6/21(日) 5件
 
