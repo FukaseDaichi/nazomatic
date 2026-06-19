@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { addDays, startOfDay } from "@/lib/calendar/utils";
 import { firestore } from "@/server/firebase/admin";
 import { isRealtimeEventVisible } from "@/server/realtime/syndication/visibility";
 import type { CalendarApiResponse, CalendarEvent } from "@/types/calendar";
@@ -185,18 +186,6 @@ function parseDateOrThrow(value: string, parameterName: string): Date {
     );
   }
   return parsed;
-}
-
-function startOfDay(date: Date): Date {
-  const next = new Date(date);
-  next.setHours(0, 0, 0, 0);
-  return next;
-}
-
-function addDays(date: Date, days: number): Date {
-  const next = new Date(date);
-  next.setDate(next.getDate() + days);
-  return next;
 }
 
 function handleError(error: unknown) {
