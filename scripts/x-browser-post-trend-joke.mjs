@@ -18,6 +18,8 @@ import {
 } from "./x-browser-posting/xComposerPage.mjs";
 import { runWithLocalLog } from "./x-browser-posting/runLog.mjs";
 
+const MAX_TREND_JOKE_TEXT_LENGTH = 240;
+
 async function main() {
   const { configArgv, trendArgs } = splitTrendJokeArgs(process.argv.slice(2));
   if (trendArgs.help) {
@@ -277,8 +279,10 @@ function validateTrendJokeText(text) {
   if (!trimmed) {
     throw new Error("Trend joke text must not be empty");
   }
-  if (Array.from(trimmed).length >= 180) {
-    throw new Error("Trend joke text must be fewer than 180 characters");
+  if (Array.from(trimmed).length >= MAX_TREND_JOKE_TEXT_LENGTH) {
+    throw new Error(
+      `Trend joke text must be fewer than ${MAX_TREND_JOKE_TEXT_LENGTH} characters`
+    );
   }
   if (/[\r\n]/.test(trimmed)) {
     throw new Error("Trend joke text must be one line");
