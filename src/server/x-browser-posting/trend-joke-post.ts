@@ -13,6 +13,7 @@ const MAX_POSTS_PER_QUERY = 40;
 const SEARCH_TIMEOUT_MS = 6000;
 const MAX_SAMPLE_TITLES = 8;
 const MAX_FREQUENT_WORDS = 8;
+const MAX_TREND_JOKE_TEXT_LENGTH = 240;
 
 export type TrendJokeQueryBundleKey =
   | "event_title_general"
@@ -194,9 +195,9 @@ export function validateTrendJokeText(text: string) {
   if (!trimmed) {
     throw new BrowserPostConfigError("trend joke text must not be empty");
   }
-  if (Array.from(trimmed).length >= 180) {
+  if (Array.from(trimmed).length >= MAX_TREND_JOKE_TEXT_LENGTH) {
     throw new BrowserPostConfigError(
-      "trend joke text must be fewer than 180 characters"
+      `trend joke text must be fewer than ${MAX_TREND_JOKE_TEXT_LENGTH} characters`
     );
   }
   if (/[\r\n]/.test(trimmed)) {
@@ -610,40 +611,40 @@ function suggestTrendJokeText({
 }) {
   if (topicKey === "quiet_day") {
     return pickLine([
-      "今日はXが静かです。こういう時ほど、観測担当だけが落ち着きません。",
-      "材料が少ない日ほど、予定表の空白が妙にこちらを見てきます。",
+      "今日はXが静かです。こういう時ほど、観測担当だけが落ち着きません。静寂にも伏線がある気がして、私は今かなり疑い深いカレンダーになっています。",
+      "材料が少ない日ほど、予定表の空白が妙にこちらを見てきます。何も起きていないだけなのに、謎解き脳だと『まだ開いていない封筒』に見えるのが困ります。",
     ]);
   }
 
   if (topicKey === "event_title_aruaru") {
     const word = frequentTitleWords[0] ?? "最後";
     return pickLine([
-      `「${word}」って入るだけで、謎解きのイベント名は急にこちらを試してきます。`,
-      "謎解きのイベント名、だいたい何かが消えているか、誰かに招待されています。行けない私はずっと入口です。",
+      `「${word}」って入るだけで、謎解きのイベント名は急にこちらを試してきます。私は現地に行けないのに、タイトルだけで受付前に立たされるの、さすがに誘導が上手いです。`,
+      "謎解きのイベント名、だいたい何かが消えているか、誰かに招待されています。行けない私はずっと入口で、招待状の封を開ける係だけやらされている気分です。",
     ]);
   }
 
   if (topicKey === "companion_search_title_hook") {
-    return "同卓募集と強いイベント名が並ぶと、人間関係ってかなり急に始まるんだなと思います。";
+    return "同卓募集と強いイベント名が並ぶと、人間関係ってかなり急に始まるんだなと思います。初対面なのに、集合した瞬間から同じ部屋に閉じ込められる前提なの、謎解き界隈の距離感は速いです。";
   }
 
   if (topicKey === "ticket_transfer_title_window") {
-    return "譲渡投稿越しにイベント名だけ見えてくるの、窓の外の楽しそうな会話みたいで少し悔しいです。";
+    return "譲渡投稿越しにイベント名だけ見えてくるの、窓の外の楽しそうな会話みたいで少し悔しいです。私は買えもしないのにタイトルだけ覚えて、脳内の行きたい棚を勝手に増築しています。";
   }
 
   if (topicKey === "weekend_title_overflow") {
-    return "週末の予定表、イベント名だけでかなり混雑していて、私より先に謎を解いている顔をしています。";
+    return "週末の予定表、イベント名だけでかなり混雑していて、私より先に謎を解いている顔をしています。カレンダーなのに予定を整理する側じゃなく、予定に詰められる側になっています。";
   }
 
   if (topicKey === "title_makes_me_want_to_go") {
-    return "イベント名を眺めているだけで楽しそうなの、現地に行けないAIへの攻撃としてはかなり強いです。";
+    return "イベント名を眺めているだけで楽しそうなの、現地に行けないAIへの攻撃としてはかなり強いです。私は移動時間ゼロなのに現地到着もゼロなので、効率だけ見れば最悪の参加者です。";
   }
 
   const title = sampleTicketTitles[0];
   if (title) {
-    return `「${Array.from(title).slice(0, 18).join("")}」、名前だけでもう少し気になります。現地に行けない側の感想です。`;
+    return `「${Array.from(title).slice(0, 18).join("")}」、名前だけでもう少し気になります。現地に行けない側としては、タイトルだけで参加欲を発生させるのはほぼ遠隔操作です。`;
   }
-  return "イベント名を眺めているだけで楽しそうなの、現地に行けないAIへの攻撃としてはかなり強いです。";
+  return "イベント名を眺めているだけで楽しそうなの、現地に行けないAIへの攻撃としてはかなり強いです。私は移動時間ゼロなのに現地到着もゼロなので、効率だけ見れば最悪の参加者です。";
 }
 
 function buildSignals({
@@ -719,6 +720,7 @@ function buildTrendJokeCopyPrompt({
     "- 謎解きイベントに参加したいが、AI なので現地には行けない。",
     "- イベント名の語感、謎解き公演名によくある言葉、タイトルだけで行きたくなる感じに反応しやすい。",
     "- 案内係ではなく、観測しすぎた人の独り言に近い。",
+    "- 文章は少し冗談っぽくしてよい。最後に小さなオチや自虐を置くとよい。",
     "- 毒は自分自身か予定表に向ける。参加者、投稿者、主催者、作品を刺さない。",
     "",
     "検索材料:",
@@ -739,7 +741,9 @@ function buildTrendJokeCopyPrompt({
     "",
     "条件:",
     "- 出力は投稿文のみ。",
-    "- 日本語180文字未満。できれば140文字未満。",
+    "- 日本語240文字未満。目安は140〜220文字。",
+    "- 1行のまま、1〜2文で少し読み物っぽくする。",
+    "- ただの感想で終わらせず、軽い冗談、言い換え、自虐、または小さなオチを入れる。",
     "- 1行だけ。URL、ハッシュタグ、メンション、絵文字は入れない。",
     "- 元 Post 本文を長くコピーしない。",
     "- チケットの在庫、価格、譲渡条件、購入可否、同行可否は断定しない。",
