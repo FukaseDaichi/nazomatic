@@ -23,6 +23,7 @@ npm run dev
 | `npm run lint` | ESLint |
 | `npm run x:browser-post` | X API を使わないローカルブラウザ投稿 CLI |
 | `npm run x:browser-post:weekend-summary` | `#謎チケ売ります` の週末土日別件数をローカルブラウザで投稿する CLI |
+| `npm run x:browser-post:trend-joke` | Yahoo!リアルタイム検索で拾ったイベント名を材料に短文ネタ投稿を行う CLI |
 | `npm run shift:report:meta` | Shift Search レポート元成果物から manifest / index を生成 |
 | `npm run shift:report:view-assets` | Shift Search レポート表示用 JSON を `src/generated/shift-search` に生成 |
 
@@ -85,6 +86,13 @@ GitHub Actions では `REALTIME_API_TOKEN` secret として同じ値を渡しま
 | `X_BROWSER_POST_WEEKEND_SUMMARY_LINE` | 週末サマリ投稿の一言。空欄ならローカル候補文を使う |
 | `X_BROWSER_POST_WEEKEND_SUMMARY_COPY_PATTERN` | 週末サマリ投稿の文案パターン固定。空欄ならランダム |
 | `X_BROWSER_POST_WEEKEND_SUMMARY_POST_WHEN_ZERO` | `true` なら土日合計0件でも週末サマリを投稿候補にする |
+| `X_BROWSER_POST_TREND_JOKE_LINE` | 謎解き界隈トレンドのネタ投稿文。空欄ならローカル候補文を使う |
+| `X_BROWSER_POST_TREND_JOKE_TOPIC` | ネタ投稿の topic 固定。空欄なら検索結果からランダム |
+| `X_BROWSER_POST_TREND_JOKE_QUERY_BUNDLE` | 検索 query bundle 固定。空欄ならランダム |
+| `X_BROWSER_POST_TREND_JOKE_SEARCH_QUERIES` | カンマ区切りで検索 query を直接指定する |
+| `X_BROWSER_POST_TREND_JOKE_MAX_SEARCH_QUERIES` | 1 prepare あたりの検索 query 数上限 |
+| `X_BROWSER_POST_TREND_JOKE_MAX_POSTS_PER_QUERY` | 1 query あたりの取得 post 数上限 |
+| `X_BROWSER_POST_TREND_JOKE_RUN_SLOT` | 1日複数回実行時のローカル二重投稿防止用実行枠。空欄なら CLI が日内連番で自動採番 |
 | `X_BROWSER_POST_MAX_PER_RUN` | 1 実行あたりの投稿上限 |
 | `X_BROWSER_POST_COOLDOWN_MINUTES` | cooldown 分数 |
 | `X_BROWSER_POST_DAILY_LIMIT` | 1 日投稿上限 |
@@ -98,6 +106,8 @@ npm run x:browser-post
 npm run x:browser-post -- --execute
 npm run x:browser-post:weekend-summary
 npm run x:browser-post:weekend-summary -- --copy-pattern ai_self_deprecation --line "AIの私は現地に行けないので、今日も一人でXとにらめっこしています。"
+npm run x:browser-post:trend-joke
+npm run x:browser-post:trend-joke -- --query-bundle title_aruaru_words --print-prompt
 ```
 
 `--login-only` は候補取得や内部 API 呼び出しをせず、`X_BROWSER_POST_CHROME_EXECUTABLE_PATH` の通常 Chrome を直接起動し、`X_BROWSER_POST_USER_DATA_DIR` の Chrome プロファイルで `https://x.com/login` を開きます。Chrome for Testing を避けたい初回ログイン用です。初回ログイン後は、通常投稿時に `X_BROWSER_POST_CDP_URL` へ接続し、接続できなければ `X_BROWSER_POST_AUTO_START_CHROME=true` で同じ専用 profile の通常 Chrome を自動起動します。
@@ -105,6 +115,8 @@ npm run x:browser-post:weekend-summary -- --copy-pattern ai_self_deprecation --l
 実投稿時は `--execute` を付けます。人間確認を省略するには `.env.x-browser-posting.local` で `X_BROWSER_POST_CONFIRMATION_MODE=auto` と `X_BROWSER_POST_AUTO_EXECUTE_ALLOWED=true` を両方指定します。
 
 週末サマリ投稿も実投稿時は `--execute` を付けます。`--line` または `X_BROWSER_POST_WEEKEND_SUMMARY_LINE` で一言を上書きできます。文案パターンを固定したい場合は `--copy-pattern` または `X_BROWSER_POST_WEEKEND_SUMMARY_COPY_PATTERN` を使います。指定しない場合は、prepare API が返すローカル候補文を使います。投稿結果は Firestore に保存せず、同一 PC の二重投稿防止用に `local/x-browser-posting/weekend-summary-state.json` へ最小限のキーだけ保存します。
+
+トレンドネタ投稿も実投稿時は `--execute` を付けます。Firestore は読まず、prepare API が Yahoo!リアルタイム検索を少数回実行し、イベント名サンプルや頻出語から topic とローカル候補文を返します。文案を固定したい場合は `--line` または `X_BROWSER_POST_TREND_JOKE_LINE`、検索 bundle を固定したい場合は `--query-bundle` または `X_BROWSER_POST_TREND_JOKE_QUERY_BUNDLE` を使います。投稿結果は Firestore に保存せず、同一 PC の二重投稿防止用に `local/x-browser-posting/trend-joke-state.json` へ最小限のキーだけ保存します。`--run-slot` を指定しない場合は、CLI がローカル state を見て `slot-1`、`slot-2` のように日内連番で自動採番します。
 
 ローカルブラウザ投稿 CLI は、通常投稿と週末サマリ投稿のどちらも実行ログを Git 管理外の `log/` に保存します。ログには開始時刻、実行コマンド、標準出力、標準エラー、終了時刻、終了ステータスを残します。
 
