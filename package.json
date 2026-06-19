@@ -9,6 +9,7 @@
     "lint": "next lint",
     "x:browser-post": "node scripts/x-browser-post-events.mjs",
     "x:browser-post:weekend-summary": "node scripts/x-browser-post-weekend-ticket-summary.mjs",
+    "x:browser-post:trend-joke": "node scripts/x-browser-post-trend-joke.mjs",
     "shift:report:meta": "node scripts/build-shift-search-report-meta.mjs",
     "shift:report:view-assets": "node scripts/build-shift-search-view-assets.mjs"
   },
