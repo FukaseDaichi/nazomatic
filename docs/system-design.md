@@ -198,7 +198,9 @@ flowchart LR
 - BLANK25: `docs/blank25/design.md`
 - 謎チケカレンダー / Realtime: `docs/calendar-realtime/design.md`
 - X ブラウザ投稿自動化: `docs/x-browser-posting/design.md`
+- X 投稿人格: `docs/x-browser-posting/posting-persona.md`
 - `#謎チケ売ります` 週末サマリ投稿: `docs/x-browser-posting/weekend-ticket-summary.md`
+- 謎解き界隈トレンド ネタ投稿: `docs/x-browser-posting/trend-joke-post.md`。初期設計では Firestore を読まず、Yahoo!リアルタイム検索の軽いサンプリングを使う
 - Shift Search: `docs/shift-search/design.md`
 - 文字拾い検索: `docs/character-pick-search/design.md`
 - AI 実装ルール: `docs/ai-coding-rules.md`
