@@ -14,8 +14,10 @@ import { useCalendarData } from "@/hooks/useCalendarData";
 import {
   addDays,
   addMonths,
+  formatDayOfMonth,
   formatMonthHeading,
   groupEventsByDate,
+  isSameMonth,
   startOfDay,
   startOfMonth,
   startOfWeek,
@@ -105,7 +107,7 @@ export default function CalendarPageClient() {
         isoDate: key,
         date,
         isToday: key === todayKey,
-        isCurrentMonth: daisyIsSameMonth(date, focusDate),
+        isCurrentMonth: isSameMonth(date, focusDate),
         events: bucket?.events ?? [],
       };
     });
@@ -434,7 +436,7 @@ function CalendarDayCell({
   onOpenDay: (isoDate: string) => void;
 }) {
   const { date, isoDate, isToday, isCurrentMonth, events } = cell;
-  const dateLabel = `${date.getDate()}`;
+  const dateLabel = formatDayOfMonth(date);
   const overflowCount = events.length > 3 ? events.length - 3 : 0;
   const visibleEvents = events.slice(0, 3);
 
@@ -561,8 +563,4 @@ function buildRange(base: Date) {
     toDate: addDays(end, -1),
     rangeDays: 42,
   };
-}
-
-function daisyIsSameMonth(a: Date, b: Date) {
-  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth();
 }

@@ -105,7 +105,6 @@ export async function prepareWeekendTicketSummary(
     totalCount,
   });
   const templateText = buildWeekendSummaryTemplate({
-    hashtag: normalized.hashtag,
     weekendLabel: target.weekendLabel,
     dayCounts,
   });
@@ -114,7 +113,6 @@ export async function prepareWeekendTicketSummary(
     line: suggestedLine,
   });
   const copyPrompt = buildWeekendSummaryCopyPrompt({
-    hashtag: normalized.hashtag,
     weekendLabel: target.weekendLabel,
     dayCounts,
     copyPattern,
@@ -447,16 +445,14 @@ function pickLine(lines: string[]) {
 }
 
 function buildWeekendSummaryTemplate({
-  hashtag,
   weekendLabel,
   dayCounts,
 }: {
-  hashtag: string;
   weekendLabel: "今週末" | "次の週末";
   dayCounts: [WeekendTicketSummaryDayCount, WeekendTicketSummaryDayCount];
 }) {
   return [
-    `${weekendLabel}の ${hashtag}`,
+    `${weekendLabel}の「謎チケ売ります」情報！`,
     `${dayCounts[0].label} ${dayCounts[0].count}件`,
     `${dayCounts[1].label} ${dayCounts[1].count}件`,
     "",
@@ -466,14 +462,12 @@ function buildWeekendSummaryTemplate({
 }
 
 function buildWeekendSummaryCopyPrompt({
-  hashtag,
   weekendLabel,
   dayCounts,
   copyPattern,
   sampleTicketTitles,
   suggestedLine,
 }: {
-  hashtag: string;
   weekendLabel: "今週末" | "次の週末";
   dayCounts: [WeekendTicketSummaryDayCount, WeekendTicketSummaryDayCount];
   copyPattern: WeekendTicketSummaryCopyPattern;
@@ -496,7 +490,7 @@ function buildWeekendSummaryCopyPrompt({
     "以下の投稿本文の「なにか一言」に入れる文だけを作ってください。",
     "",
     "投稿本文:",
-    `${weekendLabel}の ${hashtag}`,
+    `${weekendLabel}の「謎チケ売ります」情報！`,
     `${dayCounts[0].label} ${dayCounts[0].count}件`,
     `${dayCounts[1].label} ${dayCounts[1].count}件`,
     "",
