@@ -119,7 +119,7 @@ flowchart LR
 | selector registry | `scripts/x-browser-posting/selectors.mjs`                     | X UI セレクタを集中管理                                        |
 | page object       | `scripts/x-browser-posting/xComposerPage.mjs`                 | X 投稿画面の操作を隠蔽                                         |
 | local state       | `local/x-browser-posting/`                                    | storage state、エラー時スクリーンショット、ローカル lock |
-| local logs        | `log/`                                                        | Git 管理外の CLI 実行ログ |
+| local logs        | `logs/{automationId}/`                                        | Git 管理外の CLI 実行ログ。automation ごとに世代管理する |
 
 既存の `src/app/api/internal/x/repost/events/route.ts` は X API による通常 Repost なので、ブラウザ投稿用 API とは分けます。候補選定ロジックだけは共通化し、X API 認証情報への依存をブラウザ投稿側へ持ち込まないようにします。
 
@@ -250,6 +250,7 @@ X_BROWSER_POST_ALLOW_UNATTENDED=false
 X_BROWSER_POST_CONFIRMATION_MODE=interactive
 X_BROWSER_POST_AUTO_EXECUTE_ALLOWED=false
 X_BROWSER_POST_COMMENT=
+X_BROWSER_POST_LOG_RETENTION_COUNT=10
 X_BROWSER_POST_MAX_PER_RUN=1
 X_BROWSER_POST_COOLDOWN_MINUTES=120
 X_BROWSER_POST_DAILY_LIMIT=6
@@ -274,6 +275,7 @@ X_BROWSER_POST_DAILY_LIMIT=6
 | `X_BROWSER_POST_CONFIRMATION_MODE` | 任意 | `interactive` または `auto`。既定 `interactive` |
 | `X_BROWSER_POST_AUTO_EXECUTE_ALLOWED` | 任意 | `CONFIRMATION_MODE=auto` を有効にする二重ロック。既定 `false` |
 | `X_BROWSER_POST_COMMENT` | 任意 | 静的テンプレートのランダム選択を使わず、固定コメントで上書きする場合の文面 |
+| `X_BROWSER_POST_LOG_RETENTION_COUNT` | 任意 | 各 automation のローカル実行ログを残す世代数。既定 `10` |
 | `X_BROWSER_POST_MAX_PER_RUN` | 任意 | 1 実行あたりの上限。既定 1、hard limit 1 |
 | `X_BROWSER_POST_COOLDOWN_MINUTES` | 任意 | cooldown 分数。既定 120、hard limit 30 分以上 |
 | `X_BROWSER_POST_DAILY_LIMIT` | 任意 | 1 日上限。既定 6、hard limit 30 以下 |
@@ -281,6 +283,48 @@ X_BROWSER_POST_DAILY_LIMIT=6
 `X_BROWSER_POST_ACCOUNT_HANDLE` は認証情報ではありませんが、誤爆防止の重要な設定です。Playwright が X を開いたあと、ページ上のログイン中 handle とこの値が一致しなければ停止します。アカウント切り替え UI を自動操作して一致させることはしません。
 
 `X_BROWSER_POST_CONFIRMATION_MODE=auto` だけでは確認省略にしません。`X_BROWSER_POST_AUTO_EXECUTE_ALLOWED=true` も同時に必要です。どちらか片方だけの場合は安全側に倒して停止または `interactive` とします。既存互換の `X_BROWSER_POST_ALLOW_UNATTENDED=true` も、単独では確認省略になりません。
+
+## ローカルログ設計
+
+ローカルブラウザ投稿 CLI の実行ログは、旧 `log/` ではなく Git 管理外の `logs/` に保存します。`logs/` 直下に automation ごとのディレクトリを作り、各ディレクトリ内で世代管理します。
+
+ディレクトリ構成:
+
+```text
+logs/
+  x-browser-post/
+    20260621-210000-jst.log
+  x-browser-post-trend-joke/
+    20260621-213000-jst.log
+  x-browser-post-weekend-summary/
+    20260621-220000-jst.log
+```
+
+対象 automation:
+
+| Automation 名 | npm script | `automationId` | ログディレクトリ |
+|---|---|---|---|
+| NAZOMATIC X 投稿 | `x:browser-post` | `x-browser-post` | `logs/x-browser-post/` |
+| NAZOMATIC X トレンドジョーク投稿 | `x:browser-post:trend-joke` | `x-browser-post-trend-joke` | `logs/x-browser-post-trend-joke/` |
+| NAZOMATIC 週末謎チケサマリ投稿 | `x:browser-post:weekend-summary` | `x-browser-post-weekend-summary` | `logs/x-browser-post-weekend-summary/` |
+
+ログファイル名は automation ディレクトリで識別できるため、`{YYYYMMDD-HHmmss}-jst.log` を基本形にします。ログ本文には従来どおり、開始時刻、実行コマンド、標準出力、標準エラー、終了時刻、終了ステータスを残します。投稿本文や候補文は CLI 出力に出る範囲でログに残るため、Cookie、storage state、ブラウザ profile などの認証情報は出力しません。
+
+世代管理:
+
+- `X_BROWSER_POST_LOG_RETENTION_COUNT` を共通の保持世代数にする。
+- 未設定、空文字、不正値、`0` 以下の場合は `10` として扱う。
+- 保持数は automation ディレクトリ単位で数える。3つの automation 全体で合算しない。
+- dry-run、実投稿、成功、失敗のログは同じ世代として数える。
+- 実行中に作った最新ログを含めて新しい順に残し、保持数を超えた古い `*.log` だけを削除する。
+- 削除対象は該当 automation ディレクトリ直下の `*.log` に限定し、別ディレクトリや `local/` は触らない。
+- ログ削除に失敗しても投稿処理の exit status は変えず、警告だけを出す。
+
+移行方針:
+
+- 新規ログは `logs/` のみに出力する。旧 `log/` へは追記しない。
+- 旧 `log/` の既存ファイルは自動移行せず、運用対象外として削除する。
+- `.gitignore` は `/logs/` を ignore する。旧 `log/` も残存ログの誤 commit 防止のため、しばらく ignore する。
 
 ## DB 更新設計
 
@@ -422,12 +466,20 @@ browser profile 方式:
 - 必要な場合だけ `--comment` / `X_BROWSER_POST_COMMENT` で手入力コメントを上書きする。
 - 直近投稿との類似度チェックを強化する。
 
+### Phase 5: ローカルログ世代管理
+
+- 完了。旧 `log/` から `logs/{automationId}/` へ出力先を変えた。
+- 完了。`X_BROWSER_POST_LOG_RETENTION_COUNT` で automation ごとの保持世代数を制御する。
+- 完了。保持世代数を超えた古いログだけを実行後に削除する。
+- 完了。旧 `log/` の既存ファイルを削除した。
+
 ## 検証方針
 
 - API service は unit test が未設定のため、まずは pure function 化して `npm run lint` と手動 API dry-run で確認する。
 - Playwright は dry-run を既定にして、投稿ボタン押下直前で止まることを確認する。
 - selector 失敗時のスクリーンショットが保存されることを確認する。
 - DB は emulator または dry-run 用 event document で、lease、release、posted confirm の遷移を確認する。
+- `X_BROWSER_POST_LOG_RETENTION_COUNT=2` などで複数回 dry-run し、対象 automation の `logs/{automationId}/` だけが指定世代数以内に収まることを確認する。
 - 本番投稿の初回は 1 件のみ、cooldown を 24 時間以上空けて手動監視する。
 
 ## 未決事項

@@ -800,7 +800,7 @@ function firstNonEmpty(...values) {
 const exitStatus = await runWithLocalLog(
   {
     cwd: process.cwd(),
-    logPrefix: "x-browser-post-weekend-summary",
+    automationId: "x-browser-post-weekend-summary",
     command: buildLoggedCommand("x:browser-post:weekend-summary"),
   },
   main
