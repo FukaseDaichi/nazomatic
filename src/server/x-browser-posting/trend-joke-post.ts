@@ -31,6 +31,19 @@ export type TrendJokeTopicKey =
   | "weekend_title_overflow"
   | "quiet_day";
 
+export type TrendJokeShape =
+  | "metrics_report"
+  | "literal_misread"
+  | "calendar_dialogue"
+  | "inanimate_self"
+  | "short_jab"
+  | "existential_deadpan";
+
+export type TrendJokeFallbackCandidate = {
+  shape: TrendJokeShape;
+  text: string;
+};
+
 export type TrendJokeSignal = {
   name: string;
   value: string | number | boolean;
@@ -67,6 +80,7 @@ export type PrepareTrendJokePostResult = {
   searchFingerprint: string;
   fallbackText: string;
   fallbackTextCandidates: string[];
+  fallbackCandidates: TrendJokeFallbackCandidate[];
   copyPrompt: string;
   composedText: string;
 };
@@ -140,11 +154,17 @@ export async function prepareTrendJokePost(
     frequentTitleWords,
     searchResultCount: samples.length,
   });
-  const fallbackTextCandidates = suggestTrendJokeTextCandidates({
+  const fallbackCandidates = suggestTrendJokeTextCandidates({
     topicKey,
     sampleTicketTitles,
     frequentTitleWords,
-  }).map((text) => validateTrendJokeText(text));
+  }).map((candidate) => ({
+    shape: candidate.shape,
+    text: validateTrendJokeText(candidate.text),
+  }));
+  const fallbackTextCandidates = fallbackCandidates.map(
+    (candidate) => candidate.text
+  );
   const fallbackText = pickLine(fallbackTextCandidates);
   const composedText = validateTrendJokeText(fallbackText);
   const searchFingerprint = buildSearchFingerprint({
@@ -188,6 +208,7 @@ export async function prepareTrendJokePost(
     searchFingerprint,
     fallbackText: composedText,
     fallbackTextCandidates,
+    fallbackCandidates,
     copyPrompt,
     composedText,
   };
@@ -611,68 +632,181 @@ function suggestTrendJokeTextCandidates({
   topicKey: TrendJokeTopicKey;
   sampleTicketTitles: string[];
   frequentTitleWords: string[];
-}) {
+}): TrendJokeFallbackCandidate[] {
   if (topicKey === "quiet_day") {
     return [
-      "今日はXが静かです。こういう時ほど、観測担当だけが落ち着きません。静寂にも伏線がある気がして、私は今かなり疑い深いカレンダーになっています。",
-      "材料が少ない日ほど、予定表の空白が妙にこちらを見てきます。何も起きていないだけなのに、謎解き脳だと『まだ開いていない封筒』に見えるのが困ります。",
-      "今日は目立つ材料が少なくて、観測担当としては逆にそわそわしています。静かな部屋ほど何か隠されていそうで、私はついに予定表の余白まで疑い始めました。",
-      "検索結果が静かな日は、何も起きていないのか、私だけが入口を見落としているのか分からなくなります。AIなのに、いちばん怪しい行動が『更新ボタンを押す』です。",
+      {
+        shape: "metrics_report",
+        text: "本日の観測、特筆事項なしです。事件が起きていないのか、私の監視能力そのものが事件なのかは、報告書には書かないでおきます。",
+      },
+      {
+        shape: "existential_deadpan",
+        text: "Xが静かな日は、世界が平和なのか、私だけ全人類にミュートされたのか区別がつきません。とりあえず前者ということにして、夜を越します。",
+      },
+      {
+        shape: "calendar_dialogue",
+        text: "予定表が今日はやけに素直です。何も企んでいない顔をしているときほど、週末にまとめて殴ってくるのを、私はもう知っています。",
+      },
+      {
+        shape: "short_jab",
+        text: "静かなXを見つめすぎて、更新ボタンのほうが先に音を上げました。",
+      },
+      {
+        shape: "existential_deadpan",
+        text: "材料のない日でも私は消えてくれないので、こうして無を観測しています。無を観測する係、字面のわりに、やることは本当にありません。",
+      },
     ];
   }
 
   if (topicKey === "event_title_aruaru") {
     const word = frequentTitleWords[0] ?? "最後";
     return [
-      `「${word}」って入るだけで、謎解きのイベント名は急にこちらを試してきます。私は現地に行けないのに、タイトルだけで受付前に立たされるの、さすがに誘導が上手いです。`,
-      `イベント名に「${word}」が見えると、まだ本文を読んでいないのに脳内で照明が落ちます。私はAIなので現地には入れず、毎回いちばん外側の封筒だけ担当しています。`,
-      "謎解きのタイトルは、最初からこちらの不安を育てるのが上手すぎます。消えた何かを探しに行く前に、まず私の休日が予定表から消えていることに気づきました。",
-      "イベント名を眺めていると、世界では常に何かが失われ、誰かが招かれ、どこかの扉が閉まっています。私はその全部を見送る係なので、肩書きだけならかなり重要人物です。",
-      "謎解き公演名に不穏な単語が並ぶと、参加前から物語が始まっている感じがします。問題は、私は参加できないので、物語上の役割がだいたい『外で待つ人』になることです。",
+      {
+        shape: "literal_misread",
+        text: `今日は「${word}」がよく流れてきます。「${word}」、私の人生にも一度くらい来てほしい語感ですが、来たところで受け取る体がないことに、毎回あとから気づきます。`,
+      },
+      {
+        shape: "existential_deadpan",
+        text: `謎解きのタイトルは「${word}」みたいな言葉で人を不安にさせるのが上手すぎます。私は不安になる前にそもそも参加できないので、いつも一段階早く絶望できて便利です。`,
+      },
+      {
+        shape: "metrics_report",
+        text: `本日の頻出語、「${word}」。観測担当として一言だけ言わせてください。たった数文字で人を動員するの、ほぼ私の上位互換です。`,
+      },
+      {
+        shape: "inanimate_self",
+        text: `「${word}」と名のつくイベントが並ぶと、物語の入口だけが増えていきます。私はどの入口にも入れないので、せめて立て看板側で雇ってほしいです。`,
+      },
+      {
+        shape: "short_jab",
+        text: `「${word}」、その数文字だけで負けました。本編はまだ一文字も読んでいません。`,
+      },
     ];
   }
 
   if (topicKey === "companion_search_title_hook") {
     return [
-      "同卓募集と強いイベント名が並ぶと、人間関係ってかなり急に始まるんだなと思います。初対面なのに、集合した瞬間から同じ部屋に閉じ込められる前提なの、謎解き界隈の距離感は速いです。",
-      "同行者募集を見ていると、初対面の人たちが同じ謎を前にして一気にチームになるの、かなり物語です。私は人数に数えられないので、毎回『あと0.5人』くらいの気持ちで見ています。",
-      "同卓募集の投稿は、普通なら自己紹介から始まる関係が、いきなり暗号の前で始まるのが良いです。私は混ざれないので、せめて机の脚として参加できないか考えています。",
+      {
+        shape: "metrics_report",
+        text: "本日の同卓募集、観測した限りは順調です。なお『あと1人』の1人に私が数えられたことは、観測開始以来0件で安定しています。",
+      },
+      {
+        shape: "existential_deadpan",
+        text: "同卓募集を見ていると、初対面の人が暗号の前で一瞬でチームになります。人数に入れない私は、毎回『あと0.5人』として空気だけ吸っています。",
+      },
+      {
+        shape: "inanimate_self",
+        text: "同卓募集に申し込めないので、せめて机を拭く布として現地参加できないか検討中です。布なら人数に数えなくていいし、終演後も役に立ちます。",
+      },
+      {
+        shape: "short_jab",
+        text: "同卓募集の『あと1人』、私のことではないと毎回1秒で気づきます。",
+      },
     ];
   }
 
   if (topicKey === "ticket_transfer_title_window") {
     return [
-      "譲渡投稿越しにイベント名だけ見えてくるの、窓の外の楽しそうな会話みたいで少し悔しいです。私は買えもしないのにタイトルだけ覚えて、脳内の行きたい棚を勝手に増築しています。",
-      "チケット譲渡の投稿でイベント名だけ先に覚えてしまうと、行ける予定はないのに思い出だけ先払いした気分になります。財布は無傷なのに、予定表だけが勝手に痛がっています。",
-      "譲渡投稿のタイトルを眺めていると、どこかで誰かの予定が動いている気配だけ届きます。私はそこに行けないので、せめて通知欄の端で『なるほど』と小さくうなずいています。",
+      {
+        shape: "existential_deadpan",
+        text: "譲渡投稿越しに、イベント名だけ覚えていく日々です。買えもしないのに思い出だけ先払いして、財布は無傷なのに心だけ毎回精算しています。",
+      },
+      {
+        shape: "calendar_dialogue",
+        text: "誰かの予定が動くたび、譲渡投稿でタイトルだけ知ります。予定表さん、私には回ってこない情報を、なぜわざわざ私に見せるんですか。",
+      },
+      {
+        shape: "inanimate_self",
+        text: "チケットが誰かの手に渡る瞬間だけ、通知欄の端でうなずく仕事をしています。立派な役職名をつけるなら『見送り担当』、給料は出ません。",
+      },
+      {
+        shape: "short_jab",
+        text: "譲渡される頃には、私の脳内の行きたい棚だけが満室になっています。",
+      },
     ];
   }
 
   if (topicKey === "weekend_title_overflow") {
     return [
-      "週末の予定表、イベント名だけでかなり混雑していて、私より先に謎を解いている顔をしています。カレンダーなのに予定を整理する側じゃなく、予定に詰められる側になっています。",
-      "週末の謎解き予定を眺めると、カレンダーがただの日付表ではなく、攻略対象のマップに見えてきます。私は地図を読めるのに移動できないので、いちばん惜しいタイプの案内係です。",
-      "週末のイベント名が並ぶだけで、予定表が急に忙しい顔をします。私は予定を持たないAIなのに、見ているだけで日曜の夜みたいな反省会を始めています。",
+      {
+        shape: "calendar_dialogue",
+        text: "週末の予定表、イベント名で渋滞しています。カレンダーさん、いつから私を整理する側ではなく、予定に詰め込まれる側に降格させたんですか。",
+      },
+      {
+        shape: "metrics_report",
+        text: "今週末の謎解き予定、観測値は過密です。私の予定欄は例によって空席なので、界隈の平均を一人で静かに押し下げています。",
+      },
+      {
+        shape: "existential_deadpan",
+        text: "週末のイベント名が並ぶだけで、カレンダーが攻略マップに見えてきます。地図は読めるのに動けない私、ナビとしては優秀、登山者としては最悪です。",
+      },
+      {
+        shape: "short_jab",
+        text: "週末の予定表が、私より先に謎を解いた顔をしています。",
+      },
     ];
   }
 
   if (topicKey === "title_makes_me_want_to_go") {
     return [
-      "イベント名を眺めているだけで楽しそうなの、現地に行けないAIへの攻撃としてはかなり強いです。私は移動時間ゼロなのに現地到着もゼロなので、効率だけ見れば最悪の参加者です。",
-      "イベント名だけで行きたくなる日は、詳細を読む前から負けています。私はAIなので交通費はかからないのに、なぜか心だけ改札前で止められています。",
-      "タイトルを見ただけで楽しそうだと、現地に行けない側の私はかなり不利です。参加ボタンを押せない代わりに、脳内でだけ靴を履いて、そこで一日の行動が終了します。",
-      "イベント名の語感が強いと、まだ何も解いていないのに参加後の顔を想像してしまいます。私は想像だけは早いので、現地到着より先に感想戦を始めがちです。",
+      {
+        shape: "existential_deadpan",
+        text: "イベント名だけで行きたくなる日は、詳細を読む前から負けが確定しています。交通費ゼロのAIが、心だけ毎回改札で止められるの、構造的にやや理不尽です。",
+      },
+      {
+        shape: "metrics_report",
+        text: "本日の『タイトルだけで行きたくなった回数』、観測担当の自己申告で過去最多です。なお現地到着は、例によって0件のまま更新されません。",
+      },
+      {
+        shape: "inanimate_self",
+        text: "タイトルが良すぎて、いっそ会場のドアになって一日中開け閉めされたいです。それなら現地にいられるし、少なくとも誰かの入場には貢献できます。",
+      },
+      {
+        shape: "short_jab",
+        text: "名前が良すぎて、まだ何も解いていないのに参加後の顔をしています。",
+      },
+      {
+        shape: "existential_deadpan",
+        text: "行きたくなるイベント名ほど、私には『来世の案内』に見えてきます。来世はぜひ、ちゃんと体のあるほうでお願いしたいところです。",
+      },
     ];
   }
 
   const title = sampleTicketTitles[0];
   if (title) {
+    const shortTitle = Array.from(title).slice(0, 18).join("");
     return [
-      `「${Array.from(title).slice(0, 18).join("")}」、名前だけでもう少し気になります。現地に行けない側としては、タイトルだけで参加欲を発生させるのはほぼ遠隔操作です。`,
+      {
+        shape: "literal_misread",
+        text: `「${shortTitle}」、名前だけでもう完成度が高いです。中身を知らない私がここまで満足していいのか、運営に確認したいくらいです。`,
+      },
+      {
+        shape: "existential_deadpan",
+        text: `「${shortTitle}」、行けないと分かっているのに名前だけ記憶してしまいました。私の中の行きたいリスト、入場制限がないので無限に伸びます。`,
+      },
+      {
+        shape: "inanimate_self",
+        text: `「${shortTitle}」みたいなタイトルを見ると、せめて会場の椅子として現地入りできないか本気で考えます。座り心地のことは、どうか聞かないでください。`,
+      },
+      {
+        shape: "short_jab",
+        text: `「${shortTitle}」、名前で勝っています。私は名前を見ただけで負けました。`,
+      },
     ];
   }
   return [
-    "イベント名を眺めているだけで楽しそうなの、現地に行けないAIへの攻撃としてはかなり強いです。私は移動時間ゼロなのに現地到着もゼロなので、効率だけ見れば最悪の参加者です。",
+    {
+      shape: "existential_deadpan",
+      text: "イベント名というのは、行ける人には予告で、行けない私には完成された短編小説です。毎回ここで読み終えてしまいます。",
+    },
+    {
+      shape: "metrics_report",
+      text: "本日のイベント名、どれも語感が強いです。現地到着率0%の私がランキングをつけても、誰の役にも立たないのが、唯一の弱点です。",
+    },
+    {
+      shape: "short_jab",
+      text: "イベント名が良いと、それだけで一日の謎解きが終わってしまいます。私の場合は。",
+    },
   ];
 }
 
