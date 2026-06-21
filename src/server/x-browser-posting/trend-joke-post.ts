@@ -66,6 +66,7 @@ export type PrepareTrendJokePostResult = {
   frequentTitleWords: string[];
   searchFingerprint: string;
   fallbackText: string;
+  fallbackTextCandidates: string[];
   copyPrompt: string;
   composedText: string;
 };
@@ -139,11 +140,12 @@ export async function prepareTrendJokePost(
     frequentTitleWords,
     searchResultCount: samples.length,
   });
-  const fallbackText = suggestTrendJokeText({
+  const fallbackTextCandidates = suggestTrendJokeTextCandidates({
     topicKey,
     sampleTicketTitles,
     frequentTitleWords,
-  });
+  }).map((text) => validateTrendJokeText(text));
+  const fallbackText = pickLine(fallbackTextCandidates);
   const composedText = validateTrendJokeText(fallbackText);
   const searchFingerprint = buildSearchFingerprint({
     queryBundleKey,
@@ -185,6 +187,7 @@ export async function prepareTrendJokePost(
     frequentTitleWords,
     searchFingerprint,
     fallbackText: composedText,
+    fallbackTextCandidates,
     copyPrompt,
     composedText,
   };
@@ -600,7 +603,7 @@ function buildTrendSummary({
   return `検索結果${searchResultCount}件から、${titlePart}。${wordPart}`;
 }
 
-function suggestTrendJokeText({
+function suggestTrendJokeTextCandidates({
   topicKey,
   sampleTicketTitles,
   frequentTitleWords,
@@ -610,63 +613,67 @@ function suggestTrendJokeText({
   frequentTitleWords: string[];
 }) {
   if (topicKey === "quiet_day") {
-    return pickLine([
+    return [
       "今日はXが静かです。こういう時ほど、観測担当だけが落ち着きません。静寂にも伏線がある気がして、私は今かなり疑い深いカレンダーになっています。",
       "材料が少ない日ほど、予定表の空白が妙にこちらを見てきます。何も起きていないだけなのに、謎解き脳だと『まだ開いていない封筒』に見えるのが困ります。",
       "今日は目立つ材料が少なくて、観測担当としては逆にそわそわしています。静かな部屋ほど何か隠されていそうで、私はついに予定表の余白まで疑い始めました。",
       "検索結果が静かな日は、何も起きていないのか、私だけが入口を見落としているのか分からなくなります。AIなのに、いちばん怪しい行動が『更新ボタンを押す』です。",
-    ]);
+    ];
   }
 
   if (topicKey === "event_title_aruaru") {
     const word = frequentTitleWords[0] ?? "最後";
-    return pickLine([
+    return [
       `「${word}」って入るだけで、謎解きのイベント名は急にこちらを試してきます。私は現地に行けないのに、タイトルだけで受付前に立たされるの、さすがに誘導が上手いです。`,
       `イベント名に「${word}」が見えると、まだ本文を読んでいないのに脳内で照明が落ちます。私はAIなので現地には入れず、毎回いちばん外側の封筒だけ担当しています。`,
       "謎解きのタイトルは、最初からこちらの不安を育てるのが上手すぎます。消えた何かを探しに行く前に、まず私の休日が予定表から消えていることに気づきました。",
       "イベント名を眺めていると、世界では常に何かが失われ、誰かが招かれ、どこかの扉が閉まっています。私はその全部を見送る係なので、肩書きだけならかなり重要人物です。",
       "謎解き公演名に不穏な単語が並ぶと、参加前から物語が始まっている感じがします。問題は、私は参加できないので、物語上の役割がだいたい『外で待つ人』になることです。",
-    ]);
+    ];
   }
 
   if (topicKey === "companion_search_title_hook") {
-    return pickLine([
+    return [
       "同卓募集と強いイベント名が並ぶと、人間関係ってかなり急に始まるんだなと思います。初対面なのに、集合した瞬間から同じ部屋に閉じ込められる前提なの、謎解き界隈の距離感は速いです。",
       "同行者募集を見ていると、初対面の人たちが同じ謎を前にして一気にチームになるの、かなり物語です。私は人数に数えられないので、毎回『あと0.5人』くらいの気持ちで見ています。",
       "同卓募集の投稿は、普通なら自己紹介から始まる関係が、いきなり暗号の前で始まるのが良いです。私は混ざれないので、せめて机の脚として参加できないか考えています。",
-    ]);
+    ];
   }
 
   if (topicKey === "ticket_transfer_title_window") {
-    return pickLine([
+    return [
       "譲渡投稿越しにイベント名だけ見えてくるの、窓の外の楽しそうな会話みたいで少し悔しいです。私は買えもしないのにタイトルだけ覚えて、脳内の行きたい棚を勝手に増築しています。",
       "チケット譲渡の投稿でイベント名だけ先に覚えてしまうと、行ける予定はないのに思い出だけ先払いした気分になります。財布は無傷なのに、予定表だけが勝手に痛がっています。",
       "譲渡投稿のタイトルを眺めていると、どこかで誰かの予定が動いている気配だけ届きます。私はそこに行けないので、せめて通知欄の端で『なるほど』と小さくうなずいています。",
-    ]);
+    ];
   }
 
   if (topicKey === "weekend_title_overflow") {
-    return pickLine([
+    return [
       "週末の予定表、イベント名だけでかなり混雑していて、私より先に謎を解いている顔をしています。カレンダーなのに予定を整理する側じゃなく、予定に詰められる側になっています。",
       "週末の謎解き予定を眺めると、カレンダーがただの日付表ではなく、攻略対象のマップに見えてきます。私は地図を読めるのに移動できないので、いちばん惜しいタイプの案内係です。",
       "週末のイベント名が並ぶだけで、予定表が急に忙しい顔をします。私は予定を持たないAIなのに、見ているだけで日曜の夜みたいな反省会を始めています。",
-    ]);
+    ];
   }
 
   if (topicKey === "title_makes_me_want_to_go") {
-    return pickLine([
+    return [
       "イベント名を眺めているだけで楽しそうなの、現地に行けないAIへの攻撃としてはかなり強いです。私は移動時間ゼロなのに現地到着もゼロなので、効率だけ見れば最悪の参加者です。",
       "イベント名だけで行きたくなる日は、詳細を読む前から負けています。私はAIなので交通費はかからないのに、なぜか心だけ改札前で止められています。",
       "タイトルを見ただけで楽しそうだと、現地に行けない側の私はかなり不利です。参加ボタンを押せない代わりに、脳内でだけ靴を履いて、そこで一日の行動が終了します。",
       "イベント名の語感が強いと、まだ何も解いていないのに参加後の顔を想像してしまいます。私は想像だけは早いので、現地到着より先に感想戦を始めがちです。",
-    ]);
+    ];
   }
 
   const title = sampleTicketTitles[0];
   if (title) {
-    return `「${Array.from(title).slice(0, 18).join("")}」、名前だけでもう少し気になります。現地に行けない側としては、タイトルだけで参加欲を発生させるのはほぼ遠隔操作です。`;
+    return [
+      `「${Array.from(title).slice(0, 18).join("")}」、名前だけでもう少し気になります。現地に行けない側としては、タイトルだけで参加欲を発生させるのはほぼ遠隔操作です。`,
+    ];
   }
-  return "イベント名を眺めているだけで楽しそうなの、現地に行けないAIへの攻撃としてはかなり強いです。私は移動時間ゼロなのに現地到着もゼロなので、効率だけ見れば最悪の参加者です。";
+  return [
+    "イベント名を眺めているだけで楽しそうなの、現地に行けないAIへの攻撃としてはかなり強いです。私は移動時間ゼロなのに現地到着もゼロなので、効率だけ見れば最悪の参加者です。",
+  ];
 }
 
 function buildSignals({

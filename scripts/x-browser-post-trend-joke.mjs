@@ -4,6 +4,7 @@ import fs from "fs/promises";
 import fsSync from "fs";
 import path from "path";
 import { spawn } from "child_process";
+import { randomInt } from "crypto";
 import { createInterface } from "readline/promises";
 import { stdin as input, stdout as output } from "process";
 
@@ -19,6 +20,10 @@ import {
 import { runWithLocalLog } from "./x-browser-posting/runLog.mjs";
 
 const MAX_TREND_JOKE_TEXT_LENGTH = 240;
+const TREND_JOKE_HISTORY_MAX_ENTRIES = 30;
+const TREND_JOKE_HISTORY_ENDING_LENGTH = 48;
+const TREND_JOKE_FULL_SIMILARITY_THRESHOLD = 0.68;
+const TREND_JOKE_ENDING_SIMILARITY_THRESHOLD = 0.72;
 
 async function main() {
   const { configArgv, trendArgs } = splitTrendJokeArgs(process.argv.slice(2));
@@ -59,10 +64,24 @@ async function main() {
       firstNonEmpty(trendEnv.X_BROWSER_POST_TREND_JOKE_TOPIC, null),
   });
 
-  const text =
-    (trendArgs.line ?? trendEnv.X_BROWSER_POST_TREND_JOKE_LINE ?? "").trim() ||
-    prepared.fallbackText;
-  const composedText = validateTrendJokeText(text);
+  const overrideText = (
+    trendArgs.line ??
+    trendEnv.X_BROWSER_POST_TREND_JOKE_LINE ??
+    ""
+  ).trim();
+  const history = await readTrendJokeHistory(config, {
+    strict: config.execute,
+  });
+  const composedText = selectTrendJokeText({
+    candidates: overrideText
+      ? [overrideText]
+      : getPreparedFallbackCandidates(prepared),
+    history,
+    prepared,
+    accountHandle: config.accountHandle,
+    historyPath: getTrendJokeHistoryPath(config),
+    force: trendArgs.forceLocalDuplicate,
+  });
   const localTrendKey = buildLocalTrendKey(config, prepared);
 
   if (config.execute) {
@@ -118,6 +137,10 @@ async function main() {
       prepared,
       composedText,
     });
+    await updateTrendJokeHistory(config, {
+      prepared,
+      composedText,
+    });
     console.log("Posted trend joke via X browser session.");
     if (postedPostURL) {
       console.log(`Posted URL: ${postedPostURL}`);
@@ -131,7 +154,7 @@ async function main() {
     }
     if (postSubmitted) {
       console.error(
-        "The post may have been submitted, but local state was not updated."
+        "The post may have been submitted, but local state/history was not fully updated."
       );
     }
     throw error;
@@ -212,7 +235,7 @@ Options:
   --run-slot <slot>                 Override the local run slot for duplicate guard.
   --max-search-queries <number>     Limit search queries per prepare.
   --max-posts-per-query <number>    Limit posts fetched per query.
-  --force-local-duplicate           Ignore local same-slot duplicate guard.
+  --force-local-duplicate           Ignore local same-slot and recent-history duplicate guards.
   --print-prompt                    Print the Codex writing prompt.
   --login-only                      Open the login Chrome profile.
 `);
@@ -302,6 +325,235 @@ function validateTrendJokeText(text) {
     );
   }
   return trimmed;
+}
+
+function getPreparedFallbackCandidates(prepared) {
+  const candidates = Array.isArray(prepared.fallbackTextCandidates)
+    ? prepared.fallbackTextCandidates
+    : [];
+  const unique = new Set([
+    ...candidates,
+    prepared.fallbackText,
+    prepared.composedText,
+  ]);
+  return Array.from(unique).filter(
+    (candidate) => typeof candidate === "string" && candidate.trim() !== ""
+  );
+}
+
+function selectTrendJokeText({
+  candidates,
+  history,
+  prepared,
+  accountHandle,
+  historyPath,
+  force,
+}) {
+  const validatedCandidates = shuffleArray(
+    Array.from(
+      new Set(candidates.map((candidate) => validateTrendJokeText(candidate)))
+    )
+  );
+  if (validatedCandidates.length === 0) {
+    throw new Error("Trend joke text candidates must not be empty");
+  }
+  if (force) {
+    return validatedCandidates[0];
+  }
+
+  const recentEntries = getRelevantTrendJokeHistoryEntries(
+    history,
+    accountHandle
+  );
+  warnIfTrendJokeTopicRecentlyRepeated({
+    entries: recentEntries,
+    topicKey: prepared.topicKey,
+  });
+  const blocked = [];
+  for (const candidate of validatedCandidates) {
+    const blockReason = findTrendJokeHistoryBlockReason({
+      text: candidate,
+      entries: recentEntries,
+      prepared,
+    });
+    if (!blockReason) {
+      return candidate;
+    }
+    blocked.push({ text: candidate, reason: blockReason });
+  }
+
+  throw new Error(
+    [
+      "All trend joke text candidates were too similar to recent local history.",
+      summarizeBlockedTrendJokeCandidates(blocked),
+      `History file: ${historyPath}`,
+      "Use --force-local-duplicate only if you intentionally want to bypass the local history guard.",
+    ].join("\n")
+  );
+}
+
+function warnIfTrendJokeTopicRecentlyRepeated({ entries, topicKey }) {
+  const sameTopicCount = entries
+    .slice(0, 3)
+    .filter((entry) => entry.topicKey === topicKey).length;
+  if (sameTopicCount >= 2) {
+    console.warn(
+      `Recent trend joke history already contains ${sameTopicCount}/3 posts for topic ${topicKey}.`
+    );
+  }
+}
+
+function getRelevantTrendJokeHistoryEntries(history, accountHandle) {
+  if (!Array.isArray(history.entries)) {
+    return [];
+  }
+  return history.entries.filter((entry) => {
+    if (!entry || typeof entry !== "object") {
+      return false;
+    }
+    return !entry.accountHandle || entry.accountHandle === accountHandle;
+  });
+}
+
+function findTrendJokeHistoryBlockReason({ text, entries, prepared }) {
+  const normalizedText = normalizeTrendJokeText(text);
+  const normalizedEndingText = normalizeTrendJokeText(getEndingText(text));
+  for (const entry of entries) {
+    const entryText = typeof entry.text === "string" ? entry.text : "";
+    const entryNormalizedText =
+      typeof entry.normalizedText === "string" && entry.normalizedText.trim()
+        ? entry.normalizedText
+        : normalizeTrendJokeText(entryText);
+    const entryEndingText =
+      typeof entry.endingText === "string" && entry.endingText.trim()
+        ? entry.endingText
+        : getEndingText(entryText);
+    const entryNormalizedEndingText = normalizeTrendJokeText(entryEndingText);
+
+    if (entryText === text || entryNormalizedText === normalizedText) {
+      return buildTrendJokeHistoryReason("exact text match", entry);
+    }
+
+    const fullSimilarity = calculateTextSimilarity(
+      normalizedText,
+      entryNormalizedText
+    );
+    if (fullSimilarity >= TREND_JOKE_FULL_SIMILARITY_THRESHOLD) {
+      return buildTrendJokeHistoryReason(
+        `similar full text (${fullSimilarity.toFixed(2)})`,
+        entry
+      );
+    }
+
+    if (
+      normalizedEndingText.length >= 12 &&
+      entryNormalizedEndingText.length >= 12
+    ) {
+      const endingSimilarity = calculateTextSimilarity(
+        normalizedEndingText,
+        entryNormalizedEndingText
+      );
+      if (endingSimilarity >= TREND_JOKE_ENDING_SIMILARITY_THRESHOLD) {
+        return buildTrendJokeHistoryReason(
+          `similar ending (${endingSimilarity.toFixed(2)})`,
+          entry
+        );
+      }
+    }
+
+    if (
+      prepared.searchFingerprint &&
+      entry.searchFingerprint === prepared.searchFingerprint &&
+      fullSimilarity >= 0.5
+    ) {
+      return buildTrendJokeHistoryReason(
+        `same search fingerprint with related text (${fullSimilarity.toFixed(
+          2
+        )})`,
+        entry
+      );
+    }
+  }
+  return null;
+}
+
+function buildTrendJokeHistoryReason(reason, entry) {
+  const postedAt = entry.postedAt ? ` postedAt=${entry.postedAt}` : "";
+  const topicKey = entry.topicKey ? ` topic=${entry.topicKey}` : "";
+  return `${reason}${postedAt}${topicKey}`;
+}
+
+function summarizeBlockedTrendJokeCandidates(blocked) {
+  return blocked
+    .slice(0, 5)
+    .map((entry, index) => {
+      const preview = Array.from(entry.text).slice(0, 48).join("");
+      return `- candidate ${index + 1}: ${entry.reason}; "${preview}"`;
+    })
+    .join("\n");
+}
+
+function calculateTextSimilarity(left, right) {
+  if (!left || !right) {
+    return 0;
+  }
+  if (left === right) {
+    return 1;
+  }
+  const leftGrams = makeCharacterBigrams(left);
+  const rightGrams = makeCharacterBigrams(right);
+  if (leftGrams.size === 0 || rightGrams.size === 0) {
+    return 0;
+  }
+  let intersection = 0;
+  for (const gram of leftGrams) {
+    if (rightGrams.has(gram)) {
+      intersection += 1;
+    }
+  }
+  const union = leftGrams.size + rightGrams.size - intersection;
+  return union > 0 ? intersection / union : 0;
+}
+
+function makeCharacterBigrams(value) {
+  const chars = Array.from(value);
+  if (chars.length < 2) {
+    return new Set(chars);
+  }
+  const grams = new Set();
+  for (let index = 0; index < chars.length - 1; index += 1) {
+    grams.add(`${chars[index]}${chars[index + 1]}`);
+  }
+  return grams;
+}
+
+function normalizeTrendJokeText(text) {
+  return Array.from(String(text ?? "").normalize("NFKC").toLowerCase())
+    .filter(
+      (char) =>
+        !/[\s。、，,.!?！？「」『』（）()【】\[\]{}〈〉《》:：;；'"“”‘’…・]/u.test(
+          char
+        )
+    )
+    .join("");
+}
+
+function getEndingText(text) {
+  return Array.from(String(text ?? "").trim())
+    .slice(-TREND_JOKE_HISTORY_ENDING_LENGTH)
+    .join("");
+}
+
+function shuffleArray(values) {
+  const shuffled = [...values];
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const swapIndex = randomInt(index + 1);
+    [shuffled[index], shuffled[swapIndex]] = [
+      shuffled[swapIndex],
+      shuffled[index],
+    ];
+  }
+  return shuffled;
 }
 
 async function loadPlaywright() {
@@ -673,6 +925,103 @@ async function updateTrendJokeState(config, key, { prepared, composedText }) {
   const filePath = getTrendJokeStatePath(config);
   await fs.mkdir(path.dirname(filePath), { recursive: true });
   await fs.writeFile(filePath, JSON.stringify(nextState, null, 2));
+}
+
+async function readTrendJokeHistory(config, { strict }) {
+  const filePath = getTrendJokeHistoryPath(config);
+  try {
+    const text = await fs.readFile(filePath, "utf8");
+    const parsed = JSON.parse(text);
+    if (!parsed || typeof parsed !== "object") {
+      throw new Error("history root must be an object");
+    }
+    if (!Array.isArray(parsed.entries)) {
+      throw new Error("history entries must be an array");
+    }
+    return {
+      version: 1,
+      maxEntries: TREND_JOKE_HISTORY_MAX_ENTRIES,
+      ...parsed,
+      entries: parsed.entries.filter(
+        (entry) => entry && typeof entry === "object"
+      ),
+    };
+  } catch (error) {
+    if (error?.code === "ENOENT") {
+      return createEmptyTrendJokeHistory();
+    }
+    const message = `Trend joke history could not be read: ${
+      error instanceof Error ? error.message : String(error)
+    }`;
+    if (strict) {
+      throw new Error(message);
+    }
+    console.warn(`${message}. Continuing dry-run with empty history.`);
+    return createEmptyTrendJokeHistory();
+  }
+}
+
+async function updateTrendJokeHistory(config, { prepared, composedText }) {
+  const history = await readTrendJokeHistory(config, { strict: true });
+  const entry = buildTrendJokeHistoryEntry(config, {
+    prepared,
+    composedText,
+  });
+  const nextHistory = {
+    version: 1,
+    maxEntries: TREND_JOKE_HISTORY_MAX_ENTRIES,
+    entries: [entry, ...(history.entries ?? [])].slice(
+      0,
+      TREND_JOKE_HISTORY_MAX_ENTRIES
+    ),
+  };
+  await writeJsonFileAtomic(
+    getTrendJokeHistoryPath(config),
+    JSON.stringify(nextHistory, null, 2)
+  );
+}
+
+function buildTrendJokeHistoryEntry(config, { prepared, composedText }) {
+  const text = validateTrendJokeText(composedText);
+  return {
+    postedAt: new Date().toISOString(),
+    accountHandle: config.accountHandle,
+    runDate: prepared.runDate,
+    runSlot: prepared.runSlot,
+    topicKey: prepared.topicKey,
+    queryBundleKey: prepared.queryBundleKey,
+    searchFingerprint: prepared.searchFingerprint,
+    text,
+    normalizedText: normalizeTrendJokeText(text),
+    endingText: getEndingText(text),
+  };
+}
+
+function createEmptyTrendJokeHistory() {
+  return {
+    version: 1,
+    maxEntries: TREND_JOKE_HISTORY_MAX_ENTRIES,
+    entries: [],
+  };
+}
+
+function getTrendJokeHistoryPath(config) {
+  return path.join(
+    config.cwd,
+    "local/x-browser-posting/trend-joke-history.json"
+  );
+}
+
+async function writeJsonFileAtomic(filePath, content) {
+  await fs.mkdir(path.dirname(filePath), { recursive: true });
+  const tempPath = `${filePath}.${process.pid}.${Date.now()}.tmp`;
+  try {
+    await fs.writeFile(tempPath, `${content}\n`);
+    await fs.rename(tempPath, filePath);
+  } catch (error) {
+    await fs.unlink(tempPath).catch(() => {});
+    throw error;
+  }
 }
 
 async function readTrendJokeState(config) {
