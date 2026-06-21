@@ -622,7 +622,7 @@ function safeJsonParse(text) {
 const exitStatus = await runWithLocalLog(
   {
     cwd: process.cwd(),
-    logPrefix: "x-browser-post",
+    automationId: "x-browser-post",
     command: buildLoggedCommand("x:browser-post"),
   },
   main

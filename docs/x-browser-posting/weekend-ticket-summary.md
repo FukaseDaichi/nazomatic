@@ -67,6 +67,7 @@ https://nazomatic.vercel.app/calendar
 | prepare API | `src/app/api/internal/x/browser-post/weekend-ticket-summary/prepare/route.ts` | 集計、文案パターン選択、文案生成用 prompt 返却を行う |
 | local CLI | `scripts/x-browser-post-weekend-ticket-summary.mjs` | prepare、本文入力、確認、投稿、ローカル state 更新をまとめる |
 | ローカル実行 state | `local/x-browser-posting/weekend-summary-state.json` | 同一 PC での当日二重投稿防止に使う。Git 管理外 |
+| ローカルログ | `logs/x-browser-post-weekend-summary/` | CLI 実行ログ。`X_BROWSER_POST_LOG_RETENTION_COUNT` で世代管理する |
 | ローカル scheduler | launchd、手元 cron、または Codex automation | ローカル PC 上で CLI を定期実行する |
 
 GitHub Actions はログイン済みブラウザを持てないため、X への実投稿には使いません。クラウド側は Realtime 収集と内部 API の提供に留めます。
@@ -421,6 +422,7 @@ https://nazomatic.vercel.app/calendar
 - CLI dry-run で X 投稿画面に本文が入ること、投稿ボタンを押さないことを確認する。
 - `interactive` 実投稿は最初の1回だけ手動監視し、ローカル state が更新されることを確認する。
 - 投稿失敗時に投稿済みキーがローカル state に残らないことを確認する。
+- `X_BROWSER_POST_LOG_RETENTION_COUNT` を小さくして複数回 dry-run し、`logs/x-browser-post-weekend-summary/` の古いログだけが削除されることを確認する。
 
 ## 運用メモ
 

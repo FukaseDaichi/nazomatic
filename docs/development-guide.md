@@ -93,6 +93,7 @@ GitHub Actions では `REALTIME_API_TOKEN` secret として同じ値を渡しま
 | `X_BROWSER_POST_TREND_JOKE_MAX_SEARCH_QUERIES` | 1 prepare あたりの検索 query 数上限 |
 | `X_BROWSER_POST_TREND_JOKE_MAX_POSTS_PER_QUERY` | 1 query あたりの取得 post 数上限 |
 | `X_BROWSER_POST_TREND_JOKE_RUN_SLOT` | 1日複数回実行時のローカル二重投稿防止用実行枠。空欄なら CLI が日内連番で自動採番 |
+| `X_BROWSER_POST_LOG_RETENTION_COUNT` | 各ローカルブラウザ投稿 automation の実行ログを残す世代数。未設定時は `10` |
 | `X_BROWSER_POST_MAX_PER_RUN` | 1 実行あたりの投稿上限 |
 | `X_BROWSER_POST_COOLDOWN_MINUTES` | cooldown 分数 |
 | `X_BROWSER_POST_DAILY_LIMIT` | 1 日投稿上限 |
@@ -118,7 +119,13 @@ npm run x:browser-post:trend-joke -- --query-bundle title_aruaru_words --print-p
 
 トレンドネタ投稿も実投稿時は `--execute` を付けます。Firestore は読まず、prepare API が Yahoo!リアルタイム検索を少数回実行し、イベント名サンプルや頻出語から topic とローカル候補文を返します。文案を固定したい場合は `--line` または `X_BROWSER_POST_TREND_JOKE_LINE`、検索 bundle を固定したい場合は `--query-bundle` または `X_BROWSER_POST_TREND_JOKE_QUERY_BUNDLE` を使います。投稿結果は Firestore に保存せず、同一 PC の二重投稿防止用に `local/x-browser-posting/trend-joke-state.json` へ最小限のキーだけ保存します。`--run-slot` を指定しない場合は、CLI がローカル state を見て `slot-1`、`slot-2` のように日内連番で自動採番します。
 
-ローカルブラウザ投稿 CLI は、通常投稿と週末サマリ投稿のどちらも実行ログを Git 管理外の `log/` に保存します。ログには開始時刻、実行コマンド、標準出力、標準エラー、終了時刻、終了ステータスを残します。
+ローカルブラウザ投稿 CLI は、通常投稿、週末サマリ投稿、トレンドネタ投稿の実行ログを Git 管理外の `logs/{automationId}/` に保存します。ログには開始時刻、実行コマンド、標準出力、標準エラー、終了時刻、終了ステータスを残します。`X_BROWSER_POST_LOG_RETENTION_COUNT` で automation ごとの保持世代数を指定でき、未設定時は `10` 世代だけ残します。
+
+| Automation 名 | npm script | ログディレクトリ |
+|---|---|---|
+| NAZOMATIC X 投稿 | `x:browser-post` | `logs/x-browser-post/` |
+| NAZOMATIC X トレンドジョーク投稿 | `x:browser-post:trend-joke` | `logs/x-browser-post-trend-joke/` |
+| NAZOMATIC 週末謎チケサマリ投稿 | `x:browser-post:weekend-summary` | `logs/x-browser-post-weekend-summary/` |
 
 #### 現行 X API 再投稿
 

@@ -41,3 +41,4 @@ next-env.d.ts
 
 # 実行結果
 /log
+/logs
