@@ -72,16 +72,17 @@ async function main() {
   const history = await readTrendJokeHistory(config, {
     strict: config.execute,
   });
-  const composedText = selectTrendJokeText({
-    candidates: overrideText
-      ? [overrideText]
-      : getPreparedFallbackCandidates(prepared),
+  const selected = selectTrendJokeText({
+    candidatePairs: overrideText
+      ? [{ shape: "manual", text: overrideText }]
+      : getPreparedFallbackCandidatePairs(prepared),
     history,
     prepared,
     accountHandle: config.accountHandle,
     historyPath: getTrendJokeHistoryPath(config),
     force: trendArgs.forceLocalDuplicate,
   });
+  const composedText = selected.text;
   const localTrendKey = buildLocalTrendKey(config, prepared);
 
   if (config.execute) {
@@ -106,6 +107,7 @@ async function main() {
     printPreparedTrendJoke({
       prepared,
       composedText,
+      shape: selected.shape,
       verifiedHandle,
       config,
       localTrendKey,
@@ -140,6 +142,7 @@ async function main() {
     await updateTrendJokeHistory(config, {
       prepared,
       composedText,
+      shape: selected.shape,
     });
     console.log("Posted trend joke via X browser session.");
     if (postedPostURL) {
@@ -341,19 +344,40 @@ function getPreparedFallbackCandidates(prepared) {
   );
 }
 
+function getPreparedFallbackCandidatePairs(prepared) {
+  const pairs = Array.isArray(prepared.fallbackCandidates)
+    ? prepared.fallbackCandidates
+    : [];
+  const normalized = pairs
+    .filter(
+      (candidate) =>
+        candidate &&
+        typeof candidate === "object" &&
+        typeof candidate.text === "string" &&
+        candidate.text.trim() !== ""
+    )
+    .map((candidate) => ({
+      shape: typeof candidate.shape === "string" ? candidate.shape : null,
+      text: candidate.text,
+    }));
+  if (normalized.length > 0) {
+    return normalized;
+  }
+  return getPreparedFallbackCandidates(prepared).map((text) => ({
+    shape: null,
+    text,
+  }));
+}
+
 function selectTrendJokeText({
-  candidates,
+  candidatePairs,
   history,
   prepared,
   accountHandle,
   historyPath,
   force,
 }) {
-  const validatedCandidates = shuffleArray(
-    Array.from(
-      new Set(candidates.map((candidate) => validateTrendJokeText(candidate)))
-    )
-  );
+  const validatedCandidates = dedupeTrendJokeCandidatePairs(candidatePairs);
   if (validatedCandidates.length === 0) {
     throw new Error("Trend joke text candidates must not be empty");
   }
@@ -369,17 +393,28 @@ function selectTrendJokeText({
     entries: recentEntries,
     topicKey: prepared.topicKey,
   });
+  const recentShapes = collectRecentTrendJokeShapes(recentEntries);
+  const ordered = orderTrendJokeCandidatesByShape(
+    shuffleArray(validatedCandidates),
+    recentShapes
+  );
+
   const blocked = [];
-  for (const candidate of validatedCandidates) {
+  for (const candidate of ordered) {
     const blockReason = findTrendJokeHistoryBlockReason({
-      text: candidate,
+      text: candidate.text,
       entries: recentEntries,
       prepared,
     });
     if (!blockReason) {
+      if (candidate.shape && recentShapes.has(candidate.shape)) {
+        console.warn(
+          `Selected trend joke reuses recent shape ${candidate.shape}; no fresher-shape candidate survived the history guard.`
+        );
+      }
       return candidate;
     }
-    blocked.push({ text: candidate, reason: blockReason });
+    blocked.push({ text: candidate.text, reason: blockReason });
   }
 
   throw new Error(
@@ -390,6 +425,48 @@ function selectTrendJokeText({
       "Use --force-local-duplicate only if you intentionally want to bypass the local history guard.",
     ].join("\n")
   );
+}
+
+function dedupeTrendJokeCandidatePairs(candidatePairs) {
+  const seen = new Set();
+  const result = [];
+  for (const candidate of candidatePairs ?? []) {
+    const text = validateTrendJokeText(
+      typeof candidate?.text === "string" ? candidate.text : ""
+    );
+    if (seen.has(text)) {
+      continue;
+    }
+    seen.add(text);
+    result.push({
+      shape: typeof candidate?.shape === "string" ? candidate.shape : null,
+      text,
+    });
+  }
+  return result;
+}
+
+function collectRecentTrendJokeShapes(entries, limit = 3) {
+  const shapes = new Set();
+  for (const entry of entries.slice(0, limit)) {
+    if (entry && typeof entry.shape === "string" && entry.shape) {
+      shapes.add(entry.shape);
+    }
+  }
+  return shapes;
+}
+
+function orderTrendJokeCandidatesByShape(candidates, recentShapes) {
+  const fresh = [];
+  const stale = [];
+  for (const candidate of candidates) {
+    if (candidate.shape && recentShapes.has(candidate.shape)) {
+      stale.push(candidate);
+    } else {
+      fresh.push(candidate);
+    }
+  }
+  return [...fresh, ...stale];
 }
 
 function warnIfTrendJokeTopicRecentlyRepeated({ entries, topicKey }) {
@@ -961,11 +1038,12 @@ async function readTrendJokeHistory(config, { strict }) {
   }
 }
 
-async function updateTrendJokeHistory(config, { prepared, composedText }) {
+async function updateTrendJokeHistory(config, { prepared, composedText, shape }) {
   const history = await readTrendJokeHistory(config, { strict: true });
   const entry = buildTrendJokeHistoryEntry(config, {
     prepared,
     composedText,
+    shape,
   });
   const nextHistory = {
     version: 1,
@@ -981,7 +1059,7 @@ async function updateTrendJokeHistory(config, { prepared, composedText }) {
   );
 }
 
-function buildTrendJokeHistoryEntry(config, { prepared, composedText }) {
+function buildTrendJokeHistoryEntry(config, { prepared, composedText, shape }) {
   const text = validateTrendJokeText(composedText);
   return {
     postedAt: new Date().toISOString(),
@@ -991,6 +1069,7 @@ function buildTrendJokeHistoryEntry(config, { prepared, composedText }) {
     topicKey: prepared.topicKey,
     queryBundleKey: prepared.queryBundleKey,
     searchFingerprint: prepared.searchFingerprint,
+    shape: typeof shape === "string" && shape ? shape : null,
     text,
     normalizedText: normalizeTrendJokeText(text),
     endingText: getEndingText(text),
@@ -1082,6 +1161,7 @@ function buildLocalTrendKey(config, prepared) {
 function printPreparedTrendJoke({
   prepared,
   composedText,
+  shape,
   verifiedHandle,
   config,
   localTrendKey,
@@ -1094,6 +1174,7 @@ function printPreparedTrendJoke({
   console.log(`Query bundle: ${prepared.queryBundleKey}`);
   console.log(`Queries: ${prepared.searchQueries.join(" / ")}`);
   console.log(`Topic: ${prepared.topicKey} (${prepared.topicLabel})`);
+  console.log(`Shape: ${shape ?? "(none)"}`);
   console.log(`Search fingerprint: ${prepared.searchFingerprint}`);
   console.log(`Local key: ${localTrendKey}`);
   console.log("");
