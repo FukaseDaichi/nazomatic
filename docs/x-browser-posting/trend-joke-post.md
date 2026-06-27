@@ -489,7 +489,7 @@ validator は server (`src/server/x-browser-posting/trend-joke-post.ts`) と CLI
 | 冗談の方向       | 参加者や作品ではなく、自分自身・予定表・カレンダー・通知欄・自分の心理に向ける                                                           |
 | 文字数の目安     | 無料アカウント上限（日本語 140 字）以内。目安 40〜90 字。長文化を狙わず簡潔・即解を優先する                                              |
 
-文案生成 provider を接続する場合、下段のルールはコードだけでは守られません。初期運用では `interactive` 確認を必須にし、品質確認後に自動確認へ進めます。provider 生成文を `CONFIRMATION_MODE=auto` で投稿するには、既存の `X_BROWSER_POST_AUTO_EXECUTE_ALLOWED=true` に加えて `X_BROWSER_POST_TREND_JOKE_PROVIDER_AUTO_APPROVE=true` も必要です。
+文案生成 provider を接続する場合、下段のルールはコードだけでは守られません。初期運用では `interactive` 確認を必須にし、品質確認後に自動確認へ進めます。provider 生成文を `CONFIRMATION_MODE=auto` で投稿するには、既存の `X_BROWSER_POST_AUTO_EXECUTE_ALLOWED=true` に加えて `X_BROWSER_POST_TREND_JOKE_PROVIDER_AUTO_APPROVE=true` も必要です。CLI 内部では `auto` が `unattended` として扱われますが、この追加ロック要件は同じです。
 
 検査に失敗した場合は、再生成するか別の fallback 候補に戻します。すべての候補が失敗する場合は投稿しません。
 

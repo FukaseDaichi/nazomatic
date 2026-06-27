@@ -6,7 +6,7 @@ export default function Prefectures() {
   return (
     <>
       <ArticleHeaderComponent />
-      <Article index={4} />
+      <Article index={3} />
       <PrefectureSearchTableComponent />
     </>
   );
