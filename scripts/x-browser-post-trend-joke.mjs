@@ -2,6 +2,7 @@
 
 import fs from "fs/promises";
 import fsSync from "fs";
+import os from "os";
 import path from "path";
 import { spawn } from "child_process";
 import { randomInt } from "crypto";
@@ -19,11 +20,27 @@ import {
 } from "./x-browser-posting/xComposerPage.mjs";
 import { runWithLocalLog } from "./x-browser-posting/runLog.mjs";
 
-const MAX_TREND_JOKE_TEXT_LENGTH = 240;
+const MAX_TREND_JOKE_WEIGHTED_LENGTH = 280;
+const MAX_TREND_JOKE_NEWLINES = 4;
 const TREND_JOKE_HISTORY_MAX_ENTRIES = 30;
 const TREND_JOKE_HISTORY_ENDING_LENGTH = 48;
 const TREND_JOKE_FULL_SIMILARITY_THRESHOLD = 0.68;
 const TREND_JOKE_ENDING_SIMILARITY_THRESHOLD = 0.72;
+const DEFAULT_TREND_JOKE_PROVIDER_TIMEOUT_MS = 120000;
+const DEFAULT_TREND_JOKE_PROVIDER_ATTEMPTS = 2;
+const TREND_JOKE_PROVIDER_OUTPUT_LIMIT_BYTES = 64 * 1024;
+const TREND_JOKE_KNOWN_SHAPES = new Set([
+  "sugari",
+  "suneru",
+  "midnight",
+  "false_hope",
+  "heavy_love",
+  "void",
+  "jealousy",
+  "fake_calm",
+  "mood_swing",
+  "defiance",
+]);
 
 async function main() {
   const { configArgv, trendArgs } = splitTrendJokeArgs(process.argv.slice(2));
@@ -39,6 +56,10 @@ async function main() {
   }
 
   const trendEnv = readTrendEnv(config);
+  const copyProvider = resolveTrendJokeCopyProvider({
+    trendArgs,
+    trendEnv,
+  });
   const requestedRunSlot =
     trendArgs.runSlot ??
     firstNonEmpty(trendEnv.X_BROWSER_POST_TREND_JOKE_RUN_SLOT, null);
@@ -72,18 +93,17 @@ async function main() {
   const history = await readTrendJokeHistory(config, {
     strict: config.execute,
   });
-  const selected = selectTrendJokeText({
-    candidatePairs: overrideText
-      ? [{ shape: "manual", text: overrideText }]
-      : getPreparedFallbackCandidatePairs(prepared),
+  const selected = await selectTrendJokeCopy({
+    config,
+    copyProvider,
+    overrideText,
     history,
     prepared,
-    accountHandle: config.accountHandle,
-    historyPath: getTrendJokeHistoryPath(config),
     force: trendArgs.forceLocalDuplicate,
   });
   const composedText = selected.text;
   const localTrendKey = buildLocalTrendKey(config, prepared);
+  assertTrendJokeCopyAutoSafety({ config, trendEnv, selected });
 
   if (config.execute) {
     await assertLocalRateLimit(config);
@@ -108,6 +128,7 @@ async function main() {
       prepared,
       composedText,
       shape: selected.shape,
+      copySource: selected.source,
       verifiedHandle,
       config,
       localTrendKey,
@@ -138,11 +159,13 @@ async function main() {
     await updateTrendJokeState(config, localTrendKey, {
       prepared,
       composedText,
+      copySource: selected.source,
     });
     await updateTrendJokeHistory(config, {
       prepared,
       composedText,
       shape: selected.shape,
+      copySource: selected.source,
     });
     console.log("Posted trend joke via X browser session.");
     if (postedPostURL) {
@@ -179,6 +202,11 @@ function splitTrendJokeArgs(argv) {
     maxSearchQueries: null,
     maxPostsPerQuery: null,
     topicKey: null,
+    copyProvider: null,
+    copyProviderCommand: null,
+    copyProviderTimeoutMs: null,
+    copyProviderAttempts: null,
+    codexModel: null,
     forceLocalDuplicate: false,
     printPrompt: false,
     help: false,
@@ -210,6 +238,21 @@ function splitTrendJokeArgs(argv) {
     } else if (arg === "--topic") {
       trendArgs.topicKey = readRequiredArg(argv, index, arg);
       index += 1;
+    } else if (arg === "--copy-provider") {
+      trendArgs.copyProvider = readRequiredArg(argv, index, arg);
+      index += 1;
+    } else if (arg === "--copy-provider-command") {
+      trendArgs.copyProviderCommand = readRequiredArg(argv, index, arg);
+      index += 1;
+    } else if (arg === "--copy-provider-timeout-ms") {
+      trendArgs.copyProviderTimeoutMs = readIntegerArg(argv, index, arg);
+      index += 1;
+    } else if (arg === "--copy-provider-attempts") {
+      trendArgs.copyProviderAttempts = readIntegerArg(argv, index, arg);
+      index += 1;
+    } else if (arg === "--codex-model") {
+      trendArgs.codexModel = readRequiredArg(argv, index, arg);
+      index += 1;
     } else if (arg === "--force-local-duplicate") {
       trendArgs.forceLocalDuplicate = true;
     } else if (arg === "--print-prompt") {
@@ -230,7 +273,7 @@ function printHelp() {
 
 Options:
   --execute                         Submit the post. Omit for dry-run.
-  --line <text>                     Override the generated one-line post.
+  --line <text>                     Override the generated post text.
   --query-bundle <key>              event_title_general | ticket_title_window | companion_title_window | title_aruaru_words | weekend_title_window
   --query <text>                    Override/add a search query. Can be repeated.
   --topic <topic>                   Override topic when available.
@@ -238,6 +281,11 @@ Options:
   --run-slot <slot>                 Override the local run slot for duplicate guard.
   --max-search-queries <number>     Limit search queries per prepare.
   --max-posts-per-query <number>    Limit posts fetched per query.
+  --copy-provider <provider>        fallback | codex | command. Defaults to fallback.
+  --copy-provider-command <command> Command provider shell command. Reads JSON from stdin.
+  --copy-provider-timeout-ms <ms>   Timeout for codex/command copy generation.
+  --copy-provider-attempts <number> Provider attempts before falling back.
+  --codex-model <model>             Optional model for the codex provider.
   --force-local-duplicate           Ignore local same-slot and recent-history duplicate guards.
   --print-prompt                    Print the Codex writing prompt.
   --login-only                      Open the login Chrome profile.
@@ -300,18 +348,484 @@ async function postJson(config, pathname, payload) {
   return { status: response.status, body };
 }
 
+function resolveTrendJokeCopyProvider({ trendArgs, trendEnv }) {
+  const kind = String(
+    firstNonEmpty(
+      trendArgs.copyProvider,
+      trendEnv.X_BROWSER_POST_TREND_JOKE_COPY_PROVIDER,
+      "fallback"
+    )
+  )
+    .trim()
+    .toLowerCase();
+  if (!["fallback", "codex", "command"].includes(kind)) {
+    throw new Error(
+      "X_BROWSER_POST_TREND_JOKE_COPY_PROVIDER must be fallback, codex, or command"
+    );
+  }
+
+  const timeoutMs = clampInteger(
+    trendArgs.copyProviderTimeoutMs ??
+      readIntegerOrNull(
+        trendEnv.X_BROWSER_POST_TREND_JOKE_PROVIDER_TIMEOUT_MS
+      ) ??
+      DEFAULT_TREND_JOKE_PROVIDER_TIMEOUT_MS,
+    5000,
+    600000
+  );
+  const attempts = clampInteger(
+    trendArgs.copyProviderAttempts ??
+      readIntegerOrNull(
+        trendEnv.X_BROWSER_POST_TREND_JOKE_PROVIDER_ATTEMPTS
+      ) ??
+      DEFAULT_TREND_JOKE_PROVIDER_ATTEMPTS,
+    1,
+    3
+  );
+  const command = firstNonEmpty(
+    trendArgs.copyProviderCommand,
+    trendEnv.X_BROWSER_POST_TREND_JOKE_PROVIDER_COMMAND,
+    ""
+  );
+  if (kind === "command" && !command) {
+    throw new Error(
+      "X_BROWSER_POST_TREND_JOKE_PROVIDER_COMMAND is required when copy provider is command"
+    );
+  }
+
+  return {
+    kind,
+    command,
+    timeoutMs,
+    attempts,
+    codexModel: firstNonEmpty(
+      trendArgs.codexModel,
+      trendEnv.X_BROWSER_POST_TREND_JOKE_CODEX_MODEL,
+      ""
+    ),
+  };
+}
+
+async function selectTrendJokeCopy({
+  config,
+  copyProvider,
+  overrideText,
+  history,
+  prepared,
+  force,
+}) {
+  const historyPath = getTrendJokeHistoryPath(config);
+  const commonSelectionParams = {
+    history,
+    prepared,
+    accountHandle: config.accountHandle,
+    historyPath,
+    force,
+  };
+
+  if (overrideText) {
+    return selectTrendJokeText({
+      ...commonSelectionParams,
+      candidatePairs: [{ source: "manual", shape: "manual", text: overrideText }],
+    });
+  }
+
+  const generatedCandidates = await generateTrendJokeProviderCandidates({
+    config,
+    copyProvider,
+    prepared,
+  });
+  if (generatedCandidates.length > 0) {
+    try {
+      return selectTrendJokeText({
+        ...commonSelectionParams,
+        candidatePairs: generatedCandidates,
+      });
+    } catch (error) {
+      console.warn(
+        `Generated trend joke copy was rejected by local history guard: ${formatErrorMessage(
+          error
+        )}`
+      );
+      console.warn("Falling back to local trend joke candidates.");
+    }
+  }
+
+  return selectTrendJokeText({
+    ...commonSelectionParams,
+    candidatePairs: getPreparedFallbackCandidatePairs(prepared).map(
+      (candidate) => ({
+        source: "fallback",
+        ...candidate,
+      })
+    ),
+  });
+}
+
+async function generateTrendJokeProviderCandidates({
+  config,
+  copyProvider,
+  prepared,
+}) {
+  if (copyProvider.kind === "fallback") {
+    return [];
+  }
+
+  let previousError = "";
+  for (let attempt = 1; attempt <= copyProvider.attempts; attempt += 1) {
+    try {
+      const prompt = buildTrendJokeProviderPrompt({
+        prepared,
+        attempt,
+        previousError,
+      });
+      const rawOutput =
+        copyProvider.kind === "codex"
+          ? await runCodexTrendJokeProvider(config, copyProvider, prompt)
+          : await runCommandTrendJokeProvider(config, copyProvider, {
+              prompt,
+              prepared,
+            });
+      const generated = parseTrendJokeProviderOutput(rawOutput);
+      const text = validateTrendJokeText(generated.text);
+      const shape = normalizeTrendJokeProviderShape(generated.shape);
+      console.log(
+        `Generated trend joke copy via ${copyProvider.kind} provider (attempt ${attempt}).`
+      );
+      return [
+        {
+          source: copyProvider.kind,
+          shape,
+          text,
+        },
+      ];
+    } catch (error) {
+      previousError = formatErrorMessage(error);
+      console.warn(
+        `Trend joke copy provider ${copyProvider.kind} attempt ${attempt} failed: ${previousError}`
+      );
+    }
+  }
+
+  console.warn(
+    `Trend joke copy provider ${copyProvider.kind} failed; using local fallback candidates.`
+  );
+  return [];
+}
+
+function buildTrendJokeProviderPrompt({ prepared, attempt, previousError }) {
+  return [
+    "次の文案生成プロンプトに従い、X投稿文を1つだけ作ってください。",
+    "返答は JSON オブジェクトだけにしてください。Markdown、説明文、コードフェンスは禁止です。",
+    '形式: {"text":"投稿文","shape":"sugari"}',
+    `shape は次のどれか: ${Array.from(TREND_JOKE_KNOWN_SHAPES).join(
+      " / "
+    )}`,
+    "text は validator に通る必要があります。URL、hashtag、mention、emoji は入れないでください。",
+    "検索材料は今日のスイッチにすぎません。主役は投稿人格の情緒です。",
+    previousError
+      ? `前回の失敗理由: ${previousError}。この問題を直して再生成してください。`
+      : "",
+    `attempt: ${attempt}`,
+    "",
+    "文案生成プロンプト:",
+    prepared.copyPrompt,
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
+async function runCodexTrendJokeProvider(config, copyProvider, prompt) {
+  const tempDir = await fs.mkdtemp(
+    path.join(os.tmpdir(), "nazomatic-trend-joke-")
+  );
+  const outputPath = path.join(tempDir, "codex-output.json");
+  const schemaPath = path.join(tempDir, "codex-output-schema.json");
+  try {
+    await fs.writeFile(
+      schemaPath,
+      JSON.stringify(buildTrendJokeProviderOutputSchema(), null, 2)
+    );
+    const args = ["exec"];
+    if (copyProvider.codexModel) {
+      args.push("--model", copyProvider.codexModel);
+    }
+    args.push(
+      "--cd",
+      config.cwd,
+      "--sandbox",
+      "read-only",
+      "--ask-for-approval",
+      "never",
+      "--ephemeral",
+      "--output-schema",
+      schemaPath,
+      "--output-last-message",
+      outputPath,
+      "-"
+    );
+    const result = await runChildProcess("codex", args, {
+      cwd: config.cwd,
+      input: prompt,
+      timeoutMs: copyProvider.timeoutMs,
+    });
+    if (result.exitCode !== 0) {
+      throw new Error(
+        `codex exited with ${result.exitCode}: ${result.stderr || result.stdout}`
+      );
+    }
+    const output = await fs.readFile(outputPath, "utf8").catch(() => "");
+    return output.trim() || result.stdout;
+  } finally {
+    await fs.rm(tempDir, { recursive: true, force: true }).catch(() => {});
+  }
+}
+
+async function runCommandTrendJokeProvider(config, copyProvider, payload) {
+  const result = await runChildProcess(copyProvider.command, [], {
+    cwd: config.cwd,
+    input: JSON.stringify(
+      {
+        prompt: payload.prompt,
+        copyPrompt: payload.prepared.copyPrompt,
+        prepared: buildTrendJokeProviderPayload(payload.prepared),
+      },
+      null,
+      2
+    ),
+    timeoutMs: copyProvider.timeoutMs,
+    shell: true,
+    env: {
+      ...process.env,
+      X_BROWSER_POST_TREND_JOKE_COPY_PROMPT: payload.prompt,
+    },
+  });
+  if (result.exitCode !== 0) {
+    throw new Error(
+      `provider command exited with ${result.exitCode}: ${
+        result.stderr || result.stdout
+      }`
+    );
+  }
+  return result.stdout;
+}
+
+function buildTrendJokeProviderOutputSchema() {
+  return {
+    $schema: "https://json-schema.org/draft/2020-12/schema",
+    type: "object",
+    additionalProperties: false,
+    required: ["text"],
+    properties: {
+      text: {
+        type: "string",
+        minLength: 1,
+      },
+      shape: {
+        type: "string",
+        enum: Array.from(TREND_JOKE_KNOWN_SHAPES),
+      },
+    },
+  };
+}
+
+function buildTrendJokeProviderPayload(prepared) {
+  return {
+    runDate: prepared.runDate,
+    runSlot: prepared.runSlot,
+    queryBundleKey: prepared.queryBundleKey,
+    searchQueries: prepared.searchQueries,
+    topicKey: prepared.topicKey,
+    topicLabel: prepared.topicLabel,
+    trendSummary: prepared.trendSummary,
+    signals: prepared.signals,
+    sampleTicketTitles: prepared.sampleTicketTitles,
+    frequentTitleWords: prepared.frequentTitleWords,
+    searchFingerprint: prepared.searchFingerprint,
+  };
+}
+
+function parseTrendJokeProviderOutput(rawOutput) {
+  const output = stripJsonCodeFence(String(rawOutput ?? "").trim());
+  if (!output) {
+    throw new Error("provider output was empty");
+  }
+
+  const jsonText = extractJsonObject(output);
+  if (jsonText) {
+    const parsed = safeJsonParse(jsonText);
+    if (
+      parsed &&
+      typeof parsed === "object" &&
+      typeof parsed.text === "string"
+    ) {
+      return {
+        text: parsed.text,
+        shape: typeof parsed.shape === "string" ? parsed.shape : null,
+      };
+    }
+  }
+
+  return {
+    text: output,
+    shape: null,
+  };
+}
+
+function stripJsonCodeFence(value) {
+  const match = /^```(?:json)?\s*([\s\S]*?)\s*```$/i.exec(value);
+  return match ? match[1].trim() : value;
+}
+
+function extractJsonObject(value) {
+  const first = value.indexOf("{");
+  const last = value.lastIndexOf("}");
+  if (first === -1 || last === -1 || last <= first) {
+    return null;
+  }
+  return value.slice(first, last + 1);
+}
+
+function normalizeTrendJokeProviderShape(shape) {
+  if (typeof shape !== "string") {
+    return null;
+  }
+  const normalized = shape.trim();
+  return TREND_JOKE_KNOWN_SHAPES.has(normalized) ? normalized : null;
+}
+
+function assertTrendJokeCopyAutoSafety({ config, trendEnv, selected }) {
+  if (
+    !config.execute ||
+    config.confirmationMode !== "auto" ||
+    selected.source === "fallback" ||
+    selected.source === "manual"
+  ) {
+    return;
+  }
+
+  if (
+    readBooleanEnv(
+      trendEnv.X_BROWSER_POST_TREND_JOKE_PROVIDER_AUTO_APPROVE,
+      false
+    )
+  ) {
+    return;
+  }
+
+  throw new Error(
+    [
+      "Generated provider copy cannot be auto-posted unless X_BROWSER_POST_TREND_JOKE_PROVIDER_AUTO_APPROVE=true.",
+      "Keep X_BROWSER_POST_CONFIRMATION_MODE=interactive for initial monitoring, or enable the extra lock after reviewing provider output quality.",
+    ].join("\n")
+  );
+}
+
+function runChildProcess(
+  command,
+  args,
+  { cwd, input, timeoutMs, shell = false, env = process.env }
+) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(command, args, {
+      cwd,
+      env,
+      shell,
+      stdio: ["pipe", "pipe", "pipe"],
+    });
+    let stdout = "";
+    let stderr = "";
+    let settled = false;
+    let timedOut = false;
+
+    const finishReject = (error) => {
+      if (settled) {
+        return;
+      }
+      settled = true;
+      reject(error);
+    };
+
+    const timeout = setTimeout(() => {
+      timedOut = true;
+      child.kill("SIGTERM");
+    }, timeoutMs);
+
+    const append = (streamName, chunk) => {
+      const value = chunk.toString("utf8");
+      if (streamName === "stdout") {
+        stdout += value;
+      } else {
+        stderr += value;
+      }
+      if (
+        Buffer.byteLength(stdout) + Buffer.byteLength(stderr) >
+        TREND_JOKE_PROVIDER_OUTPUT_LIMIT_BYTES
+      ) {
+        child.kill("SIGTERM");
+        finishReject(new Error("provider output exceeded local size limit"));
+      }
+    };
+
+    child.stdout.on("data", (chunk) => append("stdout", chunk));
+    child.stderr.on("data", (chunk) => append("stderr", chunk));
+    child.on("error", (error) => {
+      clearTimeout(timeout);
+      finishReject(error);
+    });
+    child.on("close", (code, signal) => {
+      clearTimeout(timeout);
+      if (settled) {
+        return;
+      }
+      settled = true;
+      if (timedOut) {
+        reject(new Error(`provider timed out after ${timeoutMs}ms`));
+        return;
+      }
+      resolve({
+        exitCode: code ?? (signal ? 1 : 0),
+        signal,
+        stdout,
+        stderr,
+      });
+    });
+
+    child.stdin.on("error", () => {});
+    child.stdin.end(input);
+  });
+}
+
+function formatErrorMessage(error) {
+  return error instanceof Error ? error.message : String(error);
+}
+
+// X の重み付け文字数の近似。server (trend-joke-post.ts) と同じルール。
+// 0x10FF 以下（半角英数・改行など）は 1、それ以外（全角・かな・漢字・絵文字）は 2。
+function weightedTextLength(text) {
+  let weight = 0;
+  for (const char of text) {
+    const codePoint = char.codePointAt(0) ?? 0;
+    weight += codePoint <= 0x10ff ? 1 : 2;
+  }
+  return weight;
+}
+
 function validateTrendJokeText(text) {
-  const trimmed = text.trim();
+  const trimmed = String(text).replace(/\r\n?/g, "\n").trim();
   if (!trimmed) {
     throw new Error("Trend joke text must not be empty");
   }
-  if (Array.from(trimmed).length >= MAX_TREND_JOKE_TEXT_LENGTH) {
+  if (weightedTextLength(trimmed) > MAX_TREND_JOKE_WEIGHTED_LENGTH) {
     throw new Error(
-      `Trend joke text must be fewer than ${MAX_TREND_JOKE_TEXT_LENGTH} characters`
+      `Trend joke text must not exceed ${MAX_TREND_JOKE_WEIGHTED_LENGTH} weighted characters`
     );
   }
-  if (/[\r\n]/.test(trimmed)) {
-    throw new Error("Trend joke text must be one line");
+  if (/\n{3,}/.test(trimmed)) {
+    throw new Error("Trend joke text must not contain more than one blank line");
+  }
+  if ((trimmed.match(/\n/g)?.length ?? 0) > MAX_TREND_JOKE_NEWLINES) {
+    throw new Error("Trend joke text must not contain too many line breaks");
   }
   if (/https?:\/\//i.test(trimmed)) {
     throw new Error("Trend joke text must not contain URLs");
@@ -394,9 +908,14 @@ function selectTrendJokeText({
     topicKey: prepared.topicKey,
   });
   const recentShapes = collectRecentTrendJokeShapes(recentEntries);
+  const lastShape =
+    recentEntries.length > 0 && typeof recentEntries[0].shape === "string"
+      ? recentEntries[0].shape
+      : null;
   const ordered = orderTrendJokeCandidatesByShape(
     shuffleArray(validatedCandidates),
-    recentShapes
+    recentShapes,
+    lastShape
   );
 
   const blocked = [];
@@ -439,6 +958,10 @@ function dedupeTrendJokeCandidatePairs(candidatePairs) {
     }
     seen.add(text);
     result.push({
+      source:
+        typeof candidate?.source === "string" && candidate.source
+          ? candidate.source
+          : "fallback",
       shape: typeof candidate?.shape === "string" ? candidate.shape : null,
       text,
     });
@@ -456,17 +979,32 @@ function collectRecentTrendJokeShapes(entries, limit = 3) {
   return shapes;
 }
 
-function orderTrendJokeCandidatesByShape(candidates, recentShapes) {
-  const fresh = [];
-  const stale = [];
-  for (const candidate of candidates) {
+// 湿っぽい温度。直前がこれらだった場合、連投を避けるため後回しにする。
+const TREND_JOKE_WET_SHAPES = new Set(["void", "heavy_love"]);
+
+function orderTrendJokeCandidatesByShape(candidates, recentShapes, lastShape) {
+  const lastWasWet = Boolean(
+    lastShape && TREND_JOKE_WET_SHAPES.has(lastShape)
+  );
+  const penalty = (candidate) => {
+    let score = 0;
     if (candidate.shape && recentShapes.has(candidate.shape)) {
-      stale.push(candidate);
-    } else {
-      fresh.push(candidate);
+      score += 2; // 直近 3 件で使った温度は後回し
     }
-  }
-  return [...fresh, ...stale];
+    if (
+      lastWasWet &&
+      candidate.shape &&
+      TREND_JOKE_WET_SHAPES.has(candidate.shape)
+    ) {
+      score += 1; // 湿っぽい温度の連投を避ける
+    }
+    return score;
+  };
+  // 入力は shuffle 済み。index を tiebreak にして同スコア内のランダム性を保つ。
+  return candidates
+    .map((candidate, index) => ({ candidate, index, score: penalty(candidate) }))
+    .sort((a, b) => a.score - b.score || a.index - b.index)
+    .map((entry) => entry.candidate);
 }
 
 function warnIfTrendJokeTopicRecentlyRepeated({ entries, topicKey }) {
@@ -983,7 +1521,11 @@ async function assertTrendJokeNotPosted(config, key, { force }) {
   }
 }
 
-async function updateTrendJokeState(config, key, { prepared, composedText }) {
+async function updateTrendJokeState(
+  config,
+  key,
+  { prepared, composedText, copySource }
+) {
   const state = await readTrendJokeState(config);
   const nextState = {
     ...state,
@@ -994,6 +1536,7 @@ async function updateTrendJokeState(config, key, { prepared, composedText }) {
         queryBundleKey: prepared.queryBundleKey,
         topicKey: prepared.topicKey,
         searchFingerprint: prepared.searchFingerprint,
+        copySource: copySource ?? "fallback",
         textLength: Array.from(composedText).length,
       },
     },
@@ -1038,12 +1581,16 @@ async function readTrendJokeHistory(config, { strict }) {
   }
 }
 
-async function updateTrendJokeHistory(config, { prepared, composedText, shape }) {
+async function updateTrendJokeHistory(
+  config,
+  { prepared, composedText, shape, copySource }
+) {
   const history = await readTrendJokeHistory(config, { strict: true });
   const entry = buildTrendJokeHistoryEntry(config, {
     prepared,
     composedText,
     shape,
+    copySource,
   });
   const nextHistory = {
     version: 1,
@@ -1059,7 +1606,10 @@ async function updateTrendJokeHistory(config, { prepared, composedText, shape })
   );
 }
 
-function buildTrendJokeHistoryEntry(config, { prepared, composedText, shape }) {
+function buildTrendJokeHistoryEntry(
+  config,
+  { prepared, composedText, shape, copySource }
+) {
   const text = validateTrendJokeText(composedText);
   return {
     postedAt: new Date().toISOString(),
@@ -1069,6 +1619,7 @@ function buildTrendJokeHistoryEntry(config, { prepared, composedText, shape }) {
     topicKey: prepared.topicKey,
     queryBundleKey: prepared.queryBundleKey,
     searchFingerprint: prepared.searchFingerprint,
+    copySource: copySource ?? "fallback",
     shape: typeof shape === "string" && shape ? shape : null,
     text,
     normalizedText: normalizeTrendJokeText(text),
@@ -1162,6 +1713,7 @@ function printPreparedTrendJoke({
   prepared,
   composedText,
   shape,
+  copySource,
   verifiedHandle,
   config,
   localTrendKey,
@@ -1174,6 +1726,7 @@ function printPreparedTrendJoke({
   console.log(`Query bundle: ${prepared.queryBundleKey}`);
   console.log(`Queries: ${prepared.searchQueries.join(" / ")}`);
   console.log(`Topic: ${prepared.topicKey} (${prepared.topicLabel})`);
+  console.log(`Copy source: ${copySource ?? "fallback"}`);
   console.log(`Shape: ${shape ?? "(none)"}`);
   console.log(`Search fingerprint: ${prepared.searchFingerprint}`);
   console.log(`Local key: ${localTrendKey}`);
@@ -1262,6 +1815,9 @@ function readSearchQueries(value) {
 }
 
 function readIntegerOrNull(value) {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return Math.floor(value);
+  }
   if (typeof value !== "string" || value.trim() === "") {
     return null;
   }
@@ -1270,6 +1826,31 @@ function readIntegerOrNull(value) {
     return null;
   }
   return Math.floor(parsed);
+}
+
+function clampInteger(value, min, max) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) {
+    return min;
+  }
+  return Math.min(max, Math.max(min, Math.floor(parsed)));
+}
+
+function readBooleanEnv(value, fallback) {
+  if (typeof value === "boolean") {
+    return value;
+  }
+  if (typeof value !== "string" || value.trim() === "") {
+    return fallback;
+  }
+  const normalized = value.trim().toLowerCase();
+  if (["1", "true", "yes", "on"].includes(normalized)) {
+    return true;
+  }
+  if (["0", "false", "no", "off"].includes(normalized)) {
+    return false;
+  }
+  return fallback;
 }
 
 function safeJsonParse(text) {
