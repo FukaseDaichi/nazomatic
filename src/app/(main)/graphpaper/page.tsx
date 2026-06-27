@@ -6,7 +6,7 @@ export default function GraphPaper() {
   return (
     <>
       <ArticleHeaderComponent />
-      <Article index={3} />
+      <Article index={4} />
       <GraphPaperComponent />
     </>
   );
