@@ -12,7 +12,7 @@ export const DEFAULT_CHROME_EXECUTABLE_PATH =
   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 export const DEFAULT_REMOTE_DEBUGGING_PORT = 9222;
 export const DEFAULT_CHROME_STARTUP_TIMEOUT_MS = 20000;
-export const MIN_COOLDOWN_MINUTES = 30;
+export const MIN_COOLDOWN_MINUTES = 3;
 export const MAX_DAILY_LIMIT = 30;
 export const MAX_PER_RUN = 1;
 
