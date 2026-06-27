@@ -695,9 +695,12 @@ function normalizeTrendJokeProviderShape(shape) {
 }
 
 function assertTrendJokeCopyAutoSafety({ config, trendEnv, selected }) {
+  const isUnattendedPost =
+    config.confirmationMode === "auto" ||
+    config.confirmationMode === "unattended";
   if (
     !config.execute ||
-    config.confirmationMode !== "auto" ||
+    !isUnattendedPost ||
     selected.source === "fallback" ||
     selected.source === "manual"
   ) {
