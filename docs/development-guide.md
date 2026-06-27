@@ -64,20 +64,28 @@ GitHub Actions では `REALTIME_API_TOKEN` secret として同じ値を渡しま
 
 現行の `x-repost-events.yml` は X API を使う実装です。X API を使わずローカルのログイン済みブラウザセッションで投稿する実装は `npm run x:browser-post` から実行し、詳細は `docs/x-browser-posting/design.md` に置きます。
 
-#### ローカルブラウザ投稿案
+#### ローカルブラウザ投稿
 
 ローカルブラウザ投稿では、X の認証情報ではなく、投稿を許可するアカウント handle や確認モードだけを Git 管理外の `.env.x-browser-posting.local` に置きます。`storage state` や `user data dir` は認証済みセッション相当の秘密情報として扱います。
 
 | 変数 | 用途 |
 |---|---|
 | `X_BROWSER_POST_ACCOUNT_HANDLE` | 投稿を許可する X handle。ログイン中アカウント照合に使う |
+| `X_BROWSER_POST_HASHTAG` | 個別イベント引用投稿の対象 hashtag。未設定時は `#謎チケ売ります` |
+| `X_BROWSER_POST_API_BASE_URL` | ローカル CLI が呼び出す API origin。未設定時は `REALTIME_API_BASE_URL`、`NEXT_PUBLIC_BASE_URL`、`http://localhost:3000` の順に使う |
+| `X_BROWSER_POST_INTERNAL_TOKEN` | ローカル CLI が内部 API に送る Bearer token。未設定時は `REALTIME_INTERNAL_API_TOKEN` または `REALTIME_API_TOKEN` を使う |
 | `X_BROWSER_POST_STORAGE_STATE` | Playwright storage state path |
 | `X_BROWSER_POST_USER_DATA_DIR` | Playwright persistent context の user data dir |
+| `X_BROWSER_POST_BROWSER_CHANNEL` | Playwright が使う browser channel。通常 Chrome を使う場合は `chrome` |
 | `X_BROWSER_POST_CHROME_EXECUTABLE_PATH` | 通常 Chrome の実行ファイル path。`--login-only` ではこれを直接起動する |
 | `X_BROWSER_POST_CDP_URL` | 起動済み通常 Chrome へ接続する DevTools URL |
 | `X_BROWSER_POST_REMOTE_DEBUGGING_PORT` | `--login-only` で通常 Chrome を起動するときの remote debugging port |
 | `X_BROWSER_POST_AUTO_START_CHROME` | CDP 接続できないときに通常 Chrome を自動起動するか。既定 `true` |
+| `X_BROWSER_POST_CHROME_STARTUP_TIMEOUT_MS` | Chrome 自動起動後に CDP 接続を待つ最大時間。既定 `20000` |
 | `X_BROWSER_POST_CLEANUP_COMPOSE_TABS` | 実行開始時に古い X 投稿作成タブを閉じるか。既定 `true` |
+| `X_BROWSER_POST_HEADLESS` | Playwright 実行を headless にするか。既定 `false` |
+| `X_BROWSER_POST_KEEP_OPEN` | 実行後にブラウザを開いたままにするか。既定 `false` |
+| `X_BROWSER_POST_RESERVED_BY` | Firestore lease の `reservedBy` に入れるローカル識別子。未設定時は `user@hostname` |
 | `X_BROWSER_POST_REQUIRE_CONFIRMATION` | 投稿前確認を要求するか。既定 `true` |
 | `X_BROWSER_POST_ALLOW_UNATTENDED` | 互換用の確認なし投稿許可。既定 `false` |
 | `X_BROWSER_POST_CONFIRMATION_MODE` | `interactive` または `auto`。既定 `interactive` |
@@ -86,7 +94,13 @@ GitHub Actions では `REALTIME_API_TOKEN` secret として同じ値を渡しま
 | `X_BROWSER_POST_WEEKEND_SUMMARY_LINE` | 週末サマリ投稿の一言。空欄ならローカル候補文を使う |
 | `X_BROWSER_POST_WEEKEND_SUMMARY_COPY_PATTERN` | 週末サマリ投稿の文案パターン固定。空欄ならランダム |
 | `X_BROWSER_POST_WEEKEND_SUMMARY_POST_WHEN_ZERO` | `true` なら土日合計0件でも週末サマリを投稿候補にする |
-| `X_BROWSER_POST_TREND_JOKE_LINE` | 謎解き界隈トレンドのネタ投稿文。空欄ならローカル候補文を使う |
+| `X_BROWSER_POST_TREND_JOKE_LINE` | 謎解き界隈トレンドのネタ投稿文。空欄なら provider またはローカル候補文を使う |
+| `X_BROWSER_POST_TREND_JOKE_COPY_PROVIDER` | トレンドネタ投稿の文案生成 provider。`fallback` / `codex` / `command`。未設定時は `fallback` |
+| `X_BROWSER_POST_TREND_JOKE_CODEX_MODEL` | `codex` provider で使うモデル。空欄なら Codex CLI の既定モデル |
+| `X_BROWSER_POST_TREND_JOKE_PROVIDER_COMMAND` | `command` provider の shell command。stdin の JSON を読み、JSON または本文を stdout に返す |
+| `X_BROWSER_POST_TREND_JOKE_PROVIDER_TIMEOUT_MS` | 文案生成 provider のタイムアウト。未設定時は `120000` |
+| `X_BROWSER_POST_TREND_JOKE_PROVIDER_ATTEMPTS` | 文案生成 provider の試行回数。未設定時は `2`、最大 `3` |
+| `X_BROWSER_POST_TREND_JOKE_PROVIDER_AUTO_APPROVE` | provider 生成文を `CONFIRMATION_MODE=auto` で投稿するための追加ロック。初期は `false` 推奨 |
 | `X_BROWSER_POST_TREND_JOKE_TOPIC` | ネタ投稿の topic 固定。空欄なら検索結果からランダム |
 | `X_BROWSER_POST_TREND_JOKE_QUERY_BUNDLE` | 検索 query bundle 固定。空欄ならランダム |
 | `X_BROWSER_POST_TREND_JOKE_SEARCH_QUERIES` | カンマ区切りで検索 query を直接指定する |
@@ -109,6 +123,7 @@ npm run x:browser-post:weekend-summary
 npm run x:browser-post:weekend-summary -- --copy-pattern ai_self_deprecation --line "AIの私は現地に行けないので、今日も一人でXとにらめっこしています。"
 npm run x:browser-post:trend-joke
 npm run x:browser-post:trend-joke -- --query-bundle title_aruaru_words --print-prompt
+npm run x:browser-post:trend-joke -- --copy-provider codex
 ```
 
 `--login-only` は候補取得や内部 API 呼び出しをせず、`X_BROWSER_POST_CHROME_EXECUTABLE_PATH` の通常 Chrome を直接起動し、`X_BROWSER_POST_USER_DATA_DIR` の Chrome プロファイルで `https://x.com/login` を開きます。Chrome for Testing を避けたい初回ログイン用です。初回ログイン後は、通常投稿時に `X_BROWSER_POST_CDP_URL` へ接続し、接続できなければ `X_BROWSER_POST_AUTO_START_CHROME=true` で同じ専用 profile の通常 Chrome を自動起動します。
@@ -117,7 +132,9 @@ npm run x:browser-post:trend-joke -- --query-bundle title_aruaru_words --print-p
 
 週末サマリ投稿も実投稿時は `--execute` を付けます。`--line` または `X_BROWSER_POST_WEEKEND_SUMMARY_LINE` で一言を上書きできます。文案パターンを固定したい場合は `--copy-pattern` または `X_BROWSER_POST_WEEKEND_SUMMARY_COPY_PATTERN` を使います。指定しない場合は、prepare API が返すローカル候補文を使います。投稿結果は Firestore に保存せず、同一 PC の二重投稿防止用に `local/x-browser-posting/weekend-summary-state.json` へ最小限のキーだけ保存します。
 
-トレンドネタ投稿も実投稿時は `--execute` を付けます。Firestore は読まず、prepare API が Yahoo!リアルタイム検索を少数回実行し、イベント名サンプルや頻出語から topic とローカル候補文を返します。文案を固定したい場合は `--line` または `X_BROWSER_POST_TREND_JOKE_LINE`、検索 bundle を固定したい場合は `--query-bundle` または `X_BROWSER_POST_TREND_JOKE_QUERY_BUNDLE` を使います。投稿結果は Firestore に保存せず、同一 PC の二重投稿防止用に `local/x-browser-posting/trend-joke-state.json` へ最小限のキーだけ保存します。`--run-slot` を指定しない場合は、CLI がローカル state を見て `slot-1`、`slot-2` のように日内連番で自動採番します。
+トレンドネタ投稿も実投稿時は `--execute` を付けます。Firestore は読まず、prepare API が Yahoo!リアルタイム検索を少数回実行し、イベント名サンプルや頻出語から topic とローカル候補文を返します。文案生成 provider を使う場合は `--copy-provider codex` または `X_BROWSER_POST_TREND_JOKE_COPY_PROVIDER=codex` を指定します。provider 生成文は validator とローカル履歴ガードを通し、失敗時はローカル候補文へ戻ります。文案を固定したい場合は `--line` または `X_BROWSER_POST_TREND_JOKE_LINE`、検索 bundle を固定したい場合は `--query-bundle` または `X_BROWSER_POST_TREND_JOKE_QUERY_BUNDLE` を使います。投稿結果は Firestore に保存せず、同一 PC の二重投稿防止用に `local/x-browser-posting/trend-joke-state.json` へ最小限のキーだけ保存します。`--run-slot` を指定しない場合は、CLI がローカル state を見て `slot-1`、`slot-2` のように日内連番で自動採番します。
+
+Codex automation から provider 生成文を確認なしで実投稿する場合は、既存の `X_BROWSER_POST_CONFIRMATION_MODE=auto` と `X_BROWSER_POST_AUTO_EXECUTE_ALLOWED=true` に加えて、`X_BROWSER_POST_TREND_JOKE_PROVIDER_AUTO_APPROVE=true` も必要です。初期は `interactive` で数回監視してから有効化します。
 
 ローカルブラウザ投稿 CLI は、通常投稿、週末サマリ投稿、トレンドネタ投稿の実行ログを Git 管理外の `logs/{automationId}/` に保存します。ログには開始時刻、実行コマンド、標準出力、標準エラー、終了時刻、終了ステータスを残します。`X_BROWSER_POST_LOG_RETENTION_COUNT` で automation ごとの保持世代数を指定でき、未設定時は `10` 世代だけ残します。
 
@@ -158,7 +175,7 @@ npm run x:browser-post:trend-joke -- --query-bundle title_aruaru_words --print-p
 | `realtime-register.yml` | 毎時 0 分 | `POST /api/internal/realtime/register`、`#謎チケ売ります` |
 | `realtime-register-transfer.yml` | 毎時 15 分 | `POST /api/internal/realtime/register`、`#謎チケ譲ります` |
 | `realtime-register-accompany.yml` | 毎時 30 分 | `POST /api/internal/realtime/register`、`#謎解き同行者募集` |
-| `realtime-verify-post-visibility.yml` | 毎時 45 分 | `POST /api/internal/realtime/verify-post-visibility` |
+| `realtime-verify-post-visibility.yml` | 毎時 10 分・45 分 | `POST /api/internal/realtime/verify-post-visibility` |
 | `realtime-prune.yml` | 毎日 00:15 UTC | `POST /api/internal/realtime/prune` |
 | `x-repost-events.yml` | 手動実行のみ | `POST /api/internal/x/repost/events` |
 

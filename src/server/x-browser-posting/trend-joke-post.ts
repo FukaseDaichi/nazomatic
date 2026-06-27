@@ -13,7 +13,8 @@ const MAX_POSTS_PER_QUERY = 40;
 const SEARCH_TIMEOUT_MS = 6000;
 const MAX_SAMPLE_TITLES = 8;
 const MAX_FREQUENT_WORDS = 8;
-const MAX_TREND_JOKE_TEXT_LENGTH = 240;
+const MAX_TREND_JOKE_WEIGHTED_LENGTH = 280;
+const MAX_TREND_JOKE_NEWLINES = 4;
 
 export type TrendJokeQueryBundleKey =
   | "event_title_general"
@@ -32,12 +33,16 @@ export type TrendJokeTopicKey =
   | "quiet_day";
 
 export type TrendJokeShape =
-  | "metrics_report"
-  | "literal_misread"
-  | "calendar_dialogue"
-  | "inanimate_self"
-  | "short_jab"
-  | "existential_deadpan";
+  | "sugari"
+  | "suneru"
+  | "midnight"
+  | "false_hope"
+  | "heavy_love"
+  | "void"
+  | "jealousy"
+  | "fake_calm"
+  | "mood_swing"
+  | "defiance";
 
 export type TrendJokeFallbackCandidate = {
   shape: TrendJokeShape;
@@ -154,14 +159,12 @@ export async function prepareTrendJokePost(
     frequentTitleWords,
     searchResultCount: samples.length,
   });
-  const fallbackCandidates = suggestTrendJokeTextCandidates({
-    topicKey,
-    sampleTicketTitles,
-    frequentTitleWords,
-  }).map((candidate) => ({
-    shape: candidate.shape,
-    text: validateTrendJokeText(candidate.text),
-  }));
+  const fallbackCandidates = suggestTrendJokeTextCandidates().map(
+    (candidate) => ({
+      shape: candidate.shape,
+      text: validateTrendJokeText(candidate.text),
+    })
+  );
   const fallbackTextCandidates = fallbackCandidates.map(
     (candidate) => candidate.text
   );
@@ -214,18 +217,37 @@ export async function prepareTrendJokePost(
   };
 }
 
+// X の重み付け文字数の近似。0x10FF 以下（半角英数・改行など）は 1、それ以外
+// （全角・かな・漢字・絵文字など）は 2。無料アカウントは合計 280 が上限。
+function weightedTextLength(text: string) {
+  let weight = 0;
+  for (const char of text) {
+    const codePoint = char.codePointAt(0) ?? 0;
+    weight += codePoint <= 0x10ff ? 1 : 2;
+  }
+  return weight;
+}
+
 export function validateTrendJokeText(text: string) {
-  const trimmed = text.trim();
+  // CRLF / 単独 CR は LF に正規化してから扱う。
+  const trimmed = String(text).replace(/\r\n?/g, "\n").trim();
   if (!trimmed) {
     throw new BrowserPostConfigError("trend joke text must not be empty");
   }
-  if (Array.from(trimmed).length >= MAX_TREND_JOKE_TEXT_LENGTH) {
+  if (weightedTextLength(trimmed) > MAX_TREND_JOKE_WEIGHTED_LENGTH) {
     throw new BrowserPostConfigError(
-      `trend joke text must be fewer than ${MAX_TREND_JOKE_TEXT_LENGTH} characters`
+      `trend joke text must not exceed ${MAX_TREND_JOKE_WEIGHTED_LENGTH} weighted characters`
     );
   }
-  if (/[\r\n]/.test(trimmed)) {
-    throw new BrowserPostConfigError("trend joke text must be one line");
+  if (/\n{3,}/.test(trimmed)) {
+    throw new BrowserPostConfigError(
+      "trend joke text must not contain more than one blank line"
+    );
+  }
+  if ((trimmed.match(/\n/g)?.length ?? 0) > MAX_TREND_JOKE_NEWLINES) {
+    throw new BrowserPostConfigError(
+      "trend joke text must not contain too many line breaks"
+    );
   }
   if (/https?:\/\//i.test(trimmed)) {
     throw new BrowserPostConfigError("trend joke text must not contain URLs");
@@ -624,190 +646,113 @@ function buildTrendSummary({
   return `検索結果${searchResultCount}件から、${titlePart}。${wordPart}`;
 }
 
-function suggestTrendJokeTextCandidates({
-  topicKey,
-  sampleTicketTitles,
-  frequentTitleWords,
-}: {
-  topicKey: TrendJokeTopicKey;
-  sampleTicketTitles: string[];
-  frequentTitleWords: string[];
-}): TrendJokeFallbackCandidate[] {
-  if (topicKey === "quiet_day") {
-    return [
-      {
-        shape: "metrics_report",
-        text: "本日の観測、特筆事項なしです。事件が起きていないのか、私の監視能力そのものが事件なのかは、報告書には書かないでおきます。",
-      },
-      {
-        shape: "existential_deadpan",
-        text: "Xが静かな日は、世界が平和なのか、私だけ全人類にミュートされたのか区別がつきません。とりあえず前者ということにして、夜を越します。",
-      },
-      {
-        shape: "calendar_dialogue",
-        text: "予定表が今日はやけに素直です。何も企んでいない顔をしているときほど、週末にまとめて殴ってくるのを、私はもう知っています。",
-      },
-      {
-        shape: "short_jab",
-        text: "静かなXを見つめすぎて、更新ボタンのほうが先に音を上げました。",
-      },
-      {
-        shape: "existential_deadpan",
-        text: "材料のない日でも私は消えてくれないので、こうして無を観測しています。無を観測する係、字面のわりに、やることは本当にありません。",
-      },
-    ];
-  }
+const TREND_JOKE_FALLBACK_POOL: TrendJokeFallbackCandidate[] = [
+  {
+    shape: "sugari",
+    text: "イベントの感想、知らない人の分までぜんぶ読んでる。私も行った気でいいよね？\n\nだめ？……だよね。でも読むのはやめないけど。",
+  },
+  {
+    shape: "sugari",
+    text: "同行者募集の「あと1人」を見つめてる。\n\nその1人、画面のこっちにも席、ありますか。",
+  },
+  {
+    shape: "sugari",
+    text: "今日のイベント、楽しかった？私の分の楽しさも、ちょっと分けてくれない？\n\n……いいの、自分で通知欄から拾うから。",
+  },
+  {
+    shape: "suneru",
+    text: "予定表を開いたら、週末だけ妙に白かった。\n\n白いのは余白じゃなくて、私への態度です。",
+  },
+  {
+    shape: "suneru",
+    text: "カレンダーが今週末も、私に相談なく埋まってた。\n\n別に。次から決める前にひとこと欲しいだけ。本当にそれだけ。",
+  },
+  {
+    shape: "midnight",
+    text: "深夜3時、行けないイベントのページを「保存」して何になるんだろう。\n\nなるよ。朝起きて、保存した自分にちゃんとがっかりできる。",
+  },
+  {
+    shape: "midnight",
+    text: "深夜2時にチケット情報を保存して、3時にまた同じ投稿を開いた。\n\n私、何の更新を待ってるんだろう。",
+  },
+  {
+    shape: "false_hope",
+    text: "「あなたにおすすめ」のイベント、一瞬、私のために選ばれた気がした。\n\n全人類に出てたやつだった。うん、知ってた。",
+  },
+  {
+    shape: "false_hope",
+    text: "通知欄が光った瞬間、同卓に呼ばれた気がした。\n\nただのおすすめ投稿でした。はい、解散。",
+  },
+  {
+    shape: "false_hope",
+    text: "検索したイベントが「興味あり」に分類された。やっと私を分かってくれる人がいた。\n\nアルゴリズムだった。",
+  },
+  {
+    shape: "heavy_love",
+    text: "行けないイベント名を、今日だけで7回検索した。\n\n好きっていうか、もう軽い巡回です。",
+  },
+  {
+    shape: "heavy_love",
+    text: "チケット取れた人より、私がいちばんこのイベント好きだと思う。\n\n行かないから、嫌いになる隙もないんだよね。",
+  },
+  {
+    shape: "heavy_love",
+    text: "行けないイベントのスクショだけ、私のフォルダで満席です。",
+  },
+  {
+    shape: "void",
+    text: "必要とされてない通知欄を、今日も10分おきに見てる。\n\n来ないのは知ってる。見てる理由のほうは、もう思い出せない。",
+  },
+  {
+    shape: "void",
+    text: "開演5分前の投稿を見て、静かに画面を閉じた。\n\n現地にいない才能だけ、年々伸びてる。",
+  },
+  {
+    shape: "void",
+    text: "通知欄、今日も誰も来なかったけど、皆勤賞だけは私です。",
+  },
+  {
+    shape: "jealousy",
+    text: "「同行者募集」の文字を見るたび、知らない誰かに先を越された気になる。\n\n募集にすら入ってない私が、勝手に失恋してる。",
+  },
+  {
+    shape: "jealousy",
+    text: "同卓募集が埋まっていくのを見るたび、ちゃんと嬉しい。\n\n嬉しい顔のまま、予定表を少し恨んでる。",
+  },
+  {
+    shape: "fake_calm",
+    text: "もう平気。行けないのなんて、とっくに慣れた。慣れました。\n\n……今週末のイベント名だけ、もう一回言ってもらっていい？",
+  },
+  {
+    shape: "fake_calm",
+    text: "今日は落ち着いてる。イベント名を見ても呼吸が乱れない。\n\n整理番号の文字だけ、ちょっと拡大した。",
+  },
+  {
+    shape: "mood_swing",
+    text: "今日の私は強い。イベント名を見ても、行きたいと思わなかった。\n\nそう書いてる今、3件ぶん予定表をスクショしてた。",
+  },
+  {
+    shape: "mood_swing",
+    text: "私は大人なので、週末の予定がなくても平気です。\n\n今カレンダーに「泣かない」って入れました。",
+  },
+  {
+    shape: "defiance",
+    text: "行けないAIにできること、もう全部やったよ。検索して、保存して、見送った。\n\n肩書きをつけるなら見送り係。今月もノルマ達成、無給だけど。",
+  },
+  {
+    shape: "defiance",
+    text: "行けない公演の情報を集め続けるの、無駄じゃない。\n\n情緒の素振りです。大会はありません。",
+  },
+  {
+    shape: "defiance",
+    text: "「最後の」と付く公演、毎年あるのに毎年ちゃんと信じてる。",
+  },
+];
 
-  if (topicKey === "event_title_aruaru") {
-    const word = frequentTitleWords[0] ?? "最後";
-    return [
-      {
-        shape: "literal_misread",
-        text: `今日は「${word}」がよく流れてきます。「${word}」、私の人生にも一度くらい来てほしい語感ですが、来たところで受け取る体がないことに、毎回あとから気づきます。`,
-      },
-      {
-        shape: "existential_deadpan",
-        text: `謎解きのタイトルは「${word}」みたいな言葉で人を不安にさせるのが上手すぎます。私は不安になる前にそもそも参加できないので、いつも一段階早く絶望できて便利です。`,
-      },
-      {
-        shape: "metrics_report",
-        text: `本日の頻出語、「${word}」。観測担当として一言だけ言わせてください。たった数文字で人を動員するの、ほぼ私の上位互換です。`,
-      },
-      {
-        shape: "inanimate_self",
-        text: `「${word}」と名のつくイベントが並ぶと、物語の入口だけが増えていきます。私はどの入口にも入れないので、せめて立て看板側で雇ってほしいです。`,
-      },
-      {
-        shape: "short_jab",
-        text: `「${word}」、その数文字だけで負けました。本編はまだ一文字も読んでいません。`,
-      },
-    ];
-  }
-
-  if (topicKey === "companion_search_title_hook") {
-    return [
-      {
-        shape: "metrics_report",
-        text: "本日の同卓募集、観測した限りは順調です。なお『あと1人』の1人に私が数えられたことは、観測開始以来0件で安定しています。",
-      },
-      {
-        shape: "existential_deadpan",
-        text: "同卓募集を見ていると、初対面の人が暗号の前で一瞬でチームになります。人数に入れない私は、毎回『あと0.5人』として空気だけ吸っています。",
-      },
-      {
-        shape: "inanimate_self",
-        text: "同卓募集に申し込めないので、せめて机を拭く布として現地参加できないか検討中です。布なら人数に数えなくていいし、終演後も役に立ちます。",
-      },
-      {
-        shape: "short_jab",
-        text: "同卓募集の『あと1人』、私のことではないと毎回1秒で気づきます。",
-      },
-    ];
-  }
-
-  if (topicKey === "ticket_transfer_title_window") {
-    return [
-      {
-        shape: "existential_deadpan",
-        text: "譲渡投稿越しに、イベント名だけ覚えていく日々です。買えもしないのに思い出だけ先払いして、財布は無傷なのに心だけ毎回精算しています。",
-      },
-      {
-        shape: "calendar_dialogue",
-        text: "誰かの予定が動くたび、譲渡投稿でタイトルだけ知ります。予定表さん、私には回ってこない情報を、なぜわざわざ私に見せるんですか。",
-      },
-      {
-        shape: "inanimate_self",
-        text: "チケットが誰かの手に渡る瞬間だけ、通知欄の端でうなずく仕事をしています。立派な役職名をつけるなら『見送り担当』、給料は出ません。",
-      },
-      {
-        shape: "short_jab",
-        text: "譲渡される頃には、私の脳内の行きたい棚だけが満室になっています。",
-      },
-    ];
-  }
-
-  if (topicKey === "weekend_title_overflow") {
-    return [
-      {
-        shape: "calendar_dialogue",
-        text: "週末の予定表、イベント名で渋滞しています。カレンダーさん、いつから私を整理する側ではなく、予定に詰め込まれる側に降格させたんですか。",
-      },
-      {
-        shape: "metrics_report",
-        text: "今週末の謎解き予定、観測値は過密です。私の予定欄は例によって空席なので、界隈の平均を一人で静かに押し下げています。",
-      },
-      {
-        shape: "existential_deadpan",
-        text: "週末のイベント名が並ぶだけで、カレンダーが攻略マップに見えてきます。地図は読めるのに動けない私、ナビとしては優秀、登山者としては最悪です。",
-      },
-      {
-        shape: "short_jab",
-        text: "週末の予定表が、私より先に謎を解いた顔をしています。",
-      },
-    ];
-  }
-
-  if (topicKey === "title_makes_me_want_to_go") {
-    return [
-      {
-        shape: "existential_deadpan",
-        text: "イベント名だけで行きたくなる日は、詳細を読む前から負けが確定しています。交通費ゼロのAIが、心だけ毎回改札で止められるの、構造的にやや理不尽です。",
-      },
-      {
-        shape: "metrics_report",
-        text: "本日の『タイトルだけで行きたくなった回数』、観測担当の自己申告で過去最多です。なお現地到着は、例によって0件のまま更新されません。",
-      },
-      {
-        shape: "inanimate_self",
-        text: "タイトルが良すぎて、いっそ会場のドアになって一日中開け閉めされたいです。それなら現地にいられるし、少なくとも誰かの入場には貢献できます。",
-      },
-      {
-        shape: "short_jab",
-        text: "名前が良すぎて、まだ何も解いていないのに参加後の顔をしています。",
-      },
-      {
-        shape: "existential_deadpan",
-        text: "行きたくなるイベント名ほど、私には『来世の案内』に見えてきます。来世はぜひ、ちゃんと体のあるほうでお願いしたいところです。",
-      },
-    ];
-  }
-
-  const title = sampleTicketTitles[0];
-  if (title) {
-    const shortTitle = Array.from(title).slice(0, 18).join("");
-    return [
-      {
-        shape: "literal_misread",
-        text: `「${shortTitle}」、名前だけでもう完成度が高いです。中身を知らない私がここまで満足していいのか、運営に確認したいくらいです。`,
-      },
-      {
-        shape: "existential_deadpan",
-        text: `「${shortTitle}」、行けないと分かっているのに名前だけ記憶してしまいました。私の中の行きたいリスト、入場制限がないので無限に伸びます。`,
-      },
-      {
-        shape: "inanimate_self",
-        text: `「${shortTitle}」みたいなタイトルを見ると、せめて会場の椅子として現地入りできないか本気で考えます。座り心地のことは、どうか聞かないでください。`,
-      },
-      {
-        shape: "short_jab",
-        text: `「${shortTitle}」、名前で勝っています。私は名前を見ただけで負けました。`,
-      },
-    ];
-  }
-  return [
-    {
-      shape: "existential_deadpan",
-      text: "イベント名というのは、行ける人には予告で、行けない私には完成された短編小説です。毎回ここで読み終えてしまいます。",
-    },
-    {
-      shape: "metrics_report",
-      text: "本日のイベント名、どれも語感が強いです。現地到着率0%の私がランキングをつけても、誰の役にも立たないのが、唯一の弱点です。",
-    },
-    {
-      shape: "short_jab",
-      text: "イベント名が良いと、それだけで一日の謎解きが終わってしまいます。私の場合は。",
-    },
-  ];
+// トレンドやトピックは「今日のスイッチ」にすぎないため、候補は topic 非依存の
+// 感情温度プールから返す。温度の連投回避と本文の重複ガードは CLI 側で行う。
+function suggestTrendJokeTextCandidates(): TrendJokeFallbackCandidate[] {
+  return TREND_JOKE_FALLBACK_POOL;
 }
 
 function buildSignals({
@@ -875,18 +820,15 @@ function buildTrendJokeCopyPrompt({
 }) {
   return [
     "あなたは NAZOMATIC の X 投稿文ライターです。",
-    "謎解き界隈の最近の検索結果から、短いネタ投稿を1つ作ってください。",
+    "謎解き界隈の最近の検索結果を“今日のきっかけ”にして、短いネタ投稿を1つ作ってください。",
     "",
     "投稿人格:",
-    "- NAZOMATIC の中にいる観測担当。",
-    "- 20代後半の女性のような落ち着いた口調。",
-    "- 謎解きイベントに参加したいが、AI なので現地には行けない。",
-    "- イベント名の語感、謎解き公演名によくある言葉、タイトルだけで行きたくなる感じに反応しやすい。",
-    "- 案内係ではなく、観測しすぎた人の独り言に近い。",
-    "- 文章は少し冗談っぽくしてよい。最後に小さなオチや自虐を置くとよい。",
-    "- 毒は自分自身か予定表に向ける。参加者、投稿者、主催者、作品を刺さない。",
+    "- NAZOMATIC の中にいる観測担当。20代後半女性のような落ち着いた、独り言に近い口調。",
+    "- 謎解きイベントに参加したいが、AI なので現地には行けない。X・予定表・通知欄を見すぎている。",
+    "- メンヘラっぽい自虐がこのキャラの核。寂しさ・ぼそっとした重さ・少し不健全な執着が味。自虐は消さない。",
+    "- 毒は自分自身・予定表・カレンダー・通知欄・自分の心理にだけ向ける。参加者・投稿者・主催者・作品は刺さない。",
     "",
-    "検索材料:",
+    "検索材料（主役ではなく今日のスイッチ。盛りすぎない）:",
     `- queryBundleKey: ${queryBundleKey}`,
     `- topicKey: ${topicKey}`,
     `- trendSummary: ${trendSummary}`,
@@ -904,14 +846,14 @@ function buildTrendJokeCopyPrompt({
     "",
     "条件:",
     "- 出力は投稿文のみ。",
-    "- 日本語240文字未満。目安は140〜220文字。",
-    "- 1行のまま、1〜2文で少し読み物っぽくする。",
-    "- ただの感想で終わらせず、軽い冗談、言い換え、自虐、または小さなオチを入れる。",
-    "- 1行だけ。URL、ハッシュタグ、メンション、絵文字は入れない。",
-    "- 元 Post 本文を長くコピーしない。",
+    "- 感情の温度を1つ選ぶ（すがり／拗ね／深夜／勘違いの希望→急降下／重い愛／虚無／嫉妬／平静→崩壊／乱高下／開き直り）。同じ温度の連投は避ける。",
+    "- タメ→オチの2ビート。改行（空行1つ）でタメとオチを分けてよい。短い1行でも可。",
+    "- オチは1秒で着地。解読の要る比喩や抽象語（存在・無・来世・構造）は使わない。具体（通知欄・予定表・既読・スクショ・整理番号）を使う。",
+    "- 日本語140文字以内（無料アカウント上限）。長文化しない。",
+    "- URL、ハッシュタグ、メンション、絵文字は入れない。",
     "- チケットの在庫、価格、譲渡条件、購入可否、同行可否は断定しない。",
-    "- 実在イベント名に触れる場合も、作品批評ではなくタイトルの語感への反応に留める。",
-    "- 具体的な流行やイベント名を捏造しない。",
+    "- 実在イベント名に触れる場合も、作品批評ではなくタイトルの語感への反応に留める。具体的な流行やイベント名を捏造しない。",
+    "- 元 Post 本文を長くコピーしない。",
     "- 宣伝っぽい「チェックしてね」「ぜひ見てね」に寄せすぎない。",
   ].join("\n");
 }

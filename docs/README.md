@@ -28,7 +28,7 @@
 | `docs/x-browser-posting/design.md` | X API を使わないローカルブラウザ投稿自動化の要件、実装、運用リスク |
 | `docs/x-browser-posting/posting-persona.md` | X 投稿自動化で使う共通の投稿人格 |
 | `docs/x-browser-posting/weekend-ticket-summary.md` | `#謎チケ売ります` の週末土日別件数サマリ投稿、AI文案生成、ローカル投稿自動化 |
-| `docs/x-browser-posting/trend-joke-post.md` | Yahoo!リアルタイム検索で拾ったイベント名を材料にした短文ネタ投稿自動化の設計案 |
+| `docs/x-browser-posting/trend-joke-post.md` | Yahoo!リアルタイム検索で拾ったイベント名を材料にした短文ネタ投稿自動化の設計と現行実装 |
 | `docs/shift-search/design.md` | シフト検索、辞書検索連携、レポート成果物、表示用生成 assets |
 | `docs/character-pick-search/design.md` | 文字拾い検索の仕様、登録語、文字幅指定、検索判定 |
 | `docs/ai-coding-rules.md` | AI 実装時の必須ルール |
@@ -38,6 +38,7 @@
 | パス | 役割 |
 |---|---|
 | `docs/` | 日本語の設計書と運用資料 |
+| `docs/maintenance/doc-audit-report.md` | ドキュメント同期時の自動修正・判断点・システム問題点レポート |
 | `src/` | 実装の正本 |
 | `src/generated/shift-search/` | Next.js が読む Shift Search 表示用生成 assets |
 | `artifacts/shift-search/reports/` | Shift Search レポート元成果物 |
