@@ -20,6 +20,7 @@
 - 謎チケカレンダー（Firestore 連携）
 - 星座検索
 - シフト検索 + 全探索レポート表示
+- 文字拾い検索
 - BLANK25（25パネル推理ゲーム）
 
 ## セットアップ
@@ -38,8 +39,11 @@ npm run dev                       # 開発サーバー
 npm run build                     # production build
 npm run start                     # production server
 npm run lint                      # ESLint
-npm run shift:report:meta         # Shift Search レポート manifest / index 生成
-npm run shift:report:view-assets  # Shift Search 表示用 generated assets 生成
+npm run x:browser-post                  # X API を使わないローカルブラウザ投稿
+npm run x:browser-post:weekend-summary  # 週末謎チケサマリ投稿
+npm run x:browser-post:trend-joke       # 謎解き界隈トレンドネタ投稿
+npm run shift:report:meta               # Shift Search レポート manifest / index 生成
+npm run shift:report:view-assets        # Shift Search 表示用 generated assets 生成
 ```
 
 ## 環境変数

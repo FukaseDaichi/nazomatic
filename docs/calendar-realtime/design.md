@@ -77,6 +77,7 @@ Yahoo!リアルタイム検索の取得結果を返す公開 API です。現在
 | `POST /api/internal/x/browser-post/events/prepare` | `hashtag`, `accountHandle`, `dryRun` | ローカルブラウザ投稿用の候補予約 |
 | `POST /api/internal/x/browser-post/events/confirm` | `eventId`, `reservationId`, `accountHandle`, `status` | ローカルブラウザ投稿結果を Firestore に反映 |
 | `POST /api/internal/x/browser-post/weekend-ticket-summary/prepare` | `hashtag`, `timezone`, `runDate`, `weekendStartDate`, `postWhenZero`, `copyPattern` | 週末サマリ投稿用の土日別件数と文案材料を返す |
+| `POST /api/internal/x/browser-post/trend-joke/prepare` | `timezone`, `runDate`, `runSlot`, `queryBundleKey`, `searchQueries`, `maxSearchQueries`, `maxPostsPerQuery`, `topicKey` | Yahoo!リアルタイム検索からイベント名材料とネタ投稿文案を返す |
 
 ### 登録 API
 
@@ -102,9 +103,9 @@ Firestore doc id は `{postId}:{RULESET_VERSION}` です。
 
 | 項目 | 既定値 | 最大 |
 |---|---:|---:|
-| `batchSize` | 100 | 200 |
-| `maxConcurrency` | 5 | 10 |
-| `bootstrapScanLimit` | 500 | 2000 |
+| `batchSize` | 10 | 10 |
+| `maxConcurrency` | 5 | 5 |
+| `bootstrapScanLimit` | 50 | 100 |
 
 `syndicationNextCheckAt <= now` の scheduled candidates を優先し、不足分は active event から bootstrap します。検証結果は `available`、`deleted`、`unknown` に分かれます。
 
@@ -144,7 +145,7 @@ Firestore doc id は `{postId}:{RULESET_VERSION}` です。
 | `realtime-register.yml` | 毎時 0 分 | register | `{"query":"#謎チケ売ります","limit":20,"dryRun":false}` |
 | `realtime-register-transfer.yml` | 毎時 15 分 | register | `{"query":"#謎チケ譲ります","limit":20,"dryRun":false}` |
 | `realtime-register-accompany.yml` | 毎時 30 分 | register | `{"query":"#謎解き同行者募集","limit":20,"dryRun":false}` |
-| `realtime-verify-post-visibility.yml` | 毎時 45 分 | verify | `{"batchSize":100,"maxConcurrency":5,"bootstrapScanLimit":500,"dryRun":false}` |
+| `realtime-verify-post-visibility.yml` | 毎時 10 分・45 分 | verify | `{"batchSize":10,"maxConcurrency":5,"bootstrapScanLimit":50,"dryRun":false}` |
 | `realtime-prune.yml` | 毎日 00:15 UTC | prune | `{"cutoffDays":1,"dryRun":false}` |
 | `x-repost-events.yml` | 手動実行のみ | x repost | `{"hashtag":"#謎チケ売ります","dryRun":false}` |
 
@@ -165,4 +166,4 @@ Workflow secrets:
 - Firestore の複合 index は query 追加時に必要になる場合がある。
 - `x-repost-events.yml` の自動実行は現在停止中。
 - `lastReviewedAt` は X repost 候補の重複防止にも使われるため、別用途で更新すると候補選定に影響する。
-- ローカルブラウザ投稿案を実装する場合も、`lastReviewedAt` の意味を崩さず、投稿済みまたは明示 skip の重複防止に限定する。
+- ローカルブラウザ投稿でも、`lastReviewedAt` の意味を崩さず、投稿済みまたは明示 skip の重複防止に限定する。
