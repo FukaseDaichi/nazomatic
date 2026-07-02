@@ -100,6 +100,7 @@ async function main() {
     history,
     prepared,
     force: trendArgs.forceLocalDuplicate,
+    printPrompt: trendArgs.printPrompt,
   });
   const composedText = selected.text;
   const localTrendKey = buildLocalTrendKey(config, prepared);
@@ -287,7 +288,7 @@ Options:
   --copy-provider-attempts <number> Provider attempts before falling back.
   --codex-model <model>             Optional model for the codex provider.
   --force-local-duplicate           Ignore local same-slot and recent-history duplicate guards.
-  --print-prompt                    Print the Codex writing prompt.
+  --print-prompt                    Print the copy prompt and the provider prompt.
   --login-only                      Open the login Chrome profile.
 `);
 }
@@ -413,6 +414,7 @@ async function selectTrendJokeCopy({
   history,
   prepared,
   force,
+  printPrompt,
 }) {
   const historyPath = getTrendJokeHistoryPath(config);
   const commonSelectionParams = {
@@ -434,6 +436,11 @@ async function selectTrendJokeCopy({
     config,
     copyProvider,
     prepared,
+    printPrompt,
+    recentHistoryEntries: getRelevantTrendJokeHistoryEntries(
+      history,
+      config.accountHandle
+    ).slice(0, 3),
   });
   if (generatedCandidates.length > 0) {
     try {
@@ -466,6 +473,8 @@ async function generateTrendJokeProviderCandidates({
   config,
   copyProvider,
   prepared,
+  recentHistoryEntries,
+  printPrompt,
 }) {
   if (copyProvider.kind === "fallback") {
     return [];
@@ -478,7 +487,13 @@ async function generateTrendJokeProviderCandidates({
         prepared,
         attempt,
         previousError,
+        recentHistoryEntries,
       });
+      if (printPrompt) {
+        console.log("Provider prompt:");
+        console.log(prompt);
+        console.log("");
+      }
       const rawOutput =
         copyProvider.kind === "codex"
           ? await runCodexTrendJokeProvider(config, copyProvider, prompt)
@@ -513,7 +528,21 @@ async function generateTrendJokeProviderCandidates({
   return [];
 }
 
-function buildTrendJokeProviderPrompt({ prepared, attempt, previousError }) {
+function buildTrendJokeProviderPrompt({
+  prepared,
+  attempt,
+  previousError,
+  recentHistoryEntries,
+}) {
+  const recentLines = (recentHistoryEntries ?? [])
+    .slice(0, 3)
+    .map((entry) => {
+      const shape = entry?.shape ? String(entry.shape) : "unknown";
+      const ending = String(entry?.endingText ?? "")
+        .replace(/\s+/g, " ")
+        .trim();
+      return `- 温度: ${shape} / オチ: ${ending || "（記録なし）"}`;
+    });
   return [
     "次の文案生成プロンプトに従い、X投稿文を1つだけ作ってください。",
     "返答は JSON オブジェクトだけにしてください。Markdown、説明文、コードフェンスは禁止です。",
@@ -523,6 +552,12 @@ function buildTrendJokeProviderPrompt({ prepared, attempt, previousError }) {
     )}`,
     "text は validator に通る必要があります。URL、hashtag、mention、emoji は入れないでください。",
     "検索材料は今日のスイッチにすぎません。主役は投稿人格の情緒です。",
+    ...(recentLines.length
+      ? [
+          "直近の投稿（これらと同じ温度・似たオチの構図は避ける）:",
+          ...recentLines,
+        ]
+      : []),
     previousError
       ? `前回の失敗理由: ${previousError}。この問題を直して再生成してください。`
       : "",
