@@ -613,7 +613,7 @@ function buildTrendJokeProviderOutputSchema() {
     $schema: "https://json-schema.org/draft/2020-12/schema",
     type: "object",
     additionalProperties: false,
-    required: ["text"],
+    required: ["text", "shape"],
     properties: {
       text: {
         type: "string",
