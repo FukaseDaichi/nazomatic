@@ -555,8 +555,6 @@ async function runCodexTrendJokeProvider(config, copyProvider, prompt) {
       config.cwd,
       "--sandbox",
       "read-only",
-      "--ask-for-approval",
-      "never",
       "--ephemeral",
       "--output-schema",
       schemaPath,
