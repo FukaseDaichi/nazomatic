@@ -438,7 +438,7 @@ provider:
 | provider | 指定 | 役割 |
 |---|---|---|
 | `fallback` | 既定 | provider を呼ばず、ローカル fallback 候補だけを使う |
-| `codex` | `--copy-provider codex` / `X_BROWSER_POST_TREND_JOKE_COPY_PROVIDER=codex` | `codex exec` を read-only / no-approval / ephemeral で起動し、JSON schema 付きで文案を生成する |
+| `codex` | `--copy-provider codex` / `X_BROWSER_POST_TREND_JOKE_COPY_PROVIDER=codex` | `codex exec` を read-only / ephemeral の非対話モードで起動し、JSON schema 付きで文案を生成する |
 | `command` | `--copy-provider command` / `X_BROWSER_POST_TREND_JOKE_PROVIDER_COMMAND` | 任意の shell command に prompt と prepare 結果の要約 JSON を渡す |
 
 Prompt に渡す情報:
