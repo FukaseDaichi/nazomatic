@@ -9,5 +9,9 @@
       "Bash(npm install react-easy-crop)",
       "Bash(node -e \"require\\(''react-easy-crop''\\)\")"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "codex"
+  ],
+  "enableAllProjectMcpServers": true
 }

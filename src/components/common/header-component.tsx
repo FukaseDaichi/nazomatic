@@ -28,14 +28,14 @@ export function HeaderComponent() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="max-w-7xl mx-auto flex justify-between items-center"
+            className="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-y-2"
           >
-            <h1 className="text-3xl font-bold tracking-tight text-gray-300">
+            <h1 className="shrink-0 text-2xl lg:text-3xl font-bold tracking-tight text-gray-300">
               NAZOMATIC
             </h1>
             <nav>
               <Tooltip.Provider delayDuration={200}>
-                <ul className="flex space-x-7">
+                <ul className="flex flex-wrap gap-x-4 gap-y-1 lg:gap-x-7">
                   {features.features.map((feature) => {
                     const IconComponent = LucideIcons[
                       feature.iconName as keyof typeof LucideIcons
