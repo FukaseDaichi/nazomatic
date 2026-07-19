@@ -8,15 +8,24 @@ import {
 
 const DEFAULT_TIMEOUT_MS = 15000;
 
-export async function openCdpChromePage(cdpUrl) {
+export async function openCdpChromePage(cdpUrl, options = {}) {
+  const bringToFront = options.bringToFront !== false;
   const target = await createTarget(cdpUrl, "about:blank");
   const client = await CdpClient.connect(target.webSocketDebuggerUrl);
   await client.send("Page.enable");
   await client.send("Runtime.enable");
+  if (!bringToFront) {
+    // タブを前面化しない場合でも、ページに focus があるものとして入力を成立させる。
+    await client
+      .send("Emulation.setFocusEmulationEnabled", { enabled: true })
+      .catch(() => {});
+  }
 
   return {
     async goto(url) {
-      await client.send("Page.bringToFront");
+      if (bringToFront) {
+        await client.send("Page.bringToFront");
+      }
       await client.send("Page.navigate", { url });
       await waitForLoad(client).catch(() => {});
       await wait(1500);
@@ -94,7 +103,9 @@ export async function openCdpChromePage(cdpUrl) {
 
     async fillComposer(text) {
       await waitFor(client, findComposerExpression(), DEFAULT_TIMEOUT_MS);
-      await client.send("Page.bringToFront");
+      if (bringToFront) {
+        await client.send("Page.bringToFront");
+      }
       const focused = await evaluate(client, focusAndSelectComposerFunction());
       if (!focused) {
         throw new Error("Could not focus X composer");

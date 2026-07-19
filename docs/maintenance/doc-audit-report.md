@@ -1,20 +1,21 @@
-# ドキュメント同期レポート（2026-06-27）
+# ドキュメント同期レポート（2026-07-19）
 
 ## 1. 自動修正したもの
 
-- `docs/system-design.md:技術スタック`: `package.json` と import 実態に合わせ、UI 補助ライブラリ、BLANK25 の画像 crop / confetti、`chrono-node`、ローカル Playwright / Chrome DevTools Protocol を追記した。
-- `docs/system-design.md:features.json の扱い`: JSON-LD の `Article` が各ページの hard-coded index から `features.json` を参照する実装であることを明記し、順序変更時の確認点を追加した。
-- `docs/system-design.md:生成物設計`: Shift Search レポートの `EXTERNAL_THRESHOLD=3000`、`internal` / `external` の分岐、外部 URL または raw GitHub Markdown ダウンロードへの導線を追記した。
+- `docs/system-design/operations/x-browser-post-schedules.md`: 依頼者から稼働中と共有された X ブラウザ投稿 3 枠を、通常投稿 1 枠と週末サマリ 2 枠に分けて運用台帳化した。
+- `docs/system-design/operations/x-browser-post-schedules.md:実行契約`: `package.json`、`scripts/x-browser-post-*.mjs`、`scripts/x-browser-posting/{config,runLog}.mjs` に合わせ、1 起動 1 実行、auto 投稿の二重 lock、CLI による log 保存・世代管理、停止条件、実行後の報告項目を記載した。
+- `docs/system-design/README.md`、`docs/system-design/operations/jobs-and-generated-assets.md`、`docs/README.md`、`docs/development-guide.md`: 新しい運用台帳への導線を追加した。
 
 ## 2. 判断に迷った点
 
-- `package.json` には `@heroicons/react`、`@radix-ui/react-icons`、`@react-spring/three`、`@use-gesture/react`、`html2canvas`、`react-share` など、今回の `src/` / `scripts/` grep では実使用を確認できなかった依存がある。全体設計の技術スタックには実使用が確認できたものだけ反映した。
-- `README.md:プルリクエストの作成` の `gh pr create --base main --head future --fill` は、コード上に対応する正本がないため変更しなかった。固定 branch 名 `future` が現行運用として正しいかは人間判断が必要。
+- 週末サマリの同一実行指示が 2 件共有された。異なる日時に発火する独立枠の可能性があるため統合せず、「週末サマリ A/B」の 2 枠として記録した。
+- 外部スケジューラーの ID、曜日、時刻、timezone は repository 内に存在せず、依頼内容にも含まれていない。推測では補完せず、正確な cadence と有効・無効の最終状態は外部スケジューラーを正とした。
+- 「稼働中」は 2026-07-19 時点の依頼者共有情報として記録した。直近実行の成否とは分け、成否は CLI の最新 log で確認する運用にした。
 
 ## 3. システム問題点
 
-- `src/lib/json/features.json` では index 3 が `/prefectures`、index 4 が `/graphpaper` だが、`src/app/(main)/graphpaper/page.tsx:9` は `Article index={3}`、`src/app/(main)/prefectures/page.tsx:9` は `Article index={4}` になっている。都道府県検索と方眼紙の JSON-LD が入れ替わっている疑いがある。
+- 週末サマリ A/B は同じ automation ID と `logs/x-browser-post-weekend-summary/` を共有するため、repository 内の log だけでは生成元の登録枠を識別できない。
 
 ## 4. AGENTS.md 推奨修正
 
-- 今回の同期範囲では、`AGENTS.md` の推奨修正はなし。短い英語の実行ルールとして維持できており、詳細は docs 側に置かれている。
+- 今回の同期範囲では推奨修正なし。

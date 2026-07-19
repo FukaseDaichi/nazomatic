@@ -158,6 +158,10 @@ export function loadBrowserPostConfig(argv, cwd = process.cwd()) {
       true
     ),
     headless: readBoolean(args.headless ?? env.X_BROWSER_POST_HEADLESS, false),
+    bringToFront: readBoolean(
+      args.bringToFront ?? env.X_BROWSER_POST_BRING_TO_FRONT,
+      true
+    ),
     keepOpen: readBoolean(
       args.keepOpen ?? env.X_BROWSER_POST_KEEP_OPEN,
       false
@@ -184,6 +188,10 @@ function parseArgs(argv) {
       args.autoStartChrome = true;
     } else if (arg === "--no-auto-start-chrome") {
       args.autoStartChrome = false;
+    } else if (arg === "--bring-to-front") {
+      args.bringToFront = true;
+    } else if (arg === "--no-bring-to-front") {
+      args.bringToFront = false;
     } else if (arg === "--cleanup-compose-tabs") {
       args.cleanupComposeTabs = true;
     } else if (arg === "--no-cleanup-compose-tabs") {
