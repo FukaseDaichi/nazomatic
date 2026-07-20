@@ -13,6 +13,7 @@ export async function openCdpChromePage(cdpUrl) {
   const client = await CdpClient.connect(target.webSocketDebuggerUrl);
   await client.send("Page.enable");
   await client.send("Runtime.enable");
+  await client.send("DOM.enable");
 
   return {
     async goto(url) {
@@ -126,6 +127,118 @@ export async function openCdpChromePage(cdpUrl) {
       await this.assertNoBlockingState();
     },
 
+    async addMedia(filePath) {
+      const { root } = await client.send("DOM.getDocument", { depth: -1 });
+      const { nodeId } = await client.send("DOM.querySelector", {
+        nodeId: root.nodeId,
+        selector: 'input[data-testid="fileInput"], input[type="file"]',
+      });
+      if (!nodeId) {
+        throw new Error("Could not find X media file input");
+      }
+      await client.send("DOM.setFileInputFiles", {
+        nodeId,
+        files: [filePath],
+      });
+      await waitFor(
+        client,
+        `Boolean(document.querySelector('[data-testid="attachments"], [data-testid="mediaPreview0"], [data-testid="mediaPreview"]'))`,
+        DEFAULT_TIMEOUT_MS
+      ).catch(() => {
+        throw new Error("X media attachment could not be verified");
+      });
+    },
+
+    async addPoll(options) {
+      if (!Array.isArray(options) || options.length < 2 || options.length > 4) {
+        throw new Error("X poll requires 2 to 4 options");
+      }
+      const opened = await evaluate(client, () => {
+        const direct = document.querySelector(
+          '[data-testid="pollButton"], [data-testid="createPollButton"]'
+        );
+        const button =
+          direct ||
+          Array.from(document.querySelectorAll("button")).find((candidate) =>
+            /投票|poll/i.test(
+              `${candidate.getAttribute("aria-label") ?? ""} ${
+                candidate.textContent ?? ""
+              }`
+            )
+          );
+        if (!(button instanceof HTMLElement)) {
+          return false;
+        }
+        button.click();
+        return true;
+      });
+      if (!opened) {
+        throw new Error("Could not find X poll button");
+      }
+      await waitFor(
+        client,
+        `document.querySelectorAll('input[name^="Choice"]').length >= 2`,
+        DEFAULT_TIMEOUT_MS
+      );
+
+      for (let index = 2; index < options.length; index += 1) {
+        const count = await evaluate(
+          client,
+          () => document.querySelectorAll('input[name^="Choice"]').length
+        );
+        if (count > index) {
+          continue;
+        }
+        const added = await evaluate(client, () => {
+          const button =
+            document.querySelector('[data-testid="addPollChoice"]') ||
+            Array.from(document.querySelectorAll("button")).find(
+              (candidate) =>
+                /回答を追加|選択肢を追加|add (a )?choice/i.test(
+                  `${candidate.getAttribute("aria-label") ?? ""} ${
+                    candidate.textContent ?? ""
+                  }`
+                )
+            );
+          if (!(button instanceof HTMLElement)) {
+            return false;
+          }
+          button.click();
+          return true;
+        });
+        if (!added) {
+          throw new Error("Could not add another X poll choice");
+        }
+        await wait(300);
+      }
+
+      const filled = await evaluate(client, (pollOptions) => {
+        const inputs = Array.from(
+          document.querySelectorAll('input[name^="Choice"]')
+        );
+        if (inputs.length < pollOptions.length) {
+          return false;
+        }
+        const setter = Object.getOwnPropertyDescriptor(
+          HTMLInputElement.prototype,
+          "value"
+        )?.set;
+        for (let index = 0; index < pollOptions.length; index += 1) {
+          const input = inputs[index];
+          setter?.call(input, pollOptions[index]);
+          input.dispatchEvent(new Event("input", { bubbles: true }));
+          input.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+        return inputs
+          .slice(0, pollOptions.length)
+          .every((input, index) => input.value === pollOptions[index]);
+      }, options);
+      if (!filled) {
+        throw new Error("X poll choices could not be filled");
+      }
+      await wait(500);
+    },
+
     async assertSubmitReady() {
       const ready = await waitForSubmitButton(client, DEFAULT_TIMEOUT_MS);
       if (!ready.found) {
@@ -136,7 +249,7 @@ export async function openCdpChromePage(cdpUrl) {
       }
     },
 
-    async submitPost(accountHandle) {
+    async submitPost(accountHandle, expectedText = "") {
       await this.assertSubmitReady();
       const clicked = await evaluate(client, () => {
         const button = findSubmitButton();
@@ -171,22 +284,46 @@ export async function openCdpChromePage(cdpUrl) {
       }
       await wait(5000);
       await this.assertNoBlockingState();
-      return this.findPostedUrl(accountHandle);
+      const currentUrl = await this.findPostedUrl(accountHandle, expectedText);
+      if (currentUrl) {
+        return currentUrl;
+      }
+      await this.goto(`https://x.com/${normalizeHandle(accountHandle)}`);
+      return this.findPostedUrl(accountHandle, expectedText);
     },
 
-    async findPostedUrl(accountHandle) {
+    async findPostedUrl(accountHandle, expectedText = "") {
       const normalizedHandle = normalizeHandle(accountHandle);
       return evaluate(
         client,
-        (handle) => {
-          const hrefs = Array.from(
-            document.querySelectorAll(`a[href*="/${handle}/status/"]`)
+        (handle, postedText) => {
+          const normalize = (value) =>
+            String(value ?? "")
+              .normalize("NFKC")
+              .replace(/https?:\/\/\S+/gi, "")
+              .replace(/\s+/g, "")
+              .trim();
+          const fragment = normalize(postedText).slice(0, 36);
+          const matchingArticles = Array.from(
+            document.querySelectorAll("article")
           )
+            .slice(0, 8)
+            .filter(
+              (article) =>
+                !fragment || normalize(article.innerText).includes(fragment)
+            );
+          const hrefs = matchingArticles
+            .flatMap((article) =>
+              Array.from(article.querySelectorAll('a[href*="/status/"]'))
+            )
             .map((link) => link.href)
-            .filter(Boolean);
+            .filter((href) =>
+              href.toLowerCase().includes(`/${handle}/status/`)
+            );
           return hrefs.find((href) => /\/status\/[0-9]+/.test(href)) ?? null;
         },
-        normalizedHandle
+        normalizedHandle,
+        expectedText
       );
     },
 

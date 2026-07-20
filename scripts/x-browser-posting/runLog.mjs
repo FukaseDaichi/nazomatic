@@ -3,7 +3,7 @@ import path from "path";
 import { format } from "util";
 
 const DEFAULT_ENV_FILE = ".env.x-browser-posting.local";
-const DEFAULT_LOG_RETENTION_COUNT = 10;
+const DEFAULT_LOG_RETENTION_COUNT = 70;
 
 export async function runWithLocalLog(
   { cwd, automationId, logPrefix, command, envFile },

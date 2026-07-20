@@ -11,7 +11,10 @@ import { stdin as input, stdout as output } from "process";
 
 import { loadBrowserPostConfig } from "./x-browser-posting/config.mjs";
 import { openCdpChromePage } from "./x-browser-posting/cdpChromePage.mjs";
+import { recordBrowserPost } from "./x-browser-posting/postLedger.mjs";
 import {
+  addMedia,
+  addPoll,
   assertSubmitReady,
   fillComposer,
   openComposer,
@@ -41,6 +44,36 @@ const TREND_JOKE_KNOWN_SHAPES = new Set([
   "mood_swing",
   "defiance",
 ]);
+const TREND_JOKE_ARCHETYPE_ORDER = [
+  "monologue",
+  "question",
+  "one_liner",
+  "poll",
+  "tool_intro",
+];
+const TREND_JOKE_KNOWN_ARCHETYPES = new Set(TREND_JOKE_ARCHETYPE_ORDER);
+const TREND_JOKE_MOTIFS = [
+  {
+    key: "cannot_attend",
+    label: "AIなので行けない",
+    pattern:
+      /(?:AI.{0,18}(?:行けない|参加できない|現地.{0,6}できない)|(?:行けない|参加できない).{0,10}AI|私は行けない|行けないのに)/iu,
+    recentLimit: 2,
+  },
+  {
+    key: "schedule",
+    label: "予定表",
+    pattern: /予定表/u,
+    recentLimit: 2,
+  },
+  {
+    key: "notification",
+    label: "通知欄",
+    pattern: /通知欄/u,
+    recentLimit: 1,
+  },
+];
+const TREND_JOKE_MOTIF_WINDOW = 5;
 
 async function main() {
   const { configArgv, trendArgs } = splitTrendJokeArgs(process.argv.slice(2));
@@ -65,6 +98,17 @@ async function main() {
     firstNonEmpty(trendEnv.X_BROWSER_POST_TREND_JOKE_RUN_SLOT, null);
   const runSlot =
     requestedRunSlot ?? (await buildNextAutoRunSlot(config, trendArgs.runDate));
+  const history = await readTrendJokeHistory(config, {
+    strict: config.execute,
+  });
+  const requestedArchetype = firstNonEmpty(
+    trendArgs.archetype,
+    trendEnv.X_BROWSER_POST_TREND_JOKE_ARCHETYPE,
+    null
+  );
+  const archetype = requestedArchetype
+    ? normalizeTrendJokeArchetype(requestedArchetype)
+    : selectNextTrendJokeArchetype(history, config.accountHandle);
   const prepared = await prepareTrendJoke(config, {
     runDate: trendArgs.runDate,
     runSlot,
@@ -83,6 +127,7 @@ async function main() {
     topicKey:
       trendArgs.topicKey ??
       firstNonEmpty(trendEnv.X_BROWSER_POST_TREND_JOKE_TOPIC, null),
+    archetype,
   });
 
   const overrideText = (
@@ -90,9 +135,6 @@ async function main() {
     trendEnv.X_BROWSER_POST_TREND_JOKE_LINE ??
     ""
   ).trim();
-  const history = await readTrendJokeHistory(config, {
-    strict: config.execute,
-  });
   const selected = await selectTrendJokeCopy({
     config,
     copyProvider,
@@ -103,6 +145,13 @@ async function main() {
     printPrompt: trendArgs.printPrompt,
   });
   const composedText = selected.text;
+  const pollOptions = selected.pollOptions ?? [];
+  const mediaPath = resolveTrendJokeMediaPath({
+    config,
+    prepared,
+    trendArgs,
+    trendEnv,
+  });
   const localTrendKey = buildLocalTrendKey(config, prepared);
   assertTrendJokeCopyAutoSafety({ config, trendEnv, selected });
 
@@ -123,6 +172,11 @@ async function main() {
       config.accountHandle
     );
     await session.fillComposer(composedText);
+    if (pollOptions.length > 0) {
+      await session.addPoll(pollOptions);
+    } else if (mediaPath) {
+      await session.addMedia(mediaPath);
+    }
     await session.assertSubmitReady();
 
     printPreparedTrendJoke({
@@ -133,6 +187,8 @@ async function main() {
       verifiedHandle,
       config,
       localTrendKey,
+      pollOptions,
+      mediaPath,
     });
 
     if (trendArgs.printPrompt) {
@@ -154,20 +210,48 @@ async function main() {
       }
     }
 
-    const postedPostURL = await session.submitPost(config.accountHandle);
+    const postedPostURL = await session.submitPost(
+      config.accountHandle,
+      composedText
+    );
     postSubmitted = true;
     await updateLocalRateState(config);
     await updateTrendJokeState(config, localTrendKey, {
       prepared,
       composedText,
       copySource: selected.source,
+      postedPostURL,
     });
     await updateTrendJokeHistory(config, {
       prepared,
       composedText,
       shape: selected.shape,
       copySource: selected.source,
+      pollOptions,
+      postedPostURL,
     });
+    await recordBrowserPost(config, {
+      postType: "trend_joke",
+      text: composedText,
+      postedPostURL,
+      metadata: {
+        runDate: prepared.runDate,
+        runSlot: prepared.runSlot,
+        topicKey: prepared.topicKey,
+        archetype: prepared.archetype,
+        shape: selected.shape,
+        motifs: detectTrendJokeMotifs(composedText),
+        pollOptions,
+        tool: prepared.tool,
+        hasMedia: Boolean(mediaPath),
+      },
+    }).catch((error) =>
+      console.warn(
+        `Could not update browser post ledger: ${
+          error instanceof Error ? error.message : String(error)
+        }`
+      )
+    );
     console.log("Posted trend joke via X browser session.");
     if (postedPostURL) {
       console.log(`Posted URL: ${postedPostURL}`);
@@ -203,6 +287,8 @@ function splitTrendJokeArgs(argv) {
     maxSearchQueries: null,
     maxPostsPerQuery: null,
     topicKey: null,
+    archetype: null,
+    imagePath: null,
     copyProvider: null,
     copyProviderCommand: null,
     copyProviderTimeoutMs: null,
@@ -238,6 +324,12 @@ function splitTrendJokeArgs(argv) {
       index += 1;
     } else if (arg === "--topic") {
       trendArgs.topicKey = readRequiredArg(argv, index, arg);
+      index += 1;
+    } else if (arg === "--archetype") {
+      trendArgs.archetype = readRequiredArg(argv, index, arg);
+      index += 1;
+    } else if (arg === "--image-path") {
+      trendArgs.imagePath = readRequiredArg(argv, index, arg);
       index += 1;
     } else if (arg === "--copy-provider") {
       trendArgs.copyProvider = readRequiredArg(argv, index, arg);
@@ -278,6 +370,8 @@ Options:
   --query-bundle <key>              event_title_general | ticket_title_window | companion_title_window | title_aruaru_words | weekend_title_window
   --query <text>                    Override/add a search query. Can be repeated.
   --topic <topic>                   Override topic when available.
+  --archetype <type>                monologue | question | one_liner | poll | tool_intro
+  --image-path <path>               Image for tool_intro. Defaults to public/img/og-image.png.
   --run-date <YYYY-MM-DD>           Override the local run date for testing.
   --run-slot <slot>                 Override the local run slot for duplicate guard.
   --max-search-queries <number>     Limit search queries per prepare.
@@ -322,6 +416,7 @@ async function prepareTrendJoke(config, trendArgs) {
       maxSearchQueries: trendArgs.maxSearchQueries,
       maxPostsPerQuery: trendArgs.maxPostsPerQuery,
       topicKey: trendArgs.topicKey,
+      archetype: trendArgs.archetype,
     }
   );
 
@@ -426,9 +521,20 @@ async function selectTrendJokeCopy({
   };
 
   if (overrideText) {
+    const fallbackPollOptions =
+      prepared.archetype === "poll"
+        ? getPreparedFallbackCandidatePairs(prepared)[0]?.pollOptions ?? []
+        : [];
     return selectTrendJokeText({
       ...commonSelectionParams,
-      candidatePairs: [{ source: "manual", shape: "manual", text: overrideText }],
+      candidatePairs: [
+        {
+          source: "manual",
+          shape: "manual",
+          text: overrideText,
+          pollOptions: fallbackPollOptions,
+        },
+      ],
     });
   }
 
@@ -440,7 +546,7 @@ async function selectTrendJokeCopy({
     recentHistoryEntries: getRelevantTrendJokeHistoryEntries(
       history,
       config.accountHandle
-    ).slice(0, 3),
+    ).slice(0, TREND_JOKE_MOTIF_WINDOW),
   });
   if (generatedCandidates.length > 0) {
     try {
@@ -502,8 +608,12 @@ async function generateTrendJokeProviderCandidates({
               prepared,
             });
       const generated = parseTrendJokeProviderOutput(rawOutput);
-      const text = validateTrendJokeText(generated.text);
+      const text = validateTrendJokeText(generated.text, prepared);
       const shape = normalizeTrendJokeProviderShape(generated.shape);
+      const pollOptions = validateTrendJokePollOptions(
+        generated.pollOptions,
+        prepared.archetype
+      );
       console.log(
         `Generated trend joke copy via ${copyProvider.kind} provider (attempt ${attempt}).`
       );
@@ -512,6 +622,7 @@ async function generateTrendJokeProviderCandidates({
           source: copyProvider.kind,
           shape,
           text,
+          pollOptions,
         },
       ];
     } catch (error) {
@@ -535,22 +646,42 @@ function buildTrendJokeProviderPrompt({
   recentHistoryEntries,
 }) {
   const recentLines = (recentHistoryEntries ?? [])
-    .slice(0, 3)
+    .slice(0, TREND_JOKE_MOTIF_WINDOW)
     .map((entry) => {
       const shape = entry?.shape ? String(entry.shape) : "unknown";
       const ending = String(entry?.endingText ?? "")
         .replace(/\s+/g, " ")
         .trim();
-      return `- 温度: ${shape} / オチ: ${ending || "（記録なし）"}`;
+      const archetype = entry?.archetype
+        ? String(entry.archetype)
+        : "unknown";
+      return `- 型: ${archetype} / 温度: ${shape} / オチ: ${
+        ending || "（記録なし）"
+      }`;
     });
+  const unavailableMotifs = getUnavailableTrendJokeMotifs(
+    recentHistoryEntries ?? []
+  );
   return [
     "次の文案生成プロンプトに従い、X投稿文を1つだけ作ってください。",
     "返答は JSON オブジェクトだけにしてください。Markdown、説明文、コードフェンスは禁止です。",
-    '形式: {"text":"投稿文","shape":"sugari"}',
+    '形式: {"text":"投稿文","shape":"sugari","pollOptions":[]}',
     `shape は次のどれか: ${Array.from(TREND_JOKE_KNOWN_SHAPES).join(
       " / "
     )}`,
-    "text は validator に通る必要があります。URL、hashtag、mention、emoji は入れないでください。",
+    `今回の型は ${prepared.archetype} です。型は変更しないでください。`,
+    "text は validator に通る必要があります。自然な hashtag は最大1個、mention と emoji は禁止です。",
+    prepared.archetype === "tool_intro"
+      ? `URLはこの1件だけを必ず使ってください: ${prepared.tool?.url ?? ""}`
+      : "URLは禁止です。",
+    prepared.archetype === "poll"
+      ? "pollOptions は重複しない2〜4件（各25文字以内）にしてください。"
+      : "pollOptions は空配列にしてください。",
+    unavailableMotifs.length
+      ? `直近で利用上限に達したため使用禁止のモチーフ: ${unavailableMotifs
+          .map((motif) => motif.label)
+          .join("、")}`
+      : "",
     "検索材料は今日のスイッチにすぎません。主役は投稿人格の情緒です。",
     ...(recentLines.length
       ? [
@@ -648,7 +779,7 @@ function buildTrendJokeProviderOutputSchema() {
     $schema: "https://json-schema.org/draft/2020-12/schema",
     type: "object",
     additionalProperties: false,
-    required: ["text", "shape"],
+    required: ["text", "shape", "pollOptions"],
     properties: {
       text: {
         type: "string",
@@ -657,6 +788,13 @@ function buildTrendJokeProviderOutputSchema() {
       shape: {
         type: "string",
         enum: Array.from(TREND_JOKE_KNOWN_SHAPES),
+      },
+      pollOptions: {
+        type: "array",
+        minItems: 0,
+        maxItems: 4,
+        uniqueItems: true,
+        items: { type: "string", minLength: 1, maxLength: 25 },
       },
     },
   };
@@ -675,6 +813,9 @@ function buildTrendJokeProviderPayload(prepared) {
     sampleTicketTitles: prepared.sampleTicketTitles,
     frequentTitleWords: prepared.frequentTitleWords,
     searchFingerprint: prepared.searchFingerprint,
+    archetype: prepared.archetype,
+    archetypeLabel: prepared.archetypeLabel,
+    tool: prepared.tool,
   };
 }
 
@@ -695,6 +836,9 @@ function parseTrendJokeProviderOutput(rawOutput) {
       return {
         text: parsed.text,
         shape: typeof parsed.shape === "string" ? parsed.shape : null,
+        pollOptions: Array.isArray(parsed.pollOptions)
+          ? parsed.pollOptions
+          : [],
       };
     }
   }
@@ -702,6 +846,7 @@ function parseTrendJokeProviderOutput(rawOutput) {
   return {
     text: output,
     shape: null,
+    pollOptions: [],
   };
 }
 
@@ -847,8 +992,10 @@ function weightedTextLength(text) {
   return weight;
 }
 
-function validateTrendJokeText(text) {
+function validateTrendJokeText(text, prepared = {}) {
   const trimmed = String(text).replace(/\r\n?/g, "\n").trim();
+  const archetype = prepared?.archetype ?? "monologue";
+  const allowedToolUrl = prepared?.tool?.url ?? null;
   if (!trimmed) {
     throw new Error("Trend joke text must not be empty");
   }
@@ -863,11 +1010,22 @@ function validateTrendJokeText(text) {
   if ((trimmed.match(/\n/g)?.length ?? 0) > MAX_TREND_JOKE_NEWLINES) {
     throw new Error("Trend joke text must not contain too many line breaks");
   }
-  if (/https?:\/\//i.test(trimmed)) {
-    throw new Error("Trend joke text must not contain URLs");
+  const urls = trimmed.match(/https?:\/\/[^\s]+/gi) ?? [];
+  if (archetype === "tool_intro") {
+    if (urls.length !== 1 || urls[0] !== allowedToolUrl) {
+      throw new Error(
+        "Tool intro text must contain exactly its approved NAZOMATIC URL"
+      );
+    }
+  } else if (urls.length > 0) {
+    throw new Error("Non-tool trend joke text must not contain URLs");
   }
-  if (/[#＃＠@]/.test(trimmed)) {
-    throw new Error("Trend joke text must not contain hashtags or mentions");
+  if (/[＠@]/.test(trimmed)) {
+    throw new Error("Trend joke text must not contain mentions");
+  }
+  const hashtags = trimmed.match(/[#＃][^\s#＃]+/gu) ?? [];
+  if (hashtags.length > 1) {
+    throw new Error("Trend joke text must not contain more than one hashtag");
   }
   if (/\p{Extended_Pictographic}/u.test(trimmed)) {
     throw new Error("Trend joke text must not contain emoji");
@@ -877,7 +1035,45 @@ function validateTrendJokeText(text) {
       "Trend joke text must not make availability or safety claims"
     );
   }
+  if (
+    (archetype === "question" || archetype === "poll") &&
+    !/[?？]/.test(trimmed)
+  ) {
+    throw new Error(`${archetype} text must contain a question`);
+  }
+  if (archetype === "one_liner" && trimmed.includes("\n")) {
+    throw new Error("One-liner text must be a single line");
+  }
   return trimmed;
+}
+
+function validateTrendJokePollOptions(options, archetype) {
+  const normalized = Array.isArray(options)
+    ? options.map((option) => String(option).trim())
+    : [];
+  if (archetype !== "poll") {
+    if (normalized.length > 0) {
+      throw new Error("Only poll posts may contain poll options");
+    }
+    return [];
+  }
+  if (normalized.length < 2 || normalized.length > 4) {
+    throw new Error("Poll posts must contain 2 to 4 options");
+  }
+  if (
+    normalized.some(
+      (option) =>
+        !option ||
+        Array.from(option).length > 25 ||
+        /\p{Extended_Pictographic}/u.test(option)
+    ) ||
+    new Set(normalized).size !== normalized.length
+  ) {
+    throw new Error(
+      "Poll options must be unique, non-empty, emoji-free, and at most 25 characters"
+    );
+  }
+  return normalized;
 }
 
 function getPreparedFallbackCandidates(prepared) {
@@ -909,6 +1105,9 @@ function getPreparedFallbackCandidatePairs(prepared) {
     .map((candidate) => ({
       shape: typeof candidate.shape === "string" ? candidate.shape : null,
       text: candidate.text,
+      pollOptions: Array.isArray(candidate.pollOptions)
+        ? candidate.pollOptions
+        : [],
     }));
   if (normalized.length > 0) {
     return normalized;
@@ -916,6 +1115,7 @@ function getPreparedFallbackCandidatePairs(prepared) {
   return getPreparedFallbackCandidates(prepared).map((text) => ({
     shape: null,
     text,
+    pollOptions: [],
   }));
 }
 
@@ -927,7 +1127,10 @@ function selectTrendJokeText({
   historyPath,
   force,
 }) {
-  const validatedCandidates = dedupeTrendJokeCandidatePairs(candidatePairs);
+  const validatedCandidates = dedupeTrendJokeCandidatePairs(
+    candidatePairs,
+    prepared
+  );
   if (validatedCandidates.length === 0) {
     throw new Error("Trend joke text candidates must not be empty");
   }
@@ -961,7 +1164,11 @@ function selectTrendJokeText({
       entries: recentEntries,
       prepared,
     });
-    if (!blockReason) {
+    const motifBlockReason = findTrendJokeMotifBlockReason({
+      text: candidate.text,
+      entries: recentEntries,
+    });
+    if (!blockReason && !motifBlockReason) {
       if (candidate.shape && recentShapes.has(candidate.shape)) {
         console.warn(
           `Selected trend joke reuses recent shape ${candidate.shape}; no fresher-shape candidate survived the history guard.`
@@ -969,7 +1176,10 @@ function selectTrendJokeText({
       }
       return candidate;
     }
-    blocked.push({ text: candidate.text, reason: blockReason });
+    blocked.push({
+      text: candidate.text,
+      reason: blockReason ?? motifBlockReason,
+    });
   }
 
   throw new Error(
@@ -982,12 +1192,17 @@ function selectTrendJokeText({
   );
 }
 
-function dedupeTrendJokeCandidatePairs(candidatePairs) {
+function dedupeTrendJokeCandidatePairs(candidatePairs, prepared) {
   const seen = new Set();
   const result = [];
   for (const candidate of candidatePairs ?? []) {
     const text = validateTrendJokeText(
-      typeof candidate?.text === "string" ? candidate.text : ""
+      typeof candidate?.text === "string" ? candidate.text : "",
+      prepared
+    );
+    const pollOptions = validateTrendJokePollOptions(
+      candidate?.pollOptions,
+      prepared?.archetype
     );
     if (seen.has(text)) {
       continue;
@@ -1000,6 +1215,7 @@ function dedupeTrendJokeCandidatePairs(candidatePairs) {
           : "fallback",
       shape: typeof candidate?.shape === "string" ? candidate.shape : null,
       text,
+      pollOptions,
     });
   }
   return result;
@@ -1013,6 +1229,79 @@ function collectRecentTrendJokeShapes(entries, limit = 3) {
     }
   }
   return shapes;
+}
+
+function detectTrendJokeMotifs(text) {
+  return TREND_JOKE_MOTIFS.filter((motif) => motif.pattern.test(text)).map(
+    (motif) => motif.key
+  );
+}
+
+function getUnavailableTrendJokeMotifs(entries) {
+  const recentEntries = entries.slice(0, TREND_JOKE_MOTIF_WINDOW);
+  return TREND_JOKE_MOTIFS.filter((motif) => {
+    const count = recentEntries.filter((entry) => {
+      if (Array.isArray(entry?.motifs)) {
+        return entry.motifs.includes(motif.key);
+      }
+      return motif.pattern.test(String(entry?.text ?? ""));
+    }).length;
+    return count >= motif.recentLimit;
+  });
+}
+
+function findTrendJokeMotifBlockReason({ text, entries }) {
+  const usedMotifs = new Set(detectTrendJokeMotifs(text));
+  const unavailable = getUnavailableTrendJokeMotifs(entries);
+  const blocked = unavailable.find((motif) => usedMotifs.has(motif.key));
+  return blocked
+    ? `motif limit reached (${blocked.label}: ${blocked.recentLimit}/${TREND_JOKE_MOTIF_WINDOW})`
+    : null;
+}
+
+function normalizeTrendJokeArchetype(value) {
+  const normalized = String(value ?? "").trim().toLowerCase();
+  if (!TREND_JOKE_KNOWN_ARCHETYPES.has(normalized)) {
+    throw new Error(
+      `Trend joke archetype must be one of: ${TREND_JOKE_ARCHETYPE_ORDER.join(
+        ", "
+      )}`
+    );
+  }
+  return normalized;
+}
+
+function selectNextTrendJokeArchetype(history, accountHandle) {
+  const entries = getRelevantTrendJokeHistoryEntries(history, accountHandle);
+  const latestKnownIndex = entries.findIndex((entry) =>
+    TREND_JOKE_KNOWN_ARCHETYPES.has(entry?.archetype)
+  );
+  if (latestKnownIndex >= 0) {
+    const current = entries[latestKnownIndex].archetype;
+    const currentIndex = TREND_JOKE_ARCHETYPE_ORDER.indexOf(current);
+    return TREND_JOKE_ARCHETYPE_ORDER[
+      (currentIndex + 1) % TREND_JOKE_ARCHETYPE_ORDER.length
+    ];
+  }
+  return TREND_JOKE_ARCHETYPE_ORDER[
+    entries.length % TREND_JOKE_ARCHETYPE_ORDER.length
+  ];
+}
+
+function resolveTrendJokeMediaPath({ config, prepared, trendArgs, trendEnv }) {
+  if (prepared.archetype !== "tool_intro") {
+    return null;
+  }
+  const requested = firstNonEmpty(
+    trendArgs.imagePath,
+    trendEnv.X_BROWSER_POST_TREND_JOKE_IMAGE_PATH,
+    "public/img/og-image.png"
+  );
+  const resolved = path.resolve(config.cwd, requested);
+  if (!fsSync.existsSync(resolved)) {
+    throw new Error(`Trend joke image was not found: ${resolved}`);
+  }
+  return resolved;
 }
 
 // 湿っぽい温度。直前がこれらだった場合、連投を避けるため後回しにする。
@@ -1237,8 +1526,11 @@ async function openAutomationSession(config) {
       verifyLoggedInAccount: (accountHandle) =>
         page.verifyLoggedInAccount(accountHandle),
       fillComposer: (text) => page.fillComposer(text),
+      addMedia: (filePath) => page.addMedia(filePath),
+      addPoll: (options) => page.addPoll(options),
       assertSubmitReady: () => page.assertSubmitReady(),
-      submitPost: (accountHandle) => page.submitPost(accountHandle),
+      submitPost: (accountHandle, expectedText) =>
+        page.submitPost(accountHandle, expectedText),
       saveScreenshot: (label) => saveCdpScreenshot(page, config, label),
       close: () => page.close(),
     };
@@ -1253,8 +1545,11 @@ async function openAutomationSession(config) {
     verifyLoggedInAccount: (accountHandle) =>
       verifyLoggedInAccount(session.page, accountHandle),
     fillComposer: (text) => fillComposer(session.page, text),
+    addMedia: (filePath) => addMedia(session.page, filePath),
+    addPoll: (options) => addPoll(session.page, options),
     assertSubmitReady: () => assertSubmitReady(session.page),
-    submitPost: (accountHandle) => submitPost(session.page, accountHandle),
+    submitPost: (accountHandle, expectedText) =>
+      submitPost(session.page, accountHandle, expectedText),
     saveScreenshot: (label) => saveScreenshot(session.page, config, label),
     close: () => session.close(),
   };
@@ -1446,7 +1741,7 @@ async function fetchCdpJson(cdpUrl, pathname, timeoutMs) {
     if (!response.ok) {
       return null;
     }
-    return response.json();
+    return await response.json();
   } catch {
     return null;
   } finally {
@@ -1560,7 +1855,7 @@ async function assertTrendJokeNotPosted(config, key, { force }) {
 async function updateTrendJokeState(
   config,
   key,
-  { prepared, composedText, copySource }
+  { prepared, composedText, copySource, postedPostURL }
 ) {
   const state = await readTrendJokeState(config);
   const nextState = {
@@ -1571,9 +1866,11 @@ async function updateTrendJokeState(
         postedAt: new Date().toISOString(),
         queryBundleKey: prepared.queryBundleKey,
         topicKey: prepared.topicKey,
+        archetype: prepared.archetype,
         searchFingerprint: prepared.searchFingerprint,
         copySource: copySource ?? "fallback",
         textLength: Array.from(composedText).length,
+        postedPostURL: postedPostURL ?? null,
       },
     },
   };
@@ -1619,7 +1916,7 @@ async function readTrendJokeHistory(config, { strict }) {
 
 async function updateTrendJokeHistory(
   config,
-  { prepared, composedText, shape, copySource }
+  { prepared, composedText, shape, copySource, pollOptions, postedPostURL }
 ) {
   const history = await readTrendJokeHistory(config, { strict: true });
   const entry = buildTrendJokeHistoryEntry(config, {
@@ -1627,6 +1924,8 @@ async function updateTrendJokeHistory(
     composedText,
     shape,
     copySource,
+    pollOptions,
+    postedPostURL,
   });
   const nextHistory = {
     version: 1,
@@ -1644,19 +1943,27 @@ async function updateTrendJokeHistory(
 
 function buildTrendJokeHistoryEntry(
   config,
-  { prepared, composedText, shape, copySource }
+  { prepared, composedText, shape, copySource, pollOptions, postedPostURL }
 ) {
-  const text = validateTrendJokeText(composedText);
+  const text = validateTrendJokeText(composedText, prepared);
   return {
     postedAt: new Date().toISOString(),
     accountHandle: config.accountHandle,
     runDate: prepared.runDate,
     runSlot: prepared.runSlot,
     topicKey: prepared.topicKey,
+    archetype: prepared.archetype,
     queryBundleKey: prepared.queryBundleKey,
     searchFingerprint: prepared.searchFingerprint,
     copySource: copySource ?? "fallback",
     shape: typeof shape === "string" && shape ? shape : null,
+    motifs: detectTrendJokeMotifs(text),
+    pollOptions: validateTrendJokePollOptions(
+      pollOptions,
+      prepared.archetype
+    ),
+    tool: prepared.tool ?? null,
+    postedPostURL: postedPostURL ?? null,
     text,
     normalizedText: normalizeTrendJokeText(text),
     endingText: getEndingText(text),
@@ -1753,6 +2060,8 @@ function printPreparedTrendJoke({
   verifiedHandle,
   config,
   localTrendKey,
+  pollOptions,
+  mediaPath,
 }) {
   console.log("");
   console.log("X trend joke post");
@@ -1762,10 +2071,17 @@ function printPreparedTrendJoke({
   console.log(`Query bundle: ${prepared.queryBundleKey}`);
   console.log(`Queries: ${prepared.searchQueries.join(" / ")}`);
   console.log(`Topic: ${prepared.topicKey} (${prepared.topicLabel})`);
+  console.log(
+    `Archetype: ${prepared.archetype} (${prepared.archetypeLabel ?? ""})`
+  );
   console.log(`Copy source: ${copySource ?? "fallback"}`);
   console.log(`Shape: ${shape ?? "(none)"}`);
   console.log(`Search fingerprint: ${prepared.searchFingerprint}`);
   console.log(`Local key: ${localTrendKey}`);
+  console.log(
+    `Poll options: ${pollOptions?.length ? pollOptions.join(" / ") : "(none)"}`
+  );
+  console.log(`Media: ${mediaPath ?? "(none)"}`);
   console.log("");
   console.log("Signals:");
   for (const signal of prepared.signals ?? []) {

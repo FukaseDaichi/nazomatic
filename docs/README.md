@@ -26,6 +26,7 @@
 | `docs/blank25/design.md` | BLANK25 本体、作問モード、パーティ得点表示、Editor、外部 storage 連携 |
 | `docs/calendar-realtime/design.md` | 謎チケカレンダー、Realtime 取得、Firestore、内部 API、GitHub Actions、X 再投稿 |
 | `docs/x-browser-posting/design.md` | X API を使わないローカルブラウザ投稿自動化の要件、実装、運用リスク |
+| `docs/x-browser-posting/schedules.md` | 稼働中の X 投稿・週次改善レビューのスケジュールと実行契約 |
 | `docs/x-browser-posting/posting-persona.md` | X 投稿自動化で使う共通の投稿人格 |
 | `docs/x-browser-posting/weekend-ticket-summary.md` | `#謎チケ売ります` の週末土日別件数サマリ投稿、AI文案生成、ローカル投稿自動化 |
 | `docs/x-browser-posting/trend-joke-post.md` | Yahoo!リアルタイム検索で拾ったイベント名を材料にした短文ネタ投稿自動化の設計と現行実装 |

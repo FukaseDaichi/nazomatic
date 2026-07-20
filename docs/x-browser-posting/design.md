@@ -119,6 +119,8 @@ flowchart LR
 | selector registry | `scripts/x-browser-posting/selectors.mjs`                     | X UI セレクタを集中管理                                        |
 | page object       | `scripts/x-browser-posting/xComposerPage.mjs`                 | X 投稿画面の操作を隠蔽                                         |
 | local state       | `local/x-browser-posting/`                                    | storage state、エラー時スクリーンショット、ローカル lock |
+| post ledger       | `scripts/x-browser-posting/postLedger.mjs`                    | 成功投稿の種別、本文、投稿 URL、実験 metadata を共通台帳へ記録 |
+| weekly review     | `scripts/x-weekly-growth-review.mjs`                           | 直近7日を集計し、GitHub Issue を作成または同一週の Issue へ追記 |
 | local logs        | `logs/{automationId}/`                                        | Git 管理外の CLI 実行ログ。automation ごとに世代管理する |
 
 既存の `src/app/api/internal/x/repost/events/route.ts` は X API による通常 Repost なので、ブラウザ投稿用 API とは分けます。候補選定ロジックだけは共通化し、X API 認証情報への依存をブラウザ投稿側へ持ち込まないようにします。
@@ -250,7 +252,7 @@ X_BROWSER_POST_ALLOW_UNATTENDED=false
 X_BROWSER_POST_CONFIRMATION_MODE=interactive
 X_BROWSER_POST_AUTO_EXECUTE_ALLOWED=false
 X_BROWSER_POST_COMMENT=
-X_BROWSER_POST_LOG_RETENTION_COUNT=10
+X_BROWSER_POST_LOG_RETENTION_COUNT=70
 X_BROWSER_POST_MAX_PER_RUN=1
 X_BROWSER_POST_COOLDOWN_MINUTES=120
 X_BROWSER_POST_DAILY_LIMIT=6
@@ -281,7 +283,7 @@ X_BROWSER_POST_DAILY_LIMIT=6
 | `X_BROWSER_POST_CONFIRMATION_MODE` | 任意 | `interactive` または `auto`。既定 `interactive` |
 | `X_BROWSER_POST_AUTO_EXECUTE_ALLOWED` | 任意 | `CONFIRMATION_MODE=auto` を有効にする二重ロック。既定 `false` |
 | `X_BROWSER_POST_COMMENT` | 任意 | 静的テンプレートのランダム選択を使わず、固定コメントで上書きする場合の文面 |
-| `X_BROWSER_POST_LOG_RETENTION_COUNT` | 任意 | 各 automation のローカル実行ログを残す世代数。既定 `10` |
+| `X_BROWSER_POST_LOG_RETENTION_COUNT` | 任意 | 各 automation のローカル実行ログを残す世代数。既定 `70` |
 | `X_BROWSER_POST_MAX_PER_RUN` | 任意 | 1 実行あたりの上限。既定 1、hard limit 1 |
 | `X_BROWSER_POST_COOLDOWN_MINUTES` | 任意 | cooldown 分数。既定 120、hard limit 3 分以上 |
 | `X_BROWSER_POST_DAILY_LIMIT` | 任意 | 1 日上限。既定 6、hard limit 50 以下 |
@@ -319,7 +321,7 @@ logs/
 世代管理:
 
 - `X_BROWSER_POST_LOG_RETENTION_COUNT` を共通の保持世代数にする。
-- 未設定、空文字、不正値、`0` 以下の場合は `10` として扱う。
+- 未設定、空文字、不正値、`0` 以下の場合は `70` として扱う。
 - 保持数は automation ディレクトリ単位で数える。3つの automation 全体で合算しない。
 - dry-run、実投稿、成功、失敗のログは同じ世代として数える。
 - 実行中に作った最新ログを含めて新しい順に残し、保持数を超えた古い `*.log` だけを削除する。
@@ -331,6 +333,12 @@ logs/
 - 新規ログは `logs/` のみに出力する。旧 `log/` へは追記しない。
 - 旧 `log/` の既存ファイルは自動移行せず、運用対象外として削除する。
 - `.gitignore` は `/logs/` を ignore する。旧 `log/` も残存ログの誤 commit 防止のため、しばらく ignore する。
+
+## 共通投稿台帳と週次改善レビュー
+
+通常投稿、トレンド投稿、週末サマリの成功時は、Git 管理外の `local/x-browser-posting/post-ledger.json` に投稿種別、本文、投稿 URL、実験 metadata を記録します。トレンド投稿では型、shape、モチーフ、投票選択肢、紹介ツールも残します。既存投稿の自動 backfill は行いません。
+
+`npm run x:growth-review -- --create-issue` は投稿台帳、automation log、X の公開数値を直近7日分集計し、`[X週次レビュー] YYYY-Www @nazomaticapp` の GitHub Issue を作成します。同じ週に再実行した場合は Issue を増やさず、既存 Issue へコメントします。取得不能な公開数値は0として扱わず明記し、提案した投稿文や schedule を自動変更しません。実際の登録時刻と実行契約は `docs/x-browser-posting/schedules.md` を参照してください。
 
 ## DB 更新設計
 

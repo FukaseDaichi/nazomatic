@@ -8,6 +8,7 @@ import { stdin as input, stdout as output } from "process";
 
 import { loadBrowserPostConfig } from "./x-browser-posting/config.mjs";
 import { openCdpChromePage } from "./x-browser-posting/cdpChromePage.mjs";
+import { recordBrowserPost } from "./x-browser-posting/postLedger.mjs";
 import {
   SELECTOR_PROFILE_VERSION,
   assertSubmitReady,
@@ -82,7 +83,10 @@ async function main() {
       }
     }
 
-    const postedPostURL = await session.submitPost(config.accountHandle);
+    const postedPostURL = await session.submitPost(
+      config.accountHandle,
+      composedText
+    );
     postSubmitted = true;
     await confirmCandidate(config, prepared, {
       status: "posted",
@@ -90,6 +94,21 @@ async function main() {
       postedPostURL,
     });
     await updateLocalRateState(config);
+    await recordBrowserPost(config, {
+      postType: "normal",
+      text: composedText,
+      postedPostURL,
+      metadata: {
+        eventId: prepared.pickedEventId,
+        sourcePostURL: prepared.postURL,
+      },
+    }).catch((error) =>
+      console.warn(
+        `Could not update browser post ledger: ${
+          error instanceof Error ? error.message : String(error)
+        }`
+      )
+    );
     confirmed = true;
     console.log("Posted via X browser session.");
     if (postedPostURL) {
@@ -229,7 +248,8 @@ async function openAutomationSession(config) {
         page.verifyLoggedInAccount(accountHandle),
       fillComposer: (text) => page.fillComposer(text),
       assertSubmitReady: () => page.assertSubmitReady(),
-      submitPost: (accountHandle) => page.submitPost(accountHandle),
+      submitPost: (accountHandle, expectedText) =>
+        page.submitPost(accountHandle, expectedText),
       saveScreenshot: (label) => saveCdpScreenshot(page, config, label),
       close: () => page.close(),
     };
@@ -245,7 +265,8 @@ async function openAutomationSession(config) {
       verifyLoggedInAccount(session.page, accountHandle),
     fillComposer: (text) => fillComposer(session.page, text),
     assertSubmitReady: () => assertSubmitReady(session.page),
-    submitPost: (accountHandle) => submitPost(session.page, accountHandle),
+    submitPost: (accountHandle, expectedText) =>
+      submitPost(session.page, accountHandle, expectedText),
     saveScreenshot: (label) => saveScreenshot(session.page, config, label),
     close: () => session.close(),
   };
@@ -435,7 +456,7 @@ async function fetchCdpJson(cdpUrl, pathname, timeoutMs) {
     if (!response.ok) {
       return null;
     }
-    return response.json();
+    return await response.json();
   } catch {
     return null;
   } finally {
