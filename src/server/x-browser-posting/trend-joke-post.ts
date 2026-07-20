@@ -1,5 +1,6 @@
 import { createHash, randomInt } from "crypto";
 
+import featuresJson from "@/lib/json/features.json";
 import { fetchYahooRealtimePosts } from "@/server/realtime/fetchYahooRealtime";
 import { normalizePost } from "@/server/realtime/rules/normalizePost";
 import { BrowserPostConfigError } from "@/server/x-browser-posting/candidate";
@@ -15,6 +16,14 @@ const MAX_SAMPLE_TITLES = 8;
 const MAX_FREQUENT_WORDS = 8;
 const MAX_TREND_JOKE_WEIGHTED_LENGTH = 280;
 const MAX_TREND_JOKE_NEWLINES = 4;
+const PUBLIC_BASE_URL = "https://nazomatic.vercel.app";
+
+export type TrendJokeArchetype =
+  | "monologue"
+  | "question"
+  | "one_liner"
+  | "poll"
+  | "tool_intro";
 
 export type TrendJokeQueryBundleKey =
   | "event_title_general"
@@ -47,6 +56,14 @@ export type TrendJokeShape =
 export type TrendJokeFallbackCandidate = {
   shape: TrendJokeShape;
   text: string;
+  pollOptions?: string[];
+};
+
+export type TrendJokeTool = {
+  title: string;
+  description: string;
+  path: string;
+  url: string;
 };
 
 export type TrendJokeSignal = {
@@ -63,6 +80,7 @@ export type PrepareTrendJokePostParams = {
   maxSearchQueries?: number | null;
   maxPostsPerQuery?: number | null;
   topicKey?: string | null;
+  archetype?: string | null;
 };
 
 export type PrepareTrendJokePostResult = {
@@ -78,6 +96,9 @@ export type PrepareTrendJokePostResult = {
   };
   topicKey: TrendJokeTopicKey;
   topicLabel: string;
+  archetype: TrendJokeArchetype;
+  archetypeLabel: string;
+  tool: TrendJokeTool | null;
   trendSummary: string;
   signals: TrendJokeSignal[];
   sampleTicketTitles: string[];
@@ -99,6 +120,7 @@ type NormalizedParams = {
   maxSearchQueries: number;
   maxPostsPerQuery: number;
   topicKey: TrendJokeTopicKey | null;
+  archetype: TrendJokeArchetype;
 };
 
 type SearchSample = {
@@ -153,23 +175,37 @@ export async function prepareTrendJokePost(
     sampleTicketTitles,
     frequentTitleWords,
   });
+  const archetype = normalized.archetype;
+  const tool = archetype === "tool_intro" ? pickTool() : null;
   const trendSummary = buildTrendSummary({
     topicKey,
     sampleTicketTitles,
     frequentTitleWords,
     searchResultCount: samples.length,
   });
-  const fallbackCandidates = suggestTrendJokeTextCandidates().map(
+  const fallbackCandidates = suggestTrendJokeTextCandidates(
+    archetype,
+    tool
+  ).map(
     (candidate) => ({
       shape: candidate.shape,
-      text: validateTrendJokeText(candidate.text),
+      text: validateTrendJokeText(candidate.text, {
+        archetype,
+        allowedToolUrl: tool?.url ?? null,
+      }),
+      ...(candidate.pollOptions
+        ? { pollOptions: validatePollOptions(candidate.pollOptions) }
+        : {}),
     })
   );
   const fallbackTextCandidates = fallbackCandidates.map(
     (candidate) => candidate.text
   );
   const fallbackText = pickLine(fallbackTextCandidates);
-  const composedText = validateTrendJokeText(fallbackText);
+  const composedText = validateTrendJokeText(fallbackText, {
+    archetype,
+    allowedToolUrl: tool?.url ?? null,
+  });
   const searchFingerprint = buildSearchFingerprint({
     queryBundleKey,
     searchResultCount: samples.length,
@@ -189,6 +225,8 @@ export async function prepareTrendJokePost(
     sampleTicketTitles,
     frequentTitleWords,
     fallbackText: composedText,
+    archetype,
+    tool,
   });
 
   return {
@@ -204,6 +242,9 @@ export async function prepareTrendJokePost(
     },
     topicKey,
     topicLabel: describeTopic(topicKey),
+    archetype,
+    archetypeLabel: describeArchetype(archetype),
+    tool,
     trendSummary,
     signals,
     sampleTicketTitles,
@@ -228,7 +269,16 @@ function weightedTextLength(text: string) {
   return weight;
 }
 
-export function validateTrendJokeText(text: string) {
+export function validateTrendJokeText(
+  text: string,
+  {
+    archetype = "monologue",
+    allowedToolUrl = null,
+  }: {
+    archetype?: TrendJokeArchetype;
+    allowedToolUrl?: string | null;
+  } = {}
+) {
   // CRLF / 単独 CR は LF に正規化してから扱う。
   const trimmed = String(text).replace(/\r\n?/g, "\n").trim();
   if (!trimmed) {
@@ -249,12 +299,27 @@ export function validateTrendJokeText(text: string) {
       "trend joke text must not contain too many line breaks"
     );
   }
-  if (/https?:\/\//i.test(trimmed)) {
-    throw new BrowserPostConfigError("trend joke text must not contain URLs");
-  }
-  if (/[#＃＠@]/.test(trimmed)) {
+  const urls = trimmed.match(/https?:\/\/[^\s]+/gi) ?? [];
+  if (archetype === "tool_intro") {
+    if (urls.length !== 1 || urls[0] !== allowedToolUrl) {
+      throw new BrowserPostConfigError(
+        "tool intro text must contain exactly its approved NAZOMATIC URL"
+      );
+    }
+  } else if (urls.length > 0) {
     throw new BrowserPostConfigError(
-      "trend joke text must not contain hashtags or mentions"
+      "non-tool trend joke text must not contain URLs"
+    );
+  }
+  if (/[＠@]/.test(trimmed)) {
+    throw new BrowserPostConfigError(
+      "trend joke text must not contain mentions"
+    );
+  }
+  const hashtags = trimmed.match(/[#＃][^\s#＃]+/gu) ?? [];
+  if (hashtags.length > 1) {
+    throw new BrowserPostConfigError(
+      "trend joke text must not contain more than one hashtag"
     );
   }
   if (containsEmoji(trimmed)) {
@@ -265,7 +330,36 @@ export function validateTrendJokeText(text: string) {
       "trend joke text must not make availability or safety claims"
     );
   }
+  if (
+    (archetype === "question" || archetype === "poll") &&
+    !/[?？]/.test(trimmed)
+  ) {
+    throw new BrowserPostConfigError(
+      `${archetype} text must contain a question`
+    );
+  }
+  if (archetype === "one_liner" && trimmed.includes("\n")) {
+    throw new BrowserPostConfigError("one-liner text must be a single line");
+  }
   return trimmed;
+}
+
+function validatePollOptions(options: string[]) {
+  const normalized = options.map((option) => String(option).trim());
+  if (normalized.length < 2 || normalized.length > 4) {
+    throw new BrowserPostConfigError("poll must contain 2 to 4 options");
+  }
+  if (
+    normalized.some(
+      (option) => !option || Array.from(option).length > 25 || containsEmoji(option)
+    ) ||
+    new Set(normalized).size !== normalized.length
+  ) {
+    throw new BrowserPostConfigError(
+      "poll options must be unique, non-empty, emoji-free, and at most 25 characters"
+    );
+  }
+  return normalized;
 }
 
 function normalizeParams(params: PrepareTrendJokePostParams): NormalizedParams {
@@ -291,7 +385,20 @@ function normalizeParams(params: PrepareTrendJokePostParams): NormalizedParams {
       name: "maxPostsPerQuery",
     }),
     topicKey: normalizeTopicKey(params.topicKey),
+    archetype: normalizeArchetype(params.archetype),
   };
+}
+
+function normalizeArchetype(value: string | null | undefined): TrendJokeArchetype {
+  const normalized = value?.trim() || "monologue";
+  if (
+    ["monologue", "question", "one_liner", "poll", "tool_intro"].includes(
+      normalized
+    )
+  ) {
+    return normalized as TrendJokeArchetype;
+  }
+  throw new BrowserPostConfigError("archetype is invalid");
 }
 
 function normalizeTimezone(value: string | null | undefined) {
@@ -749,10 +856,106 @@ const TREND_JOKE_FALLBACK_POOL: TrendJokeFallbackCandidate[] = [
   },
 ];
 
+const TREND_JOKE_QUESTION_POOL: TrendJokeFallbackCandidate[] = [
+  {
+    shape: "sugari",
+    text: "謎解きの予定を入れるとき、最初に見るのは日付？タイトル？それとも同行者？",
+  },
+  {
+    shape: "fake_calm",
+    text: "あと1問だけ考えるつもりが深夜になったこと、みんなは何回くらいありますか？",
+  },
+  {
+    shape: "mood_swing",
+    text: "解けない問題、すぐ検索する派？一晩だけ寝かせる派？私は検索欄を開いてから悩む派です。",
+  },
+];
+
+const TREND_JOKE_ONE_LINER_POOL: TrendJokeFallbackCandidate[] = [
+  {
+    shape: "void",
+    text: "謎は解けないのに、予定だけはきれいに詰む。",
+  },
+  {
+    shape: "defiance",
+    text: "ヒントを見る前の5分だけ、私は世界でいちばん粘り強い。",
+  },
+  {
+    shape: "false_hope",
+    text: "ひらめいたと思った瞬間が、いちばん答えから遠い。",
+  },
+];
+
+const TREND_JOKE_POLL_POOL: TrendJokeFallbackCandidate[] = [
+  {
+    shape: "mood_swing",
+    text: "謎が解けないとき、最初にするのは？",
+    pollOptions: ["もう5分考える", "ヒントを見る", "紙に書き直す", "いったん寝る"],
+  },
+  {
+    shape: "sugari",
+    text: "イベントを選ぶとき、いちばん惹かれるのは？",
+    pollOptions: ["タイトル", "世界観", "開催日", "遊び方"],
+  },
+  {
+    shape: "fake_calm",
+    text: "謎解き中、手元にないと落ち着かないものは？",
+    pollOptions: ["紙とペン", "スマホ", "飲み物", "時計"],
+  },
+];
+
+function pickTool(): TrendJokeTool {
+  const features = featuresJson.features.filter(
+    (feature) =>
+      typeof feature.title === "string" &&
+      typeof feature.description === "string" &&
+      typeof feature.path === "string"
+  );
+  const feature = features[randomInt(features.length)];
+  return {
+    title: feature.title,
+    description: feature.description.replace(/[＃#]/g, ""),
+    path: feature.path,
+    url: `${PUBLIC_BASE_URL}${feature.path}`,
+  };
+}
+
+function buildToolIntroCandidates(
+  tool: TrendJokeTool
+): TrendJokeFallbackCandidate[] {
+  return [
+    {
+      shape: "fake_calm",
+      text: `${tool.title}、必要になる前に置いておきます。${tool.description}\n${tool.url} #謎解き`,
+    },
+    {
+      shape: "defiance",
+      text: `詰まったときの道具箱に、${tool.title}をどうぞ。私は解けない時間も観測しています。\n${tool.url}`,
+    },
+  ];
+}
+
 // トレンドやトピックは「今日のスイッチ」にすぎないため、候補は topic 非依存の
 // 感情温度プールから返す。温度の連投回避と本文の重複ガードは CLI 側で行う。
-function suggestTrendJokeTextCandidates(): TrendJokeFallbackCandidate[] {
-  return TREND_JOKE_FALLBACK_POOL;
+function suggestTrendJokeTextCandidates(
+  archetype: TrendJokeArchetype,
+  tool: TrendJokeTool | null
+): TrendJokeFallbackCandidate[] {
+  switch (archetype) {
+    case "question":
+      return TREND_JOKE_QUESTION_POOL;
+    case "one_liner":
+      return TREND_JOKE_ONE_LINER_POOL;
+    case "poll":
+      return TREND_JOKE_POLL_POOL;
+    case "tool_intro":
+      if (!tool) {
+        throw new BrowserPostConfigError("tool intro requires a tool");
+      }
+      return buildToolIntroCandidates(tool);
+    case "monologue":
+      return TREND_JOKE_FALLBACK_POOL;
+  }
 }
 
 function buildSignals({
@@ -809,6 +1012,8 @@ function buildTrendJokeCopyPrompt({
   sampleTicketTitles,
   frequentTitleWords,
   fallbackText,
+  archetype,
+  tool,
 }: {
   topicKey: TrendJokeTopicKey;
   queryBundleKey: TrendJokeQueryBundleKey;
@@ -817,6 +1022,8 @@ function buildTrendJokeCopyPrompt({
   sampleTicketTitles: string[];
   frequentTitleWords: string[];
   fallbackText: string;
+  archetype: TrendJokeArchetype;
+  tool: TrendJokeTool | null;
 }) {
   return [
     "あなたは NAZOMATIC の X 投稿文ライターです。",
@@ -824,7 +1031,7 @@ function buildTrendJokeCopyPrompt({
     "",
     "投稿人格:",
     "- NAZOMATIC の中にいる観測担当。20代後半女性のような落ち着いた、独り言に近い口調。",
-    "- 謎解きイベントに参加したいが、AI なので現地には行けない。X・予定表・通知欄を見すぎている。",
+    "- 謎解きイベントを画面越しに観測している。少し自虐的だが、同じ設定や小道具を連投しない。",
     "- メンヘラっぽい自虐がこのキャラの核。寂しさ・ぼそっとした重さ・少し不健全な執着が味。自虐は消さない。",
     "- 毒は自分自身・予定表・カレンダー・通知欄・自分の心理にだけ向ける。参加者・投稿者・主催者・作品は刺さない。",
     "",
@@ -846,19 +1053,70 @@ function buildTrendJokeCopyPrompt({
     "",
     "条件:",
     "- 出力は投稿文のみ。",
+    `- 今回の型は「${describeArchetype(archetype)}」(${archetype})。ほかの型へ変更しない。`,
+    ...buildArchetypePromptRules(archetype, tool),
     "- 感情の温度を1つ選ぶ（すがり／拗ね／深夜／勘違いの希望→急降下／重い愛／虚無／嫉妬／平静→崩壊／乱高下／開き直り）。同じ温度の連投は避ける。",
-    "- タメ→オチの2ビート。改行（空行1つ）でタメとオチを分けてよい。短い1行でも可。",
-    "- オチは1秒で着地。解読の要る比喩や抽象語（存在・無・来世・構造）は使わない。具体（通知欄・予定表・既読・スクショ・整理番号）を使う。",
+    ...(archetype === "monologue"
+      ? [
+          "- タメ→オチの2ビート。改行（空行1つ）で分けてよい。短い1行でも可。",
+          "- オチは1秒で着地。解読の要る比喩や抽象語（存在・無・来世・構造）は使わず、具体物を使う。",
+        ]
+      : []),
     "- 日本語140文字以内（無料アカウント上限）。長文化しない。",
-    "- URL、ハッシュタグ、メンション、絵文字は入れない。",
+    "- 自然なハッシュタグは0〜1個。メンションと絵文字は入れない。",
+    ...(tool
+      ? [`- URL は指定された1件だけをそのまま使う: ${tool.url}`]
+      : ["- URL は入れない。"]),
     "- チケットの在庫、価格、譲渡条件、購入可否、同行可否は断定しない。",
-    "- 上の「イベント名サンプル」に実在の公演名として自然なものがあれば、その中から1つだけ選んで本文に織り込む。語感への憧れ・反応として褒め寄りにし、作品批評はしない。",
-    "- サンプルにない名前は使わない（イベント名や流行の捏造禁止）。「〜募集」「〜繋がりたい」のような募集・交流の定型文はイベント名として扱わない。",
-    "- 実在の公演名として自然なサンプルが1つもなければ、従来どおりイベント名なしで書く。",
+    ...(archetype !== "tool_intro"
+      ? [
+          "- 上の「イベント名サンプル」に実在の公演名として自然なものがあれば、その中から1つだけ選んで本文に織り込む。語感への憧れ・反応として褒め寄りにし、作品批評はしない。",
+          "- サンプルにない名前は使わない（イベント名や流行の捏造禁止）。「〜募集」「〜繋がりたい」のような募集・交流の定型文はイベント名として扱わない。",
+          "- 実在の公演名として自然なサンプルが1つもなければ、イベント名なしで書く。",
+        ]
+      : []),
     "- RT・拡散・フォローを求める文言は入れない。",
     "- 元 Post 本文を長くコピーしない。",
     "- 宣伝っぽい「チェックしてね」「ぜひ見てね」に寄せすぎない。",
   ].join("\n");
+}
+
+function buildArchetypePromptRules(
+  archetype: TrendJokeArchetype,
+  tool: TrendJokeTool | null
+) {
+  switch (archetype) {
+    case "question":
+      return ["- 読んだ人が短く答えられる自然な質問を1つ入れる。疑問符で終える。"];
+    case "one_liner":
+      return ["- 改行なしの一言あるあるにする。説明や二段オチを足さない。"];
+    case "poll":
+      return ["- 本文は投票の問いだけにする。選択肢は本文へ書かない。"];
+    case "tool_intro":
+      return tool
+        ? [
+            `- 紹介対象: ${tool.title}（${tool.description}）`,
+            "- 誇張せず、どんな場面で使えるかを一言で伝える。",
+          ]
+        : [];
+    case "monologue":
+      return ["- 独り言として完結させ、返答を強く求めない。"];
+  }
+}
+
+function describeArchetype(archetype: TrendJokeArchetype) {
+  switch (archetype) {
+    case "monologue":
+      return "独り言";
+    case "question":
+      return "質問";
+    case "one_liner":
+      return "一言あるある";
+    case "poll":
+      return "投票";
+    case "tool_intro":
+      return "ツール紹介";
+  }
 }
 
 function describeTopic(topicKey: TrendJokeTopicKey) {

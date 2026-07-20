@@ -17,7 +17,7 @@
 | [`system-design/architecture/`](./system-design/architecture/) | 全体構成、ルート/API、データ、セキュリティ |
 | [`system-design/subsystems/`](./system-design/subsystems/) | 機能別の現行設計 |
 | [`system-design/operations/`](./system-design/operations/) | 定期処理、生成物、ローカル自動化 |
-| [`system-design/operations/x-browser-post-schedules.md`](./system-design/operations/x-browser-post-schedules.md) | 稼働中の X ブラウザ投稿スケジュールと実行時の報告契約 |
+| [`system-design/operations/x-browser-post-schedules.md`](./system-design/operations/x-browser-post-schedules.md) | 稼働中の X 投稿・週次改善レビューのスケジュールと実行契約 |
 | [`system-design/quality/`](./system-design/quality/) | コードから確認できる既知の懸念点 |
 | [`development-guide.md`](./development-guide.md) | セットアップ、コマンド、環境変数、変更時確認 |
 | [`ai-coding-rules.md`](./ai-coding-rules.md) | AI がコードや UI を変更するときの必須ルール |

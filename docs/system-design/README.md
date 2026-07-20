@@ -16,6 +16,7 @@ flowchart LR
   actions["GitHub Actions"] --> internalApi["Bearer 保護された内部 API"]
   localCli["ローカル Playwright CLI"] --> internalApi
   localCli --> xweb["x.com"]
+  localReview["ローカル週次レビュー"] --> githubIssue["GitHub Issue"]
   artifacts["Shift Search artifacts"] --> generated["表示用 generated JSON"]
   generated --> next
 ```
@@ -45,7 +46,7 @@ flowchart LR
 | 文書 | 内容 |
 |---|---|
 | [`operations/jobs-and-generated-assets.md`](./operations/jobs-and-generated-assets.md) | GitHub Actions、ローカル CLI、生成物同期 |
-| [`operations/x-browser-post-schedules.md`](./operations/x-browser-post-schedules.md) | 稼働中の X ブラウザ投稿スケジュールと実行契約 |
+| [`operations/x-browser-post-schedules.md`](./operations/x-browser-post-schedules.md) | 稼働中の X 投稿・週次改善レビューのスケジュールと実行契約 |
 | [`quality/known-concerns.md`](./quality/known-concerns.md) | 現行コードから確認できる懸念点と影響 |
 
 ## 設計上の不変条件

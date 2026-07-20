@@ -1,20 +1,23 @@
-# ドキュメント同期レポート（2026-07-19）
+# ドキュメント同期レポート（2026-07-20）
 
 ## 1. 自動修正したもの
 
-- `docs/system-design/operations/x-browser-post-schedules.md`: 依頼者から稼働中と共有された X ブラウザ投稿 3 枠を、通常投稿 1 枠と週末サマリ 2 枠に分けて運用台帳化した。
-- `docs/system-design/operations/x-browser-post-schedules.md:実行契約`: `package.json`、`scripts/x-browser-post-*.mjs`、`scripts/x-browser-posting/{config,runLog}.mjs` に合わせ、1 起動 1 実行、auto 投稿の二重 lock、CLI による log 保存・世代管理、停止条件、実行後の報告項目を記載した。
-- `docs/system-design/README.md`、`docs/system-design/operations/jobs-and-generated-assets.md`、`docs/README.md`、`docs/development-guide.md`: 新しい運用台帳への導線を追加した。
+- `docs/system-design/operations/x-browser-post-schedules.md`: Codex automation の実登録と照合し、誤っていた「週末サマリ A/B」を削除した。通常投稿（3時間ごと）、トレンド投稿（毎日09:30・15:30・21:30）、週末サマリ（毎日18:30）、週次改善レビュー（毎週月曜11:30）を現行台帳へ反映した。
+- `docs/system-design/subsystems/x-posting.md`: トレンド投稿の5型ローテーション、直近5件のモチーフ上限、hashtag・URLの新しい許可範囲、画像・ネイティブ投票、共通投稿台帳、週次 GitHub Issue の仕様を実装に合わせた。
+- `docs/development-guide.md`、`.env.x-browser-posting.example`: 新しい CLI、環境変数、ローカルファイル、70世代のログ保持を反映した。
+- `docs/system-design/operations/jobs-and-generated-assets.md`、`docs/system-design/README.md`、`docs/README.md`: ローカル週次レビューと GitHub Issue への導線を追加した。
 
 ## 2. 判断に迷った点
 
-- 週末サマリの同一実行指示が 2 件共有された。異なる日時に発火する独立枠の可能性があるため統合せず、「週末サマリ A/B」の 2 枠として記録した。
-- 外部スケジューラーの ID、曜日、時刻、timezone は repository 内に存在せず、依頼内容にも含まれていない。推測では補完せず、正確な cadence と有効・無効の最終状態は外部スケジューラーを正とした。
-- 「稼働中」は 2026-07-19 時点の依頼者共有情報として記録した。直近実行の成否とは分け、成否は CLI の最新 log で確認する運用にした。
+- GitHub Actions ではログイン済み Chrome profile、Git 管理外の投稿台帳、ローカル log を参照できないため、週次レビューは Codex のローカル automation に置いた。
+- 週次レビューが提案した内容をそのままコードへ自動反映すると複数要因の同時変更や品質低下を招くため、Issue は分析と改善候補までとし、採用判断後に変更する境界を残した。
+- X の公開数値は DOM や公開 HTML の変更で取得できない場合がある。取得不能を0件として誤評価せず、Issue に明示する仕様とした。
 
 ## 3. システム問題点
 
-- 週末サマリ A/B は同じ automation ID と `logs/x-browser-post-weekend-summary/` を共有するため、repository 内の log だけでは生成元の登録枠を識別できない。
+- 共通投稿台帳は導入後の成功投稿から蓄積され、過去投稿は自動 backfill しない。初回の型別・投稿別レビューはデータが少ない。
+- ネイティブ投票と画像添付、投稿 URL 検出、公開指標取得は X の UI selector に依存する。UI 変更時は安全側に停止するが、定期的な selector 確認が必要。
+- 初回週次レビューには比較元の follower snapshot がないため、前週差は2回目以降に表示される。
 
 ## 4. AGENTS.md 推奨修正
 

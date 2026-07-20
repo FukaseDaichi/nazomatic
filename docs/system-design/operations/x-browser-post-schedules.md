@@ -2,57 +2,67 @@
 
 ## 位置づけ
 
-この文書は、リポジトリ外のスケジューラーから起動している X ブラウザ投稿タスクの運用台帳です。2026-07-19 時点で、依頼者から稼働中と共有された登録内容を記録しています。
+この文書は、Codex のローカル automation で動かす X 投稿・改善レビューの運用台帳です。2026-07-20 に automation の登録内容と照合しています。正確な有効・無効状態は Codex automation 側を正とし、変更時はこの台帳も更新します。
 
-スケジューラー固有の ID、実行曜日、実行時刻、timezone はリポジトリに保存されていません。正確な cadence と有効・無効の最終状態は外部スケジューラー側を正とし、この文書では実行内容と登録枠数を管理します。
+## 稼働中の登録
 
-## 稼働中の登録枠
+| Automation 名 | 状態 | JST の実行時刻 | コマンド | 役割 |
+|---|---|---|---|---|
+| NAZOMATIC X 投稿 | ACTIVE | 3時間ごとの毎時00分 | `npm run x:browser-post -- --execute` | 個別イベントのコメント付き投稿 |
+| NAZOMATIC X トレンドジョーク投稿 | ACTIVE | 毎日 09:30 / 15:30 / 21:30 | `npm run x:browser-post:trend-joke -- --execute --copy-provider codex` | 会話の入口となる短文・質問・投票・ツール紹介 |
+| NAZOMATIC 週末謎チケサマリ投稿 | ACTIVE | 毎日 18:30 | `npm run x:browser-post:weekend-summary -- --execute` | 対象週末の土日別件数サマリ |
+| NAZOMATIC X 週次改善レビュー | ACTIVE | 毎週月曜 11:30 | `npm run x:growth-review -- --create-issue` | 直近7日を集計し GitHub Issue を作成または追記 |
 
-| 登録枠 | 状態 | 処理 | 1 回の起動で実行するコマンド |
-|---|---|---|---|
-| 週末サマリ A | 稼働中 | `#謎チケ売ります` の対象週末を土日別に集計して投稿 | `npm run x:browser-post:weekend-summary -- --execute` |
-| 通常投稿 | 稼働中 | 投稿候補 1 件へコメントを付けて投稿 | `npm run x:browser-post -- --execute` |
-| 週末サマリ B | 稼働中 | `#謎チケ売ります` の対象週末を土日別に集計して投稿 | `npm run x:browser-post:weekend-summary -- --execute` |
-
-週末サマリ A/B は、同じコマンドと実行指示を持つ独立した 2 枠です。各枠の発火日時が異なる可能性があるため、この台帳では 1 枠へ統合しません。同日かつ同じ対象週末への再投稿は CLI のローカル重複防止で停止します。
+以前の台帳にあった「週末サマリ A/B」の2枠は実態と一致していません。現在の週末サマリは1枠で、代わりにトレンドジョーク投稿が1日3回稼働しています。
 
 ## 共通の実行契約
 
-- リポジトリルートで、指定コマンドを各起動につき 1 回だけ実行する。
-- 設定は Git 管理外の `.env.x-browser-posting.local` から読み込む。
-- 実投稿には `--execute` が必要。無人実行では `X_BROWSER_POST_CONFIRMATION_MODE=auto` と `X_BROWSER_POST_AUTO_EXECUTE_ALLOWED=true` の両方を必要とする。
+- リポジトリルートで、指定コマンドを各起動につき1回だけ実行する。
+- 設定は Git 管理外の `.env.x-browser-posting.local` から読む。
+- 実投稿には `--execute`、無人実行には `X_BROWSER_POST_CONFIRMATION_MODE=auto` と `X_BROWSER_POST_AUTO_EXECUTE_ALLOWED=true` を必要とする。
 - CLI 自身のログ機能を使い、旧 `log/` への `tee` や独自 wrapper を追加しない。
-- ログは `X_BROWSER_POST_LOG_RETENTION_COUNT` の世代数だけ保持する。未設定時は 10 世代。
-- 失敗時は自動 retry しない。X の login、account 不一致、rate limit、UI 変更、CAPTCHA、2FA などを無理に回避しない。
-- 実行後は「成功」「候補なし」「失敗」のいずれかと、対象ディレクトリ内の最新 log の絶対 path を短く報告する。
+- ログは `X_BROWSER_POST_LOG_RETENTION_COUNT` の世代数だけ保持する。既定と現行ローカル設定は70世代。
+- X の login、account 不一致、rate limit、UI 変更、CAPTCHA、2FA を検出した場合は自動 retry や回避をせず停止する。
+- 投稿成功後は `local/x-browser-posting/post-ledger.json` に投稿種別、本文、投稿 URL、実験 metadata を記録する。
 
-## 通常投稿の実行内容
+## トレンドジョークの運用
 
-`npm run x:browser-post -- --execute` は 1 回の起動で候補を最大 1 件処理し、実行ログを `logs/x-browser-post/` に保存します。
+頻度は1日3回のままです。投稿型は次の順で直近履歴からローテーションします。
 
-報告には次を含めます。
+1. 独り言 (`monologue`)
+2. 質問 (`question`)
+3. 一言あるある (`one_liner`)
+4. 投票 (`poll`)
+5. ツール紹介 (`tool_intro`)
 
-- 成功時: 投稿済みか、投稿 URL が出力されたか。
-- 候補なし: 投稿候補がなかったこと。
-- 失敗時: 終了 code、関連する stdout / stderr、出力された error screenshot や pending confirm file の path。
+「AIなので行けない」「予定表」は直近5件で各2件まで、「通知欄」は直近5件で1件までです。上限へ達したモチーフは provider prompt に禁止対象として渡し、fallback 選択時も除外します。
 
-## 週末サマリの実行内容
+自然な hashtag は最大1個、mention と emoji は禁止です。質問型と投票型は疑問文を必須にします。投票型は2〜4選択肢のネイティブ投票、ツール紹介型は `features.json` にある公開ツール URL と既定のブランド画像を実験対象にします。URL はツール紹介で指定された NAZOMATIC URL 1件だけ許可します。
 
-`npm run x:browser-post:weekend-summary -- --execute` は、`Asia/Tokyo` の実行日から対象週末を決め、`#謎チケ売ります` の表示可能イベントを土日別に集計します。本文の一言はローカル候補文から選び、実行ログを `logs/x-browser-post-weekend-summary/` に保存します。
+## 週末サマリ
 
-報告には次を含めます。
+内容と毎日18:30の頻度は変更しません。`Asia/Tokyo` の実行日から対象週末を決め、`#謎チケ売ります` の表示可能イベントを土日別に集計します。土日合計0件は既定で投稿せず、同日・同対象週末への再投稿は `local/x-browser-posting/weekend-summary-state.json` で停止します。
 
-- 成功時: 対象週末、土曜件数、日曜件数、投稿 URL が出力されたか。
-- 候補なし: 土日合計 0 件など、投稿対象がなかったこと。
-- 失敗時: 同日・同対象週末の重複、rate limit、login account 不一致、X UI、CAPTCHA、2FA など、停止理由として判明した内容。
+## 週次改善レビュー
 
-週末サマリの投稿結果は Firestore に保存しません。同日・同対象週末の重複防止状態は `local/x-browser-posting/weekend-summary-state.json` に保存します。
+月曜11:30に、直近7日について次を集計します。
 
-## 稼働確認
+- フォロワー数と前回 snapshot との差
+- 投稿種別、トレンド5型、上限制モチーフの件数
+- 取得できた投稿 URL ごとの表示数、返信、リポスト、いいね
+- automation の成功、失敗、候補なし
+- 次週の改善候補（同時に採用する主要変更は1つまで）
 
-この文書の「稼働中」はスケジュールが有効であることを表し、直近実行の成功を保証するものではありません。実行結果は次の最新 log で確認します。
+ログイン済み Chrome の CDP から X の公開数値を読み、接続できない場合は公開 HTML を best effort で確認します。取得できない数値は0にせず「取得不能」と記録します。Issue title は `[X週次レビュー] YYYY-Www @nazomaticapp` とし、同じ週に再実行した場合は新規 Issue を増やさず既存 Issue へコメントします。
 
-- 通常投稿: `logs/x-browser-post/`
-- 週末サマリ A/B: `logs/x-browser-post-weekend-summary/`
+週次レビューは分析と提案までです。投稿文、schedule、コードを自動変更せず、採用する実験を Issue 上で決めてから反映します。
 
-週末サマリ A/B は同じ automation ID と log directory を共有するため、どちらの登録枠が生成した log かを repository 内の log だけで識別することはできません。
+## ログと確認先
+
+| 処理 | ログ / 状態 |
+|---|---|
+| 通常投稿 | `logs/x-browser-post/` |
+| トレンドジョーク | `logs/x-browser-post-trend-joke/`、`local/x-browser-posting/trend-joke-history.json` |
+| 週末サマリ | `logs/x-browser-post-weekend-summary/`、`local/x-browser-posting/weekend-summary-state.json` |
+| 共通投稿台帳 | `local/x-browser-posting/post-ledger.json` |
+| フォロワー snapshot | `local/x-browser-posting/follower-snapshots.json` |

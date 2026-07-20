@@ -54,6 +54,73 @@ export async function fillComposer(page, text) {
   await assertNoBlockingState(page);
 }
 
+export async function addMedia(page, filePath) {
+  const input = page.locator('input[data-testid="fileInput"], input[type="file"]');
+  if ((await input.count()) === 0) {
+    throw new Error("Could not find X media file input");
+  }
+  await input.first().setInputFiles(filePath);
+  const attached = await page
+    .locator(
+      '[data-testid="attachments"], [data-testid="mediaPreview0"], [data-testid="mediaPreview"]'
+    )
+    .first()
+    .isVisible({ timeout: 10000 })
+    .catch(() => false);
+  if (!attached) {
+    throw new Error("X media attachment could not be verified");
+  }
+}
+
+export async function addPoll(page, options) {
+  if (!Array.isArray(options) || options.length < 2 || options.length > 4) {
+    throw new Error("X poll requires 2 to 4 options");
+  }
+  const buttons = [
+    page.locator('[data-testid="pollButton"]').first(),
+    page.locator('[data-testid="createPollButton"]').first(),
+    page.getByRole("button", { name: /投票|poll/i }).first(),
+  ];
+  let opened = false;
+  for (const button of buttons) {
+    if (await button.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await button.click();
+      opened = true;
+      break;
+    }
+  }
+  if (!opened) {
+    throw new Error("Could not find X poll button");
+  }
+
+  for (let index = 2; index < options.length; index += 1) {
+    const currentInputs = page.locator('input[name^="Choice"]');
+    if ((await currentInputs.count()) > index) {
+      continue;
+    }
+    const addChoice = page
+      .locator('[data-testid="addPollChoice"]')
+      .or(
+        page.getByRole("button", {
+          name: /回答を追加|選択肢を追加|add (a )?choice/i,
+        })
+      )
+      .first();
+    if (!(await addChoice.isVisible({ timeout: 3000 }).catch(() => false))) {
+      throw new Error("Could not add another X poll choice");
+    }
+    await addChoice.click();
+  }
+
+  const inputs = page.locator('input[name^="Choice"]');
+  if ((await inputs.count()) < options.length) {
+    throw new Error("Could not find enough X poll choice inputs");
+  }
+  for (let index = 0; index < options.length; index += 1) {
+    await inputs.nth(index).fill(options[index]);
+  }
+}
+
 export async function assertSubmitReady(page) {
   const button = await findSubmitButton(page);
   const disabled = await button.getAttribute("aria-disabled").catch(() => null);
@@ -63,7 +130,7 @@ export async function assertSubmitReady(page) {
   return button;
 }
 
-export async function submitPost(page, accountHandle) {
+export async function submitPost(page, accountHandle, expectedText = "") {
   const button = await assertSubmitReady(page);
   await button.click({ timeout: 10000 });
 
@@ -80,7 +147,16 @@ export async function submitPost(page, accountHandle) {
   ]).catch(() => {});
 
   await assertNoBlockingState(page);
-  return findPostedUrl(page, accountHandle);
+  const currentUrl = await findPostedUrl(page, accountHandle, expectedText);
+  if (currentUrl) {
+    return currentUrl;
+  }
+  await page.goto(`https://x.com/${normalizeHandle(accountHandle)}`, {
+    waitUntil: "domcontentloaded",
+    timeout: 30000,
+  });
+  await page.waitForTimeout(2000);
+  return findPostedUrl(page, accountHandle, expectedText);
 }
 
 export async function assertNoBlockingState(page) {
@@ -156,21 +232,62 @@ async function findSubmitButton(page) {
   throw new Error("Could not find X submit button");
 }
 
-async function findPostedUrl(page, accountHandle) {
+async function findPostedUrl(page, accountHandle, expectedText = "") {
   const normalizedHandle = normalizeHandle(accountHandle);
-  const hrefs = await page
-    .locator(`a[href*="/${normalizedHandle}/status/"]`)
-    .evaluateAll((links) =>
-      links
-        .map((link) => link.getAttribute("href"))
-        .filter((href) => typeof href === "string")
-    )
-    .catch(() => []);
+  const expectedFragment = normalizePostText(expectedText).slice(0, 36);
+  const articles = page.locator("article");
+  const hrefs = [];
+  for (let index = 0; index < Math.min(await articles.count(), 8); index += 1) {
+    const article = articles.nth(index);
+    const articleText = normalizePostText(
+      await article.innerText().catch(() => "")
+    );
+    if (expectedFragment && !articleText.includes(expectedFragment)) {
+      continue;
+    }
+    const articleHrefs = await article
+      .locator('a[href*="/status/"]')
+      .evaluateAll((links, handle) =>
+        links
+          .map((link) => link.getAttribute("href"))
+          .filter((href) => typeof href === "string")
+          .filter((href) =>
+            href.toLowerCase().includes(`/${handle}/status/`)
+          ),
+        normalizedHandle
+      )
+      .catch(() => []);
+    hrefs.push(...articleHrefs);
+  }
+  if (!expectedFragment && hrefs.length === 0) {
+    hrefs.push(
+      ...(await page
+        .locator('a[href*="/status/"]')
+        .evaluateAll((links, handle) =>
+          links
+            .map((link) => link.getAttribute("href"))
+            .filter((href) => typeof href === "string")
+            .filter((href) =>
+              href.toLowerCase().includes(`/${handle}/status/`)
+            ),
+          normalizedHandle
+        )
+        .catch(() => []))
+    );
+  }
   const href = hrefs.find((candidate) => /\/status\/[0-9]+/.test(candidate));
   if (!href) {
     return null;
   }
   return new URL(href, "https://x.com").toString();
+}
+
+function normalizePostText(value) {
+  return String(value ?? "")
+    .normalize("NFKC")
+    .replace(/https?:\/\/\S+/gi, "")
+    .replace(/\s+/g, "")
+    .trim();
 }
 
 function normalizeHandle(value) {

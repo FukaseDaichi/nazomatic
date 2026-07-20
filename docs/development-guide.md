@@ -24,6 +24,7 @@ npm run dev
 | `npm run x:browser-post` | X API を使わないローカルブラウザ投稿 CLI |
 | `npm run x:browser-post:weekend-summary` | `#謎チケ売ります` の週末土日別件数をローカルブラウザで投稿する CLI |
 | `npm run x:browser-post:trend-joke` | Yahoo!リアルタイム検索で拾ったイベント名を材料に短文ネタ投稿を行う CLI |
+| `npm run x:growth-review` | 直近7日の X 運用を集計し、必要に応じて GitHub Issue を作る CLI |
 | `npm run shift:report:meta` | Shift Search レポート元成果物から manifest / index を生成 |
 | `npm run shift:report:view-assets` | Shift Search レポート表示用 JSON を `src/generated/shift-search` に生成 |
 
@@ -108,7 +109,9 @@ GitHub Actions では `REALTIME_API_TOKEN` secret として同じ値を渡しま
 | `X_BROWSER_POST_TREND_JOKE_MAX_SEARCH_QUERIES` | 1 prepare あたりの検索 query 数上限 |
 | `X_BROWSER_POST_TREND_JOKE_MAX_POSTS_PER_QUERY` | 1 query あたりの取得 post 数上限 |
 | `X_BROWSER_POST_TREND_JOKE_RUN_SLOT` | 1日複数回実行時のローカル二重投稿防止用実行枠。空欄なら CLI が日内連番で自動採番 |
-| `X_BROWSER_POST_LOG_RETENTION_COUNT` | 各ローカルブラウザ投稿 automation の実行ログを残す世代数。未設定時は `10` |
+| `X_BROWSER_POST_TREND_JOKE_ARCHETYPE` | 投稿型の固定。`monologue` / `question` / `one_liner` / `poll` / `tool_intro`。空欄なら直近履歴から順番にローテーション |
+| `X_BROWSER_POST_TREND_JOKE_IMAGE_PATH` | `tool_intro` へ添付する画像 path。空欄なら `public/img/og-image.png` |
+| `X_BROWSER_POST_LOG_RETENTION_COUNT` | 各ローカルブラウザ投稿 automation の実行ログを残す世代数。未設定時は `70` |
 | `X_BROWSER_POST_MAX_PER_RUN` | 1 実行あたりの投稿上限 |
 | `X_BROWSER_POST_COOLDOWN_MINUTES` | cooldown 分数 |
 | `X_BROWSER_POST_DAILY_LIMIT` | 1 日投稿上限。既定 `6`、ローカル CLI の上限 `30` |
@@ -125,6 +128,8 @@ npm run x:browser-post:weekend-summary -- --copy-pattern ai_self_deprecation --l
 npm run x:browser-post:trend-joke
 npm run x:browser-post:trend-joke -- --query-bundle title_aruaru_words --print-prompt
 npm run x:browser-post:trend-joke -- --copy-provider codex
+npm run x:growth-review
+npm run x:growth-review -- --create-issue
 ```
 
 `--login-only` は候補取得や内部 API 呼び出しをせず、`X_BROWSER_POST_CHROME_EXECUTABLE_PATH` の通常 Chrome を直接起動し、`X_BROWSER_POST_USER_DATA_DIR` の Chrome プロファイルで `https://x.com/login` を開きます。Chrome for Testing を避けたい初回ログイン用です。初回ログイン後は、通常投稿時に `X_BROWSER_POST_CDP_URL` へ接続し、接続できなければ `X_BROWSER_POST_AUTO_START_CHROME=true` で同じ専用 profile の通常 Chrome を自動起動します。
@@ -133,11 +138,17 @@ npm run x:browser-post:trend-joke -- --copy-provider codex
 
 週末サマリ投稿も実投稿時は `--execute` を付けます。`--line` または `X_BROWSER_POST_WEEKEND_SUMMARY_LINE` で一言を上書きできます。文案パターンを固定したい場合は `--copy-pattern` または `X_BROWSER_POST_WEEKEND_SUMMARY_COPY_PATTERN` を使います。指定しない場合は、prepare API が返すローカル候補文を使います。投稿結果は Firestore に保存せず、同一 PC の二重投稿防止用に `local/x-browser-posting/weekend-summary-state.json` へ最小限のキーだけ保存します。
 
-トレンドネタ投稿も実投稿時は `--execute` を付けます。Firestore は読まず、prepare API が Yahoo!リアルタイム検索を少数回実行し、イベント名サンプルや頻出語から topic とローカル候補文を返します。文案生成 provider を使う場合は `--copy-provider codex` または `X_BROWSER_POST_TREND_JOKE_COPY_PROVIDER=codex` を指定します。provider 生成文は validator とローカル履歴ガードを通し、失敗時はローカル候補文へ戻ります。文案を固定したい場合は `--line` または `X_BROWSER_POST_TREND_JOKE_LINE`、検索 bundle を固定したい場合は `--query-bundle` または `X_BROWSER_POST_TREND_JOKE_QUERY_BUNDLE` を使います。投稿結果は Firestore に保存せず、同一 PC の二重投稿防止用に `local/x-browser-posting/trend-joke-state.json` へ最小限のキーだけ保存します。`--run-slot` を指定しない場合は、CLI がローカル state を見て `slot-1`、`slot-2` のように日内連番で自動採番します。
+トレンドネタ投稿も実投稿時は `--execute` を付けます。Firestore は読まず、prepare API が Yahoo!リアルタイム検索を少数回実行し、イベント名サンプルや頻出語から topic とローカル候補文を返します。文案生成 provider を使う場合は `--copy-provider codex` または `X_BROWSER_POST_TREND_JOKE_COPY_PROVIDER=codex` を指定します。provider 生成文は validator とローカル履歴ガードを通し、失敗時はローカル候補文へ戻ります。
+
+投稿型は「独り言→質問→一言あるある→投票→ツール紹介」を直近履歴から自動ローテーションします。`--archetype` または `X_BROWSER_POST_TREND_JOKE_ARCHETYPE` は検証時にだけ固定します。自然な hashtag は最大1個、URL はツール紹介に指定された NAZOMATIC URL 1件だけを許可し、mention と emoji は禁止です。投票はネイティブ投票 UI、ツール紹介は既定で `public/img/og-image.png` を添付します。画像を変える場合は `--image-path` または `X_BROWSER_POST_TREND_JOKE_IMAGE_PATH` を使います。
+
+文案を固定したい場合は `--line` または `X_BROWSER_POST_TREND_JOKE_LINE`、検索 bundle を固定したい場合は `--query-bundle` または `X_BROWSER_POST_TREND_JOKE_QUERY_BUNDLE` を使います。投稿結果は Firestore に保存せず、同一 PC の二重投稿防止用に `local/x-browser-posting/trend-joke-state.json` へ最小限のキーだけ保存します。`--run-slot` を指定しない場合は、CLI がローカル state を見て `slot-1`、`slot-2` のように日内連番で自動採番します。
 
 Codex automation から provider 生成文を確認なしで実投稿する場合は、既存の `X_BROWSER_POST_CONFIRMATION_MODE=auto` と `X_BROWSER_POST_AUTO_EXECUTE_ALLOWED=true` に加えて、`X_BROWSER_POST_TREND_JOKE_PROVIDER_AUTO_APPROVE=true` も必要です。初期は `interactive` で数回監視してから有効化します。
 
-ローカルブラウザ投稿 CLI は、通常投稿、週末サマリ投稿、トレンドネタ投稿の実行ログを Git 管理外の `logs/{automationId}/` に保存します。ログには開始時刻、実行コマンド、標準出力、標準エラー、終了時刻、終了ステータスを残します。`X_BROWSER_POST_LOG_RETENTION_COUNT` で automation ごとの保持世代数を指定でき、未設定時は `10` 世代だけ残します。
+ローカルブラウザ投稿 CLI は、通常投稿、週末サマリ投稿、トレンドネタ投稿の実行ログを Git 管理外の `logs/{automationId}/` に保存します。ログには開始時刻、実行コマンド、標準出力、標準エラー、終了時刻、終了ステータスを残します。`X_BROWSER_POST_LOG_RETENTION_COUNT` で automation ごとの保持世代数を指定でき、未設定時は `70` 世代だけ残します。現行ローカル設定も70世代で、3時間ごとの通常投稿を含む7日分と余裕を確保します。
+
+実投稿が成功すると、3種類の CLI は共通の `local/x-browser-posting/post-ledger.json` に投稿 URL と実験 metadata を保存します。`npm run x:growth-review` は直近7日、実行 log、ログイン済み Chrome から取得できたフォロワー・投稿指標を集計します。`--create-issue` 付きでは `[X週次レビュー] YYYY-Www @account` の GitHub Issue を作り、同じ週の再実行は既存 Issue へのコメントになります。公開数値を取得できない場合は0とせず「取得不能」と出力します。
 
 | Automation 名 | npm script | ログディレクトリ |
 |---|---|---|
