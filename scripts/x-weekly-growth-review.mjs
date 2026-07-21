@@ -21,6 +21,7 @@ import {
   median,
   summarizeByDimension,
 } from "./x-growth/reportMetrics.mjs";
+import { readExperiments } from "./x-growth/experimentLedger.mjs";
 
 const REVIEW_DAYS = 7;
 const AUTOMATION_LOG_IDS = [
@@ -87,6 +88,10 @@ async function main() {
   const postMetrics = [...ledgerPostMetrics, ...scrapedPostMetrics];
   const logStats = await collectAutomationLogStats(cwd, since);
   const week = getJstIsoWeek(now);
+  const experiments = await readExperiments(cwd);
+  const dueExperiments = experiments.filter(
+    (entry) => entry.status === "open" && entry.evaluateWeek === week.key
+  );
   const report = buildReport({
     accountHandle,
     now,
@@ -97,6 +102,7 @@ async function main() {
     previousSnapshot,
     postMetrics,
     logStats,
+    dueExperiments,
   });
 
   await recordFollowerSnapshot(cwd, {
@@ -303,6 +309,7 @@ function buildReport({
   previousSnapshot,
   postMetrics,
   logStats,
+  dueExperiments = [],
 }) {
   const counts = countBy(recentPosts, (entry) => entry.postType ?? "unknown");
   const trendPosts = recentPosts.filter((entry) => entry.postType === "trend_joke");
@@ -407,6 +414,24 @@ function buildReport({
     "## 次週の改善候補",
     "",
     ...recommendations.map((item) => `- [ ] ${item}`),
+    "",
+    "## 実験の勝敗",
+    "",
+    ...(dueExperiments.length
+      ? dueExperiments.flatMap((entry) => [
+          `### ${entry.hypothesis}`,
+          `- 対象: \`${entry.path}\`（${entry.kind}）`,
+          `- 指標: ${entry.metric}`,
+          `- PR: ${entry.prUrl ?? "（PR URL 未取得）"}`,
+          `- 開始時の状況: ${
+            entry.baselineNote
+              ? entry.baselineNote.replace(/\n/g, " / ")
+              : "記録なし"
+          }`,
+          "- 判定: 上の「型別・時間帯別・実験別の比較」と開始時を見比べ、改善が無ければ revert、あれば継続を推奨する。判断後に experimentLedger の resolveExperiment で kept/reverted を記録する。",
+          "",
+        ])
+      : ["今週評価予定の実験はありません。"]),
     "",
     "## 判定メモ",
     "",
