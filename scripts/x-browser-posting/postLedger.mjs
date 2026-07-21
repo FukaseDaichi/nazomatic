@@ -43,8 +43,12 @@ export async function readBrowserPostLedger(config) {
     };
   } catch (error) {
     if (error?.code !== "ENOENT") {
+      // 破損した台帳を空とみなして上書きすると履歴が消えるため、先に退避する。
+      await fs
+        .rename(filePath, `${filePath}.corrupt-${Date.now()}`)
+        .catch(() => {});
       console.warn(
-        `Browser post ledger could not be read; starting with an empty ledger: ${
+        `Browser post ledger could not be read; backed up the corrupt file and starting empty: ${
           error instanceof Error ? error.message : String(error)
         }`
       );
@@ -55,6 +59,46 @@ export async function readBrowserPostLedger(config) {
       entries: [],
     };
   }
+}
+
+// 既存の台帳エントリへ、後追いで取得した表示数・エンゲージメントを合流させる。
+// statusId 優先、無ければ postedPostURL で一致させる。該当が無ければ false。
+export async function updateBrowserPostMetrics(config, key, metrics) {
+  const statusId = key?.statusId ? String(key.statusId) : null;
+  const postedPostURL = key?.postedPostURL ?? null;
+  if (!statusId && !postedPostURL) {
+    return false;
+  }
+  const filePath = getBrowserPostLedgerPath(config);
+  const ledger = await readBrowserPostLedger(config);
+  let updated = false;
+  const entries = ledger.entries.map((entry) => {
+    const matches = statusId
+      ? entry.statusId && String(entry.statusId) === statusId
+      : entry.postedPostURL === postedPostURL;
+    if (!matches) {
+      return entry;
+    }
+    updated = true;
+    return {
+      ...entry,
+      metrics: {
+        ...(entry.metrics && typeof entry.metrics === "object"
+          ? entry.metrics
+          : {}),
+        ...metrics,
+      },
+    };
+  });
+  if (!updated) {
+    return false;
+  }
+  await writeJsonFileAtomic(filePath, {
+    version: LEDGER_VERSION,
+    maxEntries: MAX_LEDGER_ENTRIES,
+    entries,
+  });
+  return true;
 }
 
 export function getBrowserPostLedgerPath(config) {

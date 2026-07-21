@@ -12,8 +12,9 @@
 | NAZOMATIC X トレンドジョーク投稿 | ACTIVE | 毎日 09:30 / 15:30 / 21:30 | `npm run x:browser-post:trend-joke -- --execute --copy-provider codex` | 会話の入口となる短文・質問・投票・ツール紹介 |
 | NAZOMATIC 週末謎チケサマリ投稿 | ACTIVE | 毎日 18:30 | `npm run x:browser-post:weekend-summary -- --execute` | 対象週末の土日別件数サマリ |
 | NAZOMATIC X 週次改善レビュー | ACTIVE | 毎週月曜 11:30 | `npm run x:growth-review -- --create-issue` | 直近7日を集計し GitHub Issue を作成または追記 |
+| NAZOMATIC X 週次改善エージェント | 未登録（手動登録待ち） | 毎週月曜 12:00（登録時） | `npm run x:growth-improve -- --execute` | 前週レビューから実験を1件選びドラフト PR を作成。詳細は [`../subsystems/x-growth-improve-agent.md`](../subsystems/x-growth-improve-agent.md) |
 
-以前の台帳にあった「週末サマリ A/B」の2枠は実態と一致していません。現在の週末サマリは1枠で、代わりにトレンドジョーク投稿が1日3回稼働しています。
+以前の台帳にあった「週末サマリ A/B」の2枠は実態と一致していません。現在の週末サマリは1枠で、代わりにトレンドジョーク投稿が1日3回稼働しています。週次改善エージェントはコードは実装済みですが、Codex automation への枠登録は運用者が行うまで稼働しません。
 
 ## 共通の実行契約
 
@@ -24,6 +25,8 @@
 - ログは `X_BROWSER_POST_LOG_RETENTION_COUNT` の世代数だけ保持する。既定と現行ローカル設定は70世代。
 - X の login、account 不一致、rate limit、UI 変更、CAPTCHA、2FA を検出した場合は自動 retry や回避をせず停止する。
 - 投稿成功後は `local/x-browser-posting/post-ledger.json` に投稿種別、本文、投稿 URL、実験 metadata を記録する。
+- `X_BROWSER_POST_CAPTURE_TELEMETRY=true`（既定）なら、投稿成功後に同じセッションでフォロワー数を `follower-snapshots.json` へ日次追記し、約24時間以上経過した過去投稿の公開数値を最大 `X_BROWSER_POST_METRICS_MAX_PER_RUN`（既定8）件だけ台帳へ書き戻す。計測はベストエフォートで投稿処理を止めない。
+- 週次改善エージェントは提案を1件・1ファイル・ちょうど1回一致する find/replace に限定する。allowlist 外・`config.mjs`・rate limit・`--execute` 系への変更は Node 側が自動で拒否し、適用後に tsc/lint/構文が通らなければ変更を破棄して PR を作らない。PR はドラフトで作成し、自動マージはしない。採用可否は人間が Issue と PR 上で判断する。
 
 ## トレンドジョークの運用
 
@@ -50,10 +53,11 @@
 - フォロワー数と前回 snapshot との差
 - 投稿種別、トレンド5型、上限制モチーフの件数
 - 取得できた投稿 URL ごとの表示数、返信、リポスト、いいね
+- 投稿型・JST 時間帯・添付実験別の表示数中央値と反応中央値
 - automation の成功、失敗、候補なし
 - 次週の改善候補（同時に採用する主要変更は1つまで）
 
-ログイン済み Chrome の CDP から X の公開数値を読み、接続できない場合は公開 HTML を best effort で確認します。取得できない数値は0にせず「取得不能」と記録します。Issue title は `[X週次レビュー] YYYY-Www @nazomaticapp` とし、同じ週に再実行した場合は新規 Issue を増やさず既存 Issue へコメントします。
+投稿別の公開数値は、まず投稿実行時に台帳へ書き戻された `metrics` を使い、未取得の投稿だけをログイン済み Chrome の CDP で追加確認します。接続できない場合は公開 HTML を best effort で確認します。取得できない数値は0にせず「取得不能」と記録します。フォロワーの前週比は日次 snapshot の5日以上前の最新値と比較します。Issue title は `[X週次レビュー] YYYY-Www @nazomaticapp` とし、同じ週に再実行した場合は新規 Issue を増やさず既存 Issue へコメントします。
 
 週次レビューは分析と提案までです。投稿文、schedule、コードを自動変更せず、採用する実験を Issue 上で決めてから反映します。
 

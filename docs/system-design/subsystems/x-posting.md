@@ -122,11 +122,24 @@ validator は自然な hashtag を最大1個だけ許可し、mention、emoji、
 
 人格の品質条件の一部はコードで完全には検査できないため、`interactive` 確認が最終境界です。
 
+## 投稿実行への計測相乗り
+
+`X_BROWSER_POST_CAPTURE_TELEMETRY=true`（既定）のとき、3種類のブラウザ投稿は投稿成功後に、そのログイン済み CDP セッションのまま計測を行います。目的はフォロワー数という主要指標を安定して残すことです。
+
+- プロフィールを開いてフォロワー数・累計投稿数を読み、`follower-snapshots.json` へ JST の日付単位で追記します。値が取れなかった項目は同日の既存値を維持し、null で上書きしません。
+- 投稿から約24時間〜8日の範囲で、まだ数値を取得していない過去投稿を最大 `X_BROWSER_POST_METRICS_MAX_PER_RUN`（既定8）件だけ開き、表示数・返信・リポスト・いいねを `post-ledger.json` の該当エントリへ `metrics` として書き戻します。取得済みは `metrics.mature` で二度取得しません。
+
+計測はベストエフォートで、失敗しても投稿処理を止めません。ログイン画面、blocking state、CAPTCHA を検出した場合は他の処理と同様に停止します。Playwright fallback セッション（CDP 非使用）では計測を行いません。
+
 ## 週次改善レビュー
 
-`npm run x:growth-review` は直近7日の共通投稿台帳、ローカル実行 log、フォロワー snapshot を集計して Markdown を出力します。ログイン済み Chrome が CDP で利用可能ならプロフィールと各投稿の公開数値を読み、利用できなければ公開 HTML を best effort で使います。取得不能は0として扱いません。
+`npm run x:growth-review` は直近7日の共通投稿台帳、ローカル実行 log、フォロワー snapshot を集計して Markdown を出力します。投稿別の公開数値は、まず投稿実行時に相乗りで取得して台帳に残った `metrics` を使い、未取得の投稿だけを追加で確認します。ログイン済み Chrome が CDP で利用可能ならプロフィールと未取得投稿の公開数値を読み、利用できなければ公開 HTML を best effort で使います。取得不能は0として扱いません。フォロワーの前週比は、日次で追記された snapshot のうち5日以上前の最新値と比較します。
+
+レポートは件数集計に加えて、投稿型・JST 時間帯・添付実験（画像 / 投票 / テキストのみ）ごとの表示数中央値と反応中央値を表で比較します。tool_intro の URL には UTM（`utm_campaign=trend_joke_tool_intro`）を付け、投稿からサイト流入を後から突き合わせられるようにします。
 
 `--create-issue` を付けると GitHub CLI で週次 Issue を作成します。同じ ISO week・account の title が既にあれば Issue を増やさずコメントを追加します。レビューは改善候補を最大4件提示しますが、コードや schedule は自動変更しません。
+
+レポートには「実験の勝敗」節もあり、`experiment-ledger.json` の open 実験のうち今週が評価予定週のものを一覧します。仮説・対象・PR・開始時の状況を添えて、上の次元別比較と見比べた継続 / revert を人間が判断します。自動 revert はせず、判断後に `resolveExperiment` で `kept` / `reverted` を記録します。実験は [`x-growth-improve-agent.md`](./x-growth-improve-agent.md) のエージェントが PR 作成時に `open` で記録します。
 
 ## ローカルファイル
 
@@ -139,8 +152,9 @@ validator は自然な hashtag を最大1個だけ許可し、mention、emoji、
 | `local/x-browser-posting/weekend-summary-state.json` | 週末サマリ重複防止 |
 | `local/x-browser-posting/trend-joke-state.json` | トレンド実行枠重複防止 |
 | `local/x-browser-posting/trend-joke-history.json` | 直近 30 投稿の類似判定 |
-| `local/x-browser-posting/post-ledger.json` | 3種類の投稿 URL、本文、実験 metadata |
-| `local/x-browser-posting/follower-snapshots.json` | 週ごとのフォロワー・累計投稿数 snapshot |
+| `local/x-browser-posting/post-ledger.json` | 3種類の投稿 URL、本文、実験 metadata、後追い取得の `metrics` |
+| `local/x-browser-posting/follower-snapshots.json` | JST 日付ごとのフォロワー・累計投稿数 snapshot |
+| `local/x-browser-posting/experiment-ledger.json` | 改善エージェントの実験（open / kept / reverted）と評価予定週 |
 | `logs/x-browser-post*` | automation 別の実行 log |
 
 認証済み profile と storage state は秘密情報として扱い、共有端末や CI では使いません。

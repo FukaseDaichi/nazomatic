@@ -15,6 +15,7 @@ export const DEFAULT_CHROME_STARTUP_TIMEOUT_MS = 20000;
 export const MIN_COOLDOWN_MINUTES = 3;
 export const MAX_DAILY_LIMIT = 30;
 export const MAX_PER_RUN = 1;
+export const DEFAULT_METRICS_MAX_PER_RUN = 8;
 
 export function loadBrowserPostConfig(argv, cwd = process.cwd()) {
   const args = parseArgs(argv);
@@ -170,6 +171,14 @@ export function loadBrowserPostConfig(argv, cwd = process.cwd()) {
       args.reservedBy ??
       env.X_BROWSER_POST_RESERVED_BY ??
       `${os.userInfo().username}@${os.hostname()}`,
+    captureTelemetry: readBoolean(
+      args.captureTelemetry ?? env.X_BROWSER_POST_CAPTURE_TELEMETRY,
+      true
+    ),
+    metricsMaxPerRun: readInteger(
+      args.metricsMaxPerRun ?? env.X_BROWSER_POST_METRICS_MAX_PER_RUN,
+      DEFAULT_METRICS_MAX_PER_RUN
+    ),
   };
 }
 
@@ -196,6 +205,10 @@ function parseArgs(argv) {
       args.cleanupComposeTabs = true;
     } else if (arg === "--no-cleanup-compose-tabs") {
       args.cleanupComposeTabs = false;
+    } else if (arg === "--capture-telemetry") {
+      args.captureTelemetry = true;
+    } else if (arg === "--no-capture-telemetry") {
+      args.captureTelemetry = false;
     } else if (arg === "--login-only") {
       args.loginOnly = true;
     } else if (arg.startsWith("--")) {

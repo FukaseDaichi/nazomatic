@@ -7,9 +7,23 @@ import path from "path";
 import { spawn } from "child_process";
 
 import { readBrowserPostLedger } from "./x-browser-posting/postLedger.mjs";
+import {
+  findPreviousSnapshot,
+  readFollowerSnapshots,
+  recordFollowerSnapshot,
+} from "./x-browser-posting/followerSnapshots.mjs";
+import {
+  findLocalizedMetric,
+  parseCompactNumber,
+} from "./x-browser-posting/profileMetrics.mjs";
+import {
+  jstHourBucket,
+  median,
+  summarizeByDimension,
+} from "./x-growth/reportMetrics.mjs";
+import { readExperiments } from "./x-growth/experimentLedger.mjs";
 
 const REVIEW_DAYS = 7;
-const SNAPSHOT_PATH = "local/x-browser-posting/follower-snapshots.json";
 const AUTOMATION_LOG_IDS = [
   "x-browser-post",
   "x-browser-post-trend-joke",
@@ -35,9 +49,22 @@ async function main() {
       normalizeHandle(entry.accountHandle) === accountHandle &&
       new Date(entry.postedAt).getTime() >= since.getTime()
   );
+  // 投稿実行に相乗りして取得済みの数値は台帳から読み、未取得の投稿だけを追加で確認する。
+  const ledgerPostMetrics = recentPosts
+    .filter((entry) => entry.postedPostURL && hasCapturedMetrics(entry))
+    .map((entry) => ({
+      post: entry,
+      views: entry.metrics.views ?? null,
+      replies: entry.metrics.replies ?? null,
+      reposts: entry.metrics.reposts ?? null,
+      likes: entry.metrics.likes ?? null,
+    }));
+  const postsNeedingMetrics = recentPosts.filter(
+    (entry) => entry.postedPostURL && !hasCapturedMetrics(entry)
+  );
   const browserMetrics = await collectMetricsFromLoggedInChrome({
     accountHandle,
-    posts: recentPosts,
+    posts: postsNeedingMetrics,
     cdpUrl:
       env.X_BROWSER_POST_CDP_URL ??
       `http://127.0.0.1:${env.X_BROWSER_POST_REMOTE_DEBUGGING_PORT ?? "9222"}`,
@@ -53,14 +80,18 @@ async function main() {
         ? null
         : publicProfileStats.error ?? "profile metrics could not be parsed",
   };
-  const snapshots = await readSnapshots(cwd);
+  const snapshots = await readFollowerSnapshots(cwd);
   const previousSnapshot = findPreviousSnapshot(snapshots, now);
-  const postMetrics =
-    browserMetrics.postMetrics.length > 0
-      ? browserMetrics.postMetrics
-      : await collectPostMetrics(recentPosts);
+  const scrapedPostMetrics = browserMetrics.postMetrics.length > 0
+    ? browserMetrics.postMetrics
+    : await collectPostMetrics(postsNeedingMetrics);
+  const postMetrics = [...ledgerPostMetrics, ...scrapedPostMetrics];
   const logStats = await collectAutomationLogStats(cwd, since);
   const week = getJstIsoWeek(now);
+  const experiments = await readExperiments(cwd);
+  const dueExperiments = experiments.filter(
+    (entry) => entry.status === "open" && entry.evaluateWeek === week.key
+  );
   const report = buildReport({
     accountHandle,
     now,
@@ -71,14 +102,16 @@ async function main() {
     previousSnapshot,
     postMetrics,
     logStats,
+    dueExperiments,
   });
 
-  await writeSnapshot(cwd, snapshots, {
+  await recordFollowerSnapshot(cwd, {
     capturedAt: now.toISOString(),
     weekKey: week.key,
     accountHandle,
     followers: profileStats.followers,
     posts: profileStats.posts,
+    source: "weekly-review",
   });
 
   console.log(report.body);
@@ -149,36 +182,6 @@ async function readViewsMetric(article) {
   const label = await link.getAttribute("aria-label").catch(() => "");
   const text = await link.innerText().catch(() => "");
   return parseCompactNumber(`${label} ${text}`);
-}
-
-function findLocalizedMetric(text, labels) {
-  for (const label of labels) {
-    const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const before = new RegExp(`([0-9][0-9,.]*[万千KkMm]?)\\s*${escaped}`, "i").exec(
-      text
-    );
-    if (before) return parseCompactNumber(before[1]);
-    const after = new RegExp(`${escaped}\\s*([0-9][0-9,.]*[万千KkMm]?)`, "i").exec(
-      text
-    );
-    if (after) return parseCompactNumber(after[1]);
-  }
-  return null;
-}
-
-function parseCompactNumber(value) {
-  const match = /([0-9][0-9,.]*)([万千KkMm]?)/.exec(String(value ?? ""));
-  if (!match) return null;
-  const base = Number(match[1].replace(/,/g, ""));
-  const multiplier =
-    match[2] === "万"
-      ? 10000
-      : match[2] === "千" || /k/i.test(match[2])
-        ? 1000
-        : /m/i.test(match[2])
-          ? 1000000
-          : 1;
-  return Math.round(base * multiplier);
 }
 
 function parseArgs(argv) {
@@ -306,6 +309,7 @@ function buildReport({
   previousSnapshot,
   postMetrics,
   logStats,
+  dueExperiments = [],
 }) {
   const counts = countBy(recentPosts, (entry) => entry.postType ?? "unknown");
   const trendPosts = recentPosts.filter((entry) => entry.postType === "trend_joke");
@@ -334,6 +338,22 @@ function buildReport({
       ? profileStats.followers - previousSnapshot.followers
       : null;
   const urlCaptureCount = recentPosts.filter((entry) => entry.postedPostURL).length;
+  const byArchetype = summarizeByDimension(
+    postMetrics,
+    (post) => post.metadata?.archetype ?? post.postType ?? null
+  );
+  const byHour = summarizeByDimension(postMetrics, (post) =>
+    post.postedAt ? jstHourBucket(post.postedAt) : null
+  );
+  const byMedia = summarizeByDimension(postMetrics, (post) =>
+    post.postType === "trend_joke"
+      ? post.metadata?.hasMedia
+        ? "画像あり"
+        : post.metadata?.pollOptions?.length
+          ? "投票"
+          : "テキストのみ"
+      : null
+  );
   const recommendations = buildRecommendations({
     recentPosts,
     trendPosts,
@@ -377,9 +397,41 @@ function buildReport({
     `- 型: ${formatCounts(archetypes)}`,
     `- 上限制モチーフ: ${formatCounts(motifs)}`,
     "",
+    "## 型別・時間帯別・実験別の比較",
+    "",
+    "### 型別",
+    "",
+    ...formatDimensionTable(byArchetype),
+    "",
+    "### 時間帯別（JST）",
+    "",
+    ...formatDimensionTable(byHour),
+    "",
+    "### 添付実験別（トレンド投稿）",
+    "",
+    ...formatDimensionTable(byMedia),
+    "",
     "## 次週の改善候補",
     "",
     ...recommendations.map((item) => `- [ ] ${item}`),
+    "",
+    "## 実験の勝敗",
+    "",
+    ...(dueExperiments.length
+      ? dueExperiments.flatMap((entry) => [
+          `### ${entry.hypothesis}`,
+          `- 対象: \`${entry.path}\`（${entry.kind}）`,
+          `- 指標: ${entry.metric}`,
+          `- PR: ${entry.prUrl ?? "（PR URL 未取得）"}`,
+          `- 開始時の状況: ${
+            entry.baselineNote
+              ? entry.baselineNote.replace(/\n/g, " / ")
+              : "記録なし"
+          }`,
+          "- 判定: 上の「型別・時間帯別・実験別の比較」と開始時を見比べ、改善が無ければ revert、あれば継続を推奨する。判断後に experimentLedger の resolveExperiment で kept/reverted を記録する。",
+          "",
+        ])
+      : ["今週評価予定の実験はありません。"]),
     "",
     "## 判定メモ",
     "",
@@ -488,33 +540,16 @@ function runCommand(command, args, { cwd }) {
   });
 }
 
-async function readSnapshots(cwd) {
-  try {
-    const parsed = JSON.parse(await fs.readFile(path.join(cwd, SNAPSHOT_PATH), "utf8"));
-    return Array.isArray(parsed?.snapshots) ? parsed.snapshots : [];
-  } catch {
-    return [];
+function hasCapturedMetrics(entry) {
+  const metrics = entry?.metrics;
+  if (!metrics || typeof metrics !== "object") {
+    return false;
   }
-}
-
-async function writeSnapshot(cwd, snapshots, snapshot) {
-  const filePath = path.join(cwd, SNAPSHOT_PATH);
-  const filtered = snapshots.filter(
-    (entry) =>
-      entry.weekKey !== snapshot.weekKey ||
-      normalizeHandle(entry.accountHandle) !== snapshot.accountHandle
-  );
-  const value = { version: 1, snapshots: [snapshot, ...filtered].slice(0, 104) };
-  await fs.mkdir(path.dirname(filePath), { recursive: true });
-  const tempPath = `${filePath}.${process.pid}.${Date.now()}.tmp`;
-  await fs.writeFile(tempPath, `${JSON.stringify(value, null, 2)}\n`);
-  await fs.rename(tempPath, filePath);
-}
-
-function findPreviousSnapshot(snapshots, now) {
-  const cutoff = now.getTime() - 5 * 24 * 60 * 60 * 1000;
-  return snapshots.find(
-    (entry) => new Date(entry.capturedAt).getTime() <= cutoff
+  return (
+    metrics.views != null ||
+    metrics.replies != null ||
+    metrics.reposts != null ||
+    metrics.likes != null
   );
 }
 
@@ -583,15 +618,6 @@ function countMany(entries, getKeys) {
   return result;
 }
 
-function median(values) {
-  const sorted = [...values].sort((a, b) => a - b);
-  if (!sorted.length) return null;
-  const middle = Math.floor(sorted.length / 2);
-  return sorted.length % 2
-    ? sorted[middle]
-    : Math.round((sorted[middle - 1] + sorted[middle]) / 2);
-}
-
 function formatCounts(counts) {
   const entries = Object.entries(counts);
   return entries.length
@@ -601,6 +627,22 @@ function formatCounts(counts) {
 
 function formatMetric(value) {
   return value === null || value === undefined ? "取得不能" : String(value);
+}
+
+function formatDimensionTable(rows) {
+  if (!rows.length) {
+    return ["（数値を取得できた投稿がなく比較不能）"];
+  }
+  return [
+    "| 区分 | 件数 | 表示数中央値 | 反応中央値 |",
+    "|---|---:|---:|---:|",
+    ...rows.map(
+      (r) =>
+        `| ${r.key} | ${r.count} | ${formatMetric(r.medianViews)} | ${formatMetric(
+          r.medianEngagement
+        )} |`
+    ),
+  ];
 }
 
 function formatDelta(value) {

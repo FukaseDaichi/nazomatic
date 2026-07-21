@@ -5,6 +5,7 @@ import {
   findBlockingTextMatch,
   formatBlockingStateError,
 } from "./selectors.mjs";
+import { parsePostMetrics, parseProfileStats } from "./profileMetrics.mjs";
 
 const DEFAULT_TIMEOUT_MS = 15000;
 
@@ -335,6 +336,54 @@ export async function openCdpChromePage(cdpUrl, options = {}) {
         normalizedHandle,
         expectedText
       );
+    },
+
+    async readProfileStats(accountHandle) {
+      const handle = normalizeHandle(accountHandle);
+      await this.goto(`https://x.com/${handle}`);
+      await this.assertNoBlockingState();
+      await wait(1500);
+      const bodyText = await evaluate(
+        client,
+        () => document.body?.innerText ?? ""
+      );
+      return parseProfileStats(bodyText);
+    },
+
+    async readPostMetrics(postUrl) {
+      await this.goto(postUrl);
+      await this.assertNoBlockingState();
+      await wait(1200);
+      const raw = await evaluate(client, () => {
+        const article = document.querySelector("article");
+        if (!article) {
+          return null;
+        }
+        const readAction = (testId) => {
+          const element = article.querySelector(`[data-testid="${testId}"]`);
+          if (!element) {
+            return null;
+          }
+          return `${element.getAttribute("aria-label") ?? ""} ${
+            element.textContent ?? ""
+          }`;
+        };
+        const viewsLink = article.querySelector('a[href$="/analytics"]');
+        return {
+          reply: readAction("reply"),
+          retweet: readAction("retweet"),
+          like: readAction("like"),
+          views: viewsLink
+            ? `${viewsLink.getAttribute("aria-label") ?? ""} ${
+                viewsLink.textContent ?? ""
+              }`
+            : null,
+        };
+      });
+      if (!raw) {
+        return null;
+      }
+      return parsePostMetrics(raw);
     },
 
     async screenshot(filePath) {
