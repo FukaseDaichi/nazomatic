@@ -342,6 +342,7 @@ git commit -m "docs(x-growth): document dimension comparison and UTM in weekly r
 - Create: `scripts/x-growth/experimentAllowlist.mjs` — 編集可能パスの allowlist と、パス・変更種別の検証。
 - Create: `scripts/x-growth/proposalSchema.mjs` — codex `--output-schema` 用 JSON Schema と提案バリデータ。
 - Create: `scripts/x-growth/applyProposal.mjs` — 提案を単一ファイルへ適用（文字列置換ベース）、git ブランチ作成、`gh pr create`。
+- Create: `scripts/x-growth/verifyChange.mjs` — 適用後の検証ゲート（.mjs は `node --check`、.ts は `npx tsc --noEmit` + `npm run lint`、.json は `JSON.parse`）。失敗時は `git checkout -- <path>` で破棄し PR を作らない。
 - Modify: `package.json` — `x:growth-improve` スクリプト追加。
 - Modify: `docs/system-design/operations/x-browser-post-schedules.md` — automation 1枠追加、実行契約追記。
 - Create: `docs/system-design/subsystems/x-growth-improve-agent.md` — エージェントの設計・境界。
@@ -350,14 +351,17 @@ git commit -m "docs(x-growth): document dimension comparison and UTM in weekly r
 
 ### Global Constraints（Phase 3 固有）
 
-- **allowlist（編集可能パス、初期値）:**
-  - `src/server/x-browser-posting/comment-patterns.json`（個別イベント投稿のコメント50文）
-  - `src/server/x-browser-posting/trend-joke-post.ts` の **fallback 候補文と prompt テンプレート部分のみ**（後述の限定編集）
-  - トレンドジョーク validator の**閾値定数のみ**（モチーフ上限などの数値）
-  - `docs/system-design/operations/x-browser-post-schedules.md`（台帳の記述更新）
+- **allowlist（編集可能パス）:**
+  - `src/server/x-browser-posting/comment-patterns.json`（kind `json-array`。個別イベント投稿のコメント50文）
+  - `src/server/x-browser-posting/trend-joke-post.ts`（kind `ts-copy`。fallback 候補文・prompt テンプレート・閾値定数。**TS を最初から対象に含める**）
+  - `docs/system-design/operations/x-browser-post-schedules.md`（kind `doc`。台帳の記述更新）
 - **禁止（Node が拒否）:** `scripts/x-browser-posting/config.mjs`、`.env*`、`.github/`、`middleware.ts`、`--execute`/confirmation/rate-limit に関わる全て、複数ファイル同時変更、新規ファイル作成。
+- **TS を安全に編集するための二重ガード（本計画の必須要件）:**
+  1. **ファイル内ガード（適用前）:** `change.find` / `change.replace` が重要トークンに触れる提案は拒否する。禁止トークン（`.ts` 対象）: `validateTrendJokeText`、`weightedTextLength`、`MAX_TREND_JOKE`、`MAX_DAILY`、`MIN_COOLDOWN`、`--execute`、`CONFIRMATION_MODE`、`AUTO_EXECUTE`、`rate`、`process.env`、`spawn`、`exec(`、`fetch(`、`import `、`require(`。これによりループが編集できるのは「文言・候補文・数値閾値の中身」に限定され、投稿ロジック・認証・実行ガードには触れられない。
+  2. **検証ゲート（適用後）:** find/replace 適用後、`.ts` は `npx tsc --noEmit` と `npm run lint`、`.mjs` は `node --check`、`.json` は `JSON.parse` を通す。**いずれか失敗したら `git checkout -- <path>` で変更を破棄し、PR を作らずに `rejected` で終了する。** 壊れた TS が PR になることを構造的に防ぐ。
 - codex 実行は `--sandbox read-only --ephemeral`（Phase 1 のトレンドジョーク provider と同一の呼び出しパターン）。
-- PR 作成は `gh pr create`。**マージはしない**。ドラフト PR も可。
+- PR 作成は `gh pr create --draft`。**マージはしない**。ドラフト PR で人間レビュー必須。
+- **1 PR = 1実験 = 1ファイル = ちょうど1回一致する find/replace**。revert で完結。
 
 ### Task 3.1: 実験 allowlist モジュール
 
@@ -367,21 +371,30 @@ git commit -m "docs(x-growth): document dimension comparison and UTM in weekly r
 
 **Interfaces:**
 - Produces:
-  - `EXPERIMENT_ALLOWLIST: Array<{ path, kind, note }>`（`kind` は `"json-array"` | `"threshold"` | `"doc"`）
-  - `validateProposalTarget(proposal) -> { ok: true } | { ok: false, reason: string }`
+  - `EXPERIMENT_ALLOWLIST: Array<{ path, kind, note }>`（`kind` は `"json-array"` | `"ts-copy"` | `"doc"`）
   - `DENY_PATH_PATTERNS: RegExp[]`
+  - `FORBIDDEN_CHANGE_TOKENS: string[]`（`.ts` 対象の変更文字列に現れてはいけない重要トークン）
+  - `validateProposalTarget(proposal) -> { ok: true } | { ok: false, reason }`（パス・種別の検証）
+  - `validateProposalChange(proposal) -> { ok: true } | { ok: false, reason }`（`ts-copy` のとき find/replace が重要トークンに触れないかを検証）
 
 - [ ] **Step 1: ハーネスを書く（失敗する状態）**
 
 `scratchpad/phase3-allowlist.mjs`:
 ```js
-import { validateProposalTarget } from "/Users/fukasedaichi/git/nazomatic/scripts/x-growth/experimentAllowlist.mjs";
+import { validateProposalTarget, validateProposalChange } from "/Users/fukasedaichi/git/nazomatic/scripts/x-growth/experimentAllowlist.mjs";
 const A = (c, m) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1; } else console.log("ok:", m); };
 A(validateProposalTarget({ path: "src/server/x-browser-posting/comment-patterns.json", kind: "json-array" }).ok, "allow comment-patterns");
-A(!validateProposalTarget({ path: "scripts/x-browser-posting/config.mjs", kind: "threshold" }).ok, "deny config.mjs");
+A(validateProposalTarget({ path: "src/server/x-browser-posting/trend-joke-post.ts", kind: "ts-copy" }).ok, "allow trend-joke ts-copy");
+A(!validateProposalTarget({ path: "scripts/x-browser-posting/config.mjs", kind: "ts-copy" }).ok, "deny config.mjs");
 A(!validateProposalTarget({ path: ".env.x-browser-posting.local", kind: "json-array" }).ok, "deny .env");
 A(!validateProposalTarget({ path: ".github/workflows/x-repost-events.yml", kind: "doc" }).ok, "deny .github");
+A(!validateProposalTarget({ path: "src/server/x-browser-posting/trend-joke-post.ts", kind: "json-array" }).ok, "deny kind mismatch");
 A(!validateProposalTarget({ path: "src/server/x-browser-posting/comment-patterns.json", kind: "unknown-kind" }).ok, "deny unknown kind");
+// ts-copy の変更ガード: 重要トークンに触れる提案は拒否
+A(validateProposalChange({ path: "src/server/x-browser-posting/trend-joke-post.ts", kind: "ts-copy", change: { find: "詰まったときの道具箱に、", replace: "困ったら道具箱に、" } }).ok, "allow benign ts copy change");
+A(!validateProposalChange({ path: "src/server/x-browser-posting/trend-joke-post.ts", kind: "ts-copy", change: { find: "weightedTextLength(trimmed)", replace: "0" } }).ok, "deny change touching validator");
+A(!validateProposalChange({ path: "src/server/x-browser-posting/trend-joke-post.ts", kind: "ts-copy", change: { find: "x", replace: "process.env.FOO" } }).ok, "deny change adding process.env");
+A(validateProposalChange({ path: "src/server/x-browser-posting/comment-patterns.json", kind: "json-array", change: { find: "a", replace: "b" } }).ok, "json change not token-guarded");
 console.log("done");
 ```
 
@@ -404,8 +417,8 @@ export const EXPERIMENT_ALLOWLIST = [
   },
   {
     path: "src/server/x-browser-posting/trend-joke-post.ts",
-    kind: "threshold",
-    note: "fallback 候補文・prompt テンプレート・閾値定数のみ（限定置換）",
+    kind: "ts-copy",
+    note: "fallback 候補文・prompt テンプレート・閾値定数（文言と数値のみ。ロジック不可）",
   },
   {
     path: "docs/system-design/operations/x-browser-post-schedules.md",
@@ -423,7 +436,27 @@ export const DENY_PATH_PATTERNS = [
   /(^|\/)package(-lock)?\.json$/,
 ];
 
-const ALLOWED_KINDS = new Set(["json-array", "threshold", "doc"]);
+// ts-copy の find/replace に現れてはいけない重要トークン。
+// これによりループは「文言・候補文・数値閾値の中身」しか変えられず、
+// 投稿ロジック・認証・実行ガード・外部呼び出しには触れられない。
+export const FORBIDDEN_CHANGE_TOKENS = [
+  "validateTrendJokeText",
+  "weightedTextLength",
+  "MAX_TREND_JOKE",
+  "MAX_DAILY",
+  "MIN_COOLDOWN",
+  "--execute",
+  "CONFIRMATION_MODE",
+  "AUTO_EXECUTE",
+  "process.env",
+  "spawn",
+  "exec(",
+  "fetch(",
+  "import ",
+  "require(",
+];
+
+const ALLOWED_KINDS = new Set(["json-array", "ts-copy", "doc"]);
 
 export function validateProposalTarget(proposal) {
   const path = String(proposal?.path ?? "");
@@ -452,6 +485,21 @@ export function validateProposalTarget(proposal) {
   }
   return { ok: true };
 }
+
+export function validateProposalChange(proposal) {
+  if (proposal?.kind !== "ts-copy") {
+    return { ok: true };
+  }
+  const haystack = `${proposal?.change?.find ?? ""}\n${proposal?.change?.replace ?? ""}`;
+  const hit = FORBIDDEN_CHANGE_TOKENS.find((token) => haystack.includes(token));
+  if (hit) {
+    return {
+      ok: false,
+      reason: `ts-copy change touches a forbidden token: ${hit}`,
+    };
+  }
+  return { ok: true };
+}
 ```
 
 - [ ] **Step 4: 成功を確認**
@@ -464,7 +512,7 @@ Expected: 全行 `ok:`、`done`
 ```bash
 node --check scripts/x-growth/experimentAllowlist.mjs && npm run lint
 git add scripts/x-growth/experimentAllowlist.mjs
-git commit -m "feat(x-growth): add experiment path allowlist with deterministic validation"
+git commit -m "feat(x-growth): add experiment path allowlist and ts change guard"
 ```
 
 ### Task 3.2: 提案スキーマとバリデータ
@@ -477,7 +525,7 @@ git commit -m "feat(x-growth): add experiment path allowlist with deterministic 
 - Produces:
   - `buildProposalOutputSchema() -> object`（codex `--output-schema` に渡す JSON Schema）
   - `validateProposal(obj) -> { ok, proposal?, reason? }`（必須項目・型・単一変更・置換文字列の健全性を確認）
-- Consumes: `validateProposalTarget`（Task 3.1）。
+- Consumes: `validateProposalTarget`, `validateProposalChange`（Task 3.1）。
 
 提案 JSON の形（1件のみ）:
 ```json
@@ -501,12 +549,16 @@ git commit -m "feat(x-growth): add experiment path allowlist with deterministic 
 ```js
 import { validateProposal } from "/Users/fukasedaichi/git/nazomatic/scripts/x-growth/proposalSchema.mjs";
 const A = (c, m) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1; } else console.log("ok:", m); };
-const good = { hypothesis: "h", path: "src/server/x-browser-posting/comment-patterns.json", kind: "json-array", change: { find: "old text", replace: "new text" }, metric: "engagement median", evaluateWeek: "2026-W31", rationale: "r" };
+const good = { hypothesis: "hypothesis8", path: "src/server/x-browser-posting/comment-patterns.json", kind: "json-array", change: { find: "old text", replace: "new text" }, metric: "engagement median", evaluateWeek: "2026-W31", rationale: "rationale8" };
 A(validateProposal(good).ok, "valid proposal");
 A(!validateProposal({ ...good, path: "scripts/x-browser-posting/config.mjs" }).ok, "reject denied path");
 A(!validateProposal({ ...good, change: { find: "x", replace: "x" } }).ok, "reject no-op change");
 A(!validateProposal({ ...good, change: { find: "", replace: "y" } }).ok, "reject empty find");
 A(!validateProposal({ hypothesis: "h" }).ok, "reject missing fields");
+// ts-copy: forbidden-token change is rejected via validateProposalChange
+const tsGood = { ...good, path: "src/server/x-browser-posting/trend-joke-post.ts", kind: "ts-copy", change: { find: "困ったら道具箱に、", replace: "詰まったら道具箱に、" } };
+A(validateProposal(tsGood).ok, "valid ts-copy proposal");
+A(!validateProposal({ ...tsGood, change: { find: "weightedTextLength(trimmed)", replace: "0" } }).ok, "reject ts-copy touching validator");
 console.log("done");
 ```
 
@@ -516,7 +568,10 @@ console.log("done");
 
 `scripts/x-growth/proposalSchema.mjs`:
 ```js
-import { validateProposalTarget } from "./experimentAllowlist.mjs";
+import {
+  validateProposalChange,
+  validateProposalTarget,
+} from "./experimentAllowlist.mjs";
 
 export function buildProposalOutputSchema() {
   return {
@@ -534,7 +589,7 @@ export function buildProposalOutputSchema() {
     properties: {
       hypothesis: { type: "string", minLength: 8 },
       path: { type: "string" },
-      kind: { type: "string", enum: ["json-array", "threshold", "doc"] },
+      kind: { type: "string", enum: ["json-array", "ts-copy", "doc"] },
       change: {
         type: "object",
         additionalProperties: false,
@@ -579,6 +634,10 @@ export function validateProposal(obj) {
   }
   if (find === replace) {
     return { ok: false, reason: "change is a no-op" };
+  }
+  const changeGuard = validateProposalChange(obj);
+  if (!changeGuard.ok) {
+    return changeGuard;
   }
   if (!/^[0-9]{4}-W[0-9]{2}$/.test(obj.evaluateWeek)) {
     return { ok: false, reason: "evaluateWeek must be ISO week like 2026-W31" };
@@ -752,6 +811,103 @@ git add scripts/x-growth/applyProposal.mjs
 git commit -m "feat(x-growth): apply single-file experiment change and open draft PR"
 ```
 
+### Task 3.3b: 適用後の検証ゲート
+
+**Files:**
+- Create: `scripts/x-growth/verifyChange.mjs`
+- Test: `scratchpad/phase3-verify.mjs`
+
+**Interfaces:**
+- Produces:
+  - `verifyChangedFile(cwd, relPath) -> Promise<{ ok: true } | { ok: false, reason }>`（拡張子で分岐: `.json` は `JSON.parse`、`.mjs`/`.js` は `node --check`、`.ts`/`.tsx` は `npx tsc --noEmit` と `npm run lint` を実行。いずれか非0終了で `ok:false`）
+  - `revertChangedFile(cwd, relPath) -> Promise<void>`（`git checkout -- <relPath>` で作業ツリーの変更を破棄）
+
+これは TS を編集対象に含めるための必須ゲート。壊れた TS・JSON が PR になることを構造的に防ぐ。`runImprovementCycle`（Task 3.4）が apply と PR の間で呼ぶ。
+
+- [ ] **Step 1: ハーネス（失敗）**
+
+`scratchpad/phase3-verify.mjs`:
+```js
+import { verifyChangedFile } from "/Users/fukasedaichi/git/nazomatic/scripts/x-growth/verifyChange.mjs";
+import fs from "fs/promises"; import os from "os"; import path from "path";
+const A = (c, m) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1; } else console.log("ok:", m); };
+const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "phase3-verify-"));
+await fs.writeFile(path.join(cwd, "good.json"), '{"a":1}');
+await fs.writeFile(path.join(cwd, "bad.json"), '{"a":1');
+A((await verifyChangedFile(cwd, "good.json")).ok, "valid json passes");
+A(!(await verifyChangedFile(cwd, "bad.json")).ok, "invalid json fails");
+await fs.writeFile(path.join(cwd, "good.mjs"), "export const x = 1;\n");
+await fs.writeFile(path.join(cwd, "bad.mjs"), "export const x = ;\n");
+A((await verifyChangedFile(cwd, "good.mjs")).ok, "valid mjs passes");
+A(!(await verifyChangedFile(cwd, "bad.mjs")).ok, "invalid mjs fails");
+await fs.rm(cwd, { recursive: true, force: true });
+console.log("done");
+```
+（`.ts` は本物のリポジトリでのみ tsc が意味を持つため、ハーネスでは `.json`/`.mjs` の分岐だけを検証する。`.ts` 分岐は実装レビューで確認する。）
+
+- [ ] **Step 2: 失敗を確認** — Run: `node scratchpad/phase3-verify.mjs` / Expected: FAIL
+
+- [ ] **Step 3: 実装**
+
+`scripts/x-growth/verifyChange.mjs`:
+```js
+import fs from "fs/promises";
+import path from "path";
+import { spawn } from "child_process";
+
+export async function verifyChangedFile(cwd, relPath) {
+  const ext = path.extname(relPath).toLowerCase();
+  if (ext === ".json") {
+    try {
+      JSON.parse(await fs.readFile(path.join(cwd, relPath), "utf8"));
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, reason: `invalid JSON: ${error.message}` };
+    }
+  }
+  if (ext === ".mjs" || ext === ".js") {
+    const r = await run(cwd, "node", ["--check", relPath]);
+    return r.code === 0 ? { ok: true } : { ok: false, reason: `node --check failed: ${r.stderr}` };
+  }
+  if (ext === ".ts" || ext === ".tsx") {
+    const tsc = await run(cwd, "npx", ["tsc", "--noEmit"]);
+    if (tsc.code !== 0) {
+      return { ok: false, reason: `tsc failed: ${tsc.stdout || tsc.stderr}` };
+    }
+    const lint = await run(cwd, "npm", ["run", "lint"]);
+    return lint.code === 0 ? { ok: true } : { ok: false, reason: `lint failed: ${lint.stdout || lint.stderr}` };
+  }
+  // md 等はそのまま可（doc は構文検証不要）。
+  return { ok: true };
+}
+
+export async function revertChangedFile(cwd, relPath) {
+  await run(cwd, "git", ["checkout", "--", relPath]);
+}
+
+function run(cwd, command, args) {
+  return new Promise((resolve) => {
+    const child = spawn(command, args, { cwd, stdio: ["ignore", "pipe", "pipe"] });
+    let stdout = "";
+    let stderr = "";
+    child.stdout.on("data", (c) => (stdout += c.toString("utf8")));
+    child.stderr.on("data", (c) => (stderr += c.toString("utf8")));
+    child.on("error", (e) => resolve({ code: 1, stdout, stderr: String(e) }));
+    child.on("close", (code) => resolve({ code: code ?? 1, stdout, stderr }));
+  });
+}
+```
+
+- [ ] **Step 4: 成功を確認** — Run: `node scratchpad/phase3-verify.mjs` / Expected: 全 `ok:`, `done`
+
+- [ ] **Step 5: lint + Commit**
+
+```bash
+node --check scripts/x-growth/verifyChange.mjs && npm run lint
+git add scripts/x-growth/verifyChange.mjs
+git commit -m "feat(x-growth): add post-apply verification gate (tsc/lint/syntax)"
+```
+
 ### Task 3.4: エージェント本体（codex 呼び出し + 全体オーケストレーション）
 
 **Files:**
@@ -803,6 +959,7 @@ import { readBrowserPostLedger } from "./x-browser-posting/postLedger.mjs";
 import { buildProposalOutputSchema, validateProposal } from "./x-growth/proposalSchema.mjs";
 import { EXPERIMENT_ALLOWLIST } from "./x-growth/experimentAllowlist.mjs";
 import { applyChangeToFile, createExperimentPr } from "./x-growth/applyProposal.mjs";
+import { verifyChangedFile, revertChangedFile } from "./x-growth/verifyChange.mjs";
 
 export async function runImprovementCycle({ cwd, reviewMarkdown, ledgerSummary, callCodex, execute, issueUrl }) {
   const proposal = await callCodex({ reviewMarkdown, ledgerSummary, allowlist: EXPERIMENT_ALLOWLIST });
@@ -816,6 +973,12 @@ export async function runImprovementCycle({ cwd, reviewMarkdown, ledgerSummary, 
   const applied = await applyChangeToFile(cwd, validated.proposal);
   if (!applied.ok) {
     return { status: "rejected", reason: applied.reason, proposal: validated.proposal };
+  }
+  // 適用後の検証ゲート: tsc/lint/構文が通らなければ変更を破棄し PR を作らない。
+  const verified = await verifyChangedFile(cwd, validated.proposal.path);
+  if (!verified.ok) {
+    await revertChangedFile(cwd, validated.proposal.path);
+    return { status: "rejected", reason: `verification failed: ${verified.reason}`, proposal: validated.proposal };
   }
   const pr = await createExperimentPr(cwd, validated.proposal, { issueUrl });
   return { status: "pr_created", proposal: validated.proposal, ...pr };
