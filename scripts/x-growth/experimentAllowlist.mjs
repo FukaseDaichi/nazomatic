@@ -49,6 +49,9 @@ export const FORBIDDEN_CHANGE_TOKENS = [
   "import ",
   "import(",
   "require(",
+  "eval(",
+  "function(",
+  "globalthis",
 ];
 
 const ALLOWED_KINDS = new Set(["json-array", "ts-copy", "doc"]);

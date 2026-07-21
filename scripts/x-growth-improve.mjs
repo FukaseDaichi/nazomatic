@@ -29,11 +29,16 @@ export async function runImprovementCycle({
   execute,
   issueUrl,
 }) {
-  const proposal = await callCodex({
-    reviewMarkdown,
-    ledgerSummary,
-    allowlist: EXPERIMENT_ALLOWLIST,
-  });
+  let proposal;
+  try {
+    proposal = await callCodex({
+      reviewMarkdown,
+      ledgerSummary,
+      allowlist: EXPERIMENT_ALLOWLIST,
+    });
+  } catch (error) {
+    return { status: "rejected", reason: `codex proposal failed: ${error instanceof Error ? error.message : String(error)}` };
+  }
   const validated = validateProposal(proposal);
   if (!validated.ok) {
     return { status: "rejected", reason: validated.reason, proposal };
