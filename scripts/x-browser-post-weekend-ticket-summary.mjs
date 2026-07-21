@@ -10,6 +10,7 @@ import { stdin as input, stdout as output } from "process";
 import { loadBrowserPostConfig } from "./x-browser-posting/config.mjs";
 import { openCdpChromePage } from "./x-browser-posting/cdpChromePage.mjs";
 import { recordBrowserPost } from "./x-browser-posting/postLedger.mjs";
+import { captureGrowthTelemetry } from "./x-browser-posting/growthTelemetry.mjs";
 import {
   assertSubmitReady,
   fillComposer,
@@ -135,6 +136,7 @@ async function main() {
     if (postedPostURL) {
       console.log(`Posted URL: ${postedPostURL}`);
     }
+    await captureGrowthTelemetry(session, config).catch(() => {});
   } catch (error) {
     const errorScreenshotPath = await session
       .saveScreenshot("weekend-summary-error")
@@ -339,6 +341,7 @@ async function openAutomationSession(config) {
       submitPost: (accountHandle, expectedText) =>
         page.submitPost(accountHandle, expectedText),
       saveScreenshot: (label) => saveCdpScreenshot(page, config, label),
+      cdpPage: page,
       close: () => page.close(),
     };
   }

@@ -24,6 +24,7 @@
 - ログは `X_BROWSER_POST_LOG_RETENTION_COUNT` の世代数だけ保持する。既定と現行ローカル設定は70世代。
 - X の login、account 不一致、rate limit、UI 変更、CAPTCHA、2FA を検出した場合は自動 retry や回避をせず停止する。
 - 投稿成功後は `local/x-browser-posting/post-ledger.json` に投稿種別、本文、投稿 URL、実験 metadata を記録する。
+- `X_BROWSER_POST_CAPTURE_TELEMETRY=true`（既定）なら、投稿成功後に同じセッションでフォロワー数を `follower-snapshots.json` へ日次追記し、約24時間以上経過した過去投稿の公開数値を最大 `X_BROWSER_POST_METRICS_MAX_PER_RUN`（既定8）件だけ台帳へ書き戻す。計測はベストエフォートで投稿処理を止めない。
 
 ## トレンドジョークの運用
 
@@ -53,7 +54,7 @@
 - automation の成功、失敗、候補なし
 - 次週の改善候補（同時に採用する主要変更は1つまで）
 
-ログイン済み Chrome の CDP から X の公開数値を読み、接続できない場合は公開 HTML を best effort で確認します。取得できない数値は0にせず「取得不能」と記録します。Issue title は `[X週次レビュー] YYYY-Www @nazomaticapp` とし、同じ週に再実行した場合は新規 Issue を増やさず既存 Issue へコメントします。
+投稿別の公開数値は、まず投稿実行時に台帳へ書き戻された `metrics` を使い、未取得の投稿だけをログイン済み Chrome の CDP で追加確認します。接続できない場合は公開 HTML を best effort で確認します。取得できない数値は0にせず「取得不能」と記録します。フォロワーの前週比は日次 snapshot の5日以上前の最新値と比較します。Issue title は `[X週次レビュー] YYYY-Www @nazomaticapp` とし、同じ週に再実行した場合は新規 Issue を増やさず既存 Issue へコメントします。
 
 週次レビューは分析と提案までです。投稿文、schedule、コードを自動変更せず、採用する実験を Issue 上で決めてから反映します。
 

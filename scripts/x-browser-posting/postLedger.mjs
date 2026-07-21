@@ -57,6 +57,46 @@ export async function readBrowserPostLedger(config) {
   }
 }
 
+// 既存の台帳エントリへ、後追いで取得した表示数・エンゲージメントを合流させる。
+// statusId 優先、無ければ postedPostURL で一致させる。該当が無ければ false。
+export async function updateBrowserPostMetrics(config, key, metrics) {
+  const statusId = key?.statusId ? String(key.statusId) : null;
+  const postedPostURL = key?.postedPostURL ?? null;
+  if (!statusId && !postedPostURL) {
+    return false;
+  }
+  const filePath = getBrowserPostLedgerPath(config);
+  const ledger = await readBrowserPostLedger(config);
+  let updated = false;
+  const entries = ledger.entries.map((entry) => {
+    const matches = statusId
+      ? entry.statusId && String(entry.statusId) === statusId
+      : entry.postedPostURL === postedPostURL;
+    if (!matches) {
+      return entry;
+    }
+    updated = true;
+    return {
+      ...entry,
+      metrics: {
+        ...(entry.metrics && typeof entry.metrics === "object"
+          ? entry.metrics
+          : {}),
+        ...metrics,
+      },
+    };
+  });
+  if (!updated) {
+    return false;
+  }
+  await writeJsonFileAtomic(filePath, {
+    version: LEDGER_VERSION,
+    maxEntries: MAX_LEDGER_ENTRIES,
+    entries,
+  });
+  return true;
+}
+
 export function getBrowserPostLedgerPath(config) {
   return path.join(config.cwd, "local/x-browser-posting/post-ledger.json");
 }
