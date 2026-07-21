@@ -20,6 +20,7 @@ import {
   revertChangedFile,
   verifyChangedFile,
 } from "./x-growth/verifyChange.mjs";
+import { recordExperiment } from "./x-growth/experimentLedger.mjs";
 
 export async function runImprovementCycle({
   cwd,
@@ -61,7 +62,22 @@ export async function runImprovementCycle({
     };
   }
   const pr = await createExperimentPr(cwd, validated.proposal, { issueUrl });
-  return { status: "pr_created", proposal: validated.proposal, ...pr };
+  // 実験を open で台帳に記録し、翌週レビューが勝敗を検証できるようにする。
+  const experiment = await recordExperiment(cwd, {
+    hypothesis: validated.proposal.hypothesis,
+    path: validated.proposal.path,
+    kind: validated.proposal.kind,
+    metric: validated.proposal.metric,
+    evaluateWeek: validated.proposal.evaluateWeek,
+    prUrl: pr.prUrl ?? null,
+    baselineNote: ledgerSummary,
+  });
+  return {
+    status: "pr_created",
+    proposal: validated.proposal,
+    experimentId: experiment.id,
+    ...pr,
+  };
 }
 
 // codex exec を read-only で呼び、提案 JSON を返す（本番用 callCodex）。
