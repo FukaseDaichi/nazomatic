@@ -59,7 +59,7 @@ export function validateProposal(obj) {
     return target;
   }
   const { find, replace } = obj.change ?? {};
-  if (typeof find !== "string" || typeof replace !== "string" || !find) {
+  if (typeof find !== "string" || typeof replace !== "string" || !find || !replace) {
     return { ok: false, reason: "change.find/replace must be non-empty strings" };
   }
   if (find === replace) {

@@ -96,5 +96,15 @@ export function validateProposalChange(proposal) {
       reason: `ts-copy change touches a forbidden token: ${hit}`,
     };
   }
+  // 新しく入れる文字列（replace）に文・ブロック・関数・テンプレートを持ち込ませない。
+  // 文言や数値閾値の差し替えには不要な文字で、ロジック注入の余地を大幅に狭める。
+  // （これは多層防御であり、ドラフト PR の人間レビューが最終境界であることは変わらない。）
+  const replaceText = String(proposal?.change?.replace ?? "");
+  if (/[;{}`]|=>/.test(replaceText)) {
+    return {
+      ok: false,
+      reason: "ts-copy replace must not introduce code structure (; { } ` =>)",
+    };
+  }
   return { ok: true };
 }

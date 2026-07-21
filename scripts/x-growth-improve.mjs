@@ -54,7 +54,7 @@ export async function runImprovementCycle({
   // 適用後の検証ゲート: tsc/lint/構文が通らなければ変更を破棄し PR を作らない。
   const verified = await verifyChangedFile(cwd, validated.proposal.path);
   if (!verified.ok) {
-    await revertChangedFile(cwd, validated.proposal.path);
+    await revertChangedFile(cwd, validated.proposal.path, applied.before);
     return {
       status: "rejected",
       reason: `verification failed: ${verified.reason}`,

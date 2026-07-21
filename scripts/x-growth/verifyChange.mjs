@@ -28,7 +28,14 @@ export async function verifyChangedFile(cwd, relPath) {
   return { ok: true };
 }
 
-export async function revertChangedFile(cwd, relPath) {
+// 検証に失敗した変更を戻す。適用前の内容 (beforeContent) が渡された場合は
+// それを正確に書き戻し、対象ファイルの未コミット変更を巻き込まない。
+// beforeContent が無い場合のみ git checkout にフォールバックする。
+export async function revertChangedFile(cwd, relPath, beforeContent) {
+  if (typeof beforeContent === "string") {
+    await fs.writeFile(path.join(cwd, relPath), beforeContent);
+    return;
+  }
   await run(cwd, "git", ["checkout", "--", relPath]);
 }
 

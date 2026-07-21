@@ -35,7 +35,8 @@ export async function applyChangeToFile(cwd, proposal) {
 
 export async function createExperimentPr(cwd, proposal, { issueUrl, dryRun } = {}) {
   const slug = proposal.path.split("/").pop().replace(/\W+/g, "-");
-  const branch = `x-growth/experiment-${proposal.evaluateWeek}-${slug}`;
+  // 同じ週・同じファイルの再実行でもブランチ名が衝突しないよう一意サフィックスを付ける。
+  const branch = `x-growth/experiment-${proposal.evaluateWeek}-${slug}-${Date.now().toString(36)}`;
   const title = `[X改善実験] ${proposal.hypothesis}`;
   const body = [
     `## 仮説`,
