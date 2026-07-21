@@ -724,7 +724,8 @@ export async function applyChangeToFile(cwd, proposal) {
       reason: `change.find must match exactly once (found ${occurrences})`,
     };
   }
-  const after = before.replace(find, replace);
+  // 置換文字列内の $&, $1 などが特殊解釈されないよう、関数形式で置換する。
+  const after = before.replace(find, () => replace);
   if (proposal.path.endsWith(".json")) {
     try {
       JSON.parse(after);
