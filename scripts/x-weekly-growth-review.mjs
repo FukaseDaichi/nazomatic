@@ -332,6 +332,22 @@ function buildReport({
       ? profileStats.followers - previousSnapshot.followers
       : null;
   const urlCaptureCount = recentPosts.filter((entry) => entry.postedPostURL).length;
+  const byArchetype = summarizeByDimension(
+    postMetrics,
+    (post) => post.metadata?.archetype ?? post.postType ?? null
+  );
+  const byHour = summarizeByDimension(postMetrics, (post) =>
+    post.postedAt ? jstHourBucket(post.postedAt) : null
+  );
+  const byMedia = summarizeByDimension(postMetrics, (post) =>
+    post.postType === "trend_joke"
+      ? post.metadata?.hasMedia
+        ? "画像あり"
+        : post.metadata?.pollOptions?.length
+          ? "投票"
+          : "テキストのみ"
+      : null
+  );
   const recommendations = buildRecommendations({
     recentPosts,
     trendPosts,
@@ -374,6 +390,20 @@ function buildReport({
     "",
     `- 型: ${formatCounts(archetypes)}`,
     `- 上限制モチーフ: ${formatCounts(motifs)}`,
+    "",
+    "## 型別・時間帯別・実験別の比較",
+    "",
+    "### 型別",
+    "",
+    ...formatDimensionTable(byArchetype),
+    "",
+    "### 時間帯別（JST）",
+    "",
+    ...formatDimensionTable(byHour),
+    "",
+    "### 添付実験別（トレンド投稿）",
+    "",
+    ...formatDimensionTable(byMedia),
     "",
     "## 次週の改善候補",
     "",
@@ -573,6 +603,22 @@ function formatCounts(counts) {
 
 function formatMetric(value) {
   return value === null || value === undefined ? "取得不能" : String(value);
+}
+
+function formatDimensionTable(rows) {
+  if (!rows.length) {
+    return ["（数値を取得できた投稿がなく比較不能）"];
+  }
+  return [
+    "| 区分 | 件数 | 表示数中央値 | 反応中央値 |",
+    "|---|---:|---:|---:|",
+    ...rows.map(
+      (r) =>
+        `| ${r.key} | ${r.count} | ${formatMetric(r.medianViews)} | ${formatMetric(
+          r.medianEngagement
+        )} |`
+    ),
+  ];
 }
 
 function formatDelta(value) {
