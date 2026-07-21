@@ -40,6 +40,7 @@ flowchart LR
 | [`subsystems/blank25.md`](./subsystems/blank25.md) | BLANK25、Editor、外部 storage |
 | [`subsystems/shift-search.md`](./subsystems/shift-search.md) | シフト検索とレポート配信 |
 | [`subsystems/x-posting.md`](./subsystems/x-posting.md) | X API 再投稿とローカルブラウザ投稿 |
+| [`subsystems/x-growth-improve-agent.md`](./subsystems/x-growth-improve-agent.md) | X 週次改善エージェント（codex 提案 → 検証 → ドラフト PR） |
 
 ### Operations / Quality
 
