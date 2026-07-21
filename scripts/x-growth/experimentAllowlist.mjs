@@ -31,19 +31,23 @@ export const DENY_PATH_PATTERNS = [
 // これによりループは「文言・候補文・数値閾値の中身」しか変えられず、
 // 投稿ロジック・認証・実行ガード・外部呼び出しには触れられない。
 export const FORBIDDEN_CHANGE_TOKENS = [
-  "validateTrendJokeText",
-  "weightedTextLength",
-  "MAX_TREND_JOKE",
-  "MAX_DAILY",
-  "MIN_COOLDOWN",
+  "validatetrendjoketext",
+  "weightedtextlength",
+  "max_trend_joke",
+  "max_daily",
+  "min_cooldown",
   "--execute",
-  "CONFIRMATION_MODE",
-  "AUTO_EXECUTE",
+  "confirmation_mode",
+  "auto_execute",
   "process.env",
   "spawn",
   "exec(",
+  "execfile",
+  "execsync",
+  "child_process",
   "fetch(",
   "import ",
+  "import(",
   "require(",
 ];
 
@@ -81,7 +85,7 @@ export function validateProposalChange(proposal) {
   if (proposal?.kind !== "ts-copy") {
     return { ok: true };
   }
-  const haystack = `${proposal?.change?.find ?? ""}\n${proposal?.change?.replace ?? ""}`;
+  const haystack = `${proposal?.change?.find ?? ""}\n${proposal?.change?.replace ?? ""}`.toLowerCase();
   const hit = FORBIDDEN_CHANGE_TOKENS.find((token) => haystack.includes(token));
   if (hit) {
     return {
