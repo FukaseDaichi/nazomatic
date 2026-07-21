@@ -93,12 +93,17 @@ async function capturePostMetrics(page, config) {
     if (!metrics) {
       continue;
     }
+    // 数値が1つも取れなかった（記事はあるが数値が未描画などの一時失敗）場合は
+    // mature にせず、次回以降の再取得対象として残す。
+    const hasNumeric = ["views", "replies", "reposts", "likes"].some((key) =>
+      Number.isFinite(metrics[key])
+    );
     const wrote = await updateBrowserPostMetrics(
       config,
       { statusId: entry.statusId, postedPostURL: entry.postedPostURL },
-      { ...metrics, capturedAt: new Date().toISOString(), mature: true }
+      { ...metrics, capturedAt: new Date().toISOString(), mature: hasNumeric }
     );
-    if (wrote) {
+    if (wrote && hasNumeric) {
       captured += 1;
     }
   }

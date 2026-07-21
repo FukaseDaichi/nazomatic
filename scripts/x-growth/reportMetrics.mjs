@@ -2,7 +2,7 @@
 // テスト可能な純関数はこの独立モジュールに置く。
 
 export function median(values) {
-  const sorted = [...values].sort((a, b) => a - b);
+  const sorted = values.filter((v) => Number.isFinite(v)).sort((a, b) => a - b);
   if (!sorted.length) {
     return null;
   }
@@ -45,10 +45,14 @@ export function summarizeByDimension(postMetrics, getKey) {
 }
 
 export function jstHourBucket(isoString) {
+  const date = new Date(isoString);
+  if (Number.isNaN(date.getTime())) {
+    return null;
+  }
   const hour = new Intl.DateTimeFormat("en-US", {
     timeZone: "Asia/Tokyo",
     hour: "2-digit",
     hour12: false,
-  }).format(new Date(isoString));
+  }).format(date);
   return `${String(Number(hour)).padStart(2, "0")}時台`;
 }

@@ -916,7 +916,9 @@ function pickTool(): TrendJokeTool {
     title: feature.title,
     description: feature.description.replace(/[＃#]/g, ""),
     path: feature.path,
-    url: `${PUBLIC_BASE_URL}${feature.path}?utm_source=x&utm_medium=social&utm_campaign=trend_joke_tool_intro`,
+    url: `${PUBLIC_BASE_URL}${feature.path}${
+      feature.path.includes("?") ? "&" : "?"
+    }utm_source=x&utm_medium=social&utm_campaign=trend_joke_tool_intro`,
   };
 }
 

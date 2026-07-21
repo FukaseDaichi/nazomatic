@@ -15,12 +15,17 @@ export function getFollowerSnapshotPath(cwd) {
 }
 
 export async function readFollowerSnapshots(cwd) {
+  const filePath = getFollowerSnapshotPath(cwd);
   try {
-    const parsed = JSON.parse(
-      await fs.readFile(getFollowerSnapshotPath(cwd), "utf8")
-    );
+    const parsed = JSON.parse(await fs.readFile(filePath, "utf8"));
     return Array.isArray(parsed?.snapshots) ? parsed.snapshots : [];
-  } catch {
+  } catch (error) {
+    if (error?.code !== "ENOENT") {
+      // 破損ファイルを空とみなして上書きすると履歴が消えるため、先に退避する。
+      await fs
+        .rename(filePath, `${filePath}.corrupt-${Date.now()}`)
+        .catch(() => {});
+    }
     return [];
   }
 }

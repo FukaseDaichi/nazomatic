@@ -43,8 +43,12 @@ export async function readBrowserPostLedger(config) {
     };
   } catch (error) {
     if (error?.code !== "ENOENT") {
+      // 破損した台帳を空とみなして上書きすると履歴が消えるため、先に退避する。
+      await fs
+        .rename(filePath, `${filePath}.corrupt-${Date.now()}`)
+        .catch(() => {});
       console.warn(
-        `Browser post ledger could not be read; starting with an empty ledger: ${
+        `Browser post ledger could not be read; backed up the corrupt file and starting empty: ${
           error instanceof Error ? error.message : String(error)
         }`
       );

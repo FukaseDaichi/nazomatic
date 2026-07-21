@@ -10,12 +10,17 @@ export function getExperimentLedgerPath(cwd) {
 }
 
 export async function readExperiments(cwd) {
+  const filePath = getExperimentLedgerPath(cwd);
   try {
-    const parsed = JSON.parse(
-      await fs.readFile(getExperimentLedgerPath(cwd), "utf8")
-    );
+    const parsed = JSON.parse(await fs.readFile(filePath, "utf8"));
     return Array.isArray(parsed?.experiments) ? parsed.experiments : [];
-  } catch {
+  } catch (error) {
+    if (error?.code !== "ENOENT") {
+      // 破損ファイルを空とみなして上書きすると実験履歴が消えるため、先に退避する。
+      await fs
+        .rename(filePath, `${filePath}.corrupt-${Date.now()}`)
+        .catch(() => {});
+    }
     return [];
   }
 }
