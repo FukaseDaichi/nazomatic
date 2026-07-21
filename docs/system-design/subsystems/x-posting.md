@@ -135,6 +135,8 @@ validator は自然な hashtag を最大1個だけ許可し、mention、emoji、
 
 `npm run x:growth-review` は直近7日の共通投稿台帳、ローカル実行 log、フォロワー snapshot を集計して Markdown を出力します。投稿別の公開数値は、まず投稿実行時に相乗りで取得して台帳に残った `metrics` を使い、未取得の投稿だけを追加で確認します。ログイン済み Chrome が CDP で利用可能ならプロフィールと未取得投稿の公開数値を読み、利用できなければ公開 HTML を best effort で使います。取得不能は0として扱いません。フォロワーの前週比は、日次で追記された snapshot のうち5日以上前の最新値と比較します。
 
+レポートは件数集計に加えて、投稿型・JST 時間帯・添付実験（画像 / 投票 / テキストのみ）ごとの表示数中央値と反応中央値を表で比較します。tool_intro の URL には UTM（`utm_campaign=trend_joke_tool_intro`）を付け、投稿からサイト流入を後から突き合わせられるようにします。
+
 `--create-issue` を付けると GitHub CLI で週次 Issue を作成します。同じ ISO week・account の title が既にあれば Issue を増やさずコメントを追加します。レビューは改善候補を最大4件提示しますが、コードや schedule は自動変更しません。
 
 ## ローカルファイル
