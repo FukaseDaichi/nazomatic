@@ -139,6 +139,8 @@ validator は自然な hashtag を最大1個だけ許可し、mention、emoji、
 
 `--create-issue` を付けると GitHub CLI で週次 Issue を作成します。同じ ISO week・account の title が既にあれば Issue を増やさずコメントを追加します。レビューは改善候補を最大4件提示しますが、コードや schedule は自動変更しません。
 
+レポートには「実験の勝敗」節もあり、`experiment-ledger.json` の open 実験のうち今週が評価予定週のものを一覧します。仮説・対象・PR・開始時の状況を添えて、上の次元別比較と見比べた継続 / revert を人間が判断します。自動 revert はせず、判断後に `resolveExperiment` で `kept` / `reverted` を記録します。実験は [`x-growth-improve-agent.md`](./x-growth-improve-agent.md) のエージェントが PR 作成時に `open` で記録します。
+
 ## ローカルファイル
 
 | パス | 内容 |
@@ -152,6 +154,7 @@ validator は自然な hashtag を最大1個だけ許可し、mention、emoji、
 | `local/x-browser-posting/trend-joke-history.json` | 直近 30 投稿の類似判定 |
 | `local/x-browser-posting/post-ledger.json` | 3種類の投稿 URL、本文、実験 metadata、後追い取得の `metrics` |
 | `local/x-browser-posting/follower-snapshots.json` | JST 日付ごとのフォロワー・累計投稿数 snapshot |
+| `local/x-browser-posting/experiment-ledger.json` | 改善エージェントの実験（open / kept / reverted）と評価予定週 |
 | `logs/x-browser-post*` | automation 別の実行 log |
 
 認証済み profile と storage state は秘密情報として扱い、共有端末や CI では使いません。

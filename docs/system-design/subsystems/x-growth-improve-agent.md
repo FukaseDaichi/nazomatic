@@ -52,6 +52,14 @@ flowchart LR
 | `scripts/x-growth/applyProposal.mjs` | 単一ファイルの find/replace 適用（1回一致のみ）とドラフト PR 作成 |
 | `scripts/x-growth/verifyChange.mjs` | 適用後の検証ゲートと `git checkout` による破棄 |
 
+## 実験台帳と勝敗の検証
+
+ドラフト PR を作成すると、`recordExperiment` が `local/x-browser-posting/experiment-ledger.json` に実験を `open` で記録します（仮説・対象・種別・指標・評価予定週・PR URL・開始時の台帳サマリ）。翌週以降、週次改善レビューの「実験の勝敗」節が、今週が評価予定週の open 実験を一覧し、次元別比較と開始時を見比べた継続 / revert を提示します。**自動 revert はしません。** 人間が判断し、`resolveExperiment` で `kept` / `reverted` を記録します。これでレビュー → 実験 → 計測 → 検証が1週サイクルで閉じます。
+
+| 実装 | 責務 |
+|---|---|
+| `scripts/x-growth/experimentLedger.mjs` | 実験の記録・読み出し・解決（open / kept / reverted） |
+
 ## 実行と失敗時の挙動
 
 - 提案が allowlist・トークンガード・スキーマ・ちょうど1回一致・検証ゲートのいずれかを満たさない場合は `rejected` として理由を表示し、PR を作らずに正常終了する。
