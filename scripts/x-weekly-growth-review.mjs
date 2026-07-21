@@ -16,6 +16,12 @@ import {
   findLocalizedMetric,
   parseCompactNumber,
 } from "./x-browser-posting/profileMetrics.mjs";
+import {
+  jstHourBucket,
+  median,
+  sumEngagement,
+  summarizeByDimension,
+} from "./x-growth/reportMetrics.mjs";
 
 const REVIEW_DAYS = 7;
 const AUTOMATION_LOG_IDS = [
@@ -556,15 +562,6 @@ function countMany(entries, getKeys) {
     for (const key of getKeys(entry)) result[key] = (result[key] ?? 0) + 1;
   }
   return result;
-}
-
-function median(values) {
-  const sorted = [...values].sort((a, b) => a - b);
-  if (!sorted.length) return null;
-  const middle = Math.floor(sorted.length / 2);
-  return sorted.length % 2
-    ? sorted[middle]
-    : Math.round((sorted[middle - 1] + sorted[middle]) / 2);
 }
 
 function formatCounts(counts) {
