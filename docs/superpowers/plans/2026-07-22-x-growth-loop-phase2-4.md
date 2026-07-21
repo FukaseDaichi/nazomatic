@@ -357,7 +357,7 @@ git commit -m "docs(x-growth): document dimension comparison and UTM in weekly r
   - `docs/system-design/operations/x-browser-post-schedules.md`（kind `doc`。台帳の記述更新）
 - **禁止（Node が拒否）:** `scripts/x-browser-posting/config.mjs`、`.env*`、`.github/`、`middleware.ts`、`--execute`/confirmation/rate-limit に関わる全て、複数ファイル同時変更、新規ファイル作成。
 - **TS を安全に編集するための二重ガード（本計画の必須要件）:**
-  1. **ファイル内ガード（適用前）:** `change.find` / `change.replace` が重要トークンに触れる提案は拒否する。禁止トークン（`.ts` 対象）: `validateTrendJokeText`、`weightedTextLength`、`MAX_TREND_JOKE`、`MAX_DAILY`、`MIN_COOLDOWN`、`--execute`、`CONFIRMATION_MODE`、`AUTO_EXECUTE`、`rate`、`process.env`、`spawn`、`exec(`、`fetch(`、`import `、`require(`。これによりループが編集できるのは「文言・候補文・数値閾値の中身」に限定され、投稿ロジック・認証・実行ガードには触れられない。
+  1. **ファイル内ガード（適用前）:** `change.find` / `change.replace` が重要トークンに触れる提案は拒否する。**マッチは大小文字を無視**（haystack を lowercase 化）し、トークンも lowercase で保持する。禁止トークン（`.ts` 対象）: `validatetrendjoketext`、`weightedtextlength`、`max_trend_joke`、`max_daily`、`min_cooldown`、`--execute`、`confirmation_mode`、`auto_execute`、`process.env`、`spawn`、`exec(`、`execfile`、`execsync`、`child_process`、`fetch(`、`import `、`import(`、`require(`。（`spawn`→spawnSync、`execfile`→execFile/execFileSync、`execsync`→execSync、`import(`→動的 import を各々カバー。）これによりループが編集できるのは「文言・候補文・数値閾値の中身」に限定され、投稿ロジック・認証・実行ガード・外部呼び出しには触れられない。
   2. **検証ゲート（適用後）:** find/replace 適用後、`.ts` は `npx tsc --noEmit` と `npm run lint`、`.mjs` は `node --check`、`.json` は `JSON.parse` を通す。**いずれか失敗したら `git checkout -- <path>` で変更を破棄し、PR を作らずに `rejected` で終了する。** 壊れた TS が PR になることを構造的に防ぐ。
 - codex 実行は `--sandbox read-only --ephemeral`（Phase 1 のトレンドジョーク provider と同一の呼び出しパターン）。
 - PR 作成は `gh pr create --draft`。**マージはしない**。ドラフト PR で人間レビュー必須。
@@ -439,20 +439,25 @@ export const DENY_PATH_PATTERNS = [
 // ts-copy の find/replace に現れてはいけない重要トークン。
 // これによりループは「文言・候補文・数値閾値の中身」しか変えられず、
 // 投稿ロジック・認証・実行ガード・外部呼び出しには触れられない。
+// マッチは大小文字を無視するため、トークンは lowercase で保持する。
 export const FORBIDDEN_CHANGE_TOKENS = [
-  "validateTrendJokeText",
-  "weightedTextLength",
-  "MAX_TREND_JOKE",
-  "MAX_DAILY",
-  "MIN_COOLDOWN",
+  "validatetrendjoketext",
+  "weightedtextlength",
+  "max_trend_joke",
+  "max_daily",
+  "min_cooldown",
   "--execute",
-  "CONFIRMATION_MODE",
-  "AUTO_EXECUTE",
+  "confirmation_mode",
+  "auto_execute",
   "process.env",
   "spawn",
   "exec(",
+  "execfile",
+  "execsync",
+  "child_process",
   "fetch(",
   "import ",
+  "import(",
   "require(",
 ];
 
@@ -490,7 +495,7 @@ export function validateProposalChange(proposal) {
   if (proposal?.kind !== "ts-copy") {
     return { ok: true };
   }
-  const haystack = `${proposal?.change?.find ?? ""}\n${proposal?.change?.replace ?? ""}`;
+  const haystack = `${proposal?.change?.find ?? ""}\n${proposal?.change?.replace ?? ""}`.toLowerCase();
   const hit = FORBIDDEN_CHANGE_TOKENS.find((token) => haystack.includes(token));
   if (hit) {
     return {
