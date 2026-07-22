@@ -601,7 +601,7 @@ export default function GraphPaperComponent() {
                   max={MAX_GRID_SIZE}
                   value={rows}
                   onChange={(e) => setRows(parseGridSize(e.target.value))}
-                  className="h-9 w-11 bg-transparent px-1 text-center text-sm font-semibold text-white [appearance:textfield] focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                  className="h-9 w-11 bg-transparent px-1 text-center text-base font-semibold text-white [appearance:textfield] focus:outline-none sm:text-sm [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                 />
                 <div className="flex flex-col border-l border-gray-600">
                   <button
@@ -642,7 +642,7 @@ export default function GraphPaperComponent() {
                   max={MAX_GRID_SIZE}
                   value={cols}
                   onChange={(e) => setCols(parseGridSize(e.target.value))}
-                  className="h-9 w-11 bg-transparent px-1 text-center text-sm font-semibold text-white [appearance:textfield] focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                  className="h-9 w-11 bg-transparent px-1 text-center text-base font-semibold text-white [appearance:textfield] focus:outline-none sm:text-sm [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                 />
                 <div className="flex flex-col border-l border-gray-600">
                   <button

@@ -49,7 +49,7 @@ flowchart LR
 
 ## 削除
 
-`POST /api/internal/realtime/prune` は `eventTime` が cutoff より古い document を削除します。既定 cutoff は 1 日、最大 30 日、1 batch 500 件、最大 20 batch です。
+`POST /api/internal/realtime/prune` は `eventTime` が cutoff より古い document を削除します。既定 cutoff は 1 日、最大 30 日、1 batch 500 件、最大 20 batch です。dry-run は document cursor で対象をページ送りし、削除せずに重複のない `checked` と `batches` を返します。
 
 ## X 連携との共有
 

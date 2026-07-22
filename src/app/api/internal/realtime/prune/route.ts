@@ -36,25 +36,35 @@ export async function POST(request: Request) {
     let totalChecked = 0;
     let totalDeleted = 0;
     let batches = 0;
+    let dryRunCursor:
+      | FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>
+      | undefined;
 
     const collection = firestore.collection("realtimeEvents");
 
     while (batches < MAX_BATCHES) {
-      batches += 1;
-      const snapshot = await collection
+      let query = collection
         .where("eventTime", "<", cutoffDate)
-        .orderBy("eventTime", "asc")
-        .limit(BATCH_SIZE)
-        .get();
+        .orderBy("eventTime", "asc");
+
+      if (dryRunCursor) {
+        query = query.startAfter(dryRunCursor);
+      }
+
+      const snapshot = await query.limit(BATCH_SIZE).get();
 
       if (snapshot.empty) {
-        batches -= 1;
         break;
       }
 
+      batches += 1;
       totalChecked += snapshot.size;
 
       if (params.dryRun) {
+        dryRunCursor = snapshot.docs[snapshot.docs.length - 1];
+        if (snapshot.size < BATCH_SIZE) {
+          break;
+        }
         continue;
       }
 
