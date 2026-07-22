@@ -23,7 +23,13 @@
 | [`ai-coding-rules.md`](./ai-coding-rules.md) | AI がコードや UI を変更するときの必須ルール |
 | [`maintenance/doc-audit-report.md`](./maintenance/doc-audit-report.md) | 直近のドキュメント同期結果 |
 
-`ideas`、`strategy`、`research` はシステム設計書の管理対象外です。存在する場合も、設計書整理では変更・削除しません。
+## 設計外の検討メモ
+
+| 文書 | 役割 |
+|---|---|
+| [`ideas/x-growth-backlog.md`](./ideas/x-growth-backlog.md) | X 運用の未着手改善案。現行仕様ではない |
+
+`ideas`、`strategy`、`research` はシステム設計書の管理対象外です。実装済みの事実と混同せず、着手時に現行コードと外部仕様を再確認します。
 
 ## 保守ルール
 

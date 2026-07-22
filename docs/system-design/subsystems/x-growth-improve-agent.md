@@ -20,7 +20,7 @@ flowchart LR
   validate -->|reject| stop["終了(PRなし)"]
   validate -->|ok| apply["単一ファイルの find/replace(1回一致のみ)"]
   apply --> verify["verifyChangedFile(tsc/lint/構文)"]
-  verify -->|fail| revert["git checkout で破棄 → 終了"]
+  verify -->|fail| revert["適用前の内容へ復元 → 終了"]
   verify -->|ok| pr["gh pr create --draft"]
   pr --> human["人間がレビューしてマージ"]
 ```
@@ -29,7 +29,7 @@ flowchart LR
 - **提案は構造化 JSON**: `hypothesis` / `path` / `kind` / `change{find,replace}` / `metric` / `evaluateWeek` / `rationale`。
 - **allowlist で編集先を固定**（`scripts/x-growth/experimentAllowlist.mjs`）。
 - **ts-copy のファイル内トークンガード**: `.ts` の変更が投稿ロジック・validator・認証・実行ガード・外部呼び出しの重要トークンに触れる提案は拒否（大小文字無視）。
-- **適用後の検証ゲート**（`scripts/x-growth/verifyChange.mjs`）: `.ts` は `tsc --noEmit` と `npm run lint`、`.mjs` は `node --check`、`.json` は `JSON.parse`。失敗したら `git checkout -- <path>` で破棄し PR を作らない。
+- **適用後の検証ゲート**（`scripts/x-growth/verifyChange.mjs`）: `.ts` は `tsc --noEmit` と `npm run lint`、`.mjs` は `node --check`、`.json` は `JSON.parse`。失敗したら保持していた適用前の内容を対象ファイルへ書き戻し、PR を作らない。適用前内容がない呼び出しだけ `git checkout -- <path>` へフォールバックする。
 - **1 PR = 1実験 = 1ファイル = ちょうど1回一致する find/replace**。revert で完結。**自動マージはしない**。
 
 ## allowlist（編集可能パス）
@@ -54,7 +54,7 @@ flowchart LR
 
 ## 実験台帳と勝敗の検証
 
-ドラフト PR を作成すると、`recordExperiment` が `local/x-browser-posting/experiment-ledger.json` に実験を `open` で記録します（仮説・対象・種別・指標・評価予定週・PR URL・開始時の台帳サマリ）。翌週以降、週次改善レビューの「実験の勝敗」節が、今週が評価予定週の open 実験を一覧し、次元別比較と開始時を見比べた継続 / revert を提示します。**自動 revert はしません。** 人間が判断し、`resolveExperiment` で `kept` / `reverted` を記録します。これでレビュー → 実験 → 計測 → 検証が1週サイクルで閉じます。
+ドラフト PR を作成すると、`recordExperiment` が `local/x-browser-posting/experiment-ledger.json` に実験を `open` で記録します（仮説・対象・種別・指標・評価予定週・PR URL・開始時の台帳サマリ）。翌週以降、週次改善レビューの「実験の勝敗」節が、今週が評価予定週の open 実験を一覧し、次元別比較と開始時を見比べた継続 / revert 判断を人間へ委ねます。**自動判定・自動 revert はしません。** 判断後の `kept` / `reverted` 更新には `resolveExperiment` を使いますが、現行実装に専用 CLI はありません。
 
 | 実装 | 責務 |
 |---|---|
@@ -62,6 +62,7 @@ flowchart LR
 
 ## 実行と失敗時の挙動
 
+- 入力に使う週次レビューは、`gh issue list` で得た最新更新 Issue の本文です。同一週の再レビューが追記した Issue コメントは読みません。Issue を取得できない場合は代替文を入力にして提案処理を続けます。
 - 提案が allowlist・トークンガード・スキーマ・ちょうど1回一致・検証ゲートのいずれかを満たさない場合は `rejected` として理由を表示し、PR を作らずに正常終了する。
 - ログは `logs/x-growth-improve/` に世代管理で残す。
 - Codex automation への枠登録（毎週月曜 12:00 想定）は運用者が行う。登録するまで自動実行はされない。

@@ -2,7 +2,7 @@
 
 ## 位置づけ
 
-この文書は、Codex のローカル automation で動かす X 投稿・改善レビューの運用台帳です。2026-07-20 に automation の登録内容と照合しています。正確な有効・無効状態は Codex automation 側を正とし、変更時はこの台帳も更新します。
+この文書は、Codex のローカル automation で動かす X 投稿・改善レビューの運用台帳です。2026-07-22 に automation の登録内容と照合しています。正確な有効・無効状態は Codex automation 側を正とし、変更時はこの台帳も更新します。
 
 ## 稼働中の登録
 
@@ -70,3 +70,4 @@
 | 週末サマリ | `logs/x-browser-post-weekend-summary/`、`local/x-browser-posting/weekend-summary-state.json` |
 | 共通投稿台帳 | `local/x-browser-posting/post-ledger.json` |
 | フォロワー snapshot | `local/x-browser-posting/follower-snapshots.json` |
+| 週次改善エージェント | `logs/x-growth-improve/`、`local/x-browser-posting/experiment-ledger.json` |
