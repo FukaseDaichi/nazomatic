@@ -1,10 +1,13 @@
 import { generateJsonLdArticle } from "@/components/common/generateJsonLdArticle";
-import features from "@/lib/json/features.json"; // features.jsonをインポート
+import { getFeatureByPath, type FeaturePath } from "@/lib/features";
 
-export default function Article({ index }: { index: number }) {
-  // propsをインデックスのみに変更
-  const { title, description, path } = features.features[index];
-  const jsonLd = generateJsonLdArticle({ title, description, path });
+export default function Article({ path }: { path: FeaturePath }) {
+  const feature = getFeatureByPath(path);
+  const jsonLd = generateJsonLdArticle({
+    title: feature.title,
+    description: feature.description,
+    path: feature.path,
+  });
 
   return (
     <script

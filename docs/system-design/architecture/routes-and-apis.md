@@ -63,7 +63,7 @@
 
 ### Realtime / X 内部 API
 
-すべて `Authorization: Bearer <REALTIME_INTERNAL_API_TOKEN>` を要求します。
+すべて `Authorization: Bearer <REALTIME_INTERNAL_API_TOKEN>` を要求します。検証は共通 helper `enforceInternalAuthorization()`（`src/server/internal-api/authorization.ts`）に集約しており、新規 route もこれを呼びます。
 
 | Method / path | 役割 |
 |---|---|

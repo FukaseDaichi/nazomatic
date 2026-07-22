@@ -76,4 +76,4 @@
 - sitemap の公開 URL
 - 各公開ページの JSON-LD Article 情報
 
-JSON-LD は各 page が `Article index={n}` をハードコードして参照します。配列順を変える場合は、全 page の index も同時に確認します。
+JSON-LD は各 page が `Article path="/dice"` のように path で参照します。path は `src/lib/features.ts` の `FeaturePath` 型で制約され、typo や削除済み path は compile error になります。`FEATURE_PATHS` は module 読み込み時に `features.json` と突き合わせ、差分があれば例外を投げます。配列順の変更は JSON-LD に影響しません。

@@ -15,6 +15,7 @@ import {
   type VerifiedPostAvailability,
 } from "@/server/realtime/syndication/verifyPost";
 import type { RealtimeApiErrorResponse } from "@/types/realtime";
+import { enforceInternalAuthorization } from "@/server/internal-api/authorization";
 
 const DEFAULT_BATCH_SIZE = 10;
 const MAX_BATCH_SIZE = 10;
@@ -53,7 +54,7 @@ export const maxDuration = 10;
 
 export async function POST(request: Request) {
   try {
-    enforceAuthorization(request);
+    enforceInternalAuthorization(request);
 
     const body = await parseBody(request);
     const params = validateBody(body);
@@ -443,24 +444,6 @@ async function mapWithConcurrency<T, TResult>(
   return results;
 }
 
-function enforceAuthorization(request: Request) {
-  const expected = process.env.REALTIME_INTERNAL_API_TOKEN;
-  if (!expected) {
-    console.error("REALTIME_INTERNAL_API_TOKEN is not set");
-    throw NextResponse.json<RealtimeApiErrorResponse>(
-      { error: "Server configuration error" },
-      { status: 500 }
-    );
-  }
-
-  const header = request.headers.get("authorization");
-  if (!header || header !== `Bearer ${expected}`) {
-    throw NextResponse.json<RealtimeApiErrorResponse>(
-      { error: "Unauthorized" },
-      { status: 401 }
-    );
-  }
-}
 
 function handleError(error: unknown) {
   if (error instanceof NextResponse || error instanceof Response) {

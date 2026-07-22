@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { BrowserPostConfigError } from "@/server/x-browser-posting/candidate";
 import { prepareTrendJokePost } from "@/server/x-browser-posting/trend-joke-post";
 import type { RealtimeApiErrorResponse } from "@/types/realtime";
+import { enforceInternalAuthorization } from "@/server/internal-api/authorization";
 
 export const runtime = "nodejs";
 
@@ -20,7 +21,7 @@ type PrepareTrendJokeRequest = {
 
 export async function POST(request: Request) {
   try {
-    enforceAuthorization(request);
+    enforceInternalAuthorization(request);
 
     const body = await parseBody(request);
     const params = validateBody(body);
@@ -95,24 +96,6 @@ function extractStringArray(obj: unknown, key: string): string[] | null {
   return value.filter((entry): entry is string => typeof entry === "string");
 }
 
-function enforceAuthorization(request: Request) {
-  const expected = process.env.REALTIME_INTERNAL_API_TOKEN;
-  if (!expected) {
-    console.error("REALTIME_INTERNAL_API_TOKEN is not set");
-    throw NextResponse.json<RealtimeApiErrorResponse>(
-      { error: "Server configuration error" },
-      { status: 500 }
-    );
-  }
-
-  const header = request.headers.get("authorization");
-  if (!header || header !== `Bearer ${expected}`) {
-    throw NextResponse.json<RealtimeApiErrorResponse>(
-      { error: "Unauthorized" },
-      { status: 401 }
-    );
-  }
-}
 
 function handleError(error: unknown) {
   if (error instanceof NextResponse || error instanceof Response) {

@@ -6,7 +6,7 @@ export default function CharacterPickSearchPage() {
   return (
     <>
       <ArticleHeaderComponent />
-      <Article index={9} />
+      <Article path="/character-pick-search" />
       <CharacterPickSearch />
     </>
   );

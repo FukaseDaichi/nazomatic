@@ -6,7 +6,7 @@ export default function ShiftSearchPage() {
   return (
     <>
       <ArticleHeaderComponent />
-      <Article index={8} />
+      <Article path="/shift-search" />
       <ShiftSearch />
     </>
   );

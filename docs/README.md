@@ -28,6 +28,7 @@
 | 文書 | 役割 |
 |---|---|
 | [`ideas/x-growth-backlog.md`](./ideas/x-growth-backlog.md) | X 運用の未着手改善案。現行仕様ではない |
+| [`ideas/x-growth-pr-automation-final-spec.md`](./ideas/x-growth-pr-automation-final-spec.md) | X 週次改善 PR 自動化の実装目標仕様。現行仕様ではない |
 
 `ideas`、`strategy`、`research` はシステム設計書の管理対象外です。実装済みの事実と混同せず、着手時に現行コードと外部仕様を再確認します。
 
