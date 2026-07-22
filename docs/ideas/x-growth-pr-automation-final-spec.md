@@ -481,7 +481,6 @@ npm run x:growth-improve -- --execute
 
 ```bash
 npm run x:growth-improve -- --execute --review-issue 123
-npm run x:growth-improve -- --execute --review-issue 123 --retry-abandoned
 ```
 
 `--retry-abandoned` は同一 Issue の未マージ closed PR がある場合だけ有効です。既存 PR と branch を確認し、人間が意図して再試行する場合に限定します。

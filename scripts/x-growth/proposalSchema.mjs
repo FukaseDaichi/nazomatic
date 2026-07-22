@@ -11,15 +11,16 @@ export function buildProposalOutputSchema() {
       "hypothesis",
       "path",
       "kind",
+      "targetKey",
       "change",
       "metric",
-      "evaluateWeek",
       "rationale",
     ],
     properties: {
       hypothesis: { type: "string", minLength: 8 },
       path: { type: "string" },
-      kind: { type: "string", enum: ["json-array", "ts-copy", "doc"] },
+      kind: { type: "string", enum: ["json-array", "ts-copy"] },
+      targetKey: { type: "string", minLength: 3 },
       change: {
         type: "object",
         additionalProperties: false,
@@ -29,8 +30,18 @@ export function buildProposalOutputSchema() {
           replace: { type: "string", minLength: 1 },
         },
       },
-      metric: { type: "string", minLength: 3 },
-      evaluateWeek: { type: "string", pattern: "^[0-9]{4}-W[0-9]{2}$" },
+      metric: {
+        type: "object", additionalProperties: false,
+        required: ["name", "filters", "minimumSampleSize", "maturityHours", "windowDays", "direction"],
+        properties: {
+          name: { type: "string", enum: ["median_views", "median_engagement", "reply_post_rate"] },
+          filters: { type: "object" },
+          minimumSampleSize: { type: "integer", minimum: 5 },
+          maturityHours: { type: "integer", minimum: 24 },
+          windowDays: { type: "integer", enum: [7, 14] },
+          direction: { type: "string", enum: ["increase"] },
+        },
+      },
       rationale: { type: "string", minLength: 8 },
     },
   };
@@ -44,9 +55,9 @@ export function validateProposal(obj) {
     "hypothesis",
     "path",
     "kind",
+    "targetKey",
     "change",
     "metric",
-    "evaluateWeek",
     "rationale",
   ];
   for (const key of required) {
@@ -69,8 +80,16 @@ export function validateProposal(obj) {
   if (!changeGuard.ok) {
     return changeGuard;
   }
-  if (!/^[0-9]{4}-W[0-9]{2}$/.test(obj.evaluateWeek)) {
-    return { ok: false, reason: "evaluateWeek must be ISO week like 2026-W31" };
+  const metric = obj.metric;
+  const allowedFilters = new Set(["postType", "archetype", "hasMedia", "shape", "topicKey", "jstHourBucket"]);
+  if (!metric || !["median_views", "median_engagement", "reply_post_rate"].includes(metric.name) || !metric.filters || typeof metric.filters !== "object") {
+    return { ok: false, reason: "metric is invalid" };
+  }
+  if (Object.keys(metric.filters).some((key) => !allowedFilters.has(key))) {
+    return { ok: false, reason: "metric contains an unsupported filter" };
+  }
+  if (!Number.isInteger(metric.minimumSampleSize) || metric.minimumSampleSize < 5 || !Number.isInteger(metric.maturityHours) || metric.maturityHours < 24 || ![7, 14].includes(metric.windowDays) || metric.direction !== "increase") {
+    return { ok: false, reason: "metric constraints are invalid" };
   }
   return { ok: true, proposal: obj };
 }

@@ -21,7 +21,7 @@ import {
   median,
   summarizeByDimension,
 } from "./x-growth/reportMetrics.mjs";
-import { readExperiments } from "./x-growth/experimentLedger.mjs";
+import { REVIEW_LABEL, ensureLabels, listExperimentPrs } from "./x-growth/githubExperiments.mjs";
 
 const REVIEW_DAYS = 7;
 const AUTOMATION_LOG_IDS = [
@@ -88,9 +88,14 @@ async function main() {
   const postMetrics = [...ledgerPostMetrics, ...scrapedPostMetrics];
   const logStats = await collectAutomationLogStats(cwd, since);
   const week = getJstIsoWeek(now);
-  const experiments = await readExperiments(cwd);
+  const experiments = await listExperimentPrs(cwd);
   const dueExperiments = experiments.filter(
-    (entry) => entry.status === "open" && entry.evaluateWeek === week.key
+    (entry) =>
+      entry.mergedAt &&
+      entry.labels.includes("x-growth:active") &&
+      !entry.labels.includes("x-growth:keep") &&
+      !entry.labels.includes("x-growth:reverted") &&
+      entry.metadata?.plannedEvaluateWeek === week.key
   );
   const report = buildReport({
     accountHandle,
@@ -116,6 +121,7 @@ async function main() {
 
   console.log(report.body);
   if (args.createIssue) {
+    await ensureLabels(cwd);
     const issueUrl = await createOrUpdateGitHubIssue({
       cwd,
       title: report.title,
@@ -419,16 +425,16 @@ function buildReport({
     "",
     ...(dueExperiments.length
       ? dueExperiments.flatMap((entry) => [
-          `### ${entry.hypothesis}`,
-          `- 対象: \`${entry.path}\`（${entry.kind}）`,
-          `- 指標: ${entry.metric}`,
-          `- PR: ${entry.prUrl ?? "（PR URL 未取得）"}`,
+          `### ${entry.title}`,
+          `- 対象: \`${entry.metadata?.targetKey ?? "未記録"}\``,
+          `- 指標: ${entry.metadata?.metric?.name ?? "未記録"}`,
+          `- PR: ${entry.url}`,
           `- 開始時の状況: ${
-            entry.baselineNote
-              ? entry.baselineNote.replace(/\n/g, " / ")
+            entry.metadata?.proposalBaseline
+              ? `baseline=${entry.metadata.proposalBaseline.value ?? "取得不能"}, sample=${entry.metadata.proposalBaseline.sampleSize ?? 0}`
               : "記録なし"
           }`,
-          "- 判定: 上の「型別・時間帯別・実験別の比較」と開始時を見比べ、改善が無ければ revert、あれば継続を推奨する。判断後に experimentLedger の resolveExperiment で kept/reverted を記録する。",
+          "- 判定: 上の「型別・時間帯別・実験別の比較」と開始時を見比べ、改善が無ければ PR に `x-growth:revert`、あれば `x-growth:keep` label を付ける。",
           "",
         ])
       : ["今週評価予定の実験はありません。"]),
@@ -506,6 +512,7 @@ async function createOrUpdateGitHubIssue({ cwd, title, body }) {
   try {
     await fs.writeFile(bodyPath, `${body}\n`);
     if (existing) {
+      await runCommand("gh", ["issue", "edit", String(existing.number), "--add-label", REVIEW_LABEL], { cwd });
       await runCommand(
         "gh",
         ["issue", "comment", String(existing.number), "--body-file", bodyPath],
@@ -516,7 +523,7 @@ async function createOrUpdateGitHubIssue({ cwd, title, body }) {
     return (
       await runCommand(
         "gh",
-        ["issue", "create", "--title", title, "--body-file", bodyPath],
+        ["issue", "create", "--title", title, "--body-file", bodyPath, "--label", REVIEW_LABEL],
         { cwd }
       )
     ).trim();

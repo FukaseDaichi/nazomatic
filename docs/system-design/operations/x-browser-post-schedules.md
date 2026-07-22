@@ -70,4 +70,5 @@
 | 週末サマリ | `logs/x-browser-post-weekend-summary/`、`local/x-browser-posting/weekend-summary-state.json` |
 | 共通投稿台帳 | `local/x-browser-posting/post-ledger.json` |
 | フォロワー snapshot | `local/x-browser-posting/follower-snapshots.json` |
-| 週次改善エージェント | `logs/x-growth-improve/`、`local/x-browser-posting/experiment-ledger.json` |
+| 週次改善エージェント | `logs/x-growth-improve/`、GitHub の review Issue / experiment PR |
+| 成長計測メンテナンス | `logs/x-growth-maintain/`、投稿台帳・フォロワー snapshot |

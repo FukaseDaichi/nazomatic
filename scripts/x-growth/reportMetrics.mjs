@@ -56,3 +56,43 @@ export function jstHourBucket(isoString) {
   }).format(date);
   return `${String(Number(hour)).padStart(2, "0")}時台`;
 }
+
+export function matchesMetricFilter(post, filters = {}) {
+  const values = {
+    postType: post?.postType,
+    archetype: post?.metadata?.archetype,
+    hasMedia: post?.metadata?.hasMedia,
+    shape: post?.metadata?.shape,
+    topicKey: post?.metadata?.topicKey,
+    jstHourBucket: jstHourBucket(post?.postedAt),
+  };
+  return Object.entries(filters).every(([key, expected]) => values[key] !== undefined && values[key] !== null && values[key] !== "" && values[key] === expected);
+}
+
+export function calculateMetric(entries, metric) {
+  const filtered = entries.filter((entry) => matchesMetricFilter(entry, metric.filters));
+  const mature = filtered.filter((entry) => entry.metrics?.mature === true);
+  const values = mature.map((entry) => {
+    if (metric.name === "median_views") return entry.metrics?.views;
+    if (metric.name === "median_engagement") return sumEngagement(entry.metrics ?? {});
+    if (metric.name === "reply_post_rate") return entry.metrics?.replies != null ? entry.metrics.replies > 0 : null;
+    return null;
+  }).filter((value) => value !== null && value !== undefined);
+  const value = metric.name === "reply_post_rate"
+    ? (values.length ? values.filter(Boolean).length / values.length : null)
+    : median(values);
+  return { value, sampleSize: values.length, filteredCount: filtered.length, matureCount: mature.length };
+}
+
+export function telemetryHealth(entries, { now = new Date(), maturityHours = 24 } = {}) {
+  const minAge = maturityHours * 60 * 60 * 1000;
+  const maxAge = 8 * 24 * 60 * 60 * 1000;
+  const eligible = entries.filter((entry) => {
+    const age = now.getTime() - new Date(entry.postedAt).getTime();
+    return Number.isFinite(age) && age >= minAge && age <= maxAge;
+  });
+  const mature = eligible.filter((entry) => entry.metrics?.mature === true);
+  const missingUrl = eligible.filter((entry) => !entry.postedPostURL).length;
+  const expired = entries.filter((entry) => now.getTime() - new Date(entry.postedAt).getTime() > maxAge && entry.metrics?.mature !== true).length;
+  return { eligible: eligible.length, mature: mature.length, rate: eligible.length ? mature.length / eligible.length : 0, missingUrl, expired };
+}
