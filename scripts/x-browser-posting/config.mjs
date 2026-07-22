@@ -111,6 +111,11 @@ export function loadBrowserPostConfig(argv, cwd = process.cwd()) {
     ""
   );
 
+  const internalSigningSecret = firstNonEmpty(
+    env.INTERNAL_API_SIGNING_SECRET,
+    ""
+  );
+
   if (!internalToken && !loginOnly) {
     throw new Error(
       "Set REALTIME_INTERNAL_API_TOKEN or X_BROWSER_POST_INTERNAL_TOKEN"
@@ -131,6 +136,7 @@ export function loadBrowserPostConfig(argv, cwd = process.cwd()) {
     userDataDir: userDataDir ? path.resolve(cwd, userDataDir) : "",
     apiBaseUrl,
     internalToken,
+    internalSigningSecret,
     cooldownMinutes,
     dailyLimit,
     maxPerRun,

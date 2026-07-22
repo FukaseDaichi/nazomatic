@@ -63,7 +63,7 @@
 
 ### Realtime / X 内部 API
 
-すべて `Authorization: Bearer <REALTIME_INTERNAL_API_TOKEN>` を要求します。検証は共通 helper `enforceInternalAuthorization()`（`src/server/internal-api/authorization.ts`）に集約しており、新規 route もこれを呼びます。
+すべて `Authorization: Bearer <REALTIME_INTERNAL_API_TOKEN>` と HMAC 署名 header（`x-internal-timestamp` / `x-internal-nonce` / `x-internal-signature`）を要求します。検証は共通 helper `enforceInternalAuthorization()`（`src/server/internal-api/authorization.ts`）に集約しており、新規 route もこれを `await` で呼びます。署名の詳細は `docs/system-design/architecture/data-and-security.md` を参照します。
 
 | Method / path | 役割 |
 |---|---|

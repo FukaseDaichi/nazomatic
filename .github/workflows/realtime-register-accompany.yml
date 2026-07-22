@@ -10,19 +10,19 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      - uses: actions/checkout@v4
       - name: Invoke realtime register API
         env:
           BASE_URL: ${{ secrets.REALTIME_API_BASE_URL }}
           API_TOKEN: ${{ secrets.REALTIME_API_TOKEN }}
+          INTERNAL_API_SIGNING_SECRET: ${{ secrets.INTERNAL_API_SIGNING_SECRET }}
         run: |
           if [ -z "$BASE_URL" ] || [ -z "$API_TOKEN" ]; then
             echo "Missing required secrets REALTIME_API_BASE_URL or REALTIME_API_TOKEN."
             exit 1
           fi
 
-          curl --fail --silent --show-error \
-            --retry 3 --retry-delay 5 \
-            -X POST "$BASE_URL/api/internal/realtime/register" \
-            -H "Authorization: Bearer $API_TOKEN" \
-            -H "Content-Type: application/json" \
-            -d '{"query":"#謎解き同行者募集","limit":20,"dryRun":false}'
+          scripts/internal-api/post.sh \
+            "/api/internal/realtime/register" \
+            '{"query":"#謎解き同行者募集","limit":20,"dryRun":false}' \
+            3 5

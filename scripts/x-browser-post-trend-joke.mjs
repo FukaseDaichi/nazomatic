@@ -10,6 +10,7 @@ import { createInterface } from "readline/promises";
 import { stdin as input, stdout as output } from "process";
 
 import { loadBrowserPostConfig } from "./x-browser-posting/config.mjs";
+import { buildSignedHeaders } from "./internal-api/signing.mjs";
 import { openCdpChromePage } from "./x-browser-posting/cdpChromePage.mjs";
 import { recordBrowserPost } from "./x-browser-posting/postLedger.mjs";
 import { captureGrowthTelemetry } from "./x-browser-posting/growthTelemetry.mjs";
@@ -426,13 +427,21 @@ async function prepareTrendJoke(config, trendArgs) {
 }
 
 async function postJson(config, pathname, payload) {
-  const response = await fetch(`${config.apiBaseUrl}${pathname}`, {
+  const url = `${config.apiBaseUrl}${pathname}`;
+  const requestBody = JSON.stringify(payload);
+  const response = await fetch(url, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${config.internalToken}`,
+      ...buildSignedHeaders({
+        method: "POST",
+        url,
+        body: requestBody,
+        token: config.internalToken,
+        signingSecret: config.internalSigningSecret,
+      }),
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(payload),
+    body: requestBody,
   });
 
   const text = await response.text();

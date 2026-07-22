@@ -26,7 +26,7 @@ export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   try {
-    enforceInternalAuthorization(request);
+    await enforceInternalAuthorization(request);
 
     const body = await parseBody(request);
     const params = validateParams(body);

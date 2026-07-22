@@ -16,27 +16,25 @@ jobs:
     timeout-minutes: 10
     env:
       BASE_URL: ${{ secrets.REALTIME_API_BASE_URL }}
-      INTERNAL_TOKEN: ${{ secrets.REALTIME_API_TOKEN }}
+      API_TOKEN: ${{ secrets.REALTIME_API_TOKEN }}
+      INTERNAL_API_SIGNING_SECRET: ${{ secrets.INTERNAL_API_SIGNING_SECRET }}
       HASHTAG: "#謎チケ売ります"
     steps:
+      - uses: actions/checkout@v4
       - name: Ensure configuration exists
         run: |
-          if [ -z "$BASE_URL" ] || [ -z "$INTERNAL_TOKEN" ]; then
+          if [ -z "$BASE_URL" ] || [ -z "$API_TOKEN" ]; then
             echo "Required secrets REALTIME_API_BASE_URL or REALTIME_API_TOKEN are missing." >&2
             exit 1
           fi
       - name: Invoke repost events API
         run: |
           PAYLOAD=$(jq -n --arg hashtag "$HASHTAG" '{hashtag: $hashtag, dryRun: false}')
-          RESPONSE_FILE=$(mktemp)
-          HTTP_STATUS=$(curl --silent --show-error \
-            --retry 2 --retry-delay 10 \
-            -w "%{http_code}" \
-            -o "$RESPONSE_FILE" \
-            -X POST "$BASE_URL/api/internal/x/repost/events" \
-            -H "Authorization: Bearer $INTERNAL_TOKEN" \
-            -H "Content-Type: application/json" \
-            -d "$PAYLOAD")
+          export RESPONSE_FILE=$(mktemp)
+          HTTP_STATUS=$(scripts/internal-api/post.sh \
+            "/api/internal/x/repost/events" \
+            "$PAYLOAD" \
+            2 10 || true)
 
           echo "HTTP status: $HTTP_STATUS"
           if [ "$HTTP_STATUS" -eq 204 ]; then
