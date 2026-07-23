@@ -19,6 +19,8 @@ npm run x:growth-maintain
 - `x:growth-improve`: 既定は dry-run。`--execute` 時だけ GitHub を変更する。
 - `x:growth-maintain`: 投稿を行わず、Chrome CDP を使ってフォロワー snapshot と成熟済み投稿の公開数値を回収する。さらに、production deployment を確認できた merged 実験 PR を active 化する。
 
+Codex automation には、レビューが毎週月曜11:30 JST、`x:growth-improve -- --execute` が毎週月曜12:30 JST、`x:growth-maintain` が毎日04:30 JSTで ACTIVE 登録されています。登録の正本と model / 通知設定は [`../operations/x-browser-post-schedules.md`](../operations/x-browser-post-schedules.md) を参照します。
+
 ## PR 作成の安全境界
 
 `--execute` は control checkout を変更しない。`git fetch origin main` の後、OS 一時ディレクトリの worktree を `origin/main` から detach で作成し、そこで `npm ci`、基底の verify、単一ファイル変更、verify、commit、push、PR 作成を行う。完了時は worktree を除去する。
@@ -50,9 +52,13 @@ PR は `x-growth-experiment` label、`Closes #<review Issue>`、次の metadata 
 
 review Issue との対応は `reviewIssue + account` で冪等に検索する。PR 作成コマンドが timeout した場合は、branch 名で PR を再検索し、存在すれば partial success として branch を残す。
 
-maintenance は merged PR の merge commit を ancestor とする successful production deployment を許可する。これは merge SHA の deployment が cancel され、その子孫 commit の deployment が成功したケースを含む。deployment 未確認は `activation_pending` のままにする。テレメトリ不足なら `x-growth:needs-attention`、十分なら active marker と `x-growth:active` label を付ける。
+PR 作成時に、その時点の直近投稿から `proposalBaseline` と評価予定週を metadata へ保存します。maintenance は merged PR の merge commit を ancestor とする successful production deployment を許可します。これは merge SHA の deployment が cancel され、その子孫 commit の deployment が成功したケースを含みます。deployment 未確認は `activation_pending` のままです。
+
+deployment を確認した時点でテレメトリが不足していれば `x-growth:needs-attention` を付けます。十分なら deployment 時刻を `activeAt` とし、評価予定週を更新して activation marker と `x-growth:active` label を付けます。現行実装は activation 時に baseline を再集計せず、PR 作成時の `proposalBaseline` を `evaluationBaseline` として marker へ引き継ぎます。
 
 人間は評価後、継続なら `x-growth:keep`、revert を行うなら `x-growth:revert`、revert 完了なら `x-growth:reverted` を PR に付ける。keep / reverted は終端状態なので新規実験を許可する。
+
+週次レビューが「実験の勝敗」へ出すのは、`x-growth:active` で metadata の `plannedEvaluateWeek` が実行週と完全一致する merged PR だけです。比較には PR 作成時の `proposalBaseline` を表示し、keep / revert は人間が判断します。
 
 ## lock と失敗
 
@@ -62,5 +68,5 @@ execute は `local/x-browser-posting/locks/x-growth-improve.lock` を `fs.open(.
 
 - `x:growth-maintain` は日次、`x:growth-review` と `x:growth-improve -- --execute` は週次で実行する。
 - PR が merge されると closing keyword により review Issue は GitHub が閉じる。
-- Issue / PR の状態が変わらないときは同じ skip 通知を繰り返さず、運用側のスケジューラーでも状態変化時だけ通知する。
+- `x-growth:needs-attention` の PR は maintenance の自動 activation 対象から除外される。原因を解消し、人間が label を外してから再実行する。
 - GitHub 認証・deployment API・Chrome login の失敗は自動判断せず、ログと `x-growth:needs-attention` を確認して復旧する。

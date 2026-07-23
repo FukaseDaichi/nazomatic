@@ -41,7 +41,8 @@
 - Cookie や profile は `local/`、実行ログは `logs/` に置き、Git 管理しない。
 - 候補予約や集計は内部 API、X 画面操作と投稿前確認はローカル CLI が担当する。
 - 週次レビューは投稿台帳・フォロワー snapshot・実行ログを集計して GitHub Issue を作る。
-- 週次改善エージェントは Codex CLI に read-only で提案させ、Node.js 側の allowlist と検証を通った1件だけをドラフト PR と実験台帳へ反映する。
+- 週次改善PR作成は Codex CLI に read-only で提案させ、Node.js 側の allowlist と検証を通った1件だけを一時 worktree からドラフト PR へ反映する。実験状態は GitHub が正本で、ローカル実験台帳は使わない。
+- 日次の成長計測メンテナンスは投稿せず follower / metrics を回収し、successful production deployment を確認できた merged 実験 PR の activation を進める。
 
 ## 主なディレクトリ
 

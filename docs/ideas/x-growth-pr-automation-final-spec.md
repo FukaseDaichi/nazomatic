@@ -2,7 +2,7 @@
 
 ## 1. 文書の位置づけ
 
-この文書は、X 週次改善レビューから安全にドラフト PR を作り、実験を評価して終了させるまでの**実装目標仕様**です。現行コードの説明ではありません。実装が完了し検証された時点で、内容を `docs/system-design/` 配下へ反映し、この文書は削除または完了済み資料として整理します。
+この文書は、X 週次改善レビューから安全にドラフト PR を作り、実験を評価して終了させるまでの**実装前仕様の記録**です。2026-07-24 時点の現行コードや登録済み Codex automation の説明ではありません。現行仕様は [`../system-design/subsystems/x-growth-improve-agent.md`](../system-design/subsystems/x-growth-improve-agent.md)、稼働時刻は [`../system-design/operations/x-browser-post-schedules.md`](../system-design/operations/x-browser-post-schedules.md) を参照します。この文書内の未実装表現や予定時刻は履歴として残しており、運用判断には使いません。
 
 対象は次の処理です。
 

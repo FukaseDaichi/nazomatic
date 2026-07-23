@@ -17,7 +17,7 @@
 | [`system-design/architecture/`](./system-design/architecture/) | 全体構成、ルート/API、データ、セキュリティ |
 | [`system-design/subsystems/`](./system-design/subsystems/) | 機能別の現行設計 |
 | [`system-design/operations/`](./system-design/operations/) | 定期処理、生成物、ローカル自動化 |
-| [`system-design/operations/x-browser-post-schedules.md`](./system-design/operations/x-browser-post-schedules.md) | 稼働中の X 投稿・週次改善レビューのスケジュールと実行契約 |
+| [`system-design/operations/x-browser-post-schedules.md`](./system-design/operations/x-browser-post-schedules.md) | 稼働中の X 投稿・週次レビュー・改善 PR・成長計測のスケジュールと実行契約 |
 | [`system-design/quality/`](./system-design/quality/) | コードから確認できる既知の懸念点 |
 | [`development-guide.md`](./development-guide.md) | セットアップ、コマンド、環境変数、変更時確認 |
 | [`ai-coding-rules.md`](./ai-coding-rules.md) | AI がコードや UI を変更するときの必須ルール |
@@ -28,7 +28,7 @@
 | 文書 | 役割 |
 |---|---|
 | [`ideas/x-growth-backlog.md`](./ideas/x-growth-backlog.md) | X 運用の未着手改善案。現行仕様ではない |
-| [`ideas/x-growth-pr-automation-final-spec.md`](./ideas/x-growth-pr-automation-final-spec.md) | X 週次改善 PR 自動化の実装目標仕様。現行仕様ではない |
+| [`ideas/x-growth-pr-automation-final-spec.md`](./ideas/x-growth-pr-automation-final-spec.md) | X 週次改善 PR 自動化の実装前仕様記録。現行仕様ではない |
 
 `ideas`、`strategy`、`research` はシステム設計書の管理対象外です。実装済みの事実と混同せず、着手時に現行コードと外部仕様を再確認します。
 
