@@ -17,6 +17,7 @@ type PrepareTrendJokeRequest = {
   maxPostsPerQuery?: number | null;
   topicKey?: string | null;
   archetype?: string | null;
+  excludedToolPaths?: string[] | null;
 };
 
 export async function POST(request: Request) {
@@ -66,6 +67,7 @@ function validateBody(body: unknown): PrepareTrendJokeRequest {
     maxPostsPerQuery: extractNumber(body, "maxPostsPerQuery"),
     topicKey: extractString(body, "topicKey"),
     archetype: extractString(body, "archetype"),
+    excludedToolPaths: extractStringArray(body, "excludedToolPaths"),
   };
 }
 

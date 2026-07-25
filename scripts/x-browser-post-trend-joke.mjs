@@ -24,13 +24,20 @@ import {
   verifyLoggedInAccount,
 } from "./x-browser-posting/xComposerPage.mjs";
 import { runWithLocalLog } from "./x-browser-posting/runLog.mjs";
+import {
+  buildTrendJokeProviderOutputSchema,
+  classifyTrendJokeProviderError,
+  findTrendJokeHistoryBlockReason,
+  getTrendJokeSimilarityEnding,
+  isRetryableTrendJokeProviderError,
+  normalizeTrendJokeSimilarityText,
+  summarizeTrendJokeProviderError,
+  validateTrendJokePollOptions,
+} from "./x-browser-posting/trendJokeCopy.mjs";
 
 const MAX_TREND_JOKE_WEIGHTED_LENGTH = 280;
 const MAX_TREND_JOKE_NEWLINES = 4;
 const TREND_JOKE_HISTORY_MAX_ENTRIES = 30;
-const TREND_JOKE_HISTORY_ENDING_LENGTH = 48;
-const TREND_JOKE_FULL_SIMILARITY_THRESHOLD = 0.68;
-const TREND_JOKE_ENDING_SIMILARITY_THRESHOLD = 0.72;
 const DEFAULT_TREND_JOKE_PROVIDER_TIMEOUT_MS = 120000;
 const DEFAULT_TREND_JOKE_PROVIDER_ATTEMPTS = 2;
 const TREND_JOKE_PROVIDER_OUTPUT_LIMIT_BYTES = 64 * 1024;
@@ -130,6 +137,10 @@ async function main() {
       trendArgs.topicKey ??
       firstNonEmpty(trendEnv.X_BROWSER_POST_TREND_JOKE_TOPIC, null),
     archetype,
+    excludedToolPaths: getRecentTrendJokeToolPaths(
+      history,
+      config.accountHandle
+    ),
   });
 
   const overrideText = (
@@ -200,6 +211,7 @@ async function main() {
     }
 
     if (!config.execute) {
+      console.log("result=dry_run");
       console.log("Dry-run complete. No post was submitted.");
       return;
     }
@@ -255,6 +267,7 @@ async function main() {
       )
     );
     console.log("Posted trend joke via X browser session.");
+    console.log("result=posted");
     if (postedPostURL) {
       console.log(`Posted URL: ${postedPostURL}`);
     }
@@ -420,6 +433,7 @@ async function prepareTrendJoke(config, trendArgs) {
       maxPostsPerQuery: trendArgs.maxPostsPerQuery,
       topicKey: trendArgs.topicKey,
       archetype: trendArgs.archetype,
+      excludedToolPaths: trendArgs.excludedToolPaths,
     }
   );
 
@@ -572,6 +586,8 @@ async function selectTrendJokeCopy({
         )}`
       );
       console.warn("Falling back to local trend joke candidates.");
+      console.warn("provider_status=degraded");
+      console.warn("fallback_reason=provider_history_rejection");
     }
   }
 
@@ -598,6 +614,7 @@ async function generateTrendJokeProviderCandidates({
   }
 
   let previousError = "";
+  let lastErrorCode = "";
   for (let attempt = 1; attempt <= copyProvider.attempts; attempt += 1) {
     try {
       const prompt = buildTrendJokeProviderPrompt({
@@ -628,6 +645,7 @@ async function generateTrendJokeProviderCandidates({
       console.log(
         `Generated trend joke copy via ${copyProvider.kind} provider (attempt ${attempt}).`
       );
+      console.log("provider_status=ok");
       return [
         {
           source: copyProvider.kind,
@@ -637,16 +655,23 @@ async function generateTrendJokeProviderCandidates({
         },
       ];
     } catch (error) {
-      previousError = formatErrorMessage(error);
+      lastErrorCode = classifyTrendJokeProviderError(error);
+      previousError = summarizeTrendJokeProviderError(error);
       console.warn(
         `Trend joke copy provider ${copyProvider.kind} attempt ${attempt} failed: ${previousError}`
       );
+      console.warn(`provider_error_code=${lastErrorCode}`);
+      if (!isRetryableTrendJokeProviderError(lastErrorCode)) {
+        break;
+      }
     }
   }
 
   console.warn(
     `Trend joke copy provider ${copyProvider.kind} failed; using local fallback candidates.`
   );
+  console.warn("provider_status=degraded");
+  console.warn("fallback_reason=provider_error");
   return [];
 }
 
@@ -660,7 +685,7 @@ function buildTrendJokeProviderPrompt({
     .slice(0, TREND_JOKE_MOTIF_WINDOW)
     .map((entry) => {
       const shape = entry?.shape ? String(entry.shape) : "unknown";
-      const ending = String(entry?.endingText ?? "")
+      const ending = getTrendJokeSimilarityEnding(entry?.text ?? "")
         .replace(/\s+/g, " ")
         .trim();
       const archetype = entry?.archetype
@@ -721,7 +746,11 @@ async function runCodexTrendJokeProvider(config, copyProvider, prompt) {
   try {
     await fs.writeFile(
       schemaPath,
-      JSON.stringify(buildTrendJokeProviderOutputSchema(), null, 2)
+      JSON.stringify(
+        buildTrendJokeProviderOutputSchema(TREND_JOKE_KNOWN_SHAPES),
+        null,
+        2
+      )
     );
     const args = ["exec"];
     if (copyProvider.codexModel) {
@@ -783,32 +812,6 @@ async function runCommandTrendJokeProvider(config, copyProvider, payload) {
     );
   }
   return result.stdout;
-}
-
-function buildTrendJokeProviderOutputSchema() {
-  return {
-    $schema: "https://json-schema.org/draft/2020-12/schema",
-    type: "object",
-    additionalProperties: false,
-    required: ["text", "shape", "pollOptions"],
-    properties: {
-      text: {
-        type: "string",
-        minLength: 1,
-      },
-      shape: {
-        type: "string",
-        enum: Array.from(TREND_JOKE_KNOWN_SHAPES),
-      },
-      pollOptions: {
-        type: "array",
-        minItems: 0,
-        maxItems: 4,
-        uniqueItems: true,
-        items: { type: "string", minLength: 1, maxLength: 25 },
-      },
-    },
-  };
 }
 
 function buildTrendJokeProviderPayload(prepared) {
@@ -1056,35 +1059,6 @@ function validateTrendJokeText(text, prepared = {}) {
     throw new Error("One-liner text must be a single line");
   }
   return trimmed;
-}
-
-function validateTrendJokePollOptions(options, archetype) {
-  const normalized = Array.isArray(options)
-    ? options.map((option) => String(option).trim())
-    : [];
-  if (archetype !== "poll") {
-    if (normalized.length > 0) {
-      throw new Error("Only poll posts may contain poll options");
-    }
-    return [];
-  }
-  if (normalized.length < 2 || normalized.length > 4) {
-    throw new Error("Poll posts must contain 2 to 4 options");
-  }
-  if (
-    normalized.some(
-      (option) =>
-        !option ||
-        Array.from(option).length > 25 ||
-        /\p{Extended_Pictographic}/u.test(option)
-    ) ||
-    new Set(normalized).size !== normalized.length
-  ) {
-    throw new Error(
-      "Poll options must be unique, non-empty, emoji-free, and at most 25 characters"
-    );
-  }
-  return normalized;
 }
 
 function getPreparedFallbackCandidates(prepared) {
@@ -1366,72 +1340,16 @@ function getRelevantTrendJokeHistoryEntries(history, accountHandle) {
   });
 }
 
-function findTrendJokeHistoryBlockReason({ text, entries, prepared }) {
-  const normalizedText = normalizeTrendJokeText(text);
-  const normalizedEndingText = normalizeTrendJokeText(getEndingText(text));
-  for (const entry of entries) {
-    const entryText = typeof entry.text === "string" ? entry.text : "";
-    const entryNormalizedText =
-      typeof entry.normalizedText === "string" && entry.normalizedText.trim()
-        ? entry.normalizedText
-        : normalizeTrendJokeText(entryText);
-    const entryEndingText =
-      typeof entry.endingText === "string" && entry.endingText.trim()
-        ? entry.endingText
-        : getEndingText(entryText);
-    const entryNormalizedEndingText = normalizeTrendJokeText(entryEndingText);
-
-    if (entryText === text || entryNormalizedText === normalizedText) {
-      return buildTrendJokeHistoryReason("exact text match", entry);
-    }
-
-    const fullSimilarity = calculateTextSimilarity(
-      normalizedText,
-      entryNormalizedText
-    );
-    if (fullSimilarity >= TREND_JOKE_FULL_SIMILARITY_THRESHOLD) {
-      return buildTrendJokeHistoryReason(
-        `similar full text (${fullSimilarity.toFixed(2)})`,
-        entry
-      );
-    }
-
-    if (
-      normalizedEndingText.length >= 12 &&
-      entryNormalizedEndingText.length >= 12
-    ) {
-      const endingSimilarity = calculateTextSimilarity(
-        normalizedEndingText,
-        entryNormalizedEndingText
-      );
-      if (endingSimilarity >= TREND_JOKE_ENDING_SIMILARITY_THRESHOLD) {
-        return buildTrendJokeHistoryReason(
-          `similar ending (${endingSimilarity.toFixed(2)})`,
-          entry
-        );
-      }
-    }
-
-    if (
-      prepared.searchFingerprint &&
-      entry.searchFingerprint === prepared.searchFingerprint &&
-      fullSimilarity >= 0.5
-    ) {
-      return buildTrendJokeHistoryReason(
-        `same search fingerprint with related text (${fullSimilarity.toFixed(
-          2
-        )})`,
-        entry
-      );
-    }
-  }
-  return null;
-}
-
-function buildTrendJokeHistoryReason(reason, entry) {
-  const postedAt = entry.postedAt ? ` postedAt=${entry.postedAt}` : "";
-  const topicKey = entry.topicKey ? ` topic=${entry.topicKey}` : "";
-  return `${reason}${postedAt}${topicKey}`;
+function getRecentTrendJokeToolPaths(history, accountHandle, limit = 3) {
+  return getRelevantTrendJokeHistoryEntries(history, accountHandle)
+    .filter(
+      (entry) =>
+        entry?.archetype === "tool_intro" &&
+        typeof entry?.tool?.path === "string" &&
+        entry.tool.path
+    )
+    .slice(0, limit)
+    .map((entry) => entry.tool.path);
 }
 
 function summarizeBlockedTrendJokeCandidates(blocked) {
@@ -1442,57 +1360,6 @@ function summarizeBlockedTrendJokeCandidates(blocked) {
       return `- candidate ${index + 1}: ${entry.reason}; "${preview}"`;
     })
     .join("\n");
-}
-
-function calculateTextSimilarity(left, right) {
-  if (!left || !right) {
-    return 0;
-  }
-  if (left === right) {
-    return 1;
-  }
-  const leftGrams = makeCharacterBigrams(left);
-  const rightGrams = makeCharacterBigrams(right);
-  if (leftGrams.size === 0 || rightGrams.size === 0) {
-    return 0;
-  }
-  let intersection = 0;
-  for (const gram of leftGrams) {
-    if (rightGrams.has(gram)) {
-      intersection += 1;
-    }
-  }
-  const union = leftGrams.size + rightGrams.size - intersection;
-  return union > 0 ? intersection / union : 0;
-}
-
-function makeCharacterBigrams(value) {
-  const chars = Array.from(value);
-  if (chars.length < 2) {
-    return new Set(chars);
-  }
-  const grams = new Set();
-  for (let index = 0; index < chars.length - 1; index += 1) {
-    grams.add(`${chars[index]}${chars[index + 1]}`);
-  }
-  return grams;
-}
-
-function normalizeTrendJokeText(text) {
-  return Array.from(String(text ?? "").normalize("NFKC").toLowerCase())
-    .filter(
-      (char) =>
-        !/[\s。、，,.!?！？「」『』（）()【】\[\]{}〈〉《》:：;；'"“”‘’…・]/u.test(
-          char
-        )
-    )
-    .join("");
-}
-
-function getEndingText(text) {
-  return Array.from(String(text ?? "").trim())
-    .slice(-TREND_JOKE_HISTORY_ENDING_LENGTH)
-    .join("");
 }
 
 function shuffleArray(values) {
@@ -1982,8 +1849,8 @@ function buildTrendJokeHistoryEntry(
     tool: prepared.tool ?? null,
     postedPostURL: postedPostURL ?? null,
     text,
-    normalizedText: normalizeTrendJokeText(text),
-    endingText: getEndingText(text),
+    normalizedText: normalizeTrendJokeSimilarityText(text),
+    endingText: getTrendJokeSimilarityEnding(text),
   };
 }
 
@@ -2092,6 +1959,7 @@ function printPreparedTrendJoke({
     `Archetype: ${prepared.archetype} (${prepared.archetypeLabel ?? ""})`
   );
   console.log(`Copy source: ${copySource ?? "fallback"}`);
+  console.log(`copy_source=${copySource ?? "fallback"}`);
   console.log(`Shape: ${shape ?? "(none)"}`);
   console.log(`Search fingerprint: ${prepared.searchFingerprint}`);
   console.log(`Local key: ${localTrendKey}`);

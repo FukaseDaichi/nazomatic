@@ -102,9 +102,11 @@ rate limit は `xBrowserPostingAccounts/{accountHandle}` を正とします。
 | `command` | 指定 shell command へ JSON を stdin で渡す |
 | manual | `--line` / env の固定文を最優先する |
 
-provider 出力は validator と直近履歴 guard を通し、失敗時は fallback へ戻します。投稿済み本文は `trend-joke-history.json` に直近 30 件だけ保存し、完全一致、末尾の重複、bigram 類似、同じ感情 shape の連続を抑えます。実行枠の二重投稿防止は `trend-joke-state.json` です。
+Codex の出力 schema は `text`、`shape`、`pollOptions` の構造だけを固定し、文字数、投票件数、選択肢の重複などの投稿規則はローカル validator を正とします。schema や認証など再実行しても変わらない provider error は即座に fallback へ戻し、timeout、rate limit、生成文不合格など回復可能な error だけを設定回数まで再試行します。fallback 投稿時は `provider_status=degraded` と原因を log に残します。
 
-投稿型は `monologue`、`question`、`one_liner`、`poll`、`tool_intro` の順でローテーションします。質問と投票は疑問文、一言あるあるは改行なし、投票は2〜4個の重複しない選択肢を必須にします。ツール紹介は `src/lib/json/features.json` から対象を選び、NAZOMATIC URL 1件と `public/img/og-image.png` を使います。
+provider 出力は validator と直近履歴 guard を通し、失敗時は fallback へ戻します。投稿済み本文は `trend-joke-history.json` に直近 30 件だけ保存し、完全一致、末尾の重複、bigram 類似、同じ感情 shape の連続を抑えます。類似判定では URL と末尾 hashtag を除外し、共通 UTM parameter を本文の類似と誤認しないようにします。完全一致は投稿型をまたいで拒否し、意味類似は同じ投稿型を中心に比較します。実行枠の二重投稿防止は `trend-joke-state.json` です。
+
+投稿型は `monologue`、`question`、`one_liner`、`poll`、`tool_intro` の順でローテーションします。質問と投票は疑問文、一言あるあるは改行なし、投票は2〜4個の重複しない選択肢を必須にします。ツール紹介は `src/lib/json/features.json` から対象を選び、NAZOMATIC URL 1件と `public/img/og-image.png` を使います。直近3回のツール紹介で使った path は候補が残る限り避け、provider が利用できない場合は複数のローカル文型から履歴 guard を通るものを選びます。
 
 validator は自然な hashtag を最大1個だけ許可し、mention、emoji、禁止断定語、不正な改行、X 重み付け 280 超を拒否します。URL はツール紹介の指定 URL 1件だけ許可します。「AIなので行けない」「予定表」は直近5件で各2件、「通知欄」は直近5件で1件を上限とし、provider と fallback の両方へ適用します。provider 生成文を auto 投稿する場合は、共通の auto lock に加えて `X_BROWSER_POST_TREND_JOKE_PROVIDER_AUTO_APPROVE=true` が必要です。
 

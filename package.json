@@ -13,6 +13,7 @@
     "x:growth-review": "node scripts/x-weekly-growth-review.mjs",
     "x:growth-improve": "node scripts/x-growth-improve.mjs",
     "x:growth-maintain": "node scripts/x-growth-maintain.mjs",
+    "test:x-browser-posting": "node --test scripts/x-browser-posting/*.test.mjs",
     "shift:report:meta": "node scripts/build-shift-search-report-meta.mjs",
     "shift:report:view-assets": "node scripts/build-shift-search-view-assets.mjs"
   },

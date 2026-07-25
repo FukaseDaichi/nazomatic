@@ -27,10 +27,11 @@ npm run dev
 | `npm run x:growth-review` | 直近7日の X 運用を集計し、必要に応じて GitHub Issue を作る CLI |
 | `npm run x:growth-improve` | 週次レビューから改善実験を1件提案し、`--execute` 時だけドラフト PR を作る CLI |
 | `npm run x:growth-maintain` | 投稿せず follower / metrics を回収し、実験の production activation を照合する CLI |
+| `npm run test:x-browser-posting` | X トレンド投稿の schema、provider error 分類、履歴類似、投票 validator の回帰テスト |
 | `npm run shift:report:meta` | Shift Search レポート元成果物から manifest / index を生成 |
 | `npm run shift:report:view-assets` | Shift Search レポート表示用 JSON を `src/generated/shift-search` に生成 |
 
-テストフレームワークは未設定です。変更内容に応じて `npm run lint`、`npm run build`、ブラウザでの手動確認を使い分けます。
+汎用テストフレームワークは未設定です。X ブラウザ投稿の純粋ロジックには Node.js 標準 test runner を使います。変更内容に応じて `npm run test:x-browser-posting`、`npm run lint`、`npm run build`、ブラウザでの手動確認を使い分けます。
 
 ## 広告表示
 
@@ -149,9 +150,9 @@ npm run x:growth-maintain
 
 週末サマリ投稿も実投稿時は `--execute` を付けます。`--line` または `X_BROWSER_POST_WEEKEND_SUMMARY_LINE` で一言を上書きできます。文案パターンを固定したい場合は `--copy-pattern` または `X_BROWSER_POST_WEEKEND_SUMMARY_COPY_PATTERN` を使います。指定しない場合は、prepare API が返すローカル候補文を使います。投稿結果は Firestore に保存せず、同一 PC の二重投稿防止用に `local/x-browser-posting/weekend-summary-state.json` へ最小限のキーだけ保存します。
 
-トレンドネタ投稿も実投稿時は `--execute` を付けます。Firestore は読まず、prepare API が Yahoo!リアルタイム検索を少数回実行し、イベント名サンプルや頻出語から topic とローカル候補文を返します。文案生成 provider を使う場合は `--copy-provider codex` または `X_BROWSER_POST_TREND_JOKE_COPY_PROVIDER=codex` を指定します。provider 生成文は validator とローカル履歴ガードを通し、失敗時はローカル候補文へ戻ります。
+トレンドネタ投稿も実投稿時は `--execute` を付けます。Firestore は読まず、prepare API が Yahoo!リアルタイム検索を少数回実行し、イベント名サンプルや頻出語から topic とローカル候補文を返します。文案生成 provider を使う場合は `--copy-provider codex` または `X_BROWSER_POST_TREND_JOKE_COPY_PROVIDER=codex` を指定します。Codex の schema は JSON の構造だけを固定し、文字数や投票選択肢の規則はローカル validator で検査します。provider 生成文が不合格の場合はローカル候補文へ戻り、`provider_status`、`provider_error_code`、`fallback_reason` を log に残します。schema や認証 error は再試行せず、timeout、rate limit、生成文不合格など回復可能な error だけを設定回数まで再試行します。
 
-投稿型は「独り言→質問→一言あるある→投票→ツール紹介」を直近履歴から自動ローテーションします。`--archetype` または `X_BROWSER_POST_TREND_JOKE_ARCHETYPE` は検証時にだけ固定します。自然な hashtag は最大1個、URL はツール紹介に指定された NAZOMATIC URL 1件だけを許可し、mention と emoji は禁止です。投票はネイティブ投票 UI、ツール紹介は既定で `public/img/og-image.png` を添付します。画像を変える場合は `--image-path` または `X_BROWSER_POST_TREND_JOKE_IMAGE_PATH` を使います。
+投稿型は「独り言→質問→一言あるある→投票→ツール紹介」を直近履歴から自動ローテーションします。`--archetype` または `X_BROWSER_POST_TREND_JOKE_ARCHETYPE` は検証時にだけ固定します。自然な hashtag は最大1個、URL はツール紹介に指定された NAZOMATIC URL 1件だけを許可し、mention と emoji は禁止です。履歴類似判定では URL と末尾 hashtag を除外し、完全一致は全投稿型、意味類似は同じ投稿型を中心に検査します。投票はネイティブ投票 UI、ツール紹介は直近3回で使った tool path を候補が残る限り避け、既定で `public/img/og-image.png` を添付します。画像を変える場合は `--image-path` または `X_BROWSER_POST_TREND_JOKE_IMAGE_PATH` を使います。
 
 文案を固定したい場合は `--line` または `X_BROWSER_POST_TREND_JOKE_LINE`、検索 bundle を固定したい場合は `--query-bundle` または `X_BROWSER_POST_TREND_JOKE_QUERY_BUNDLE` を使います。投稿結果は Firestore に保存せず、同一 PC の二重投稿防止用に `local/x-browser-posting/trend-joke-state.json` へ最小限のキーだけ保存します。`--run-slot` を指定しない場合は、CLI がローカル state を見て `slot-1`、`slot-2` のように日内連番で自動採番します。
 
