@@ -17,7 +17,7 @@ npm run x:growth-maintain
 
 - `x:growth-review`: 当週・account 固有の `x-growth-review` Issue を作成または更新する。
 - `x:growth-improve`: 既定は dry-run。`--execute` 時だけ GitHub を変更する。
-- `x:growth-maintain`: 投稿を行わず、Chrome CDP を使ってフォロワー snapshot と成熟済み投稿の公開数値を回収する。さらに、production deployment を確認できた merged 実験 PR を active 化する。
+- `x:growth-maintain`: 投稿を行わず、Chrome CDP で設定対象のプロフィールを開き、blocking state とログイン account を確認してからフォロワー snapshot と成熟済み投稿の公開数値を回収する。さらに、production deployment を確認できた merged 実験 PR を active 化する。
 
 Codex automation には、レビューが毎週月曜11:30 JST、`x:growth-improve -- --execute` が毎週月曜12:30 JST、`x:growth-maintain` が毎日04:30 JSTで ACTIVE 登録されています。登録の正本と model / 通知設定は [`../operations/x-browser-post-schedules.md`](../operations/x-browser-post-schedules.md) を参照します。
 

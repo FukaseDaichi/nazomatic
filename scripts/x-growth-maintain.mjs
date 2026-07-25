@@ -41,6 +41,12 @@ export async function maintainGrowthTelemetry({ config, page }) {
   return { followers: stats?.followers ?? null, posts: stats?.posts ?? null, metricsCaptured: captured, telemetry, activation };
 }
 
+export async function prepareGrowthMaintenancePage({ accountHandle, page }) {
+  await page.goto(`https://x.com/${accountHandle}`);
+  await page.assertNoBlockingState();
+  return page.verifyLoggedInAccount(accountHandle);
+}
+
 export async function reconcileExperimentActivation({ cwd, telemetry }) {
   await runGit(cwd, ["fetch", "--prune", "origin", "main"]);
   const prs = await listExperimentPrs(cwd);
@@ -80,7 +86,10 @@ async function main() {
   const config = loadBrowserPostConfig([], process.cwd());
   const page = await openCdpChromePage(config.cdpUrl, { bringToFront: config.bringToFront });
   try {
-    await page.verifyLoggedInAccount(config.accountHandle);
+    await prepareGrowthMaintenancePage({
+      accountHandle: config.accountHandle,
+      page,
+    });
     const result = await maintainGrowthTelemetry({ config: { ...config, metricsMaxPerRun: args.metricsMaxPerRun ?? config.metricsMaxPerRun }, page });
     console.log(JSON.stringify(result, null, 2));
   } finally {
