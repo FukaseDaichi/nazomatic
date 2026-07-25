@@ -102,9 +102,11 @@ rate limit は `xBrowserPostingAccounts/{accountHandle}` を正とします。
 | `command` | 指定 shell command へ JSON を stdin で渡す |
 | manual | `--line` / env の固定文を最優先する |
 
-provider 出力は validator と直近履歴 guard を通し、失敗時は fallback へ戻します。投稿済み本文は `trend-joke-history.json` に直近 30 件だけ保存し、完全一致、末尾の重複、bigram 類似、同じ感情 shape の連続を抑えます。実行枠の二重投稿防止は `trend-joke-state.json` です。
+Codex の出力 schema は `text`、`shape`、`pollOptions` の構造だけを固定し、文字数、投票件数、選択肢の重複などの投稿規則はローカル validator を正とします。schema や認証など再実行しても変わらない provider error は即座に fallback へ戻し、timeout、rate limit、生成文不合格など回復可能な error だけを設定回数まで再試行します。fallback 投稿時は `provider_status=degraded` と原因を log に残します。
 
-投稿型は `monologue`、`question`、`one_liner`、`poll`、`tool_intro` の順でローテーションします。質問と投票は疑問文、一言あるあるは改行なし、投票は2〜4個の重複しない選択肢を必須にします。ツール紹介は `src/lib/json/features.json` から対象を選び、NAZOMATIC URL 1件と `public/img/og-image.png` を使います。
+provider 出力は validator と直近履歴 guard を通し、失敗時は fallback へ戻します。投稿済み本文は `trend-joke-history.json` に直近 30 件だけ保存し、完全一致、末尾の重複、bigram 類似、同じ感情 shape の連続を抑えます。類似判定では URL と末尾 hashtag を除外し、共通 UTM parameter を本文の類似と誤認しないようにします。完全一致は投稿型をまたいで拒否し、意味類似は同じ投稿型を中心に比較します。実行枠の二重投稿防止は `trend-joke-state.json` です。
+
+投稿型は `monologue`、`question`、`one_liner`、`poll`、`tool_intro` の順でローテーションします。質問と投票は疑問文、一言あるあるは改行なし、投票は2〜4個の重複しない選択肢を必須にします。ツール紹介は `src/lib/json/features.json` から対象を選び、NAZOMATIC URL 1件と `public/img/og-image.png` を使います。直近3回のツール紹介で使った path は候補が残る限り避け、provider が利用できない場合は複数のローカル文型から履歴 guard を通るものを選びます。
 
 validator は自然な hashtag を最大1個だけ許可し、mention、emoji、禁止断定語、不正な改行、X 重み付け 280 超を拒否します。URL はツール紹介の指定 URL 1件だけ許可します。「AIなので行けない」「予定表」は直近5件で各2件、「通知欄」は直近5件で1件を上限とし、provider と fallback の両方へ適用します。provider 生成文を auto 投稿する場合は、共通の auto lock に加えて `X_BROWSER_POST_TREND_JOKE_PROVIDER_AUTO_APPROVE=true` が必要です。
 
@@ -124,10 +126,10 @@ validator は自然な hashtag を最大1個だけ許可し、mention、emoji、
 
 ## 投稿実行への計測相乗り
 
-`X_BROWSER_POST_CAPTURE_TELEMETRY=true`（既定）のとき、3種類のブラウザ投稿は投稿成功後に、そのログイン済み CDP セッションのまま計測を行います。目的はフォロワー数という主要指標を安定して残すことです。
+`X_BROWSER_POST_CAPTURE_TELEMETRY=true`（既定）のとき、3種類のブラウザ投稿は投稿成功後に、そのログイン済み CDP セッションのまま計測を行います。目的はフォロワー数という主要指標を安定して残すことです。投稿が止まっても成熟窓を取りこぼさないよう、`npm run x:growth-maintain` が同じ計測を投稿なしで日次実行できます。
 
 - プロフィールを開いてフォロワー数・累計投稿数を読み、`follower-snapshots.json` へ JST の日付単位で追記します。値が取れなかった項目は同日の既存値を維持し、null で上書きしません。
-- 投稿から約24時間〜8日の範囲で、まだ数値を取得していない過去投稿を最大 `X_BROWSER_POST_METRICS_MAX_PER_RUN`（既定8）件だけ開き、表示数・返信・リポスト・いいねを `post-ledger.json` の該当エントリへ `metrics` として書き戻します。取得済みは `metrics.mature` で二度取得しません。
+- 投稿から約24時間〜8日の範囲で、まだ数値を取得していない過去投稿を最大 `X_BROWSER_POST_METRICS_MAX_PER_RUN`（既定8）件だけ開き、表示数・返信・リポスト・いいねを `post-ledger.json` の該当エントリへ `metrics` として書き戻します。成熟窓の終了が近い古い投稿から優先し、取得済みは `metrics.mature` で二度取得しません。
 
 計測はベストエフォートで、失敗しても投稿処理を止めません。ログイン画面、blocking state、CAPTCHA を検出した場合は他の処理と同様に停止します。Playwright fallback セッション（CDP 非使用）では計測を行いません。
 
@@ -139,7 +141,7 @@ validator は自然な hashtag を最大1個だけ許可し、mention、emoji、
 
 `--create-issue` を付けると GitHub CLI で週次 Issue を作成します。同じ ISO week・account の title が既にあれば Issue を増やさずコメントを追加します。レビューは改善候補を最大4件提示しますが、コードや schedule は自動変更しません。
 
-レポートには「実験の勝敗」節もあり、`experiment-ledger.json` の open 実験のうち今週が評価予定週のものを一覧します。仮説・対象・PR・開始時の状況を添えて、上の次元別比較と見比べた継続 / revert を人間が判断します。自動 revert はせず、判断後に `resolveExperiment` で `kept` / `reverted` を記録します。実験は [`x-growth-improve-agent.md`](./x-growth-improve-agent.md) のエージェントが PR 作成時に `open` で記録します。
+レポートには「実験の勝敗」節もあり、GitHub の `x-growth-experiment` PR のうち `x-growth:active` かつ metadata の評価予定週が実行週と一致する merged PR を一覧します。仮説・targetKey・PR・PR提案時の baseline を添えて、上の次元別比較と見比べた継続 / revert を人間が判断します。自動 revert はせず、継続時は `x-growth:keep`、revert 完了時は `x-growth:reverted` を PR に付けます。実験の正本は GitHub であり、ローカル実験台帳は使いません。
 
 ## ローカルファイル
 
@@ -154,7 +156,9 @@ validator は自然な hashtag を最大1個だけ許可し、mention、emoji、
 | `local/x-browser-posting/trend-joke-history.json` | 直近 30 投稿の類似判定 |
 | `local/x-browser-posting/post-ledger.json` | 3種類の投稿 URL、本文、実験 metadata、後追い取得の `metrics` |
 | `local/x-browser-posting/follower-snapshots.json` | JST 日付ごとのフォロワー・累計投稿数 snapshot |
-| `local/x-browser-posting/experiment-ledger.json` | 改善エージェントの実験（open / kept / reverted）と評価予定週 |
+| `local/x-browser-posting/locks/x-growth-improve.lock` | 改善 PR 作成の多重実行防止 |
 | `logs/x-browser-post*` | automation 別の実行 log |
+| `logs/x-growth-improve` | 週次改善PR作成の実行 log |
+| `logs/x-growth-maintain` | 成長計測メンテナンスの実行 log |
 
 認証済み profile と storage state は秘密情報として扱い、共有端末や CI では使いません。

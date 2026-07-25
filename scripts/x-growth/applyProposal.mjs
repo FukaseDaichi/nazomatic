@@ -33,11 +33,15 @@ export async function applyChangeToFile(cwd, proposal) {
   return { ok: true, before, after };
 }
 
-export async function createExperimentPr(cwd, proposal, { issueUrl, dryRun } = {}) {
+export function buildExperimentBranch({ issueNumber, plannedEvaluateWeek, proposal }) {
   const slug = proposal.path.split("/").pop().replace(/\W+/g, "-");
-  // 同じ週・同じファイルの再実行でもブランチ名が衝突しないよう一意サフィックスを付ける。
-  const branch = `x-growth/experiment-${proposal.evaluateWeek}-${slug}-${Date.now().toString(36)}`;
+  return `x-growth/issue-${issueNumber}-${plannedEvaluateWeek.toLowerCase()}-${slug}`;
+}
+
+export async function createExperimentPr(cwd, proposal, { reviewIssue, account, plannedEvaluateWeek, baseSha, proposalBaseline, dryRun } = {}) {
+  const branch = buildExperimentBranch({ issueNumber: reviewIssue.number, plannedEvaluateWeek, proposal });
   const title = `[X改善実験] ${proposal.hypothesis}`;
+  const metadata = { reviewIssue: reviewIssue.number, account, targetKey: proposal.targetKey, plannedEvaluateWeek, metric: proposal.metric, baseSha, proposalBaseline };
   const body = [
     `## 仮説`,
     proposal.hypothesis,
@@ -46,26 +50,27 @@ export async function createExperimentPr(cwd, proposal, { issueUrl, dryRun } = {
     `- ファイル: \`${proposal.path}\``,
     `- 種別: ${proposal.kind}`,
     ``,
-    `## 評価指標`,
-    proposal.metric,
+    `## 評価条件`,
+    `- 指標: ${proposal.metric.name}`,
+    `- 計測期間: ${proposal.metric.windowDays}日`,
     ``,
     `## 評価予定週`,
-    proposal.evaluateWeek,
+    plannedEvaluateWeek,
     ``,
     `## 根拠`,
     proposal.rationale,
-    ...(issueUrl ? [``, `関連: ${issueUrl}`] : []),
+    ``, `Closes #${reviewIssue.number}`,
     ``,
-    `<!-- x-growth-experiment: 1 PR = 1 実験。効果検証まで revert しない。自動マージ禁止。 -->`,
+    `<!-- x-growth-experiment:v1 ${JSON.stringify(metadata)} -->`,
   ].join("\n");
 
   const steps = [
-    ["git", ["switch", "-c", branch]],
     ["git", ["add", proposal.path]],
     ["git", ["commit", "-m", title]],
+    ["git", ["push", "--set-upstream", "origin", branch]],
     [
       "gh",
-      ["pr", "create", "--draft", "--title", title, "--body", body],
+      ["pr", "create", "--draft", "--base", "main", "--head", branch, "--label", "x-growth-experiment", "--title", title, "--body", body],
     ],
   ];
   if (dryRun) {

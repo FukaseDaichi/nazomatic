@@ -6,7 +6,7 @@ export default function Alphabet() {
   return (
     <>
       <ArticleHeaderComponent />
-      <Article index={2} />
+      <Article path="/alphabet" />
       <AlphabetConverter />
     </>
   );

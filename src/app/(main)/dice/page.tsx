@@ -48,7 +48,7 @@ export default function Dice() {
   return (
     <>
       <ArticleHeaderComponent />
-      <Article index={1} />
+      <Article path="/dice" />
       <main className="flex min-h-screen flex-col md:flex-row items-center justify-center">
         <div className="flex-1 flex items-center justify-center w-full sm:max-w-[600px]">
           <DiceNets

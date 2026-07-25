@@ -4,17 +4,14 @@ export const EXPERIMENT_ALLOWLIST = [
   {
     path: "src/server/x-browser-posting/comment-patterns.json",
     kind: "json-array",
+    targetKeys: ["comment-pattern:*"],
     note: "個別イベント投稿のコメント候補（配列1件の入替）",
   },
   {
     path: "src/server/x-browser-posting/trend-joke-post.ts",
     kind: "ts-copy",
+    targetKeys: ["trend-joke:*"],
     note: "fallback 候補文・prompt テンプレート・閾値定数（文言と数値のみ。ロジック不可）",
-  },
-  {
-    path: "docs/system-design/operations/x-browser-post-schedules.md",
-    kind: "doc",
-    note: "運用台帳の記述更新",
   },
 ];
 
@@ -54,7 +51,7 @@ export const FORBIDDEN_CHANGE_TOKENS = [
   "globalthis",
 ];
 
-const ALLOWED_KINDS = new Set(["json-array", "ts-copy", "doc"]);
+const ALLOWED_KINDS = new Set(["json-array", "ts-copy"]);
 
 export function validateProposalTarget(proposal) {
   const path = String(proposal?.path ?? "");
@@ -80,6 +77,10 @@ export function validateProposalTarget(proposal) {
       ok: false,
       reason: `kind ${kind} does not match allowlist kind ${entry.kind} for ${path}`,
     };
+  }
+  const targetKey = String(proposal?.targetKey ?? "");
+  if (!targetKey || !entry.targetKeys.some((pattern) => pattern.endsWith("*") ? targetKey.startsWith(pattern.slice(0, -1)) : targetKey === pattern)) {
+    return { ok: false, reason: `targetKey is not allowed for ${path}` };
   }
   return { ok: true };
 }

@@ -668,7 +668,7 @@ export default function Blank25EditorPage() {
                         value={linkName}
                         onChange={(event) => setLinkName(event.target.value)}
                         placeholder="例: 第1問"
-                        className="h-10 rounded-lg border-white/10 bg-gray-800/60 text-sm text-gray-100 placeholder:text-gray-500 focus-visible:border-purple-400/60 focus-visible:ring-1 focus-visible:ring-purple-400/30"
+                        className="h-10 rounded-lg border-white/10 bg-gray-800/60 text-base text-gray-100 placeholder:text-gray-500 focus-visible:border-purple-400/60 focus-visible:ring-1 focus-visible:ring-purple-400/30 sm:text-sm"
                       />
                     </div>
                   </div>
@@ -692,7 +692,7 @@ export default function Blank25EditorPage() {
                       value={answersText}
                       onChange={(event) => setAnswersText(event.target.value)}
                       placeholder={"カンマ区切り or 改行で入力\n例:\nりんご\nアップル"}
-                      className="min-h-[140px] rounded-lg border-white/10 bg-gray-800/60 text-sm text-gray-100 placeholder:text-gray-500 focus-visible:border-purple-400/60 focus-visible:ring-1 focus-visible:ring-purple-400/30"
+                      className="min-h-[140px] rounded-lg border-white/10 bg-gray-800/60 text-base text-gray-100 placeholder:text-gray-500 focus-visible:border-purple-400/60 focus-visible:ring-1 focus-visible:ring-purple-400/30 sm:text-sm"
                     />
                   </div>
 

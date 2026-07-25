@@ -62,7 +62,7 @@ export default function Comprehensive() {
   return (
     <>
       <ArticleHeaderComponent />
-      <Article index={0} />
+      <Article path="/shiritori" />
       <main className="flex min-h-screen flex-col items-center bg-gradient-to-b from-gray-900 to-gray-800">
         <h1 className="text-2xl sm:text-3xl font-bold mb-1 text-center">
           しりとりシステム

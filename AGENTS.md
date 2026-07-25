@@ -43,7 +43,7 @@ npm run shift:report:view-assets
 - Keep external data fetching behind `/api/*`; do not call external services directly from client components.
 - Preserve internal API authentication behavior:
   - BLANK25 editor routes use HTTP Basic auth in `src/middleware.ts`.
-  - Realtime/X internal APIs use `Authorization: Bearer <REALTIME_INTERNAL_API_TOKEN>`.
+  - Realtime/X internal APIs use `Authorization: Bearer <REALTIME_INTERNAL_API_TOKEN>` plus HMAC request signing. Always call `enforceInternalAuthorization()` from `src/server/internal-api/authorization.ts`; never re-implement it per route.
 - When changing behavior, update the relevant Japanese doc under `docs/` and refresh `docs/README.md` if the document map changes.
 
 ## Working Style

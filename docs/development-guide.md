@@ -25,10 +25,13 @@ npm run dev
 | `npm run x:browser-post:weekend-summary` | `#謎チケ売ります` の週末土日別件数をローカルブラウザで投稿する CLI |
 | `npm run x:browser-post:trend-joke` | Yahoo!リアルタイム検索で拾ったイベント名を材料に短文ネタ投稿を行う CLI |
 | `npm run x:growth-review` | 直近7日の X 運用を集計し、必要に応じて GitHub Issue を作る CLI |
+| `npm run x:growth-improve` | 週次レビューから改善実験を1件提案し、`--execute` 時だけドラフト PR を作る CLI |
+| `npm run x:growth-maintain` | 投稿せず follower / metrics を回収し、実験の production activation を照合する CLI |
+| `npm run test:x-browser-posting` | X トレンド投稿の schema、provider error 分類、履歴類似、投票 validator の回帰テスト |
 | `npm run shift:report:meta` | Shift Search レポート元成果物から manifest / index を生成 |
 | `npm run shift:report:view-assets` | Shift Search レポート表示用 JSON を `src/generated/shift-search` に生成 |
 
-テストフレームワークは未設定です。変更内容に応じて `npm run lint`、`npm run build`、ブラウザでの手動確認を使い分けます。
+汎用テストフレームワークは未設定です。X ブラウザ投稿の純粋ロジックには Node.js 標準 test runner を使います。変更内容に応じて `npm run test:x-browser-posting`、`npm run lint`、`npm run build`、ブラウザでの手動確認を使い分けます。
 
 ## 広告表示
 
@@ -58,8 +61,12 @@ npm run dev
 | 変数 | 用途 |
 |---|---|
 | `REALTIME_INTERNAL_API_TOKEN` | `/api/internal/realtime/*`、`/api/internal/x/repost/events`、`/api/internal/x/browser-post/*` の Bearer 認証 |
+| `INTERNAL_API_SIGNING_SECRET` | 内部 API 署名の HMAC key。未設定時は `REALTIME_INTERNAL_API_TOKEN` を使う |
+| `INTERNAL_API_ALLOW_UNSIGNED` | `true` のとき署名なし request を受理する緊急用の逃げ道。通常は設定しない |
 
-GitHub Actions では `REALTIME_API_TOKEN` secret として同じ値を渡します。
+GitHub Actions では `REALTIME_API_TOKEN` secret として同じ値を渡します。`INTERNAL_API_SIGNING_SECRET` を設定する場合は、アプリと Actions secret の両方へ同じ値を入れます。
+
+内部 API は Bearer token に加えて HMAC 署名を要求します。詳細は `docs/system-design/architecture/data-and-security.md` を参照します。client 実装は `scripts/internal-api/signing.mjs`（Node）と `scripts/internal-api/post.sh`（GitHub Actions）にあります。
 
 ### X 再投稿
 
@@ -132,6 +139,9 @@ npm run x:browser-post:trend-joke -- --query-bundle title_aruaru_words --print-p
 npm run x:browser-post:trend-joke -- --copy-provider codex
 npm run x:growth-review
 npm run x:growth-review -- --create-issue
+npm run x:growth-improve
+npm run x:growth-improve -- --execute
+npm run x:growth-maintain
 ```
 
 `--login-only` は候補取得や内部 API 呼び出しをせず、`X_BROWSER_POST_CHROME_EXECUTABLE_PATH` の通常 Chrome を直接起動し、`X_BROWSER_POST_USER_DATA_DIR` の Chrome プロファイルで `https://x.com/login` を開きます。Chrome for Testing を避けたい初回ログイン用です。初回ログイン後は、通常投稿時に `X_BROWSER_POST_CDP_URL` へ接続し、接続できなければ `X_BROWSER_POST_AUTO_START_CHROME=true` で同じ専用 profile の通常 Chrome を自動起動します。
@@ -140,9 +150,9 @@ npm run x:growth-review -- --create-issue
 
 週末サマリ投稿も実投稿時は `--execute` を付けます。`--line` または `X_BROWSER_POST_WEEKEND_SUMMARY_LINE` で一言を上書きできます。文案パターンを固定したい場合は `--copy-pattern` または `X_BROWSER_POST_WEEKEND_SUMMARY_COPY_PATTERN` を使います。指定しない場合は、prepare API が返すローカル候補文を使います。投稿結果は Firestore に保存せず、同一 PC の二重投稿防止用に `local/x-browser-posting/weekend-summary-state.json` へ最小限のキーだけ保存します。
 
-トレンドネタ投稿も実投稿時は `--execute` を付けます。Firestore は読まず、prepare API が Yahoo!リアルタイム検索を少数回実行し、イベント名サンプルや頻出語から topic とローカル候補文を返します。文案生成 provider を使う場合は `--copy-provider codex` または `X_BROWSER_POST_TREND_JOKE_COPY_PROVIDER=codex` を指定します。provider 生成文は validator とローカル履歴ガードを通し、失敗時はローカル候補文へ戻ります。
+トレンドネタ投稿も実投稿時は `--execute` を付けます。Firestore は読まず、prepare API が Yahoo!リアルタイム検索を少数回実行し、イベント名サンプルや頻出語から topic とローカル候補文を返します。文案生成 provider を使う場合は `--copy-provider codex` または `X_BROWSER_POST_TREND_JOKE_COPY_PROVIDER=codex` を指定します。Codex の schema は JSON の構造だけを固定し、文字数や投票選択肢の規則はローカル validator で検査します。provider 生成文が不合格の場合はローカル候補文へ戻り、`provider_status`、`provider_error_code`、`fallback_reason` を log に残します。schema や認証 error は再試行せず、timeout、rate limit、生成文不合格など回復可能な error だけを設定回数まで再試行します。
 
-投稿型は「独り言→質問→一言あるある→投票→ツール紹介」を直近履歴から自動ローテーションします。`--archetype` または `X_BROWSER_POST_TREND_JOKE_ARCHETYPE` は検証時にだけ固定します。自然な hashtag は最大1個、URL はツール紹介に指定された NAZOMATIC URL 1件だけを許可し、mention と emoji は禁止です。投票はネイティブ投票 UI、ツール紹介は既定で `public/img/og-image.png` を添付します。画像を変える場合は `--image-path` または `X_BROWSER_POST_TREND_JOKE_IMAGE_PATH` を使います。
+投稿型は「独り言→質問→一言あるある→投票→ツール紹介」を直近履歴から自動ローテーションします。`--archetype` または `X_BROWSER_POST_TREND_JOKE_ARCHETYPE` は検証時にだけ固定します。自然な hashtag は最大1個、URL はツール紹介に指定された NAZOMATIC URL 1件だけを許可し、mention と emoji は禁止です。履歴類似判定では URL と末尾 hashtag を除外し、完全一致は全投稿型、意味類似は同じ投稿型を中心に検査します。投票はネイティブ投票 UI、ツール紹介は直近3回で使った tool path を候補が残る限り避け、既定で `public/img/og-image.png` を添付します。画像を変える場合は `--image-path` または `X_BROWSER_POST_TREND_JOKE_IMAGE_PATH` を使います。
 
 文案を固定したい場合は `--line` または `X_BROWSER_POST_TREND_JOKE_LINE`、検索 bundle を固定したい場合は `--query-bundle` または `X_BROWSER_POST_TREND_JOKE_QUERY_BUNDLE` を使います。投稿結果は Firestore に保存せず、同一 PC の二重投稿防止用に `local/x-browser-posting/trend-joke-state.json` へ最小限のキーだけ保存します。`--run-slot` を指定しない場合は、CLI がローカル state を見て `slot-1`、`slot-2` のように日内連番で自動採番します。
 
@@ -150,13 +160,18 @@ Codex automation から provider 生成文を確認なしで実投稿する場�
 
 ローカルブラウザ投稿 CLI は、通常投稿、週末サマリ投稿、トレンドネタ投稿の実行ログを Git 管理外の `logs/{automationId}/` に保存します。ログには開始時刻、実行コマンド、標準出力、標準エラー、終了時刻、終了ステータスを残します。`X_BROWSER_POST_LOG_RETENTION_COUNT` で automation ごとの保持世代数を指定でき、未設定時は `70` 世代だけ残します。現行ローカル設定も70世代で、3時間ごとの通常投稿を含む7日分と余裕を確保します。
 
-実投稿が成功すると、3種類の CLI は共通の `local/x-browser-posting/post-ledger.json` に投稿 URL と実験 metadata を保存します。`X_BROWSER_POST_CAPTURE_TELEMETRY=true`（既定）なら、続けて同じ CDP セッションでフォロワー数を `local/x-browser-posting/follower-snapshots.json` へ JST 日付単位で追記し、投稿から約24時間〜8日で未取得の過去投稿を最大 `X_BROWSER_POST_METRICS_MAX_PER_RUN` 件だけ開いて表示数・返信・リポスト・いいねを台帳の `metrics` に書き戻します。取得済みは `metrics.mature` で再取得しません。計測はベストエフォートで投稿処理を止めません。`npm run x:growth-review` は直近7日、実行 log、台帳の `metrics`、フォロワー snapshot を集計します。投稿別数値は台帳に無い投稿だけをログイン済み Chrome で追加確認します。`--create-issue` 付きでは `[X週次レビュー] YYYY-Www @account` の GitHub Issue を作り、同じ週の再実行は既存 Issue へのコメントになります。公開数値を取得できない場合は0とせず「取得不能」と出力します。
+実投稿が成功すると、3種類の CLI は共通の `local/x-browser-posting/post-ledger.json` に投稿 URL と実験 metadata を保存します。`X_BROWSER_POST_CAPTURE_TELEMETRY=true`（既定）なら、続けて同じ CDP セッションでフォロワー数を `local/x-browser-posting/follower-snapshots.json` へ JST 日付単位で追記し、投稿から約24時間〜8日で未取得の過去投稿を最大 `X_BROWSER_POST_METRICS_MAX_PER_RUN` 件だけ開いて表示数・返信・リポスト・いいねを台帳の `metrics` に書き戻します。`npm run x:growth-maintain` は投稿を行わず、この計測を日次で実行するための CLI です。成熟窓の終了が近い古い投稿から回収します。取得済みは `metrics.mature` で再取得しません。計測はベストエフォートで投稿処理を止めません。`npm run x:growth-review` は直近7日、実行 log、台帳の `metrics`、フォロワー snapshot を集計します。投稿別数値は台帳に無い投稿だけをログイン済み Chrome で追加確認します。`--create-issue` 付きでは `[X週次レビュー] YYYY-Www @account` の GitHub Issue を `x-growth-review` label 付きで作り、同じ週の再実行は既存 Issue へのコメントになります。公開数値を取得できない場合は0とせず「取得不能」と出力します。
+
+`npm run x:growth-improve` は当週・account 固有の週次レビュー Issue 本文と直近14日の投稿台帳を読み、Codex CLI を read-only で呼んで allowlist 内の実験を1件提案します。`--execute` はテレメトリ成熟率が70%以上かつ5件以上であることを確認し、`origin/main` から作った一時 worktree 内だけで検証・commit・push・ドラフト PR 作成を行います。PR は `Closes #<review Issue>` と機械可読 metadata を持つため、PR が GitHub 上の実験の正本です。ローカルの実験台帳は作成しません。作成済みまたは進行中の実験、同じ targetKey の再提案、基底branchの検証失敗は PR を作りません。`--execute` には認証済みの `gh`、Git remote、利用可能な `codex` が必要です。自動マージはしません。詳細は `docs/system-design/subsystems/x-growth-improve-agent.md` を参照します。
 
 | Automation 名 | npm script | ログディレクトリ |
 |---|---|---|
 | NAZOMATIC X 投稿 | `x:browser-post` | `logs/x-browser-post/` |
 | NAZOMATIC X トレンドジョーク投稿 | `x:browser-post:trend-joke` | `logs/x-browser-post-trend-joke/` |
 | NAZOMATIC 週末謎チケサマリ投稿 | `x:browser-post:weekend-summary` | `logs/x-browser-post-weekend-summary/` |
+| NAZOMATIC X 週次改善レビュー | `x:growth-review` | GitHub の `x-growth-review` Issue。専用 local log なし |
+| NAZOMATIC X 週次改善PR作成 | `x:growth-improve` | `logs/x-growth-improve/` |
+| NAZOMATIC X 成長計測メンテナンス | `x:growth-maintain` | `logs/x-growth-maintain/` |
 
 リポジトリ外のスケジューラーで稼働中の登録枠は `docs/system-design/operations/x-browser-post-schedules.md` を参照します。
 
@@ -196,6 +211,8 @@ Codex automation から provider 生成文を確認なしで実投稿する場�
 | `x-repost-events.yml` | 手動実行のみ | `POST /api/internal/x/repost/events` |
 
 `x-repost-events.yml` の自動 schedule は、X 投稿 credits の都合でコメントアウトされています。
+
+各 workflow は repo を checkout し、`scripts/internal-api/post.sh` 経由で署名付き request を送ります。curl の `--retry` は使いません。retry のたびに timestamp と nonce を作り直す必要があるため、retry は `post.sh` 側で行います。
 
 ## Shift Search レポート更新
 

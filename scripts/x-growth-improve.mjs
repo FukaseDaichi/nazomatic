@@ -7,281 +7,135 @@ import { pathToFileURL } from "url";
 
 import { readBrowserPostLedger } from "./x-browser-posting/postLedger.mjs";
 import { runWithLocalLog } from "./x-browser-posting/runLog.mjs";
+import { loadBrowserPostConfig } from "./x-browser-posting/config.mjs";
 import { EXPERIMENT_ALLOWLIST } from "./x-growth/experimentAllowlist.mjs";
-import {
-  buildProposalOutputSchema,
-  validateProposal,
-} from "./x-growth/proposalSchema.mjs";
-import {
-  applyChangeToFile,
-  createExperimentPr,
-} from "./x-growth/applyProposal.mjs";
-import {
-  revertChangedFile,
-  verifyChangedFile,
-} from "./x-growth/verifyChange.mjs";
-import { recordExperiment } from "./x-growth/experimentLedger.mjs";
+import { buildProposalOutputSchema, validateProposal } from "./x-growth/proposalSchema.mjs";
+import { applyChangeToFile, buildExperimentBranch, createExperimentPr } from "./x-growth/applyProposal.mjs";
+import { verifyChangedFile } from "./x-growth/verifyChange.mjs";
+import { calculateMetric, telemetryHealth } from "./x-growth/reportMetrics.mjs";
+import { ATTENTION_LABEL, EXPERIMENT_LABEL, addLabels, closeIssue, comment, ensureLabels, experimentKeyMatches, findReviewIssue, getJstIsoWeek, isTerminalExperiment, listExperimentPrs, normalizeHandle, runGit } from "./x-growth/githubExperiments.mjs";
 
-export async function runImprovementCycle({
-  cwd,
-  reviewMarkdown,
-  ledgerSummary,
-  callCodex,
-  execute,
-  issueUrl,
-}) {
-  let proposal;
-  try {
-    proposal = await callCodex({
-      reviewMarkdown,
-      ledgerSummary,
-      allowlist: EXPERIMENT_ALLOWLIST,
-    });
-  } catch (error) {
-    return { status: "rejected", reason: `codex proposal failed: ${error instanceof Error ? error.message : String(error)}` };
-  }
-  const validated = validateProposal(proposal);
-  if (!validated.ok) {
-    return { status: "rejected", reason: validated.reason, proposal };
-  }
-  if (!execute) {
-    return { status: "proposed", proposal: validated.proposal };
-  }
-  const applied = await applyChangeToFile(cwd, validated.proposal);
-  if (!applied.ok) {
-    return { status: "rejected", reason: applied.reason, proposal: validated.proposal };
-  }
-  // 適用後の検証ゲート: tsc/lint/構文が通らなければ変更を破棄し PR を作らない。
-  const verified = await verifyChangedFile(cwd, validated.proposal.path);
-  if (!verified.ok) {
-    await revertChangedFile(cwd, validated.proposal.path, applied.before);
-    return {
-      status: "rejected",
-      reason: `verification failed: ${verified.reason}`,
-      proposal: validated.proposal,
-    };
-  }
-  const pr = await createExperimentPr(cwd, validated.proposal, { issueUrl });
-  // 実験を open で台帳に記録し、翌週レビューが勝敗を検証できるようにする。
-  const experiment = await recordExperiment(cwd, {
-    hypothesis: validated.proposal.hypothesis,
-    path: validated.proposal.path,
-    kind: validated.proposal.kind,
-    metric: validated.proposal.metric,
-    evaluateWeek: validated.proposal.evaluateWeek,
-    prUrl: pr.prUrl ?? null,
-    baselineNote: ledgerSummary,
-  });
-  return {
-    status: "pr_created",
-    proposal: validated.proposal,
-    experimentId: experiment.id,
-    ...pr,
-  };
-}
+const LOCK_PATH = "local/x-browser-posting/locks/x-growth-improve.lock";
 
-// codex exec を read-only で呼び、提案 JSON を返す（本番用 callCodex）。
-export async function runCodexProposal({
-  cwd,
-  reviewMarkdown,
-  ledgerSummary,
-  allowlist,
-  model,
-  timeoutMs = 120000,
-}) {
-  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "x-growth-improve-"));
-  const schemaPath = path.join(tempDir, "schema.json");
-  const outputPath = path.join(tempDir, "out.json");
+export async function runImprovementCycle({ controlRoot, review, account, callCodex, execute, model }) {
+  const prs = await listExperimentPrs(controlRoot);
+  const same = prs.filter((pr) => experimentKeyMatches(pr, { reviewIssue: review.number, account }));
+  if (same.length > 1) return { status: "rejected", reason: "duplicate experiment PRs for review issue" };
+  if (same.length === 1) return { status: "existing_pr", prUrl: same[0].url, branch: same[0].headRefName };
+  const active = prs.find((pr) => !isTerminalExperiment(pr) && (pr.state === "OPEN" || pr.mergedAt || pr.labels.includes("x-growth:revert")));
+  if (active) return { status: "skipped_active_experiment", prUrl: active.url, branch: active.headRefName };
+
+  const ledger = await readBrowserPostLedger({ cwd: controlRoot });
+  const posts = ledger.entries.filter((entry) => normalizeHandle(entry.accountHandle) === account && Date.now() - new Date(entry.postedAt).getTime() <= 14 * 86400000);
+  const health = telemetryHealth(posts, { maturityHours: 24 });
+  if (health.eligible < 5 || health.rate < 0.7) {
+    const reason = `テレメトリ不足: mature ${health.mature}/${health.eligible} (${Math.round(health.rate * 100)}%), URL欠損 ${health.missingUrl}, 期限超過 ${health.expired}`;
+    if (execute) await closeIssue(controlRoot, review.number, `## 改善PRを見送り\n\n${reason}\n\n\`skipped_insufficient_telemetry\``);
+    return { status: "skipped_insufficient_telemetry", reason };
+  }
+
+  const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "nazomatic-x-growth-"));
+  const worktreeRoot = path.join(tempRoot, "worktree");
+  let localBranch = null;
+  let preserveBranch = false;
   try {
-    await fs.writeFile(
-      schemaPath,
-      JSON.stringify(buildProposalOutputSchema(), null, 2)
-    );
-    const prompt = buildPrompt({ reviewMarkdown, ledgerSummary, allowlist });
-    const args = ["exec"];
-    if (model) {
-      args.push("--model", model);
+    if (execute) {
+      await runGit(controlRoot, ["fetch", "--prune", "origin", "main"]);
+      await runGit(controlRoot, ["worktree", "add", "--detach", worktreeRoot, "origin/main"]);
+      await run("npm", ["ci"], { cwd: worktreeRoot, timeoutMs: 300000 });
+      const base = await verifyChangedFile(worktreeRoot, "src/server/x-browser-posting/trend-joke-post.ts");
+      if (!base.ok) return { status: "base_broken", reason: base.reason };
     }
-    args.push(
-      "--cd",
-      cwd,
-      "--sandbox",
-      "read-only",
-      "--ephemeral",
-      "--output-schema",
-      schemaPath,
-      "--output-last-message",
-      outputPath,
-      "-"
-    );
-    const result = await runChild("codex", args, { cwd, input: prompt, timeoutMs });
-    if (result.exitCode !== 0) {
-      throw new Error(`codex exited ${result.exitCode}: ${result.stderr}`);
+    const proposal = await callCodex({ cwd: execute ? worktreeRoot : controlRoot, reviewMarkdown: review.body, ledgerSummary: buildLedgerSummary(posts), allowlist: EXPERIMENT_ALLOWLIST, model });
+    const validated = validateProposal(proposal);
+    if (!validated.ok) return { status: "rejected", reason: validated.reason, proposal };
+    const repeated = prs.find((pr) => pr.metadata?.targetKey === validated.proposal.targetKey);
+    if (repeated) return { status: "rejected", reason: `targetKey was already used by ${repeated.url}`, proposal: validated.proposal };
+    const metricPosts = posts.filter((entry) => Date.now() - new Date(entry.postedAt).getTime() >= validated.proposal.metric.maturityHours * 3600000);
+    const proposalBaseline = calculateMetric(metricPosts, validated.proposal.metric);
+    if (proposalBaseline.sampleSize < validated.proposal.metric.minimumSampleSize) return { status: "rejected", reason: "baseline sample size is insufficient", proposal: validated.proposal };
+    const plannedEvaluateWeek = getJstIsoWeek(new Date(Date.now() + (validated.proposal.metric.windowDays + 1) * 86400000));
+    const branch = buildExperimentBranch({ issueNumber: review.number, plannedEvaluateWeek, proposal: validated.proposal });
+    if (!execute) return { status: "proposed", proposal: validated.proposal, branch, plannedEvaluateWeek, proposalBaseline };
+    await runGit(worktreeRoot, ["switch", "-c", branch]);
+    localBranch = branch;
+    const applied = await applyChangeToFile(worktreeRoot, validated.proposal);
+    if (!applied.ok) return { status: "rejected", reason: applied.reason, proposal: validated.proposal };
+    const verified = await verifyChangedFile(worktreeRoot, validated.proposal.path);
+    if (!verified.ok) return { status: "proposal_broken", reason: verified.reason, proposal: validated.proposal };
+    const baseSha = (await runGit(worktreeRoot, ["rev-parse", "HEAD"])).trim();
+    let pr;
+    try {
+      pr = await createExperimentPr(worktreeRoot, validated.proposal, { reviewIssue: review, account, plannedEvaluateWeek, baseSha, proposalBaseline });
+    } catch (error) {
+      const found = (await listExperimentPrs(controlRoot)).find((item) => item.headRefName === branch);
+      if (found) {
+        preserveBranch = true;
+        return { status: "partial_success", prUrl: found.url, branch };
+      }
+      preserveBranch = true;
+      throw error;
     }
-    const text =
-      (await fs.readFile(outputPath, "utf8").catch(() => "")) || result.stdout;
-    return JSON.parse(text);
+    const found = (await listExperimentPrs(controlRoot)).find((item) => item.headRefName === branch);
+    if (!found) throw new Error("PR was created but could not be found for label assignment");
+    await addLabels(controlRoot, found.number, [EXPERIMENT_LABEL]);
+    return { status: "pr_created", proposal: validated.proposal, branch, ...pr };
   } finally {
-    await fs.rm(tempDir, { recursive: true, force: true }).catch(() => {});
+    if (execute) await runGit(controlRoot, ["worktree", "remove", "--force", worktreeRoot]).catch(() => {});
+    if (localBranch && !preserveBranch) await runGit(controlRoot, ["branch", "-D", localBranch]).catch(() => {});
+    await fs.rm(tempRoot, { recursive: true, force: true }).catch(() => {});
   }
 }
 
-function buildPrompt({ reviewMarkdown, ledgerSummary, allowlist }) {
-  return [
-    "あなたは NAZOMATIC の X 運用改善アシスタントです。",
-    "次週に試す実験を『1件だけ・1ファイルだけ』提案し、指定スキーマの JSON を出力してください。",
-    "制約:",
-    "- 編集してよいのは以下の allowlist のパスのみ。rate limit・--execute・config・.env・.github は絶対に触らない。",
-    ...allowlist.map((e) => `  - ${e.path}（${e.note}）`),
-    "- change.find は対象ファイル内にちょうど1回だけ現れる完全一致文字列にする。",
-    "- ts-copy では投稿ロジック・validator・認証・外部呼び出しに触れず、文言や数値閾値の中身だけを変える。",
-    "- 投稿頻度を増やす提案はしない。質・時間帯・型・文言の実験に限る。",
-    "",
-    "## 直近の週次レビュー",
-    reviewMarkdown,
-    "",
-    "## 台帳サマリ",
-    ledgerSummary,
-  ].join("\n");
-}
-
-async function fetchLatestReviewMarkdown(cwd) {
+export async function runCodexProposal({ cwd, reviewMarkdown, ledgerSummary, allowlist, model }) {
+  const temp = await fs.mkdtemp(path.join(os.tmpdir(), "x-growth-schema-"));
+  const schema = path.join(temp, "schema.json"); const output = path.join(temp, "output.json");
   try {
-    const out = await runChild(
-      "gh",
-      [
-        "issue",
-        "list",
-        "--state",
-        "all",
-        "--search",
-        "[X週次レビュー] in:title",
-        "--json",
-        "title,body,updatedAt",
-        "--limit",
-        "5",
-      ],
-      { cwd, timeoutMs: 20000 }
-    );
-    if (out.exitCode !== 0) {
-      return "（週次レビューIssueを取得できませんでした）";
-    }
-    const items = JSON.parse(out.stdout || "[]").filter(
-      (i) => typeof i.title === "string" && i.title.startsWith("[X週次レビュー]")
-    );
-    items.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
-    return items[0]?.body || "（週次レビューIssueが見つかりませんでした）";
-  } catch {
-    return "（週次レビューIssueを取得できませんでした）";
-  }
+    await fs.writeFile(schema, JSON.stringify(buildProposalOutputSchema()));
+    const prompt = ["NAZOMATICのX改善実験を1件だけ提案してください。", "allowlist外、頻度、認証、実行設定は変更禁止。targetKeyと構造化metricを必ず出力。", ...allowlist.map((x) => `- ${x.path}: ${x.note} / targetKey ${x.targetKeys.join(",")}`), "\n## レビュー", reviewMarkdown, "\n## 台帳", ledgerSummary].join("\n");
+    const args = ["exec", ...(model ? ["--model", model] : []), "--cd", cwd, "--sandbox", "read-only", "--ephemeral", "--output-schema", schema, "--output-last-message", output, "-"];
+    const result = await run("codex", args, { cwd, input: prompt, timeoutMs: 120000 });
+    return JSON.parse((await fs.readFile(output, "utf8").catch(() => "")) || result);
+  } finally { await fs.rm(temp, { recursive: true, force: true }).catch(() => {}); }
 }
 
-async function buildLedgerSummary(cwd) {
-  const ledger = await readBrowserPostLedger({ cwd });
-  const since = Date.now() - 7 * 24 * 60 * 60 * 1000;
-  const recent = ledger.entries.filter(
-    (e) => new Date(e.postedAt).getTime() >= since
-  );
-  const byType = {};
-  for (const e of recent) {
-    const key = e.postType ?? "unknown";
-    byType[key] = (byType[key] ?? 0) + 1;
-  }
-  const withMetrics = recent.filter(
-    (e) => e.metrics && e.metrics.views != null
-  ).length;
-  return [
-    `直近7日の投稿: ${recent.length}件`,
-    `種別内訳: ${Object.entries(byType).map(([k, v]) => `${k} ${v}`).join(" / ") || "なし"}`,
-    `公開数値取得済み: ${withMetrics}件`,
-  ].join("\n");
+function buildLedgerSummary(posts) { return `直近14日: ${posts.length}件 / metrics成熟: ${posts.filter((x) => x.metrics?.mature).length}件`; }
+
+async function withLock(cwd, reviewNumber, task) {
+  const lock = path.join(cwd, LOCK_PATH); await fs.mkdir(path.dirname(lock), { recursive: true });
+  let handle;
+  try { handle = await fs.open(lock, "wx"); await handle.writeFile(JSON.stringify({ startedAt: new Date().toISOString(), pid: process.pid, reviewNumber }) + "\n"); }
+  catch (error) { throw new Error(`x-growth lock is held: ${error.code ?? error.message}`); }
+  try { return await task(); } finally { await handle?.close().catch(() => {}); await fs.unlink(lock).catch(() => {}); }
 }
 
-function runChild(command, args, { cwd, input, timeoutMs = 120000 } = {}) {
-  return new Promise((resolve, reject) => {
-    const child = spawn(command, args, { cwd, stdio: ["pipe", "pipe", "pipe"] });
-    let stdout = "";
-    let stderr = "";
-    const timer = setTimeout(() => child.kill("SIGKILL"), timeoutMs);
-    child.stdout.on("data", (c) => (stdout += c.toString("utf8")));
-    child.stderr.on("data", (c) => (stderr += c.toString("utf8")));
-    child.on("error", (e) => {
-      clearTimeout(timer);
-      reject(e);
-    });
-    child.on("close", (code) => {
-      clearTimeout(timer);
-      resolve({ exitCode: code ?? 1, stdout, stderr });
-    });
-    if (input) {
-      child.stdin.end(input);
-    } else {
-      child.stdin.end();
-    }
-  });
-}
-
-function parseArgs(argv) {
-  const args = { execute: false, issueUrl: null, model: "" };
-  for (let i = 0; i < argv.length; i += 1) {
-    const a = argv[i];
-    if (a === "--execute") {
-      args.execute = true;
-    } else if (a === "--issue-url") {
-      args.issueUrl = argv[i + 1];
-      i += 1;
-    } else if (a === "--model") {
-      args.model = argv[i + 1];
-      i += 1;
-    }
-  }
-  return args;
-}
-
-function printResult(result) {
-  console.log(`status: ${result.status}`);
-  if (result.reason) {
-    console.log(`reason: ${result.reason}`);
-  }
-  if (result.proposal) {
-    console.log(`hypothesis: ${result.proposal.hypothesis}`);
-    console.log(`path: ${result.proposal.path} (${result.proposal.kind})`);
-    console.log(`evaluateWeek: ${result.proposal.evaluateWeek}`);
-  }
-  if (result.status === "proposed") {
-    console.log("dry-run のため PR は作成しません。--execute で PR まで実行します。");
-  }
-  if (result.prUrl) {
-    console.log(`PR: ${result.prUrl}`);
-  } else if (result.branch) {
-    console.log(`branch: ${result.branch}`);
-  }
-}
-
+function parseArgs(argv) { const args = { execute: false, reviewIssue: null, model: "" }; for (let i = 0; i < argv.length; i += 1) { const arg = argv[i]; if (arg === "--execute") args.execute = true; else if (arg === "--review-issue" || arg === "--model") { const value = argv[++i]; if (!value) throw new Error(`${arg} requires a value`); args[arg === "--model" ? "model" : "reviewIssue"] = arg === "--model" ? value : Number(value); } else throw new Error(`Unknown argument: ${arg}`); } return args; }
 async function main() {
-  const args = parseArgs(process.argv.slice(2));
-  const cwd = process.cwd();
-  const reviewMarkdown = await fetchLatestReviewMarkdown(cwd);
-  const ledgerSummary = await buildLedgerSummary(cwd);
-  const result = await runImprovementCycle({
-    cwd,
-    reviewMarkdown,
-    ledgerSummary,
-    callCodex: (input) => runCodexProposal({ cwd, ...input, model: args.model }),
-    execute: args.execute,
-    issueUrl: args.issueUrl,
-  });
-  printResult(result);
+  const args = parseArgs(process.argv.slice(2)); const controlRoot = process.cwd();
+  const browserConfig = loadBrowserPostConfig([], controlRoot);
+  const account = normalizeHandle(browserConfig.accountHandle); if (!account) throw new Error("X_BROWSER_POST_ACCOUNT_HANDLE is required");
+  if (args.execute) await ensureLabels(controlRoot);
+  const review = await findReviewIssue(controlRoot, { week: getJstIsoWeek(), account, number: args.reviewIssue });
+  if (!review) throw new Error("current review issue was not found");
+  const task = () => runImprovementCycle({ controlRoot, review, account, execute: args.execute, model: args.model, callCodex: runCodexProposal });
+  let result;
+  try {
+    result = args.execute ? await withLock(controlRoot, review.number, task) : await task();
+  } catch (error) {
+    if (args.execute && String(error?.message ?? error).includes("x-growth lock is held")) {
+      await addLabels(controlRoot, review.number, [ATTENTION_LABEL]).catch(() => {});
+      await comment(controlRoot, review.number, `## 自動改善を停止\n\n排他 lock が残っています。確認してから再実行してください。\n\n\`${String(error.message)}\``).catch(() => {});
+    }
+    throw error;
+  }
+  if (args.execute && result.status === "rejected") {
+    await closeIssue(controlRoot, review.number, `## 改善PRを見送り\n\n${result.reason}\n\n\`rejected\``);
+  }
+  if (args.execute && ["base_broken", "proposal_broken"].includes(result.status)) {
+    await addLabels(controlRoot, review.number, [ATTENTION_LABEL]);
+    await comment(controlRoot, review.number, `## 自動改善に失敗\n\n${result.reason}\n\n\`${result.status}\``);
+  }
+  console.log(JSON.stringify(result, null, 2));
 }
-
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
-  const exitStatus = await runWithLocalLog(
-    {
-      cwd: process.cwd(),
-      automationId: "x-growth-improve",
-      command: `npm run x:growth-improve${process.argv.slice(2).length ? ` -- ${process.argv.slice(2).join(" ")}` : ""}`,
-    },
-    main
-  );
-  process.exit(exitStatus);
-}
+function run(command, args, { cwd, input, timeoutMs = 120000 } = {}) { return new Promise((resolve, reject) => { const child = spawn(command, args, { cwd, stdio: ["pipe", "pipe", "pipe"] }); let out = "", err = ""; const timer = setTimeout(() => child.kill("SIGKILL"), timeoutMs); child.stdout.on("data", (x) => out += x); child.stderr.on("data", (x) => err += x); child.on("error", reject); child.on("close", (code) => { clearTimeout(timer); code === 0 ? resolve(out) : reject(new Error(`${command} failed: ${err || out}`)); }); child.stdin.end(input ?? ""); }); }
+if (import.meta.url === pathToFileURL(process.argv[1]).href) process.exit(await runWithLocalLog({ cwd: process.cwd(), automationId: "x-growth-improve", command: `npm run x:growth-improve ${process.argv.slice(2).join(" ")}` }, main));

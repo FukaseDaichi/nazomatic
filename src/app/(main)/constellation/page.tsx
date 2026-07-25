@@ -6,7 +6,7 @@ export default function ConstellationPage() {
   return (
     <>
       <ArticleHeaderComponent />
-      <Article index={7} />
+      <Article path="/constellation" />
       <ConstellationSearchTable />
     </>
   );

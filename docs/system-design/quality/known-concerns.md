@@ -18,18 +18,6 @@ X の DOM、label、blocking 画面が変わると、Playwright / CDP 操作が�
 
 ## 優先度: 中
 
-### モバイル 16px ルールを shared primitive が保証しない
-
-`src/components/ui/input.tsx` と `textarea.tsx` の既定は `text-sm` です。利用側で上書きする規約ですが、少なくとも `graph-paper-component.tsx` の行・列 number input と、BLANK25 Editor の link name / answers は `text-sm` を指定しています。モバイルで focus 時に画面が拡大する可能性があります。
-
-### 内部 Bearer 認証が Route Handler ごとに重複する
-
-Realtime / X の各 route が同じ `enforceAuthorization()` を個別実装しています。認証 header の比較、未設定時 status、error response を一括変更できず、新規 route で認証追加を忘れる余地があります。token は単純一致で、有効期限、request signature、replay 制御はありません。
-
-### 公開導線と JSON-LD が配列 index で結合している
-
-`features.json` 自体は単一ソースですが、各 page の `<Article index={n}>` は hard-coded です。順序変更時に compile error が出ず、別機能の title / URL を JSON-LD に出す可能性があります。
-
 ### X 投稿の日次上限が local と server で一致しない
 
 `scripts/x-browser-posting/config.mjs` の `MAX_DAILY_LIMIT` は 30、`src/server/x-browser-posting/candidate.ts` の `MAX_BROWSER_POST_DAILY_LIMIT` は 50 です。通常 CLI は 30 で先に拒否しますが、API を直接呼ぶと 50 まで許可されます。どちらがシステム上の上限かが二重化しています。
@@ -45,6 +33,20 @@ Realtime / X の各 route が同じ `enforceAuthorization()` を個別実装し�
 ### Yahoo / X 非公式 response 形式への依存
 
 Yahoo!リアルタイム検索と X syndication endpoint は外部 response の構造に依存します。schema 契約や fixture test がなく、形式変更が収集停止・parse error・可視性 `unknown` の増加として現れます。
+
+### 週次改善エージェントが Issue の最新コメントを読まない
+
+週次レビューは同じ週の再実行結果を既存 Issue のコメントへ追記します。一方、`x-growth-improve` は最新更新 Issue の `body` だけを読み、コメントを取得しません。再レビュー後も、改善提案が初回 Issue 本文を入力にする可能性があります。
+
+### 実験の baseline と評価週に取りこぼし余地がある
+
+`x-growth-improve` は PR 作成時の `proposalBaseline` を保存し、`x-growth-maintain` は production activation 時に再集計せず、その値を `evaluationBaseline` として引き継ぎます。レビューやマージ待ちが長いと、表示する baseline が実験開始直前の状態を表さない可能性があります。
+
+また、週次レビューは `plannedEvaluateWeek` が実行週と完全一致する active PR だけを評価対象にします。該当週のレビューが失敗または未実行だった場合、翌週以降に自動で拾い直しません。
+
+### テレメトリ不足で保留した実験は自動再評価されない
+
+`x-growth-maintain` は production deployment を確認してもテレメトリが不足していると `x-growth:needs-attention` を付けます。同 label の PR は次回以降の activation 対象から除外されるため、計測が後から十分になっても、人間が原因を確認して label を外すまで自動再評価されません。
 
 ## 優先度: 低
 

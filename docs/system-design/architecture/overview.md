@@ -40,6 +40,9 @@
 - X ブラウザ投稿 CLI は、ログイン済み専用 Chrome profile と Playwright / CDP を使う。
 - Cookie や profile は `local/`、実行ログは `logs/` に置き、Git 管理しない。
 - 候補予約や集計は内部 API、X 画面操作と投稿前確認はローカル CLI が担当する。
+- 週次レビューは投稿台帳・フォロワー snapshot・実行ログを集計して GitHub Issue を作る。
+- 週次改善PR作成は Codex CLI に read-only で提案させ、Node.js 側の allowlist と検証を通った1件だけを一時 worktree からドラフト PR へ反映する。実験状態は GitHub が正本で、ローカル実験台帳は使わない。
+- 日次の成長計測メンテナンスは投稿せず follower / metrics を回収し、successful production deployment を確認できた merged 実験 PR の activation を進める。
 
 ## 主なディレクトリ
 
@@ -74,4 +77,4 @@
 - sitemap の公開 URL
 - 各公開ページの JSON-LD Article 情報
 
-JSON-LD は各 page が `Article index={n}` をハードコードして参照します。配列順を変える場合は、全 page の index も同時に確認します。
+JSON-LD は各 page が `Article path="/dice"` のように path で参照します。path は `src/lib/features.ts` の `FeaturePath` 型で制約され、typo や削除済み path は compile error になります。`FEATURE_PATHS` は module 読み込み時に `features.json` と突き合わせ、差分があれば例外を投げます。配列順の変更は JSON-LD に影響しません。

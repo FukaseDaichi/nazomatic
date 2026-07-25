@@ -17,6 +17,10 @@ flowchart LR
   localCli["ローカル Playwright CLI"] --> internalApi
   localCli --> xweb["x.com"]
   localReview["ローカル週次レビュー"] --> githubIssue["GitHub Issue"]
+  githubIssue --> localImprove["ローカル週次改善"]
+  localImprove --> draftPr["GitHub draft PR"]
+  localMaintain["ローカル日次計測"] --> xweb
+  localMaintain --> draftPr
   artifacts["Shift Search artifacts"] --> generated["表示用 generated JSON"]
   generated --> next
 ```
@@ -47,14 +51,14 @@ flowchart LR
 | 文書 | 内容 |
 |---|---|
 | [`operations/jobs-and-generated-assets.md`](./operations/jobs-and-generated-assets.md) | GitHub Actions、ローカル CLI、生成物同期 |
-| [`operations/x-browser-post-schedules.md`](./operations/x-browser-post-schedules.md) | 稼働中の X 投稿・週次改善レビューのスケジュールと実行契約 |
+| [`operations/x-browser-post-schedules.md`](./operations/x-browser-post-schedules.md) | 稼働中の X 投稿・週次レビュー・改善 PR・成長計測のスケジュールと実行契約 |
 | [`quality/known-concerns.md`](./quality/known-concerns.md) | 現行コードから確認できる懸念点と影響 |
 
 ## 設計上の不変条件
 
 - 公開導線の順序と列挙は `src/lib/json/features.json` を正本にする。
 - 外部データ取得と永続化はサーバーまたはローカル CLI に閉じ、クライアントは `/api/*` を使う。
-- BLANK25 Editor は HTTP Basic 認証、Realtime / X 内部 API は Bearer 認証を使う。
+- BLANK25 Editor は HTTP Basic 認証、Realtime / X 内部 API は Bearer 認証と HMAC 署名（有効期限・nonce 付き）を使う。
 - 通常 UI はダークグラデーションと `purple-400` を基調にする。
 - text-like input はモバイルで 16px 以上にする。
 - Shift Search の元成果物と表示用 JSON は分離し、生成コマンドで同期する。

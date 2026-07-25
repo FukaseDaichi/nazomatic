@@ -6,7 +6,7 @@ export default function Alphabet() {
   return (
     <>
       <ArticleHeaderComponent />
-      <Article index={5} />
+      <Article path="/anagram" />
       <AnagramSearch />
     </>
   );

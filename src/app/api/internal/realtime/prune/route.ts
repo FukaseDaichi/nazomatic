@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { firestore } from "@/server/firebase/admin";
 import type { RealtimeApiErrorResponse } from "@/types/realtime";
+import { enforceInternalAuthorization } from "@/server/internal-api/authorization";
 
 const DEFAULT_CUTOFF_DAYS = 1;
 const MAX_CUTOFF_DAYS = 30;
@@ -25,7 +26,7 @@ export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   try {
-    enforceAuthorization(request);
+    await enforceInternalAuthorization(request);
 
     const body = await parseBody(request);
     const params = validateParams(body);
@@ -36,25 +37,35 @@ export async function POST(request: Request) {
     let totalChecked = 0;
     let totalDeleted = 0;
     let batches = 0;
+    let dryRunCursor:
+      | FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>
+      | undefined;
 
     const collection = firestore.collection("realtimeEvents");
 
     while (batches < MAX_BATCHES) {
-      batches += 1;
-      const snapshot = await collection
+      let query = collection
         .where("eventTime", "<", cutoffDate)
-        .orderBy("eventTime", "asc")
-        .limit(BATCH_SIZE)
-        .get();
+        .orderBy("eventTime", "asc");
+
+      if (dryRunCursor) {
+        query = query.startAfter(dryRunCursor);
+      }
+
+      const snapshot = await query.limit(BATCH_SIZE).get();
 
       if (snapshot.empty) {
-        batches -= 1;
         break;
       }
 
+      batches += 1;
       totalChecked += snapshot.size;
 
       if (params.dryRun) {
+        dryRunCursor = snapshot.docs[snapshot.docs.length - 1];
+        if (snapshot.size < BATCH_SIZE) {
+          break;
+        }
         continue;
       }
 
@@ -80,24 +91,6 @@ export async function POST(request: Request) {
   }
 }
 
-function enforceAuthorization(request: Request) {
-  const expected = process.env.REALTIME_INTERNAL_API_TOKEN;
-  if (!expected) {
-    console.error("REALTIME_INTERNAL_API_TOKEN is not set");
-    throw NextResponse.json<RealtimeApiErrorResponse>(
-      { error: "Server configuration error" },
-      { status: 500 },
-    );
-  }
-
-  const header = request.headers.get("authorization");
-  if (!header || header !== `Bearer ${expected}`) {
-    throw NextResponse.json<RealtimeApiErrorResponse>(
-      { error: "Unauthorized" },
-      { status: 401 },
-    );
-  }
-}
 
 async function parseBody(request: Request): Promise<PruneRequest> {
   if (request.body === null) {

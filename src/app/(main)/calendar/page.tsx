@@ -38,7 +38,7 @@ export default function CalendarPage() {
   return (
     <>
       <ArticleHeaderComponent />
-      <Article index={6} />
+      <Article path="/calendar" />
       <CalendarPageClient />
     </>
   );

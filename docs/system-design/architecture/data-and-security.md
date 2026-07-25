@@ -9,6 +9,7 @@
 | 星座 | `src/lib/json/constellations-data.json` | 星座検索が読む |
 | Realtime イベント | Firestore `realtimeEvents` | 内部 API が書き、カレンダーと投稿支援が読む |
 | X ブラウザ投稿アカウント状態 | Firestore `xBrowserPostingAccounts` | 個別イベント投稿の lease / rate limit |
+| 内部 API の nonce | Firestore `internalApiNonces` | 内部 API 認証が replay 検出用に書く |
 | BLANK25 問題 | `nazomatic-storage` の `problems.json`, `img/*` | API が raw 読み込み、Editor が GitHub API 書き込み |
 | BLANK25 プレイ状態 | ブラウザ `localStorage` | ゲーム画面だけが読む・書く |
 | BLANK25 パーティ状態 | ブラウザ `localStorage` | パーティ画面だけが読む・書く |
@@ -16,6 +17,7 @@
 | Shift Search 表示データ | `src/generated/shift-search` | Next.js のレポート画面が import |
 | X ローカル投稿状態 | `local/x-browser-posting` | ローカル CLI だけが読む・書く |
 | X 実行ログ | `logs/{automationId}` | ローカル CLI が世代管理 |
+| X 改善実験状態 | GitHub の review Issue、`x-growth-experiment` PR、label、metadata marker | ローカル X 成長 CLI と人間が読む・書く |
 
 ## Realtime イベント
 
@@ -46,6 +48,7 @@ Firestore document id は `{postId}:{RULESET_VERSION}` です。主要フィー�
 | Yahoo!リアルタイム検索 | `src/server/realtime/fetchYahooRealtime.ts` | Post 取得 |
 | Firestore | `src/server/firebase/admin.ts` と Route Handler | イベント、投稿状態 |
 | GitHub API / raw GitHub | `src/server/blank25/github.ts` | BLANK25 storage 読み書き |
+| GitHub CLI / API | `scripts/x-weekly-growth-review.mjs`, `scripts/x-growth-*`, `scripts/x-growth/*` | X review Issue、実験 PR / label / metadata、Production deployment 照合 |
 | X API v2 | `api/internal/x/repost/events` | 通常 Repost |
 | X syndication endpoint | `src/server/realtime/syndication/verifyPost.ts` | 元 Post の可視性確認 |
 | x.com | ローカル Playwright / CDP | ブラウザ投稿 |
@@ -64,9 +67,32 @@ Firestore document id は `{postId}:{RULESET_VERSION}` です。主要フィー�
 
 Basic credential は `BLANK25_EDITOR_USER` / `BLANK25_EDITOR_PASSWORD`、Bearer token は `REALTIME_INTERNAL_API_TOKEN` から読みます。
 
+Bearer 認証は `src/server/internal-api/authorization.ts` の `enforceInternalAuthorization()` に集約し、Realtime / X の全 Route Handler がこれを呼びます。header 比較は `timingSafeEqual` による定数時間比較です。認証仕様を変える場合はこの module だけを変更します。
+
+### 内部 API の request 署名
+
+token 一致だけでは、漏洩した request をそのまま再送できてしまいます。そのため Bearer token に加えて、以下を要求します。
+
+| header | 内容 |
+|---|---|
+| `x-internal-timestamp` | request 発行時刻（UNIX 秒） |
+| `x-internal-nonce` | 16-64 文字の hex 乱数 |
+| `x-internal-signature` | `v1=<HMAC-SHA256 hex>` |
+
+署名対象は `v1\n{METHOD}\n{PATH}\n{TIMESTAMP}\n{NONCE}\n{SHA256(body)}` です（`src/server/internal-api/signature.ts`）。PATH は query を含みます。HMAC key は `INTERNAL_API_SIGNING_SECRET`、未設定時は `REALTIME_INTERNAL_API_TOKEN` です。
+
+- **有効期限**: timestamp が現在時刻から ±300 秒を超えると 401。
+- **改竄検知**: method / path / body いずれかが変わると署名が一致せず 401。
+- **replay 制御**: nonce を Firestore の `internalApiNonces` へ `create()` で一度だけ記録します。同じ nonce の再送は 401。document は `expiresAt` を持ち、best-effort で削除します（Firestore の TTL policy を `expiresAt` に設定するとより確実です）。
+
+retry する client は、必ず timestamp と nonce を作り直します。同一 request の単純再送は replay として拒否されます。
+
+`INTERNAL_API_ALLOW_UNSIGNED=true` を設定すると、署名 header が 1 つも無い request を受理します。移行時の緊急用であり、通常運用では設定しません。
+
 ## 秘密情報
 
 - Firebase、GitHub、X API credential はサーバー環境変数に置く。
+- X 成長改善のローカル CLI は、認証済み `gh` と Git remote を使い、GitHub token をリポジトリへ保存しない。
 - X の Cookie、storage state、Chrome profile は `local/` に置き、環境変数へ内容そのものを保存しない。
 - `.env*.local`、`local*`、`logs/` は `.gitignore` の対象。
 - `NEXT_PUBLIC_*` には公開されてよい URL だけを置く。

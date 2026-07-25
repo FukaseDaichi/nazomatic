@@ -81,6 +81,7 @@ export type PrepareTrendJokePostParams = {
   maxPostsPerQuery?: number | null;
   topicKey?: string | null;
   archetype?: string | null;
+  excludedToolPaths?: string[] | null;
 };
 
 export type PrepareTrendJokePostResult = {
@@ -121,6 +122,7 @@ type NormalizedParams = {
   maxPostsPerQuery: number;
   topicKey: TrendJokeTopicKey | null;
   archetype: TrendJokeArchetype;
+  excludedToolPaths: string[];
 };
 
 type SearchSample = {
@@ -176,7 +178,8 @@ export async function prepareTrendJokePost(
     frequentTitleWords,
   });
   const archetype = normalized.archetype;
-  const tool = archetype === "tool_intro" ? pickTool() : null;
+  const tool =
+    archetype === "tool_intro" ? pickTool(normalized.excludedToolPaths) : null;
   const trendSummary = buildTrendSummary({
     topicKey,
     sampleTicketTitles,
@@ -386,7 +389,23 @@ function normalizeParams(params: PrepareTrendJokePostParams): NormalizedParams {
     }),
     topicKey: normalizeTopicKey(params.topicKey),
     archetype: normalizeArchetype(params.archetype),
+    excludedToolPaths: normalizeExcludedToolPaths(params.excludedToolPaths),
   };
+}
+
+function normalizeExcludedToolPaths(
+  values: string[] | null | undefined
+): string[] {
+  if (!Array.isArray(values)) {
+    return [];
+  }
+  return Array.from(
+    new Set(
+      values
+        .map((value) => String(value).trim())
+        .filter((value) => value.startsWith("/") && value.length <= 200)
+    )
+  ).slice(0, 10);
 }
 
 function normalizeArchetype(value: string | null | undefined): TrendJokeArchetype {
@@ -904,14 +923,17 @@ const TREND_JOKE_POLL_POOL: TrendJokeFallbackCandidate[] = [
   },
 ];
 
-function pickTool(): TrendJokeTool {
+function pickTool(excludedToolPaths: string[]): TrendJokeTool {
   const features = featuresJson.features.filter(
     (feature) =>
       typeof feature.title === "string" &&
       typeof feature.description === "string" &&
       typeof feature.path === "string"
   );
-  const feature = features[randomInt(features.length)];
+  const excluded = new Set(excludedToolPaths);
+  const available = features.filter((feature) => !excluded.has(feature.path));
+  const candidates = available.length > 0 ? available : features;
+  const feature = candidates[randomInt(candidates.length)];
   return {
     title: feature.title,
     description: feature.description.replace(/[＃#]/g, ""),
@@ -932,7 +954,31 @@ function buildToolIntroCandidates(
     },
     {
       shape: "defiance",
-      text: `詰まったときの道具箱に、${tool.title}をどうぞ。私は解けない時間も観測しています。\n${tool.url}`,
+      text: `詰まったら、${tool.title}を開くところから。答えではなく、手元を整える道具です。\n${tool.url}`,
+    },
+    {
+      shape: "sugari",
+      text: `検索欄を迷子にする前に、${tool.title}だけ置いておきます。\n${tool.url}`,
+    },
+    {
+      shape: "suneru",
+      text: `${tool.title}を使う場面、来ないほうが平和です。来たときのために入口だけ。\n${tool.url}`,
+    },
+    {
+      shape: "midnight",
+      text: `深夜に変換や確認が必要になった人へ。${tool.title}はまだ起きています。\n${tool.url}`,
+    },
+    {
+      shape: "false_hope",
+      text: `これでひらめくとは言いません。${tool.title}で、調べる手間だけ先に片づけます。\n${tool.url}`,
+    },
+    {
+      shape: "heavy_love",
+      text: `${tool.title}、使わない日は静かです。必要な日にだけ急に頼もしい。\n${tool.url}`,
+    },
+    {
+      shape: "mood_swing",
+      text: `謎より先に作業で詰まりたくないので、${tool.title}を道具箱の手前に置きました。\n${tool.url}`,
     },
   ];
 }

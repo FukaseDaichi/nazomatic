@@ -57,7 +57,7 @@ export async function captureGrowthTelemetry(session, config) {
   return summary;
 }
 
-async function capturePostMetrics(page, config) {
+export async function capturePostMetrics(page, config) {
   const maxPerRun = Number.isFinite(config.metricsMaxPerRun)
     ? Math.max(0, config.metricsMaxPerRun)
     : 8;
@@ -82,8 +82,10 @@ async function capturePostMetrics(page, config) {
       const age = now - new Date(entry.postedAt).getTime();
       return age >= METRIC_MATURITY_MIN_MS && age <= METRIC_MATURITY_MAX_MS;
     })
+    // 古い投稿から回収する。計測可能期間の終了が近い投稿を優先して、
+    // 一時的な回収失敗で成熟窓を取りこぼす確率を下げる。
     .sort(
-      (a, b) => new Date(b.postedAt).getTime() - new Date(a.postedAt).getTime()
+      (a, b) => new Date(a.postedAt).getTime() - new Date(b.postedAt).getTime()
     )
     .slice(0, maxPerRun);
 
