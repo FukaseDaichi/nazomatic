@@ -40,6 +40,8 @@ Codex automation には、レビューが毎週月曜11:30 JST、`x:growth-impro
 
 metric は `median_views`、`median_engagement`、`reply_post_rate` のいずれかで、filter は `postType`、`archetype`、`hasMedia`、`shape`、`topicKey`、`postedAt` 由来の `jstHourBucket` だけを許可する。null・空値は filter に一致しない。
 
+Codex CLI へ渡す Structured Outputs schema は、すべての object で未知 property を禁止し、宣言した property を required にする。任意の metric filter は6項目を nullable で受け、提案受領直後に未使用の null 項目だけを除去してからローカル validator と baseline 集計へ渡す。提案 prompt には成熟投稿の単独 filter 別件数を渡し、minimum sample を満たす候補を選びやすくする。Node 側の baseline sample guard は最終境界として維持する。
+
 前後比較なので時系列交絡は残る。評価時は baseline と比較値だけで決めず、同期間のフォロワー数変化、総投稿数、曜日構成も review Issue で確認する。
 
 ## GitHub lifecycle
