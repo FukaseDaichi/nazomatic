@@ -1,6 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 import { spawn } from "child_process";
+import { validateAppliedChange } from "./experimentAllowlist.mjs";
 import { validateProposal } from "./proposalSchema.mjs";
 
 export async function applyChangeToFile(cwd, proposal) {
@@ -13,21 +14,20 @@ export async function applyChangeToFile(cwd, proposal) {
   if (before == null) {
     return { ok: false, reason: `file not found: ${proposal.path}` };
   }
-  const { find, replace } = proposal.change;
-  const occurrences = before.split(find).length - 1;
-  if (occurrences !== 1) {
-    return {
-      ok: false,
-      reason: `change.find must match exactly once (found ${occurrences})`,
-    };
-  }
-  const after = before.replace(find, () => replace);
-  if (proposal.path.endsWith(".json")) {
-    try {
-      JSON.parse(after);
-    } catch (error) {
-      return { ok: false, reason: `result is not valid JSON: ${error.message}` };
+  let after = before;
+  for (const [index, change] of proposal.changes.entries()) {
+    const occurrences = after.split(change.find).length - 1;
+    if (occurrences !== 1) {
+      return {
+        ok: false,
+        reason: `changes[${index}].find must match exactly once (found ${occurrences})`,
+      };
     }
+    after = after.replace(change.find, () => change.replace);
+  }
+  const appliedGuard = validateAppliedChange(proposal, before, after);
+  if (!appliedGuard.ok) {
+    return appliedGuard;
   }
   await fs.writeFile(filePath, after);
   return { ok: true, before, after };
@@ -49,6 +49,8 @@ export async function createExperimentPr(cwd, proposal, { reviewIssue, account, 
     `## 変更内容`,
     `- ファイル: \`${proposal.path}\``,
     `- 種別: ${proposal.kind}`,
+    `- 局所 patch: ${proposal.changes.length}件`,
+    `- このPRはドラフトです。実装差分と実験仮説を人間が確認してからmergeしてください。`,
     ``,
     `## 評価条件`,
     `- 指標: ${proposal.metric.name}`,

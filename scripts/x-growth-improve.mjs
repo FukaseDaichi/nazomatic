@@ -12,7 +12,7 @@ import { EXPERIMENT_ALLOWLIST } from "./x-growth/experimentAllowlist.mjs";
 import { buildProposalOutputSchema, normalizeStructuredProposal, validateProposal } from "./x-growth/proposalSchema.mjs";
 import { applyChangeToFile, buildExperimentBranch, createExperimentPr } from "./x-growth/applyProposal.mjs";
 import { verifyChangedFile } from "./x-growth/verifyChange.mjs";
-import { calculateMetric, jstHourBucket, telemetryHealth } from "./x-growth/reportMetrics.mjs";
+import { calculateMetric, jstHourBucket, sumEngagement, telemetryHealth } from "./x-growth/reportMetrics.mjs";
 import { ATTENTION_LABEL, EXPERIMENT_LABEL, addLabels, closeIssue, comment, ensureLabels, experimentKeyMatches, findReviewIssue, getJstIsoWeek, isTerminalExperiment, listExperimentPrs, normalizeHandle, runGit } from "./x-growth/githubExperiments.mjs";
 
 const LOCK_PATH = "local/x-browser-posting/locks/x-growth-improve.lock";
@@ -94,8 +94,10 @@ export async function runCodexProposal({ cwd, reviewMarkdown, ledgerSummary, all
     await fs.writeFile(schema, JSON.stringify(buildProposalOutputSchema()));
     const prompt = [
       "NAZOMATICのX改善実験を1件だけ提案してください。",
-      "allowlist外、頻度、認証、実行設定は変更禁止。targetKeyと構造化metricを必ず出力。",
-      "metric.filtersは、台帳に示す成熟投稿の単独filter件数がminimumSampleSize以上の値を優先してください。複数filterを組み合わせると件数は単独filter以下になるため、baseline不足になる組み合わせは避けてください。",
+      "主要な行動変化が1つになる仮説を立て、同一ファイル内のchangesを最大6件まで提案できます。各findは、それ以前のchange適用後のファイルでちょうど1回一致する局所的な置換にしてください。",
+      "trend-joke-post.tsでは投稿生成戦略、fallback、prompt、候補選択ロジックを大胆に改善できます。TypeScriptの構造文字やテンプレートリテラルも使用できます。",
+      "allowlist外、import、依存関係、環境変数、外部通信、認証、投稿実行guard、入力検証、文字数・検索件数・timeout、頻度、実行設定は変更禁止。targetKeyと構造化metricを必ず出力してください。",
+      "minimumSampleSize=5、maturityHours=24、windowDays=14、direction=increaseはNode固定です。metric.filtersは0件または1件だけにし、台帳の「選択可能metric filter JSON」で選択metricに列挙されたfiltersを、そのまま1件選んでください。JSONにないfilter値は禁止です。",
       ...allowlist.map((x) => `- ${x.path}: ${x.note} / targetKey ${x.targetKeys.join(",")}`),
       "\n## レビュー",
       reviewMarkdown,
@@ -126,19 +128,81 @@ export function buildLedgerSummary(posts) {
       const value = getValue(entry);
       if (value === null || value === undefined || value === "") continue;
       const key = String(value);
-      byValue.set(key, (byValue.get(key) ?? 0) + 1);
+      const entries = byValue.get(key) ?? [];
+      entries.push(entry);
+      byValue.set(key, entries);
     }
     const values = [...byValue.entries()]
-      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+      .sort((a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0]))
       .slice(0, 8)
-      .map(([value, count]) => `${value}:${count}`)
+      .map(([value, entries]) => `${value}${formatMetricSampleCounts(entries)}`)
       .join(", ");
     return `${name}=${values || "該当なし"}`;
   });
   return [
     `直近14日: ${posts.length}件 / metrics成熟: ${mature.length}件`,
-    `成熟投稿の単独filter件数: ${counts.join(" | ")}`,
+    "利用可能sample凡例: [m=成熟, v=median_views, e=median_engagement, r=reply_post_rate]",
+    `filterなし=${formatMetricSampleCounts(mature)} | 単独filter: ${counts.join(" | ")}`,
+    `選択可能metric filter JSON（sampleSize 5以上）: ${JSON.stringify(buildEligibleMetricFilters(mature, dimensions))}`,
   ].join("\n");
+}
+
+function buildEligibleMetricFilters(entries, dimensions) {
+  const metrics = ["median_views", "median_engagement", "reply_post_rate"];
+  return Object.fromEntries(
+    metrics.map((metricName) => {
+      const candidates = [];
+      const unfilteredCount = metricSampleCount(entries, metricName);
+      if (unfilteredCount >= 5) {
+        candidates.push({ filters: {}, sampleSize: unfilteredCount });
+      }
+      for (const [dimension, getValue] of dimensions) {
+        const groups = new Map();
+        for (const entry of entries) {
+          const value = getValue(entry);
+          if (value === null || value === undefined || value === "") continue;
+          const key = JSON.stringify(value);
+          const group = groups.get(key) ?? { value, entries: [] };
+          group.entries.push(entry);
+          groups.set(key, group);
+        }
+        for (const { value, entries: groupedEntries } of groups.values()) {
+          const sampleSize = metricSampleCount(groupedEntries, metricName);
+          if (sampleSize >= 5) {
+            candidates.push({
+              filters: { [dimension]: value },
+              sampleSize,
+            });
+          }
+        }
+      }
+      candidates.sort(
+        (a, b) =>
+          b.sampleSize - a.sampleSize ||
+          JSON.stringify(a.filters).localeCompare(JSON.stringify(b.filters)),
+      );
+      return [metricName, candidates];
+    }),
+  );
+}
+
+function formatMetricSampleCounts(entries) {
+  const views = metricSampleCount(entries, "median_views");
+  const engagement = metricSampleCount(entries, "median_engagement");
+  const replies = metricSampleCount(entries, "reply_post_rate");
+  return `[m${entries.length}/v${views}/e${engagement}/r${replies}]`;
+}
+
+function metricSampleCount(entries, metricName) {
+  if (metricName === "median_views") {
+    return entries.filter((entry) => Number.isFinite(entry.metrics?.views)).length;
+  }
+  if (metricName === "median_engagement") {
+    return entries.filter(
+      (entry) => sumEngagement(entry.metrics ?? {}) !== null,
+    ).length;
+  }
+  return entries.filter((entry) => entry.metrics?.replies != null).length;
 }
 
 async function withLock(cwd, reviewNumber, task) {

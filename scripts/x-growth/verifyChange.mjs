@@ -17,12 +17,30 @@ export async function verifyChangedFile(cwd, relPath) {
     return r.code === 0 ? { ok: true } : { ok: false, reason: `node --check failed: ${r.stderr}` };
   }
   if (ext === ".ts" || ext === ".tsx") {
-    const tsc = await run(cwd, "npx", ["tsc", "--noEmit"]);
+    const tsc = await run(cwd, "npx", ["tsc", "--noEmit"], 180000);
     if (tsc.code !== 0) {
       return { ok: false, reason: `tsc failed: ${tsc.stdout || tsc.stderr}` };
     }
-    const lint = await run(cwd, "npm", ["run", "lint"]);
-    return lint.code === 0 ? { ok: true } : { ok: false, reason: `lint failed: ${lint.stdout || lint.stderr}` };
+    const lint = await run(cwd, "npm", ["run", "lint"], 180000);
+    if (lint.code !== 0) {
+      return { ok: false, reason: `lint failed: ${lint.stdout || lint.stderr}` };
+    }
+    const tests = await run(
+      cwd,
+      "npm",
+      ["run", "test:x-browser-posting"],
+      180000,
+    );
+    if (tests.code !== 0) {
+      return {
+        ok: false,
+        reason: `x-browser-posting tests failed: ${tests.stdout || tests.stderr}`,
+      };
+    }
+    const build = await run(cwd, "npm", ["run", "build"], 300000);
+    return build.code === 0
+      ? { ok: true }
+      : { ok: false, reason: `build failed: ${build.stdout || build.stderr}` };
   }
   // md 等はそのまま可（doc は構文検証不要）。
   return { ok: true };
@@ -39,14 +57,31 @@ export async function revertChangedFile(cwd, relPath, beforeContent) {
   await run(cwd, "git", ["checkout", "--", relPath]);
 }
 
-function run(cwd, command, args) {
+function run(cwd, command, args, timeoutMs = 120000) {
   return new Promise((resolve) => {
     const child = spawn(command, args, { cwd, stdio: ["ignore", "pipe", "pipe"] });
     let stdout = "";
     let stderr = "";
+    let timedOut = false;
+    const timer = setTimeout(() => {
+      timedOut = true;
+      child.kill("SIGKILL");
+    }, timeoutMs);
     child.stdout.on("data", (c) => (stdout += c.toString("utf8")));
     child.stderr.on("data", (c) => (stderr += c.toString("utf8")));
-    child.on("error", (e) => resolve({ code: 1, stdout, stderr: String(e) }));
-    child.on("close", (code) => resolve({ code: code ?? 1, stdout, stderr }));
+    child.on("error", (e) => {
+      clearTimeout(timer);
+      resolve({ code: 1, stdout, stderr: String(e) });
+    });
+    child.on("close", (code) => {
+      clearTimeout(timer);
+      resolve({
+        code: timedOut ? 1 : (code ?? 1),
+        stdout,
+        stderr: timedOut
+          ? `${stderr}\nTimed out after ${timeoutMs}ms`.trim()
+          : stderr,
+      });
+    });
   });
 }

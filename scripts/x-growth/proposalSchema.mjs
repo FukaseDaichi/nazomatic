@@ -1,4 +1,5 @@
 import {
+  MAX_PROPOSAL_CHANGES,
   validateProposalChange,
   validateProposalTarget,
 } from "./experimentAllowlist.mjs";
@@ -21,22 +22,27 @@ export function buildProposalOutputSchema() {
       "path",
       "kind",
       "targetKey",
-      "change",
+      "changes",
       "metric",
       "rationale",
     ],
     properties: {
       hypothesis: { type: "string", minLength: 8 },
       path: { type: "string" },
-      kind: { type: "string", enum: ["json-array", "ts-copy"] },
+      kind: { type: "string", enum: ["json-patch", "ts-patch"] },
       targetKey: { type: "string", minLength: 3 },
-      change: {
-        type: "object",
-        additionalProperties: false,
-        required: ["find", "replace"],
-        properties: {
-          find: { type: "string", minLength: 1 },
-          replace: { type: "string", minLength: 1 },
+      changes: {
+        type: "array",
+        minItems: 1,
+        maxItems: MAX_PROPOSAL_CHANGES,
+        items: {
+          type: "object",
+          additionalProperties: false,
+          required: ["find", "replace"],
+          properties: {
+            find: { type: "string", minLength: 1 },
+            replace: { type: "string", minLength: 1 },
+          },
         },
       },
       metric: {
@@ -57,9 +63,9 @@ export function buildProposalOutputSchema() {
               jstHourBucket: { type: ["string", "null"], minLength: 1 },
             },
           },
-          minimumSampleSize: { type: "integer", minimum: 5 },
-          maturityHours: { type: "integer", minimum: 24 },
-          windowDays: { type: "integer", enum: [7, 14] },
+          minimumSampleSize: { type: "integer", enum: [5] },
+          maturityHours: { type: "integer", enum: [24] },
+          windowDays: { type: "integer", enum: [14] },
           direction: { type: "string", enum: ["increase"] },
         },
       },
@@ -96,7 +102,7 @@ export function validateProposal(obj) {
     "path",
     "kind",
     "targetKey",
-    "change",
+    "changes",
     "metric",
     "rationale",
   ];
@@ -108,13 +114,6 @@ export function validateProposal(obj) {
   const target = validateProposalTarget(obj);
   if (!target.ok) {
     return target;
-  }
-  const { find, replace } = obj.change ?? {};
-  if (typeof find !== "string" || typeof replace !== "string" || !find || !replace) {
-    return { ok: false, reason: "change.find/replace must be non-empty strings" };
-  }
-  if (find === replace) {
-    return { ok: false, reason: "change is a no-op" };
   }
   const changeGuard = validateProposalChange(obj);
   if (!changeGuard.ok) {
@@ -128,7 +127,10 @@ export function validateProposal(obj) {
   if (Object.keys(metric.filters).some((key) => !allowedFilters.has(key))) {
     return { ok: false, reason: "metric contains an unsupported filter" };
   }
-  if (!Number.isInteger(metric.minimumSampleSize) || metric.minimumSampleSize < 5 || !Number.isInteger(metric.maturityHours) || metric.maturityHours < 24 || ![7, 14].includes(metric.windowDays) || metric.direction !== "increase") {
+  if (Object.keys(metric.filters).length > 1) {
+    return { ok: false, reason: "metric must use at most one filter" };
+  }
+  if (metric.minimumSampleSize !== 5 || metric.maturityHours !== 24 || metric.windowDays !== 14 || metric.direction !== "increase") {
     return { ok: false, reason: "metric constraints are invalid" };
   }
   return { ok: true, proposal: obj };
