@@ -25,14 +25,16 @@ Codex automation には、レビューが毎週月曜11:30 JST、`x:growth-impro
 
 `--execute` は control checkout を変更しない。`git fetch origin main` の後、OS 一時ディレクトリの worktree を `origin/main` から detach で作成し、そこで `npm ci`、基底の verify、単一ファイル変更、verify、commit、push、PR 作成を行う。完了時は worktree を除去する。
 
-提案生成の Codex CLI は read-only sandbox であり、変更は Node 側が実行する。編集先は次だけである。
+提案生成の Codex CLI は read-only sandbox であり、変更は Node 側が実行する。1つの仮説と1つの targetKey に対し、同一ファイル内で最大6件の局所 find/replace を提案できる。編集先は次だけである。
 
 | path | kind | targetKey |
 |---|---|---|
-| `src/server/x-browser-posting/comment-patterns.json` | `json-array` | `comment-pattern:*` |
-| `src/server/x-browser-posting/trend-joke-post.ts` | `ts-copy` | `trend-joke:*` |
+| `src/server/x-browser-posting/comment-patterns.json` | `json-patch` | `comment-pattern:*` |
+| `src/server/x-browser-posting/trend-joke-post.ts` | `ts-patch` | `trend-joke:*` |
 
-`ts-copy` は既存の禁止 token と構造注入 guard（`;`, `{}`, backtick, `=>`）を通過しなければならない。`find` はちょうど1回一致が必要で、同じ targetKey を使った過去の PR は再提案しない。
+`ts-patch` は投稿生成戦略、fallback、prompt、候補選択ロジックの変更を許可し、TypeScript の構造文字や template literal、最上位フロー内の安全なデータ受け渡し、archetypeの既定選択も扱える。ただし import、環境変数、外部 I/O、process 実行、投稿実行 guard、入力validator本体、URL構築、文字数・検索件数・timeout などの運用・安全境界は変更できない。Node は TypeScript AST から import、保護宣言、外部取得・validator・fingerprint・上限付き正規化の重要 call を変更前後で比較する。archetype validator は引数の戦略変更を許しつつ呼出回数を固定する。さらに追加コードの禁止 API、最大120変更行、最大12000置換文字を検査する。`json-patch` は配列長を維持する。
+
+各 `find` はそれ以前の patch 適用後の内容にちょうど1回一致する必要がある。同じ targetKey を使った過去の PR は再提案しない。変更後は TypeScript、lint、X投稿回帰テスト、production build をtimeout付きで実行する。検証を通った変更も必ずドラフト PR とし、実装差分と実験仮説を人間が確認してから merge する。1実験で許すのは主要な行動変化1つであり、変更行数1行という意味ではない。
 
 ## 計測ゲート
 
@@ -40,7 +42,7 @@ Codex automation には、レビューが毎週月曜11:30 JST、`x:growth-impro
 
 metric は `median_views`、`median_engagement`、`reply_post_rate` のいずれかで、filter は `postType`、`archetype`、`hasMedia`、`shape`、`topicKey`、`postedAt` 由来の `jstHourBucket` だけを許可する。null・空値は filter に一致しない。
 
-Codex CLI へ渡す Structured Outputs schema は、すべての object で未知 property を禁止し、宣言した property を required にする。任意の metric filter は6項目を nullable で受け、提案受領直後に未使用の null 項目だけを除去してからローカル validator と baseline 集計へ渡す。提案 prompt には成熟投稿の単独 filter 別件数を渡し、minimum sample を満たす候補を選びやすくする。Node 側の baseline sample guard は最終境界として維持する。
+Codex CLI へ渡す Structured Outputs schema は、すべての object で未知 property を禁止し、宣言した property を required にする。任意の metric filter は6項目を nullable で受け、提案受領直後に未使用の null 項目だけを除去してからローカル validator と baseline 集計へ渡す。minimum sampleは5件、成熟時間は24時間、評価窓は14日、方向はincreaseにNode側で固定し、LLMには決めさせない。filterは0件または1件とし、提案 prompt には各metricで値を利用できる投稿が5件以上あるfilterだけを機械可読JSONで渡す。Node 側の baseline sample guard は最終境界として維持する。
 
 前後比較なので時系列交絡は残る。評価時は baseline と比較値だけで決めず、同期間のフォロワー数変化、総投稿数、曜日構成も review Issue で確認する。
 
