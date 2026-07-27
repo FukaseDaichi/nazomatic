@@ -3,6 +3,15 @@ import {
   validateProposalTarget,
 } from "./experimentAllowlist.mjs";
 
+const FILTER_KEYS = [
+  "postType",
+  "archetype",
+  "hasMedia",
+  "shape",
+  "topicKey",
+  "jstHourBucket",
+];
+
 export function buildProposalOutputSchema() {
   return {
     type: "object",
@@ -35,7 +44,19 @@ export function buildProposalOutputSchema() {
         required: ["name", "filters", "minimumSampleSize", "maturityHours", "windowDays", "direction"],
         properties: {
           name: { type: "string", enum: ["median_views", "median_engagement", "reply_post_rate"] },
-          filters: { type: "object" },
+          filters: {
+            type: "object",
+            additionalProperties: false,
+            required: FILTER_KEYS,
+            properties: {
+              postType: { type: ["string", "null"], minLength: 1 },
+              archetype: { type: ["string", "null"], minLength: 1 },
+              hasMedia: { type: ["boolean", "null"] },
+              shape: { type: ["string", "null"], minLength: 1 },
+              topicKey: { type: ["string", "null"], minLength: 1 },
+              jstHourBucket: { type: ["string", "null"], minLength: 1 },
+            },
+          },
           minimumSampleSize: { type: "integer", minimum: 5 },
           maturityHours: { type: "integer", minimum: 24 },
           windowDays: { type: "integer", enum: [7, 14] },
@@ -43,6 +64,25 @@ export function buildProposalOutputSchema() {
         },
       },
       rationale: { type: "string", minLength: 8 },
+    },
+  };
+}
+
+export function normalizeStructuredProposal(obj) {
+  if (!obj || typeof obj !== "object" || !obj.metric || typeof obj.metric !== "object") {
+    return obj;
+  }
+  const filters = obj.metric.filters;
+  if (!filters || typeof filters !== "object" || Array.isArray(filters)) {
+    return obj;
+  }
+  return {
+    ...obj,
+    metric: {
+      ...obj.metric,
+      filters: Object.fromEntries(
+        Object.entries(filters).filter(([, value]) => value !== null),
+      ),
     },
   };
 }
@@ -81,7 +121,7 @@ export function validateProposal(obj) {
     return changeGuard;
   }
   const metric = obj.metric;
-  const allowedFilters = new Set(["postType", "archetype", "hasMedia", "shape", "topicKey", "jstHourBucket"]);
+  const allowedFilters = new Set(FILTER_KEYS);
   if (!metric || !["median_views", "median_engagement", "reply_post_rate"].includes(metric.name) || !metric.filters || typeof metric.filters !== "object") {
     return { ok: false, reason: "metric is invalid" };
   }

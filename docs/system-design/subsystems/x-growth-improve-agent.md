@@ -17,7 +17,7 @@ npm run x:growth-maintain
 
 - `x:growth-review`: 当週・account 固有の `x-growth-review` Issue を作成または更新する。
 - `x:growth-improve`: 既定は dry-run。`--execute` 時だけ GitHub を変更する。
-- `x:growth-maintain`: 投稿を行わず、Chrome CDP を使ってフォロワー snapshot と成熟済み投稿の公開数値を回収する。さらに、production deployment を確認できた merged 実験 PR を active 化する。
+- `x:growth-maintain`: 投稿を行わず、Chrome CDP で設定対象のプロフィールを開き、blocking state とログイン account を確認してからフォロワー snapshot と成熟済み投稿の公開数値を回収する。さらに、production deployment を確認できた merged 実験 PR を active 化する。
 
 Codex automation には、レビューが毎週月曜11:30 JST、`x:growth-improve -- --execute` が毎週月曜12:30 JST、`x:growth-maintain` が毎日04:30 JSTで ACTIVE 登録されています。登録の正本と model / 通知設定は [`../operations/x-browser-post-schedules.md`](../operations/x-browser-post-schedules.md) を参照します。
 
@@ -39,6 +39,8 @@ Codex automation には、レビューが毎週月曜11:30 JST、`x:growth-impro
 提案前に直近14日から、24時間以上8日以内の投稿の metrics 成熟率を計算する。対象が5件未満、または成熟率が70%未満なら `skipped_insufficient_telemetry` とし、execute では review Issue を理由付きで閉じる。表示数などの数値を0として補完しない。
 
 metric は `median_views`、`median_engagement`、`reply_post_rate` のいずれかで、filter は `postType`、`archetype`、`hasMedia`、`shape`、`topicKey`、`postedAt` 由来の `jstHourBucket` だけを許可する。null・空値は filter に一致しない。
+
+Codex CLI へ渡す Structured Outputs schema は、すべての object で未知 property を禁止し、宣言した property を required にする。任意の metric filter は6項目を nullable で受け、提案受領直後に未使用の null 項目だけを除去してからローカル validator と baseline 集計へ渡す。提案 prompt には成熟投稿の単独 filter 別件数を渡し、minimum sample を満たす候補を選びやすくする。Node 側の baseline sample guard は最終境界として維持する。
 
 前後比較なので時系列交絡は残る。評価時は baseline と比較値だけで決めず、同期間のフォロワー数変化、総投稿数、曜日構成も review Issue で確認する。
 

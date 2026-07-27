@@ -9,10 +9,10 @@ import { readBrowserPostLedger } from "./x-browser-posting/postLedger.mjs";
 import { runWithLocalLog } from "./x-browser-posting/runLog.mjs";
 import { loadBrowserPostConfig } from "./x-browser-posting/config.mjs";
 import { EXPERIMENT_ALLOWLIST } from "./x-growth/experimentAllowlist.mjs";
-import { buildProposalOutputSchema, validateProposal } from "./x-growth/proposalSchema.mjs";
+import { buildProposalOutputSchema, normalizeStructuredProposal, validateProposal } from "./x-growth/proposalSchema.mjs";
 import { applyChangeToFile, buildExperimentBranch, createExperimentPr } from "./x-growth/applyProposal.mjs";
 import { verifyChangedFile } from "./x-growth/verifyChange.mjs";
-import { calculateMetric, telemetryHealth } from "./x-growth/reportMetrics.mjs";
+import { calculateMetric, jstHourBucket, telemetryHealth } from "./x-growth/reportMetrics.mjs";
 import { ATTENTION_LABEL, EXPERIMENT_LABEL, addLabels, closeIssue, comment, ensureLabels, experimentKeyMatches, findReviewIssue, getJstIsoWeek, isTerminalExperiment, listExperimentPrs, normalizeHandle, runGit } from "./x-growth/githubExperiments.mjs";
 
 const LOCK_PATH = "local/x-browser-posting/locks/x-growth-improve.lock";
@@ -92,14 +92,54 @@ export async function runCodexProposal({ cwd, reviewMarkdown, ledgerSummary, all
   const schema = path.join(temp, "schema.json"); const output = path.join(temp, "output.json");
   try {
     await fs.writeFile(schema, JSON.stringify(buildProposalOutputSchema()));
-    const prompt = ["NAZOMATICのX改善実験を1件だけ提案してください。", "allowlist外、頻度、認証、実行設定は変更禁止。targetKeyと構造化metricを必ず出力。", ...allowlist.map((x) => `- ${x.path}: ${x.note} / targetKey ${x.targetKeys.join(",")}`), "\n## レビュー", reviewMarkdown, "\n## 台帳", ledgerSummary].join("\n");
+    const prompt = [
+      "NAZOMATICのX改善実験を1件だけ提案してください。",
+      "allowlist外、頻度、認証、実行設定は変更禁止。targetKeyと構造化metricを必ず出力。",
+      "metric.filtersは、台帳に示す成熟投稿の単独filter件数がminimumSampleSize以上の値を優先してください。複数filterを組み合わせると件数は単独filter以下になるため、baseline不足になる組み合わせは避けてください。",
+      ...allowlist.map((x) => `- ${x.path}: ${x.note} / targetKey ${x.targetKeys.join(",")}`),
+      "\n## レビュー",
+      reviewMarkdown,
+      "\n## 台帳",
+      ledgerSummary,
+    ].join("\n");
     const args = ["exec", ...(model ? ["--model", model] : []), "--cd", cwd, "--sandbox", "read-only", "--ephemeral", "--output-schema", schema, "--output-last-message", output, "-"];
     const result = await run("codex", args, { cwd, input: prompt, timeoutMs: 120000 });
-    return JSON.parse((await fs.readFile(output, "utf8").catch(() => "")) || result);
+    return normalizeStructuredProposal(
+      JSON.parse((await fs.readFile(output, "utf8").catch(() => "")) || result),
+    );
   } finally { await fs.rm(temp, { recursive: true, force: true }).catch(() => {}); }
 }
 
-function buildLedgerSummary(posts) { return `直近14日: ${posts.length}件 / metrics成熟: ${posts.filter((x) => x.metrics?.mature).length}件`; }
+export function buildLedgerSummary(posts) {
+  const mature = posts.filter((entry) => entry.metrics?.mature === true);
+  const dimensions = [
+    ["postType", (entry) => entry.postType],
+    ["archetype", (entry) => entry.metadata?.archetype],
+    ["hasMedia", (entry) => entry.metadata?.hasMedia],
+    ["shape", (entry) => entry.metadata?.shape],
+    ["topicKey", (entry) => entry.metadata?.topicKey],
+    ["jstHourBucket", (entry) => jstHourBucket(entry.postedAt)],
+  ];
+  const counts = dimensions.map(([name, getValue]) => {
+    const byValue = new Map();
+    for (const entry of mature) {
+      const value = getValue(entry);
+      if (value === null || value === undefined || value === "") continue;
+      const key = String(value);
+      byValue.set(key, (byValue.get(key) ?? 0) + 1);
+    }
+    const values = [...byValue.entries()]
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+      .slice(0, 8)
+      .map(([value, count]) => `${value}:${count}`)
+      .join(", ");
+    return `${name}=${values || "該当なし"}`;
+  });
+  return [
+    `直近14日: ${posts.length}件 / metrics成熟: ${mature.length}件`,
+    `成熟投稿の単独filter件数: ${counts.join(" | ")}`,
+  ].join("\n");
+}
 
 async function withLock(cwd, reviewNumber, task) {
   const lock = path.join(cwd, LOCK_PATH); await fs.mkdir(path.dirname(lock), { recursive: true });
