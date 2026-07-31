@@ -43,6 +43,9 @@ next-env.d.ts
 /log
 /logs
 
+# Claude Code 個人ローカル設定
+.claude/settings.local.json
+
 # design-sync (claude.ai/design) — staged scripts, build output, machine state
 .ds-sync/
 ds-bundle/

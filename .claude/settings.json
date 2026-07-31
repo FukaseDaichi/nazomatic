@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // empty' | grep -q 'artifacts/shift-search/reports' && { echo 'Shift Search レポートを変更しました。npm run shift:report:meta と npm run shift:report:view-assets を実行し、src/generated/shift-search/* を同期してください。' >&2; exit 2; } || exit 0",
+            "statusMessage": "Shift Search 同期チェック"
+          }
+        ]
+      }
+    ]
+  }
+}
