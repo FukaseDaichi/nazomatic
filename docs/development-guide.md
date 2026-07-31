@@ -123,7 +123,7 @@ GitHub Actions では `REALTIME_API_TOKEN` secret として同じ値を渡しま
 | `X_BROWSER_POST_LOG_RETENTION_COUNT` | 各ローカルブラウザ投稿 automation の実行ログを残す世代数。未設定時は `70` |
 | `X_BROWSER_POST_MAX_PER_RUN` | 1 実行あたりの投稿上限 |
 | `X_BROWSER_POST_COOLDOWN_MINUTES` | cooldown 分数 |
-| `X_BROWSER_POST_DAILY_LIMIT` | 1 日投稿上限。既定 `6`、ローカル CLI の上限 `30` |
+| `X_BROWSER_POST_DAILY_LIMIT` | 1 日投稿上限。既定 `6`、システム上限 `30`。上限値の定義元は `src/server/x-browser-posting/post-limits.json` のみで、ローカル CLI（`scripts/x-browser-posting/config.mjs`）と内部 API（`src/server/x-browser-posting/candidate.ts`）が同じ値で判定します |
 
 設定の雛形は `.env.x-browser-posting.example` です。dry-run は投稿ボタン押下と DB 更新をしません。フォローコメントは通常 `src/server/x-browser-posting/comment-patterns.json` の 50 パターンからランダム選択され、`--comment` または `X_BROWSER_POST_COMMENT` が空白除去後に空でない場合だけその文面で上書きします。
 

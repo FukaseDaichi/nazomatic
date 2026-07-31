@@ -2,6 +2,20 @@ import fs from "fs";
 import os from "os";
 import path from "path";
 
+// 日次上限の定義元は src/server/x-browser-posting/post-limits.json だけです。
+// 同じファイルを src/server/x-browser-posting/candidate.ts の
+// MAX_BROWSER_POST_DAILY_LIMIT も読むため、local と server で値がずれません。
+// .mjs から .ts は import できないので JSON を読み込みます。
+const POST_LIMITS = JSON.parse(
+  fs.readFileSync(
+    new URL(
+      "../../src/server/x-browser-posting/post-limits.json",
+      import.meta.url
+    ),
+    "utf8"
+  )
+);
+
 export const DEFAULT_ENV_FILE = ".env.x-browser-posting.local";
 export const DEFAULT_HASHTAG = "#謎チケ売ります";
 export const DEFAULT_API_BASE_URL = "http://localhost:3000";
@@ -13,7 +27,8 @@ export const DEFAULT_CHROME_EXECUTABLE_PATH =
 export const DEFAULT_REMOTE_DEBUGGING_PORT = 9222;
 export const DEFAULT_CHROME_STARTUP_TIMEOUT_MS = 20000;
 export const MIN_COOLDOWN_MINUTES = 3;
-export const MAX_DAILY_LIMIT = 30;
+// 値の定義元は src/server/x-browser-posting/post-limits.json（上部の POST_LIMITS 参照）。
+export const MAX_DAILY_LIMIT = POST_LIMITS.maxDailyLimit;
 export const MAX_PER_RUN = 1;
 export const DEFAULT_METRICS_MAX_PER_RUN = 8;
 

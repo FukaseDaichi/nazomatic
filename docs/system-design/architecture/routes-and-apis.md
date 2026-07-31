@@ -50,7 +50,7 @@
 | `GET /api/calendar` | なし | Firestore イベントをカレンダー用に返す | CDN 300 秒 + stale 300 秒 |
 | `GET /api/blank25/manifest` | なし | storage repo の manifest を検証して返す | `no-store` |
 
-`GET /api/calendar` は既定 `query=#謎チケ売ります`、既定 28 日、最大 60 日、最大 500 件です。日付境界は `Asia/Tokyo` です。
+`GET /api/calendar` は既定 `query=#謎チケ売ります`、既定 28 日、最大 60 日、最大 500 件です。日付境界は `Asia/Tokyo` です。取得が上限に達した場合は response の `truncated` が `true` になり、`limit` に適用した上限（500）が入ります。`truncated` は可視性フィルタ前の件数で判定するため、未返却 event が残っている「可能性」を示すだけです。詳細は `docs/system-design/subsystems/calendar-realtime.md` を参照します。
 
 `GET /api/realtime` は `query`、正の整数 `page`、`limit` を受けます。実効 `limit` は Yahoo 取得処理の `PAGE_SIZE=40` が上限です。
 

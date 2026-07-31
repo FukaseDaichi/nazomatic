@@ -37,6 +37,17 @@ jobs:
             2 10 || true)
 
           echo "HTTP status: $HTTP_STATUS"
+
+          # post.sh prints the HTTP status on stdout ("000" when curl never reached the host).
+          # If the helper itself aborts, stdout is empty, so guard before any numeric comparison.
+          case "$HTTP_STATUS" in
+            ''|*[!0-9]*)
+              echo "Could not determine HTTP status from scripts/internal-api/post.sh (got: '${HTTP_STATUS}'). Treating as failure." >&2
+              cat "$RESPONSE_FILE" >&2
+              exit 1
+              ;;
+          esac
+
           if [ "$HTTP_STATUS" -eq 204 ]; then
             echo "No candidate to repost (204). Treating as success."
             exit 0
@@ -48,7 +59,7 @@ jobs:
             cat "$RESPONSE_FILE"
             exit 0
           else
-            echo "API call failed:"
-            cat "$RESPONSE_FILE"
-            exit 0
+            echo "API call failed with HTTP status ${HTTP_STATUS}." >&2
+            cat "$RESPONSE_FILE" >&2
+            exit 1
           fi

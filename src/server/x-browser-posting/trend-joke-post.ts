@@ -1,5 +1,6 @@
 import { createHash, randomInt } from "crypto";
 
+import { baseURL } from "@/app/config";
 import featuresJson from "@/lib/json/features.json";
 import { fetchYahooRealtimePosts } from "@/server/realtime/fetchYahooRealtime";
 import { normalizePost } from "@/server/realtime/rules/normalizePost";
@@ -16,7 +17,7 @@ const MAX_SAMPLE_TITLES = 8;
 const MAX_FREQUENT_WORDS = 8;
 const MAX_TREND_JOKE_WEIGHTED_LENGTH = 280;
 const MAX_TREND_JOKE_NEWLINES = 4;
-const PUBLIC_BASE_URL = "https://nazomatic.vercel.app";
+const PUBLIC_BASE_URL = baseURL.replace(/\/+$/, "");
 
 export type TrendJokeArchetype =
   | "monologue"

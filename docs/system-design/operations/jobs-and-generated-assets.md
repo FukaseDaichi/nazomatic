@@ -13,6 +13,8 @@
 
 Workflow は `REALTIME_API_BASE_URL` と `REALTIME_API_TOKEN` secrets を使います。token 値はアプリの `REALTIME_INTERNAL_API_TOKEN` と一致させます。
 
+`x-repost-events.yml` の終了コード方針は次の通りです。`204`（repost 候補なし）と `429`（rate limit）は意図した alert 抑制として成功終了し、その他の 2xx も成功終了します。それ以外の status、および `scripts/internal-api/post.sh` が status を返せなかった場合（空文字や数値以外）は job を失敗させ、credential error・server error・X API 仕様変更が GitHub Actions の赤い run として見えるようにします。
+
 ## ローカル X 自動化
 
 リポジトリ外のスケジューラーで稼働中の登録枠と実行時の報告契約は [`x-browser-post-schedules.md`](./x-browser-post-schedules.md) を参照します。

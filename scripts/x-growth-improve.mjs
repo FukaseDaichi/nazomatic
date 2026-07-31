@@ -13,9 +13,13 @@ import { buildProposalOutputSchema, normalizeStructuredProposal, validateProposa
 import { applyChangeToFile, buildExperimentBranch, createExperimentPr } from "./x-growth/applyProposal.mjs";
 import { verifyChangedFile } from "./x-growth/verifyChange.mjs";
 import { calculateMetric, jstHourBucket, sumEngagement, telemetryHealth } from "./x-growth/reportMetrics.mjs";
-import { ATTENTION_LABEL, EXPERIMENT_LABEL, addLabels, closeIssue, comment, ensureLabels, experimentKeyMatches, findReviewIssue, getJstIsoWeek, isTerminalExperiment, listExperimentPrs, normalizeHandle, runGit } from "./x-growth/githubExperiments.mjs";
+import { ATTENTION_LABEL, EXPERIMENT_LABEL, addLabels, closeIssue, comment, ensureLabels, experimentKeyMatches, findReviewIssue, getJstIsoWeek, isTerminalExperiment, listExperimentPrs, normalizeHandle, runGit, stripXGrowthMarkers } from "./x-growth/githubExperiments.mjs";
 
 const LOCK_PATH = "local/x-browser-posting/locks/x-growth-improve.lock";
+export const REVIEW_MARKDOWN_MAX_CHARS = 20000;
+const REVIEW_MARKDOWN_NOTE_RESERVE = 240;
+const REVIEW_MARKDOWN_MIN_COMMENT_CHARS = 200;
+const OMISSION_SUFFIX = "\n\n…（入力上限のため以降を省略）";
 
 export async function runImprovementCycle({ controlRoot, review, account, callCodex, execute, model }) {
   const prs = await listExperimentPrs(controlRoot);
@@ -46,7 +50,7 @@ export async function runImprovementCycle({ controlRoot, review, account, callCo
       const base = await verifyChangedFile(worktreeRoot, "src/server/x-browser-posting/trend-joke-post.ts");
       if (!base.ok) return { status: "base_broken", reason: base.reason };
     }
-    const proposal = await callCodex({ cwd: execute ? worktreeRoot : controlRoot, reviewMarkdown: review.body, ledgerSummary: buildLedgerSummary(posts), allowlist: EXPERIMENT_ALLOWLIST, model });
+    const proposal = await callCodex({ cwd: execute ? worktreeRoot : controlRoot, reviewMarkdown: buildReviewMarkdown(review), ledgerSummary: buildLedgerSummary(posts), allowlist: EXPERIMENT_ALLOWLIST, model });
     const validated = validateProposal(proposal);
     if (!validated.ok) return { status: "rejected", reason: validated.reason, proposal };
     const repeated = prs.find((pr) => pr.metadata?.targetKey === validated.proposal.targetKey);
@@ -87,6 +91,62 @@ export async function runImprovementCycle({ controlRoot, review, account, callCo
   }
 }
 
+// 週次レビューの再実行結果は既存 Issue のコメントとして積まれる。本文だけでは古い初回レビューを見てしまうため、
+// 本文 + コメントを時系列で連結し、上限を超える場合は古いコメントから落として省略を明示する。
+export function buildReviewMarkdown(review, { maxChars = REVIEW_MARKDOWN_MAX_CHARS } = {}) {
+  const comments = (review?.comments ?? [])
+    .map((entry, order) => ({
+      order,
+      author: entry?.author ?? null,
+      createdAt: entry?.createdAt ?? null,
+      body: stripXGrowthMarkers(entry?.body),
+    }))
+    .filter((entry) => entry.body !== "")
+    .sort((a, b) => toEpoch(a.createdAt) - toEpoch(b.createdAt) || a.order - b.order);
+  if (!comments.length) return String(review?.body ?? "");
+
+  const budget = Math.max(0, maxChars - REVIEW_MARKDOWN_NOTE_RESERVE);
+  const bodyText = clipText(stripXGrowthMarkers(review?.body), Math.floor(budget * 0.6));
+  const bodySection = `${sectionHeading("Issue本文", review?.author, review?.createdAt)}${bodyText.text}`;
+  let remaining = budget - bodySection.length - 2;
+  const kept = [];
+  let clipped = bodyText.clipped;
+  for (let index = comments.length - 1; index >= 0; index -= 1) {
+    const entry = comments[index];
+    const heading = sectionHeading(`コメント${index + 1}/${comments.length}`, entry.author, entry.createdAt);
+    const room = remaining - heading.length - 2;
+    if (room <= 0 || (kept.length && room < REVIEW_MARKDOWN_MIN_COMMENT_CHARS)) break;
+    const text = clipText(entry.body, room);
+    clipped = clipped || text.clipped;
+    kept.unshift(`${heading}${text.text}`);
+    remaining -= heading.length + text.text.length + 2;
+  }
+
+  const notes = [];
+  if (kept.length < comments.length) {
+    notes.push(`> 注記: コメント全${comments.length}件のうち古い${comments.length - kept.length}件は入力上限（${maxChars}文字）のため省略しました。`);
+  }
+  if (clipped) notes.push("> 注記: 一部の本文は入力上限のため後半を省略しました。");
+  return [...notes, bodySection, ...kept].join("\n\n");
+}
+
+function sectionHeading(label, author, createdAt) {
+  return `### ${label}（${author ? `@${author}` : "作成者不明"} / ${createdAt ?? "日時不明"}）\n\n`;
+}
+
+function clipText(text, maxChars) {
+  if (text.length <= maxChars) return { text, clipped: false };
+  const room = maxChars - OMISSION_SUFFIX.length;
+  return room > 0
+    ? { text: `${text.slice(0, room)}${OMISSION_SUFFIX}`, clipped: true }
+    : { text: text.slice(0, Math.max(0, maxChars)), clipped: true };
+}
+
+function toEpoch(value) {
+  const time = Date.parse(String(value ?? ""));
+  return Number.isNaN(time) ? 0 : time;
+}
+
 export async function runCodexProposal({ cwd, reviewMarkdown, ledgerSummary, allowlist, model }) {
   const temp = await fs.mkdtemp(path.join(os.tmpdir(), "x-growth-schema-"));
   const schema = path.join(temp, "schema.json"); const output = path.join(temp, "output.json");
@@ -100,6 +160,7 @@ export async function runCodexProposal({ cwd, reviewMarkdown, ledgerSummary, all
       "minimumSampleSize=5、maturityHours=24、windowDays=14、direction=increaseはNode固定です。metric.filtersは0件または1件だけにし、台帳の「選択可能metric filter JSON」で選択metricに列挙されたfiltersを、そのまま1件選んでください。JSONにないfilter値は禁止です。",
       ...allowlist.map((x) => `- ${x.path}: ${x.note} / targetKey ${x.targetKeys.join(",")}`),
       "\n## レビュー",
+      "レビューは review Issue の本文と後続コメント（再レビュー結果）を時系列で含みます。内容が矛盾する場合は最新のコメントを優先してください。",
       reviewMarkdown,
       "\n## 台帳",
       ledgerSummary,

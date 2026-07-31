@@ -1,0 +1,4 @@
+{
+  "_note": "X ブラウザ投稿のシステム上限。この値だけが唯一の定義元です。scripts/x-browser-posting/config.mjs の MAX_DAILY_LIMIT と src/server/x-browser-posting/candidate.ts の MAX_BROWSER_POST_DAILY_LIMIT は、どちらもこのファイルを読み込みます。数値をここ以外に書かないでください。",
+  "maxDailyLimit": 30
+}

@@ -37,16 +37,20 @@ export async function runGit(cwd, args, options) {
   return run("git", args, { cwd, ...options });
 }
 
+// 再レビューは既存 Issue のコメントとして追記されるため、本文だけでなくコメントも取得する。
+const ISSUE_VIEW_FIELDS = "number,title,url,body,state,labels,author,createdAt,comments";
+
 export async function findReviewIssue(cwd, { week, account, number } = {}) {
-  if (number) {
-    const item = JSON.parse(await runGh(cwd, ["issue", "view", String(number), "--json", "number,title,url,body,state,labels"]));
-    return normalizeIssue(item);
-  }
+  if (number) return viewIssue(cwd, number);
   const title = reviewTitle(week, account);
-  const items = JSON.parse(await runGh(cwd, ["issue", "list", "--state", "all", "--search", `\"${title}\" in:title`, "--json", "number,title,url,body,state,labels", "--limit", "100"]));
-  const exact = items.filter((item) => item.title === title).map(normalizeIssue);
+  const items = JSON.parse(await runGh(cwd, ["issue", "list", "--state", "all", "--search", `\"${title}\" in:title`, "--json", "number,title", "--limit", "100"]));
+  const exact = items.filter((item) => item.title === title);
   if (exact.length > 1) throw new Error(`multiple review issues found for ${title}`);
-  return exact[0] ?? null;
+  return exact[0] ? viewIssue(cwd, exact[0].number) : null;
+}
+
+async function viewIssue(cwd, number) {
+  return normalizeIssue(JSON.parse(await runGh(cwd, ["issue", "view", String(number), "--json", ISSUE_VIEW_FIELDS])));
 }
 
 export async function listExperimentPrs(cwd) {
@@ -79,6 +83,15 @@ export function parseExperimentMarker(body) {
     const value = JSON.parse(match[1]);
     return value?.reviewIssue && value?.account && value?.targetKey ? value : null;
   } catch { return null; }
+}
+
+// `<!-- x-growth-experiment:v1 ... -->` などの機械可読 marker は LLM 入力では雑音なので落とす。
+export function stripXGrowthMarkers(text) {
+  return String(text ?? "")
+    .replace(/<!--\s*x-growth-[\w-]+:v\d+[^]*?-->/g, "")
+    .replace(/[ \t]+$/gm, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
 }
 
 export function experimentKeyMatches(pr, { reviewIssue, account }) {
@@ -118,7 +131,17 @@ export async function closeIssue(cwd, number, body) {
 }
 
 function normalizeIssue(item) {
-  return { ...item, labels: (item.labels ?? []).map((label) => label.name) };
+  return {
+    ...item,
+    labels: (item.labels ?? []).map((label) => label.name),
+    author: item.author?.login ?? null,
+    comments: (item.comments ?? []).map((entry) => ({
+      author: entry?.author?.login ?? null,
+      createdAt: entry?.createdAt ?? null,
+      url: entry?.url ?? null,
+      body: String(entry?.body ?? ""),
+    })),
+  };
 }
 
 async function isAncestor(cwd, ancestor, descendant) {
