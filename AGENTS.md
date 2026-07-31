@@ -25,11 +25,13 @@ Keep this file short and operational. Put durable project details in Japanese do
 npm run dev
 npm run build
 npm run lint
+npm run test:x-browser-posting
 npm run shift:report:meta
 npm run shift:report:view-assets
 ```
 
-- There is no configured test framework. Use `npm run lint` and focused manual verification unless a task provides another check.
+- Automated tests exist only for the X posting / growth scripts under `scripts/x-browser-posting/*.test.mjs`, run via Node's built-in `node:test`. Nothing under `src/` has test coverage.
+- Use `npm run lint` plus `npm run test:x-browser-posting`, and focused manual verification, unless a task provides another check.
 - After changing Shift Search report artifacts, run both `shift:report:*` commands and keep `src/generated/shift-search/*` in sync.
 
 ## Non-Negotiable Rules

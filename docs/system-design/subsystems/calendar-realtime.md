@@ -33,7 +33,18 @@ flowchart LR
 
 `GET /api/calendar` は `eventTime` と `sourceQuery` で絞り、最大 500 件を時刻昇順で返します。`isRealtimeEventVisible()` が false の document は除外します。
 
-画面は `useCalendarData.ts` から API を呼び、`CalendarPageClient.tsx` が月表示、検索、再取得、詳細 dialog を管理します。
+pagination は持ちませんが、取得上限に達したことは response で明示します。Firestore からは `500 + 1` 件まで取得し、余分な 1 件が返った場合に `truncated: true` とします。返す event は最大 500 件です。`limit` には適用した上限（500）が入ります。
+
+| field | 型 | 意味 |
+|---|---|---|
+| `limit` | `number` | 1 回の response で返す document 数の上限 |
+| `truncated` | `boolean` | Firestore の取得が `limit` に達した。未返却の event が残っている可能性がある |
+
+`truncated` は可視性フィルタ前の raw document 数で判定します。`isRealtimeEventVisible()` による除外で `events.length` は取得 document 数以下になるため、`events.length` では判定できません。
+
+このため `truncated` は「取りこぼしがある」ことを保証しません。非表示 document が多い場合、`truncated: true` でも実際の未返却 event は 0 件になり得ます（`events.length < limit` も起こります）。取りこぼしを断定するには可視 event が 500 件そろうまで追加取得する必要があり、Firestore の読み取り回数が増えるため採用していません。上限到達の警告としてのみ使います。
+
+画面は `useCalendarData.ts` から API を呼び、`CalendarPageClient.tsx` が月表示、検索、再取得、詳細 dialog を管理します。`truncated` が true のとき、`CalendarPageClient.tsx` は月見出し横の status 行に上限到達 badge を表示します。badge の文言も断定を避け、表示されていないイベントがある「可能性」を伝えます。この badge は API 側の上限のみを示し、画面側のテキスト絞込による件数変化とは無関係です。
 
 ## 可視性検証
 

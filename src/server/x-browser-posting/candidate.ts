@@ -7,6 +7,8 @@ import {
   suggestBrowserPostComment,
 } from "@/server/x-browser-posting/comment";
 
+import postLimits from "./post-limits.json";
+
 const CAPTURE_WINDOW_MS = 24 * 60 * 60 * 1000;
 const MAX_CANDIDATES = 50;
 const ACCOUNT_COLLECTION = "xBrowserPostingAccounts";
@@ -16,7 +18,9 @@ export const DEFAULT_BROWSER_POST_HASHTAG = "#謎チケ売ります";
 export const DEFAULT_BROWSER_POST_COOLDOWN_MINUTES = 120;
 export const MIN_BROWSER_POST_COOLDOWN_MINUTES = 3;
 export const DEFAULT_BROWSER_POST_DAILY_LIMIT = 6;
-export const MAX_BROWSER_POST_DAILY_LIMIT = 50;
+// 日次上限の定義元は ./post-limits.json だけです。
+// scripts/x-browser-posting/config.mjs の MAX_DAILY_LIMIT も同じファイルを読みます。
+export const MAX_BROWSER_POST_DAILY_LIMIT = postLimits.maxDailyLimit;
 export const DEFAULT_BROWSER_POST_WEEKLY_LIMIT = 300;
 export const DEFAULT_BROWSER_POST_MAX_PER_RUN = 1;
 export const MAX_BROWSER_POST_MAX_PER_RUN = 1;

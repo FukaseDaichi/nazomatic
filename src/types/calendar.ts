@@ -40,5 +40,15 @@ export interface CalendarApiResponse {
   from: string;
   to: string;
   generatedAt: string;
+  /** API が 1 回で返す document 数の上限。 */
+  limit: number;
+  /**
+   * Firestore の取得が `limit` に達したときに true。
+   *
+   * 判定は可視性フィルタ前の raw document 数で行うため、「未返却の event が
+   * 残っている可能性がある」ことしか意味しません。非表示 document が多い場合は
+   * `truncated: true` でも実際の取りこぼしが 0 件のことがあります。
+   */
+  truncated: boolean;
   events: CalendarEvent[];
 }

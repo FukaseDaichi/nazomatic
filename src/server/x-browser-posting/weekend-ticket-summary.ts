@@ -1,5 +1,6 @@
 import { randomInt } from "crypto";
 
+import { baseURL } from "@/app/config";
 import { firestore } from "@/server/firebase/admin";
 import { isRealtimeEventVisible } from "@/server/realtime/syndication/visibility";
 import {
@@ -10,7 +11,7 @@ import {
 
 const EVENTS_COLLECTION = "realtimeEvents";
 const DEFAULT_TIMEZONE = "Asia/Tokyo";
-const CALENDAR_URL = "https://nazomatic.vercel.app/calendar";
+const CALENDAR_URL = `${baseURL.replace(/\/+$/, "")}/calendar`;
 const MAX_WEEKEND_EVENTS = 500;
 const MAX_SAMPLE_TITLES = 5;
 

@@ -124,6 +124,9 @@ export default function CalendarPageClient() {
   const isStale = lastUpdated
     ? Date.now() - lastUpdated.getTime() > HOUR_MS
     : false;
+  // API 側が取得上限に達したかどうか。可視性フィルタ前の件数で判定するため
+  // 取りこぼしは断定できない。テキスト絞込とも無関係。
+  const truncatedLimit = data?.truncated ? data.limit : null;
 
   const handleNavigate = (direction: "prev" | "next") => {
     setFocusDate((current) =>
@@ -253,6 +256,14 @@ export default function CalendarPageClient() {
             {error && (
               <span className="text-xs sm:text-sm text-red-400 px-2 py-1 bg-red-500/20 rounded-full border border-red-500/30">
                 読み込み失敗
+              </span>
+            )}
+            {truncatedLimit !== null && (
+              <span
+                className="text-xs sm:text-sm text-amber-300 px-2 py-1 bg-amber-500/20 rounded-full border border-amber-500/30"
+                title={`該当データが取得上限 ${truncatedLimit} 件に達しました。表示されていないイベントがある可能性があります。期間を絞ると確認できます。`}
+              >
+                取得上限 {truncatedLimit} 件に到達
               </span>
             )}
             {/* Navigation */}

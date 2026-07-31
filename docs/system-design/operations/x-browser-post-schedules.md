@@ -44,7 +44,7 @@
 | Chrome | auto start 有効、headless 有効、前面化なし | 専用 profile の CDP Chrome を背面実行 |
 | telemetry | 有効（未指定時の既定） | 投稿成功後に follower / 過去投稿 metrics を取得 |
 | metrics 上限 | 1実行8件（未指定時の既定） | 20時間〜8日の未取得投稿を古い順に回収 |
-| 投稿制限 | cooldown 3分、1日30件、1実行1件 | local CLI 側の上限 |
+| 投稿制限 | cooldown 3分、1日30件、1実行1件 | 1日上限 30 件は `src/server/x-browser-posting/post-limits.json` を唯一の定義元として local CLI と内部 API の両方で判定 |
 | log 保持 | 70世代 | automation ID ごとに古い `*.log` を削除 |
 
 ## 共通の実行契約

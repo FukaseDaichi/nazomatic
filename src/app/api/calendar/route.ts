@@ -25,9 +25,22 @@ export async function GET(request: Request) {
     const rangeDays = clampRangeDays(rangeDaysParam);
     const { from, inclusiveTo } = buildDateRange({ fromParam, toParam, rangeDays });
 
-    const snapshot = await buildFirestoreQuery({ query, from, inclusiveTo }).limit(MAX_RESULTS).get();
+    // MAX_RESULTS + 1 件まで取得し、余分な 1 件が返ったかどうかで上限到達を判定する。
+    const snapshot = await buildFirestoreQuery({ query, from, inclusiveTo })
+      .limit(MAX_RESULTS + 1)
+      .get();
 
-    const events: CalendarEvent[] = snapshot.docs
+    // truncated は可視性フィルタ前の raw document 数で判定する。
+    // mapDocToCalendarEvent() は非表示・不正な document を null にするため、
+    // events.length は取得 document 数以下になり、上限到達の判定には使えない。
+    // したがって truncated は「未返却 event が残っている可能性」しか示さない。
+    // 取りこぼしを断定するには可視 event が MAX_RESULTS 件そろうまで追加取得が
+    // 必要で、読み取り回数が増えるため採用しない。詳細は
+    // docs/system-design/subsystems/calendar-realtime.md を参照。
+    const truncated = snapshot.docs.length > MAX_RESULTS;
+    const docs = truncated ? snapshot.docs.slice(0, MAX_RESULTS) : snapshot.docs;
+
+    const events: CalendarEvent[] = docs
       .map((doc) => mapDocToCalendarEvent(doc))
       .filter((event): event is CalendarEvent => event !== null);
 
@@ -36,6 +49,8 @@ export async function GET(request: Request) {
       from: from.toISOString(),
       to: inclusiveTo.toISOString(),
       generatedAt: new Date().toISOString(),
+      limit: MAX_RESULTS,
+      truncated,
       events,
     };
 
