@@ -14,10 +14,6 @@ test framework 自体はあります。`node:test` を使う `npm run test:x-bro
 
 一方 `src/` 側には test が 1 件もありません。timezone 計算、Yahoo response parsing、Firestore transaction、BLANK25 manifest 編集、生成 scripts の回帰は、lint と build と手動確認だけで担保しています。外部仕様依存の多いサブシステムほど、変更検知が遅れる可能性があります。
 
-### X ブラウザ投稿は UI と利用ポリシーに依存する
-
-X の DOM、label、blocking 画面が変わると、Playwright / CDP 操作が停止または誤動作する可能性があります。headless Chrome は通常 Chrome と user agent や表示挙動が異なります。非 API の Web 操作には account 制限リスクもあり、コード上の safety guard だけでは解消できません。
-
 ## 優先度: 中
 
 ### Yahoo / X 非公式 response 形式への依存
