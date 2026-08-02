@@ -7,6 +7,14 @@ import {
   ShiftSearchReportList,
   type ReportItem,
 } from "@/components/shift-search/shift-search-report-list";
+import { generatePageMetadata } from "@/lib/seo";
+
+export const metadata = generatePageMetadata({
+  title: "シフト検索 レポート一覧",
+  description:
+    "シフト検索（シーザー暗号）の全単語一括実行レポート一覧。日本語・英語の文字数別に、シフトで別の単語になる組み合わせをまとめています。",
+  path: "/shift-search/reports",
+});
 
 const NUMBER_FORMAT = new Intl.NumberFormat("ja-JP");
 

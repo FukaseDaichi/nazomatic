@@ -1,5 +1,7 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { generatePageMetadata } from "@/lib/seo";
 import ArticleHeaderComponent from "@/components/common/article-header-component";
 import {
   getShiftSearchViewManifest,
@@ -40,6 +42,24 @@ function parseLanguage(raw: string): ShiftSearchReportLanguage | null {
     return raw;
   }
   return null;
+}
+
+export function generateMetadata({ params }: PageProps): Metadata {
+  const language = parseLanguage(params.lang);
+  const length = Number(params.length);
+  const summary =
+    language && Number.isInteger(length) && length > 0
+      ? getShiftSearchViewReport(language, length)
+      : null;
+  if (!summary) {
+    return {};
+  }
+  const languageLabel = language === "jp" ? "日本語" : "英語";
+  return generatePageMetadata({
+    title: `シフト検索レポート（${languageLabel}・${length}文字）`,
+    description: `${languageLabel}${length}文字の全単語シフト検索（シーザー暗号）レポート。辞書「${summary.dictionary}」の${NUMBER_FORMAT.format(summary.targetWordCount)}語を対象に、シフトで別の単語になる${NUMBER_FORMAT.format(summary.totalHitRows)}件の組み合わせを掲載。`,
+    path: `/shift-search/reports/${params.lang}/${params.length}`,
+  });
 }
 
 export function generateStaticParams() {

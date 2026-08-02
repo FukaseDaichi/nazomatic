@@ -19,14 +19,25 @@ export function generateJsonLdArticle({
     headline: title,
     description: description || "",
     url: `${baseURL}${path}`,
+    image: `${baseURL}/og-image.png`,
+    inLanguage: "ja",
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": baseURL,
+      "@id": `${baseURL}${path}`,
     },
     author: {
       "@type": "Person",
       name: "WhiteFranc",
       url: "https://whitefranc.fanbox.cc/",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "ナゾマティック",
+      url: baseURL,
+      logo: {
+        "@type": "ImageObject",
+        url: `${baseURL}/favicons/favicon-96x96.png`,
+      },
     },
   };
 }
