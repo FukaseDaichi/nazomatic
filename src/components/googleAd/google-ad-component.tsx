@@ -51,14 +51,16 @@ export const AdComponent = () => {
   return (
     <>
       <Script
-        async
+        strategy="lazyOnload"
         src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9744981433842030"
         crossOrigin="anonymous"
       ></Script>
 
       <ins
         className="adsbygoogle"
-        style={{ display: "block" }}
+        // 遅延読み込みで広告が後から挿入されるため、あらかじめ高さを確保して
+        // レイアウトシフト(CLS)を防ぐ
+        style={{ display: "block", minHeight: 100 }}
         data-ad-client="ca-pub-9744981433842030"
         data-ad-slot="7909742233"
         data-ad-format="auto"

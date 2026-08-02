@@ -1,14 +1,41 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import * as LucideIcons from "lucide-react";
 import { HeaderComponent } from "@/components/common/header-component";
 import { FooterComponent } from "@/components/common/footer-component";
-import { ThreeHeroBackground } from "@/components/common/three-hero-background";
 import featuresData from "@/lib/json/features.json";
+import { getFeatureIcon } from "@/lib/feature-icons";
 import { baseURL } from "@/app/config";
+import dynamic from "next/dynamic";
 import Script from "next/script";
 import Link from "next/link";
+
+/**
+ * three.js を待たずに描画される背景の下地。
+ * three をこのページの初期チャンクに引き込まないよう、
+ * three-hero-background.tsx から import せずここで定義する
+ * (同モジュールを静的 import すると dynamic import の分割が無効になる)。
+ */
+function HeroBackdrop() {
+  return (
+    <>
+      <div className="fixed inset-0 z-0 bg-[#0a0812]" aria-hidden="true" />
+      <div
+        className="pointer-events-none fixed inset-0 z-[2] bg-[radial-gradient(120%_80%_at_50%_0%,rgba(124,77,255,.10),transparent_55%),radial-gradient(100%_60%_at_50%_120%,rgba(10,8,18,.9),transparent)]"
+        aria-hidden="true"
+      />
+    </>
+  );
+}
+
+const ThreeHeroBackground = dynamic(
+  () =>
+    import("@/components/common/three-hero-background").then(
+      (m) => m.ThreeHeroBackground
+    ),
+  { ssr: false }
+);
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -28,12 +55,44 @@ const jsonLd = {
 
 const MotionLink = motion(Link);
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 18 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+type IdleWindow = Window & {
+  requestIdleCallback?: (
+    callback: () => void,
+    options?: { timeout: number }
+  ) => number;
+  cancelIdleCallback?: (handle: number) => void;
 };
 
+/**
+ * three.js 背景のマウントをアイドル時間まで遅らせ、初期描画から重い初期化を外す。
+ * requestIdleCallback 非対応ブラウザは setTimeout にフォールバックする。
+ */
+function useIdleMount() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const idleWindow = window as IdleWindow;
+    const { requestIdleCallback, cancelIdleCallback } = idleWindow;
+
+    if (typeof requestIdleCallback === "function") {
+      const handle = requestIdleCallback.call(
+        idleWindow,
+        () => setMounted(true),
+        { timeout: 2000 }
+      );
+      return () => cancelIdleCallback?.call(idleWindow, handle);
+    }
+
+    const timer = window.setTimeout(() => setMounted(true), 300);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  return mounted;
+}
+
 export default function Home() {
+  const showThreeBackground = useIdleMount();
+
   return (
     <>
       <Script
@@ -42,55 +101,47 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <ThreeHeroBackground />
+      <HeroBackdrop />
+      {showThreeBackground && <ThreeHeroBackground />}
       <div className="relative z-10">
         <HeaderComponent />
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-          <motion.section
-            initial="hidden"
-            animate="show"
-            variants={{ show: { transition: { staggerChildren: 0.15 } } }}
-            className="flex min-h-[55svh] flex-col items-center justify-center text-center sm:min-h-[68vh]"
-          >
-            <motion.div
-              variants={fadeUp}
-              className="mb-5 text-xs font-medium tracking-[0.34em] text-[#a98bff] sm:mb-6"
-            >
+          {/*
+            LCP 要素を含むヒーローは framer-motion を使わず CSS アニメーションで入場させる。
+            SSR された HTML の時点でアニメーションが始まるため、ハイドレーションを待たずにペイントされる。
+          */}
+          <section className="flex min-h-[55svh] flex-col items-center justify-center text-center sm:min-h-[68vh]">
+            <div className="mb-5 animate-fade-up text-xs font-medium tracking-[0.34em] text-[#a98bff] motion-reduce:animate-none sm:mb-6">
               謎解き・パズル お助けツール集
-            </motion.div>
-            <motion.h2
-              variants={fadeUp}
-              className="text-[clamp(40px,8vw,92px)] font-black leading-[1.05] tracking-wide [text-shadow:0_6px_44px_rgba(124,77,255,.4)]"
-            >
+            </div>
+            {/*
+              この見出しは LCP 要素。opacity を 0 から動かすと「まだ描画されて
+              いない」と扱われて LCP が遅れるため、transform だけを動かす。
+            */}
+            <h2 className="animate-rise-up text-[clamp(40px,8vw,92px)] font-black leading-[1.05] tracking-wide [animation-delay:0.15s] [text-shadow:0_6px_44px_rgba(124,77,255,.4)] motion-reduce:animate-none">
               謎を解き明かそう
-            </motion.h2>
-            <motion.p
-              variants={fadeUp}
-              className="mt-5 max-w-[600px] text-[clamp(15px,2vw,20px)] text-[rgba(231,227,245,.78)] sm:mt-6"
-            >
+            </h2>
+            <p className="mt-5 max-w-[600px] animate-fade-up text-[clamp(15px,2vw,20px)] text-[rgba(231,227,245,.78)] [animation-delay:0.3s] motion-reduce:animate-none sm:mt-6">
               NAZOMATICで、あなたの謎解き力を極限まで高めよう。
-            </motion.p>
-          </motion.section>
+            </p>
+          </section>
 
           <section id="tools" className="mb-16 scroll-mt-20">
-            <motion.div
-              initial={{ opacity: 0, y: 14 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="mb-6 flex items-baseline gap-3 sm:mb-8"
-            >
+            {/*
+              初期表示のビューポート内に入る見出しなので、framer-motion の
+              whileInView(JS 待ち)ではなく CSS アニメーションで表示する。
+              JS を待つとこの見出しが LCP 要素になり LCP が悪化する。
+            */}
+            <div className="mb-6 flex animate-fade-up items-baseline gap-3 motion-reduce:animate-none sm:mb-8">
               <h2 className="text-2xl font-bold sm:text-3xl">ツール一覧</h2>
               <span className="text-sm tracking-[0.1em] text-[#a98bff]">
                 {featuresData.features.length} TOOLS
               </span>
-            </motion.div>
+            </div>
 
             <div className="grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
               {featuresData.features.map((feature, index) => {
-                const IconComponent = LucideIcons[
-                  feature.iconName as keyof typeof LucideIcons
-                ] as LucideIcons.LucideIcon;
+                const IconComponent = getFeatureIcon(feature.iconName);
 
                 return (
                   <MotionLink
@@ -106,7 +157,7 @@ export default function Home() {
                   >
                     <div className="flex items-center gap-3">
                       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-purple-500/35 bg-gradient-to-br from-purple-500/30 to-purple-500/5 text-purple-300 transition-colors duration-300 group-hover:text-purple-200">
-                        <IconComponent className="h-6 w-6" />
+                        <IconComponent className="h-6 w-6" aria-hidden="true" />
                       </div>
                       <h3 className="text-lg font-bold sm:text-xl">
                         {feature.title}

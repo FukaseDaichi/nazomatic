@@ -34,6 +34,7 @@ flowchart LR
 | [`architecture/overview.md`](./architecture/overview.md) | 技術構成、実行境界、ディレクトリ責務 |
 | [`architecture/routes-and-apis.md`](./architecture/routes-and-apis.md) | 画面ルート、API、SEO 対象 |
 | [`architecture/data-and-security.md`](./architecture/data-and-security.md) | 正本データ、永続化、外部連携、認証境界 |
+| [`architecture/frontend-performance.md`](./architecture/frontend-performance.md) | 背景の遅延読み込み、ヘッダー出し分け、入場アニメーション、アイコン参照、広告読み込み |
 
 ### Subsystems
 
@@ -61,4 +62,8 @@ flowchart LR
 - BLANK25 Editor は HTTP Basic 認証、Realtime / X 内部 API は Bearer 認証と HMAC 署名（有効期限・nonce 付き）を使う。
 - 通常 UI はダークグラデーションと `purple-400` を基調にする。
 - text-like input はモバイルで 16px 以上にする。
+- three.js 背景は `next/dynamic` でアイドル時に遅延マウントし、背景の下地は遅延対象から分離する。
+- ヘッダーの出し分けは CSS のブレークポイントで行い、JavaScript の画面幅判定では行わない。
+- ファーストビューの入場アニメーションは CSS で行い、LCP 要素には `opacity` を 0 から動かすアニメーションを付けない。
+- lucide アイコンは `src/lib/feature-icons.ts` 経由で参照する。
 - Shift Search の元成果物と表示用 JSON は分離し、生成コマンドで同期する。
