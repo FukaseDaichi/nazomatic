@@ -24,7 +24,7 @@ Yahoo!リアルタイム検索と X syndication endpoint は外部 response の�
 
 `x-growth-improve` は PR 作成時の `proposalBaseline` を保存し、`x-growth-maintain` は production activation 時に再集計せず、その値を `evaluationBaseline` として引き継ぎます。レビューやマージ待ちが長いと、表示する baseline が実験開始直前の状態を表さない可能性があります。
 
-`docs/ideas/x-growth-pr-automation-final-spec.md` は activation 時に `activeAt - maturityHours` を終端として `evaluationBaseline` を再計算する仕様を記述していますが、現行実装は未対応です。仕様書と現行実装のどちらを正とするかが未確定のため、実装判断は保留しています。
+実装前に検討された仕様では、production activation 時に `activeAt - maturityHours` を終端とする直前 `windowDays` を対象に、同じ metric / filters で `evaluationBaseline` を再計算して activation コメントへ固定する想定でした。成熟待ち時間を空けることで、実験開始直前の未成熟投稿を 0 として扱わないことが狙いです。この再計算にも sample size とテレメトリ成熟率のゲートを適用します。現行実装はこの再計算に未対応で、検討時の仕様と現行実装のどちらを正とするかが未確定のため、実装判断は保留しています。
 
 また、週次レビューは `plannedEvaluateWeek` が実行週と完全一致する active PR だけを評価対象にします。該当週のレビューが失敗または未実行だった場合、翌週以降に自動で拾い直しません。
 

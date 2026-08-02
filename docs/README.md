@@ -14,7 +14,7 @@
 | 文書 | 役割 |
 |---|---|
 | [`system-design/README.md`](./system-design/README.md) | システム設計書の正本と読み順 |
-| [`system-design/architecture/`](./system-design/architecture/) | 全体構成、ルート/API、データ、セキュリティ |
+| [`system-design/architecture/`](./system-design/architecture/) | 全体構成、ルート/API、データ、セキュリティ、フロントエンド描画・読み込み |
 | [`system-design/subsystems/`](./system-design/subsystems/) | 機能別の現行設計 |
 | [`system-design/operations/`](./system-design/operations/) | 定期処理、生成物、ローカル自動化 |
 | [`system-design/operations/x-browser-post-schedules.md`](./system-design/operations/x-browser-post-schedules.md) | 稼働中の X 投稿・週次レビュー・改善 PR・成長計測のスケジュールと実行契約 |
@@ -28,8 +28,6 @@
 | 文書 | 役割 |
 |---|---|
 | [`ideas/x-growth-backlog.md`](./ideas/x-growth-backlog.md) | X 運用の未着手改善案。現行仕様ではない |
-| [`ideas/top-page-performance-improvement-plan.md`](./ideas/top-page-performance-improvement-plan.md) | トップページの Lighthouse 計測結果と未着手のパフォーマンス改善案。現行仕様ではない |
-| [`ideas/x-growth-pr-automation-final-spec.md`](./ideas/x-growth-pr-automation-final-spec.md) | X 週次改善 PR 自動化の実装前仕様記録。現行仕様ではない |
 
 `ideas`、`strategy`、`research` はシステム設計書の管理対象外です。実装済みの事実と混同せず、着手時に現行コードと外部仕様を再確認します。
 

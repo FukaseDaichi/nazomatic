@@ -1,5 +1,7 @@
 # ドキュメント同期レポート（2026-07-24）
 
+> 注記: 本文中で触れている `docs/ideas/x-growth-pr-automation-final-spec.md` は 2026-08-02 に削除しました（実装済み機能の実装前仕様記録のため）。現行仕様は [`../system-design/subsystems/x-growth-improve-agent.md`](../system-design/subsystems/x-growth-improve-agent.md)、未確定だった `evaluationBaseline` 再計算の扱いは [`../system-design/quality/known-concerns.md`](../system-design/quality/known-concerns.md) に移しました。以下は当時の記録であり、書き換えていません。
+
 ## 1. 自動修正したもの
 
 - `docs/system-design/operations/x-browser-post-schedules.md:文書全体`: 「4件稼働・改善エージェント未登録」→「6件すべて ACTIVE」へ修正した。週次改善PR作成を月曜12:30、成長計測メンテナンスを毎日04:30として追加し、automation ID、RRULEの解釈、model / reasoning effort / 通知、秘密値を除く現行ローカル設定、実行契約、ログと状態の保存先を実登録どおり記載した。

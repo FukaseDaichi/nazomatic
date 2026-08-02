@@ -62,6 +62,25 @@
 <input type="text" className="text-sm ..." />
 ```
 
+### 3.3 ファーストビューの入場アニメーション
+
+- ファーストビューに入る要素の入場アニメーションに framer-motion を使わない。ハイドレーションが終わるまで要素が不可視になり LCP が悪化する。
+- Tailwind のキーフレームを使う。
+  - `fade-up`: 下からのフェードイン。LCP 候補にならない小さい要素向け
+  - `fade-down`: ヘッダーの入場
+  - `rise-up`: **LCP 要素向け**。`opacity` を動かさず `transform` のみ
+- ファーストビューの大きなテキスト(LCP 要素になりうるもの)には `opacity` を 0 から動かすアニメーションを付けない。ブラウザが未描画として扱い、可視化されるまで LCP が計上されない。
+- いずれも `motion-reduce:animate-none` を併記する。
+- スクロールで初めて現れる要素は framer-motion の `whileInView` のままでよい。
+
+### 3.4 アイコンの参照
+
+- `import * as LucideIcons from "lucide-react"` と `require("lucide-react")[...]` は使わない。ツリーシェイキングが効かず全アイコンがバンドルに入る。
+- `features.json` の `iconName` から引くときは `src/lib/feature-icons.ts` の `getFeatureIcon(iconName)` を使う。
+- `features.json` にツールを追加したら `feature-icons.ts` にも登録する。
+
+詳細と背景は [`system-design/architecture/frontend-performance.md`](./system-design/architecture/frontend-performance.md) を参照する。
+
 ## 4. 例外
 
 - ユーザーが明示的に例外を要求した場合のみ、例外対応を検討してよい。
@@ -74,3 +93,6 @@
 - 新しい配色やトーンを無断で追加していないか。
 - 今回触る文字入力系コントロールは、モバイル時 `16px` 以上になっているか。
 - `Input` / `Textarea` / ネイティブ input の既定 `text-sm` に依存していないか。
+- ファーストビューの要素に framer-motion の入場アニメーションを付けていないか。
+- LCP 要素になりうる大きなテキストに `opacity: 0` 始まりのアニメーションを付けていないか。
+- lucide アイコンを名前空間 import や `require` で引いていないか。

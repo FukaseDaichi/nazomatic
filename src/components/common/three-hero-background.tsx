@@ -66,9 +66,9 @@ function gearGeo(r: number, teeth: number, depth: number, thick: number) {
     bevelEnabled: true,
     bevelThickness: thick * 0.18,
     bevelSize: depth * 0.14,
-    bevelSegments: 2,
+    bevelSegments: 1,
     steps: 1,
-    curveSegments: 20,
+    curveSegments: 8,
   });
   geo.center();
   return geo;
@@ -225,7 +225,7 @@ export function ThreeHeroBackground() {
     // floating gears / keys / padlocks
     const objGroup = new THREE.Group();
     scene.add(objGroup);
-    const density = window.innerWidth < 640 ? 14 : 24;
+    const density = window.innerWidth < 640 ? 10 : 24;
     const palette = ["#b4bacb", "#73788c", "#d9c486"];
     for (let i = 0; i < density; i++) {
       const mat =
@@ -274,6 +274,7 @@ export function ThreeHeroBackground() {
     const smooth = { x: 0, y: 0 };
     let clickAt: number | null = null;
     let raf = 0;
+    let running = false;
 
     const onMove = (e: PointerEvent) => {
       mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
@@ -329,10 +330,36 @@ export function ThreeHeroBackground() {
       camera.lookAt(0, 0, 0);
       renderer.render(scene, camera);
     };
-    animate();
+
+    const start = () => {
+      if (running) return;
+      running = true;
+      raf = requestAnimationFrame(animate);
+    };
+    const stop = () => {
+      if (!running) return;
+      running = false;
+      cancelAnimationFrame(raf);
+      raf = 0;
+    };
+    const onVisibility = () => {
+      if (document.hidden) {
+        stop();
+        return;
+      }
+      if (running) return;
+      // 停止中に溜まった大きな delta を捨ててから再開する
+      clock.getDelta();
+      start();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    // 非表示のタブでマウントされた場合は開始しない。
+    // 表示に切り替わった時点で visibilitychange から開始される。
+    if (!document.hidden) start();
 
     return () => {
-      cancelAnimationFrame(raf);
+      stop();
+      document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("click", onClick);
       window.removeEventListener("resize", setSize);
@@ -351,17 +378,10 @@ export function ThreeHeroBackground() {
   }, []);
 
   return (
-    <>
-      <div className="fixed inset-0 z-0 bg-[#0a0812]" aria-hidden="true" />
-      <canvas
-        ref={canvasRef}
-        className="pointer-events-none fixed inset-0 z-0 block h-screen w-screen"
-        aria-hidden="true"
-      />
-      <div
-        className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(120%_80%_at_50%_0%,rgba(124,77,255,.10),transparent_55%),radial-gradient(100%_60%_at_50%_120%,rgba(10,8,18,.9),transparent)]"
-        aria-hidden="true"
-      />
-    </>
+    <canvas
+      ref={canvasRef}
+      className="pointer-events-none fixed inset-0 z-[1] block h-screen w-screen"
+      aria-hidden="true"
+    />
   );
 }

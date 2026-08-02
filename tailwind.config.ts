@@ -33,10 +33,42 @@ module.exports = {
             height: "0",
           },
         },
+        "fade-up": {
+          from: {
+            opacity: "0",
+            transform: "translateY(18px)",
+          },
+          to: {
+            opacity: "1",
+            transform: "none",
+          },
+        },
+        // LCP 要素用: opacity を動かさないので、要素は最初から描画済みとして扱われる
+        "rise-up": {
+          from: {
+            transform: "translateY(18px)",
+          },
+          to: {
+            transform: "none",
+          },
+        },
+        "fade-down": {
+          from: {
+            opacity: "0",
+            transform: "translateY(-20px)",
+          },
+          to: {
+            opacity: "1",
+            transform: "none",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "fade-up": "fade-up 0.6s ease-out both",
+        "fade-down": "fade-down 0.5s ease-out both",
+        "rise-up": "rise-up 0.6s ease-out both",
       },
     },
   },
