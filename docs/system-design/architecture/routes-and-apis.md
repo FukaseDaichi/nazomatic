@@ -81,10 +81,16 @@
 | 対象 | 設定 |
 |---|---|
 | `(main)` | `index=true`、共通 OGP / Twitter card / favicon / manifest |
-| `/calendar` | 専用 metadata と `public/img/calendar-ogp.png` |
+| ツールページ 10 件 | `src/lib/seo.ts` の `generateFeatureMetadata(path)` で個別 title / description / canonical / OGP を生成（`features.json` が情報源） |
+| `/calendar` | 専用 metadata と `public/img/calendar-ogp.png`（canonical のみ共通ルールに準拠） |
+| Shift Search レポート | 一覧は `generatePageMetadata`、詳細は `generateMetadata` でレポート内容から動的生成 |
 | `(blank25)` | `index=false`, `follow=true` |
 | `(secret)` | `index=false`, `follow=true` |
 | `robots.ts` | `/api/` と `/secret/` を disallow |
-| `sitemap.ts` | `/` と `features.json` の path を列挙 |
+| `sitemap.ts` | `/`、`features.json` の path、Shift Search レポート（一覧＋言語×文字数の詳細）を列挙 |
 
-Shift Search レポートは sitemap の自動列挙対象ではありません。
+sitemap の `lastModified` はビルド日時ではなく実際の更新日時のみ設定する（Shift Search レポートは view manifest の `generatedAt` を使用、ツールページは未設定）。
+
+JSON-LD Article は `generateJsonLdArticle` が `mainEntityOfPage`（ページ自身の URL）、`image`、`publisher` を含めて生成します。
+
+新しい公開ページを追加する場合は `generateFeatureMetadata`（features.json 掲載ツール）または `generatePageMetadata`（その他）で metadata を必ず定義し、`"use client"` が必要なページは calendar / shiritori / dice と同様にクライアント部分を `src/components/` へ分離して page.tsx をサーバーコンポーネントに保つこと。

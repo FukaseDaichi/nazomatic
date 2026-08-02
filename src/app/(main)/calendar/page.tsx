@@ -17,6 +17,9 @@ const calendarOgpImage = {
 export const metadata: Metadata = {
   title: calendarTitle,
   description: calendarDescription,
+  alternates: {
+    canonical: "/calendar",
+  },
   openGraph: {
     title: calendarTitle,
     description: calendarDescription,
