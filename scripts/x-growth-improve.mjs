@@ -2,7 +2,6 @@
 import fs from "fs/promises";
 import os from "os";
 import path from "path";
-import { spawn } from "child_process";
 import { pathToFileURL } from "url";
 
 import { readBrowserPostLedger } from "./x-browser-posting/postLedger.mjs";
@@ -13,7 +12,9 @@ import { buildProposalOutputSchema, normalizeStructuredProposal, validateProposa
 import { applyChangeToFile, buildExperimentBranch, createExperimentPr } from "./x-growth/applyProposal.mjs";
 import { verifyChangedFile } from "./x-growth/verifyChange.mjs";
 import { calculateMetric, jstHourBucket, sumEngagement, telemetryHealth } from "./x-growth/reportMetrics.mjs";
+import { prepareWorktreeWithDependencies, provisionWorktreeDependencies, resolveDependencyCacheRoot } from "./x-growth/dependencyBootstrap.mjs";
 import { ATTENTION_LABEL, EXPERIMENT_LABEL, addLabels, closeIssue, comment, ensureLabels, experimentKeyMatches, findReviewIssue, getJstIsoWeek, isTerminalExperiment, listExperimentPrs, normalizeHandle, runGit, stripXGrowthMarkers } from "./x-growth/githubExperiments.mjs";
+import { runProcess } from "./x-growth/processRunner.mjs";
 
 const LOCK_PATH = "local/x-browser-posting/locks/x-growth-improve.lock";
 export const REVIEW_MARKDOWN_MAX_CHARS = 20000;
@@ -39,14 +40,28 @@ export async function runImprovementCycle({ controlRoot, review, account, callCo
   }
 
   const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "nazomatic-x-growth-"));
-  const worktreeRoot = path.join(tempRoot, "worktree");
+  let worktreeRoot = null;
   let localBranch = null;
   let preserveBranch = false;
   try {
     if (execute) {
       await runGit(controlRoot, ["fetch", "--prune", "origin", "main"]);
-      await runGit(controlRoot, ["worktree", "add", "--detach", worktreeRoot, "origin/main"]);
-      await run("npm", ["ci"], { cwd: worktreeRoot, timeoutMs: 300000 });
+      const prepared = await prepareWorktreeWithDependencies({
+        tempRoot,
+        createWorktree: (candidate) =>
+          runGit(controlRoot, ["worktree", "add", "--detach", candidate, "origin/main"]),
+        removeWorktree: (candidate) =>
+          runGit(controlRoot, ["worktree", "remove", "--force", candidate]),
+        provisionDependencies: ({ worktreeRoot: candidate }) =>
+          provisionWorktreeDependencies({
+            worktreeRoot: candidate,
+            cacheRoot: resolveDependencyCacheRoot(),
+          }),
+      });
+      if (!prepared.ok) {
+        return { status: "base_broken", reason: prepared.reason };
+      }
+      worktreeRoot = prepared.worktreeRoot;
       const base = await verifyChangedFile(worktreeRoot, "src/server/x-browser-posting/trend-joke-post.ts");
       if (!base.ok) return { status: "base_broken", reason: base.reason };
     }
@@ -85,7 +100,7 @@ export async function runImprovementCycle({ controlRoot, review, account, callCo
     await addLabels(controlRoot, found.number, [EXPERIMENT_LABEL]);
     return { status: "pr_created", proposal: validated.proposal, branch, ...pr };
   } finally {
-    if (execute) await runGit(controlRoot, ["worktree", "remove", "--force", worktreeRoot]).catch(() => {});
+    if (execute && worktreeRoot) await runGit(controlRoot, ["worktree", "remove", "--force", worktreeRoot]).catch(() => {});
     if (localBranch && !preserveBranch) await runGit(controlRoot, ["branch", "-D", localBranch]).catch(() => {});
     await fs.rm(tempRoot, { recursive: true, force: true }).catch(() => {});
   }
@@ -166,9 +181,9 @@ export async function runCodexProposal({ cwd, reviewMarkdown, ledgerSummary, all
       ledgerSummary,
     ].join("\n");
     const args = ["exec", ...(model ? ["--model", model] : []), "--cd", cwd, "--sandbox", "read-only", "--ephemeral", "--output-schema", schema, "--output-last-message", output, "-"];
-    const result = await run("codex", args, { cwd, input: prompt, timeoutMs: 120000 });
+    const result = await runProcess("codex", args, { cwd, input: prompt, timeoutMs: 120000 });
     return normalizeStructuredProposal(
-      JSON.parse((await fs.readFile(output, "utf8").catch(() => "")) || result),
+      JSON.parse((await fs.readFile(output, "utf8").catch(() => "")) || result.stdout),
     );
   } finally { await fs.rm(temp, { recursive: true, force: true }).catch(() => {}); }
 }
@@ -302,5 +317,4 @@ async function main() {
   }
   console.log(JSON.stringify(result, null, 2));
 }
-function run(command, args, { cwd, input, timeoutMs = 120000 } = {}) { return new Promise((resolve, reject) => { const child = spawn(command, args, { cwd, stdio: ["pipe", "pipe", "pipe"] }); let out = "", err = ""; const timer = setTimeout(() => child.kill("SIGKILL"), timeoutMs); child.stdout.on("data", (x) => out += x); child.stderr.on("data", (x) => err += x); child.on("error", reject); child.on("close", (code) => { clearTimeout(timer); code === 0 ? resolve(out) : reject(new Error(`${command} failed: ${err || out}`)); }); child.stdin.end(input ?? ""); }); }
 if (import.meta.url === pathToFileURL(process.argv[1]).href) process.exit(await runWithLocalLog({ cwd: process.cwd(), automationId: "x-growth-improve", command: `npm run x:growth-improve ${process.argv.slice(2).join(" ")}` }, main));

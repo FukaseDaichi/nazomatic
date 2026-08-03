@@ -121,6 +121,7 @@ GitHub Actions では `REALTIME_API_TOKEN` secret として同じ値を渡しま
 | `X_BROWSER_POST_TREND_JOKE_ARCHETYPE` | 投稿型の固定。`monologue` / `question` / `one_liner` / `poll` / `tool_intro`。空欄なら直近履歴から順番にローテーション |
 | `X_BROWSER_POST_TREND_JOKE_IMAGE_PATH` | `tool_intro` へ添付する画像 path。空欄なら `public/img/og-image.png` |
 | `X_BROWSER_POST_LOG_RETENTION_COUNT` | 各ローカルブラウザ投稿 automation の実行ログを残す世代数。未設定時は `70` |
+| `X_GROWTH_DEPENDENCY_CACHE_DIR` | X 週次改善の検証済み依存 cache の保存先。安全のため末尾は `x-growth-dependencies` 必須で symbolic link は不可。未設定時は OS の user cache 配下（macOS は `~/Library/Caches/nazomatic/x-growth-dependencies/`） |
 | `X_BROWSER_POST_MAX_PER_RUN` | 1 実行あたりの投稿上限 |
 | `X_BROWSER_POST_COOLDOWN_MINUTES` | cooldown 分数 |
 | `X_BROWSER_POST_DAILY_LIMIT` | 1 日投稿上限。既定 `6`、システム上限 `30`。上限値の定義元は `src/server/x-browser-posting/post-limits.json` のみで、ローカル CLI（`scripts/x-browser-posting/config.mjs`）と内部 API（`src/server/x-browser-posting/candidate.ts`）が同じ値で判定します |
@@ -163,6 +164,8 @@ Codex automation から provider 生成文を確認なしで実投稿する場�
 実投稿が成功すると、3種類の CLI は共通の `local/x-browser-posting/post-ledger.json` に投稿 URL と実験 metadata を保存します。`X_BROWSER_POST_CAPTURE_TELEMETRY=true`（既定）なら、続けて同じ CDP セッションでフォロワー数を `local/x-browser-posting/follower-snapshots.json` へ JST 日付単位で追記し、投稿から約24時間〜8日で未取得の過去投稿を最大 `X_BROWSER_POST_METRICS_MAX_PER_RUN` 件だけ開いて表示数・返信・リポスト・いいねを台帳の `metrics` に書き戻します。`npm run x:growth-maintain` は投稿を行わず、この計測を日次で実行するための CLI です。成熟窓の終了が近い古い投稿から回収します。取得済みは `metrics.mature` で再取得しません。計測はベストエフォートで投稿処理を止めません。`npm run x:growth-review` は直近7日、実行 log、台帳の `metrics`、フォロワー snapshot を集計します。投稿別数値は台帳に無い投稿だけをログイン済み Chrome で追加確認します。`--create-issue` 付きでは `[X週次レビュー] YYYY-Www @account` の GitHub Issue を `x-growth-review` label 付きで作り、同じ週の再実行は既存 Issue へのコメントになります。公開数値を取得できない場合は0とせず「取得不能」と出力します。
 
 `npm run x:growth-improve` は当週・account 固有の週次レビュー Issue 本文と直近14日の投稿台帳を読み、Codex CLI を read-only で呼んで allowlist 内の実験を1件提案します。提案は主要な仮説・targetKey・編集ファイルを各1件に保ちつつ、同一ファイル内で最大6件の局所 patch を使えるため、投稿生成戦略の複数行変更も可能です。Node 側は import、環境変数、外部 I/O、認証、投稿実行 guard、入力検証、各種上限を保護し、変更量も制限します。評価のminimum sampleは5件、成熟時間は24時間、評価窓は14日に固定し、filterは0件または1件、選択metricで利用可能なsampleが5件以上あるfilterだけを提案候補にします。`--execute` はテレメトリ成熟率が70%以上かつ5件以上であることを確認し、`origin/main` から作った一時 worktree 内だけで検証・commit・push・ドラフト PR 作成を行います。PR は `Closes #<review Issue>` と機械可読 metadata を持つため、PR が GitHub 上の実験の正本です。ローカルの実験台帳は作成しません。作成済みまたは進行中の実験、同じ targetKey の再提案、基底branchの検証失敗は PR を作りません。ドラフト PR は必ず人間が差分と仮説を確認し、自動マージはしません。`--execute` には認証済みの `gh`、Git remote、利用可能な `codex` が必要です。詳細は `docs/system-design/subsystems/x-growth-improve-agent.md` を参照します。
+
+`--execute` の依存準備は package / lockfile と Node・npm・OS・CPU architecture を key にした検証済み `node_modules` cache を使います。cache miss だけ `npm ci` を実行し、timeout・process signal・一時的な network error では process group と不完全 worktree を破棄して新しい worktreeで1回だけ再試行します。決定的な install error、提案、guard、検証、GitHub 操作は再試行しません。失敗 log には両 attempt の exit code、signal、timeout、経過時間、stdout / stderr を残します。
 
 | Automation 名 | npm script | ログディレクトリ |
 |---|---|---|
