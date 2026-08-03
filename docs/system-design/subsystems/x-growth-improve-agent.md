@@ -23,7 +23,7 @@ Codex automation には、レビューが毎週月曜11:30 JST、`x:growth-impro
 
 ## PR 作成の安全境界
 
-`--execute` は control checkout を変更しない。`git fetch origin main` の後、OS 一時ディレクトリの worktree を `origin/main` から detach で作成し、そこで `npm ci`、基底の verify、単一ファイル変更、verify、commit、push、PR 作成を行う。完了時は worktree を除去する。
+`--execute` は control checkout を変更しない。`git fetch origin main` の後、OS 一時ディレクトリの worktree を `origin/main` から detach で作成する。依存関係は package / lockfile と実行環境が一致する検証済み cache から復元し、cache miss のときだけ `npm ci` を実行する。その後、基底の verify、単一ファイル変更、verify、commit、push、PR 作成を行い、完了時は worktree を除去する。
 
 提案生成の Codex CLI は read-only sandbox であり、変更は Node 側が実行する。1つの仮説と1つの targetKey に対し、同一ファイル内で最大6件の局所 find/replace を提案できる。編集先は次だけである。
 
@@ -77,6 +77,10 @@ deployment を確認した時点でテレメトリが不足していれば `x-gr
 ## lock と失敗
 
 execute は `local/x-browser-posting/locks/x-growth-improve.lock` を `fs.open(..., "wx")` で atomically 作って排他する。lock が残っている場合は review Issue に `x-growth:needs-attention` を付け、理由をコメントして失敗終了する。dry-run は lock、Git、GitHub、運用 state を変更しないが、監査 log は残す。
+
+依存 cache は `package.json`、`package-lock.json`、Node、npm、OS、CPU architecture を key にし、install script まで正常終了した `node_modules` だけを ready marker とともに atomically 保存する。macOS の既定保存先は `~/Library/Caches/nazomatic/x-growth-dependencies/` で、`X_GROWTH_DEPENDENCY_CACHE_DIR` があればその path を使う。誤削除防止のため override path の末尾は `x-growth-dependencies` を必須とし、cache root の symbolic link は拒否する。worktree へは cache 本体を直接共有せず、macOS では APFS clone、その他では copy して検証中の書き込みを分離する。cache は新しい2世代を保持する。
+
+cache miss の install は `npm ci --prefer-offline --no-audit --no-fund --foreground-scripts` を使う。timeout、process signal、または一時的な network error の場合だけ、process group 全体を終了し、不完全な worktree と cache staging を破棄し、`origin/main` から新しい worktree を作って1回だけ再試行する。lockfile不整合など決定的な error、Codex 提案、guard、検証、commit、push、PR 作成は再試行しない。2回とも失敗した場合は両 attempt の command、cwd、exit code、signal、timeout、経過時間、stdout / stderr を `base_broken` の理由と local log に残す。
 
 ## 運用上の注意
 

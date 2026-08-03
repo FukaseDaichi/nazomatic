@@ -55,6 +55,7 @@
 - CLI 自身のログ機能を使い、旧 `log/` への `tee` や独自 wrapper を追加しない。
 - ログは `X_BROWSER_POST_LOG_RETENTION_COUNT` の世代数だけ保持する。既定と現行ローカル設定は70世代。
 - automation 層は CLI の失敗時に自動 retry、guard 回避、独自のファイル変更を行わず、終了コードと関連 log を報告する。
+- `x:growth-improve` CLI 内部だけは、remote side effect 前の依存準備が timeout・process signal・一時的な network error で失敗した場合に、不完全 worktree を破棄して1回だけ再試行する。automation 層からコマンド全体を再実行することはない。
 - X の login、account 不一致、rate limit、UI 変更、CAPTCHA、2FA を検出した場合は回避せず停止する。
 - 投稿成功後は `local/x-browser-posting/post-ledger.json` に投稿種別、本文、投稿 URL、実験 metadata を記録する。
 - `X_BROWSER_POST_CAPTURE_TELEMETRY=true`（既定）なら、投稿成功後に同じセッションでフォロワー数を `follower-snapshots.json` へ日次追記し、20時間〜8日の過去投稿の公開数値を最大 `X_BROWSER_POST_METRICS_MAX_PER_RUN`（既定8）件だけ台帳へ書き戻す。計測はベストエフォートで投稿処理を止めない。
