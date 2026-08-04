@@ -18,6 +18,7 @@ import { ATTENTION_LABEL, EXPERIMENT_LABEL, addLabels, closeIssue, comment, ensu
 import { runProcess } from "./x-growth/processRunner.mjs";
 
 const LOCK_PATH = "local/x-browser-posting/locks/x-growth-improve.lock";
+export const CODEX_PROPOSAL_TIMEOUT_MS = 600000;
 export const REVIEW_MARKDOWN_MAX_CHARS = 20000;
 const REVIEW_MARKDOWN_NOTE_RESERVE = 240;
 const REVIEW_MARKDOWN_MIN_COMMENT_CHARS = 200;
@@ -75,7 +76,12 @@ export async function runImprovementCycle({ controlRoot, review, account, callCo
       const base = await verifyChangedFile(worktreeRoot, "src/server/x-browser-posting/trend-joke-post.ts");
       if (!base.ok) return { status: "base_broken", reason: base.reason };
     }
-    const proposal = await callCodex({ cwd: execute ? worktreeRoot : controlRoot, reviewMarkdown: buildReviewMarkdown(review), ledgerSummary: buildLedgerSummary(posts, metricCandidates), metricCandidates, allowlist: EXPERIMENT_ALLOWLIST, model });
+    let proposal;
+    try {
+      proposal = await callCodex({ cwd: execute ? worktreeRoot : controlRoot, reviewMarkdown: buildReviewMarkdown(review), ledgerSummary: buildLedgerSummary(posts, metricCandidates), metricCandidates, allowlist: EXPERIMENT_ALLOWLIST, model });
+    } catch (error) {
+      return { status: "proposal_broken", reason: formatProposalFailure(error) };
+    }
     const restored = restoreProposalMetric(proposal, metricCandidates);
     if (!restored.ok) return { status: "rejected", reason: restored.reason, proposal };
     const validated = validateProposal(restored.proposal);
@@ -197,11 +203,22 @@ export async function runCodexProposal({ cwd, reviewMarkdown, ledgerSummary, met
       ledgerSummary,
     ].join("\n");
     const args = ["exec", ...(model ? ["--model", model] : []), "--cd", cwd, "--sandbox", "read-only", "--ephemeral", "--output-schema", schema, "--output-last-message", output, "-"];
-    const result = await runProcess("codex", args, { cwd, input: prompt, timeoutMs: 120000 });
+    const result = await runProcess("codex", args, { cwd, input: prompt, timeoutMs: CODEX_PROPOSAL_TIMEOUT_MS });
     return normalizeStructuredProposal(
       JSON.parse((await fs.readFile(output, "utf8").catch(() => "")) || result.stdout),
     );
   } finally { await fs.rm(temp, { recursive: true, force: true }).catch(() => {}); }
+}
+
+export function formatProposalFailure(error) {
+  if (error?.timedOut) {
+    const timeoutMs = Number.isFinite(error.timeoutMs) ? error.timeoutMs : "unknown";
+    const durationMs = Number.isFinite(error.durationMs) ? error.durationMs : "unknown";
+    const signal = error.signal ?? "unknown";
+    return `提案生成がタイムアウトしました（timeout=${timeoutMs}ms duration=${durationMs}ms signal=${signal}）。詳細はlocal logを確認してください。`;
+  }
+  const message = String(error?.message ?? error);
+  return `提案生成に失敗しました: ${message.slice(0, 2000)}`;
 }
 
 export function buildLedgerSummary(posts, metricCandidates = null) {

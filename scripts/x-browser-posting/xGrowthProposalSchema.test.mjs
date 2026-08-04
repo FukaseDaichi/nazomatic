@@ -13,7 +13,11 @@ import {
   buildMetricCandidateId,
   buildMetricCandidates,
 } from "../x-growth/metricCandidates.mjs";
-import { buildLedgerSummary } from "../x-growth-improve.mjs";
+import {
+  buildLedgerSummary,
+  CODEX_PROPOSAL_TIMEOUT_MS,
+  formatProposalFailure,
+} from "../x-growth-improve.mjs";
 
 function assertStrictObjectSchemas(schema, path = "$") {
   if (!schema || typeof schema !== "object") {
@@ -43,6 +47,19 @@ test("proposal output schema satisfies strict object requirements", () => {
   assertStrictObjectSchemas(buildProposalOutputSchema([
     { candidateId: "median_views|none" },
   ]));
+});
+
+test("Codex proposal timeout is bounded and reported as a proposal failure", () => {
+  assert.equal(CODEX_PROPOSAL_TIMEOUT_MS, 600000);
+  assert.equal(
+    formatProposalFailure({
+      timedOut: true,
+      timeoutMs: CODEX_PROPOSAL_TIMEOUT_MS,
+      durationMs: 600008,
+      signal: "SIGTERM",
+    }),
+    "提案生成がタイムアウトしました（timeout=600000ms duration=600008ms signal=SIGTERM）。詳細はlocal logを確認してください。",
+  );
 });
 
 test("structured output selects only a dynamically enumerated candidateId", () => {
