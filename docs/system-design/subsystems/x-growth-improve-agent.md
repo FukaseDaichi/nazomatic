@@ -27,6 +27,8 @@ Codex automation には、レビューが毎週月曜11:30 JST、`x:growth-impro
 
 提案生成の Codex CLI は read-only sandbox であり、変更は Node 側が実行する。1つの仮説と1つの targetKey に対し、同一ファイル内で最大6件の局所 find/replace を提案できる。編集先は次だけである。
 
+提案生成の Codex CLI には600秒の制限時間を設ける。timeoutまたはCodex実行失敗は `proposal_broken` として review Issue に記録し、提案・検証・GitHub操作の自動リトライは行わない。詳細な終了コード、signal、経過時間、標準出力・標準エラーは `logs/x-growth-improve/` の実行ログへ残す。
+
 | path | kind | targetKey |
 |---|---|---|
 | `src/server/x-browser-posting/comment-patterns.json` | `json-patch` | `comment-pattern:*` |
