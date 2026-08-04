@@ -48,11 +48,13 @@ Codex automation には、レビューが毎週月曜11:30 JST、`x:growth-impro
 
 ## 計測ゲート
 
-提案前に直近14日から、24時間以上8日以内の投稿の metrics 成熟率を計算する。対象が5件未満、または成熟率が70%未満なら `skipped_insufficient_telemetry` とし、execute では review Issue を理由付きで閉じる。表示数などの数値を0として補完しない。
+提案前に直近14日から、24時間以上8日以内の投稿の metrics 成熟率を計算する。対象が5件未満、または成熟率が70%未満なら `skipped_insufficient_telemetry` とし、execute では review Issue を理由付きで閉じる。表示数などの数値を0として補完しない。成熟済み投稿から `minimumSampleSize=5` を満たす metric candidate が1件も生成できない場合も、Codexを呼ばず、同じ status と理由で見送る。
 
-metric は `median_views`、`median_engagement`、`reply_post_rate` のいずれかで、filter は `postType`、`archetype`、`hasMedia`、`shape`、`topicKey`、`postedAt` 由来の `jstHourBucket` だけを許可する。null・空値は filter に一致しない。
+metric は `median_views`、`median_engagement`、`reply_post_rate` のいずれかで、filter は `postType`、`archetype`、`hasMedia`、`shape`、`topicKey`、`postedAt` 由来の `jstHourBucket` だけを許可する。null・空値は filter に一致しない。候補生成はNode側で行い、各 candidate は `candidateId`、metric name、filters（0件または1件）、`sampleSize`、`minimumSampleSize=5`、`maturityHours=24`、`windowDays=14`、`direction=increase` を保持する。candidateId は metric name と単独 filter の値から決定的に生成し、候補の順序も sampleSize と candidateId の決定的な並びで固定する。`postType + archetype` のような複合 candidate は生成しない。
 
-Codex CLI へ渡す Structured Outputs schema は、すべての object で未知 property を禁止し、宣言した property を required にする。任意の metric filter は6項目を nullable で受け、提案受領直後に未使用の null 項目だけを除去してからローカル validator と baseline 集計へ渡す。minimum sampleは5件、成熟時間は24時間、評価窓は14日、方向はincreaseにNode側で固定し、LLMには決めさせない。filterは0件または1件とし、提案 prompt には各metricで値を利用できる投稿が5件以上あるfilterだけを機械可読JSONで渡す。Node 側の baseline sample guard は最終境界として維持する。
+Codex CLI へ渡す Structured Outputs schema は、すべての object で未知 property を禁止し、宣言した property を required にする。`metric` は生の metric object ではなく `{ "candidateId": "..." }` だけを受け付け、enum はその実行でNodeが生成した candidateId から動的に構築する。提案受領後、Node側で candidateId を候補へ照合し、既存形式の `proposal.metric`（name、filters、固定条件）へ復元してからローカル validator、baseline 集計、PR作成へ渡す。schemaで制限していても未知 candidateId と candidateId 以外の metric property はローカルで拒否する。LLM出力でsample不足、未許可filter、複合filterを表現できない設計にする。
+
+prompt には、仮説に合う単独 candidate がない場合、複合filterを合成せず、別の仮説または filterなし candidate を選ぶよう明記する。minimum sampleは5件、成熟時間は24時間、評価窓は14日、方向はincreaseにNode側で固定し、LLMには決めさせない。Node側の baseline sample guard、allowlist、targetKey重複防止、1アカウント1実験の制約は最終境界として維持する。
 
 前後比較なので時系列交絡は残る。評価時は baseline と比較値だけで決めず、同期間のフォロワー数変化、総投稿数、曜日構成も review Issue で確認する。
 
