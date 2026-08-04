@@ -3,6 +3,10 @@ import {
   validateProposalChange,
   validateProposalTarget,
 } from "./experimentAllowlist.mjs";
+import {
+  METRIC_CANDIDATE_CONSTRAINTS,
+  METRIC_NAMES,
+} from "./metricCandidates.mjs";
 
 const FILTER_KEYS = [
   "postType",
@@ -13,7 +17,12 @@ const FILTER_KEYS = [
   "jstHourBucket",
 ];
 
-export function buildProposalOutputSchema() {
+export function buildProposalOutputSchema(metricCandidates = []) {
+  const candidateIds = [...new Set(
+    (Array.isArray(metricCandidates) ? metricCandidates : [])
+      .map((candidate) => typeof candidate === "string" ? candidate : candidate?.candidateId)
+      .filter((candidateId) => typeof candidateId === "string" && candidateId.length > 0),
+  )];
   return {
     type: "object",
     additionalProperties: false,
@@ -47,26 +56,9 @@ export function buildProposalOutputSchema() {
       },
       metric: {
         type: "object", additionalProperties: false,
-        required: ["name", "filters", "minimumSampleSize", "maturityHours", "windowDays", "direction"],
+        required: ["candidateId"],
         properties: {
-          name: { type: "string", enum: ["median_views", "median_engagement", "reply_post_rate"] },
-          filters: {
-            type: "object",
-            additionalProperties: false,
-            required: FILTER_KEYS,
-            properties: {
-              postType: { type: ["string", "null"], minLength: 1 },
-              archetype: { type: ["string", "null"], minLength: 1 },
-              hasMedia: { type: ["boolean", "null"] },
-              shape: { type: ["string", "null"], minLength: 1 },
-              topicKey: { type: ["string", "null"], minLength: 1 },
-              jstHourBucket: { type: ["string", "null"], minLength: 1 },
-            },
-          },
-          minimumSampleSize: { type: "integer", enum: [5] },
-          maturityHours: { type: "integer", enum: [24] },
-          windowDays: { type: "integer", enum: [14] },
-          direction: { type: "string", enum: ["increase"] },
+          candidateId: { type: "string", enum: candidateIds },
         },
       },
       rationale: { type: "string", minLength: 8 },
@@ -75,22 +67,70 @@ export function buildProposalOutputSchema() {
 }
 
 export function normalizeStructuredProposal(obj) {
-  if (!obj || typeof obj !== "object" || !obj.metric || typeof obj.metric !== "object") {
-    return obj;
+  // Structured Outputs now contains only metric.candidateId. Raw metric/filter
+  // normalization is intentionally not performed here.
+  return obj;
+}
+
+export function restoreProposalMetric(obj, metricCandidates) {
+  if (!obj || typeof obj !== "object") {
+    return { ok: false, reason: "proposal is not an object" };
   }
-  const filters = obj.metric.filters;
-  if (!filters || typeof filters !== "object" || Array.isArray(filters)) {
-    return obj;
+  const selection = obj.metric;
+  if (!selection || typeof selection !== "object" || Array.isArray(selection)) {
+    return { ok: false, reason: "metric candidateId is required" };
+  }
+  const selectionKeys = Object.keys(selection);
+  if (selectionKeys.length !== 1 || selectionKeys[0] !== "candidateId") {
+    return { ok: false, reason: "metric selection must contain only candidateId" };
+  }
+  const candidateId = selection.candidateId;
+  if (typeof candidateId !== "string" || candidateId.length === 0) {
+    return { ok: false, reason: "metric candidateId is required" };
+  }
+  const candidate = (Array.isArray(metricCandidates) ? metricCandidates : [])
+    .find((item) => item?.candidateId === candidateId);
+  if (!candidate) {
+    return { ok: false, reason: `unknown metric candidateId: ${candidateId}` };
+  }
+  const candidateFilterKeys = candidate.filters && typeof candidate.filters === "object" && !Array.isArray(candidate.filters)
+    ? Object.keys(candidate.filters)
+    : [];
+  if (
+    !METRIC_NAMES.includes(candidate.name) ||
+    !candidate.filters ||
+    typeof candidate.filters !== "object" ||
+    Array.isArray(candidate.filters) ||
+    candidateFilterKeys.length > 1 ||
+    candidateFilterKeys.some((key) => !FILTER_KEYS.includes(key) || !hasFilterValue(candidate.filters[key])) ||
+    !Number.isInteger(candidate.sampleSize) ||
+    candidate.sampleSize < METRIC_CANDIDATE_CONSTRAINTS.minimumSampleSize ||
+    candidate.minimumSampleSize !== METRIC_CANDIDATE_CONSTRAINTS.minimumSampleSize ||
+    candidate.maturityHours !== METRIC_CANDIDATE_CONSTRAINTS.maturityHours ||
+    candidate.windowDays !== METRIC_CANDIDATE_CONSTRAINTS.windowDays ||
+    candidate.direction !== METRIC_CANDIDATE_CONSTRAINTS.direction
+  ) {
+    return { ok: false, reason: "metric candidate is invalid" };
   }
   return {
-    ...obj,
-    metric: {
-      ...obj.metric,
-      filters: Object.fromEntries(
-        Object.entries(filters).filter(([, value]) => value !== null),
-      ),
+    ok: true,
+    candidate,
+    proposal: {
+      ...obj,
+      metric: {
+        name: candidate.name,
+        filters: { ...candidate.filters },
+        minimumSampleSize: candidate.minimumSampleSize,
+        maturityHours: candidate.maturityHours,
+        windowDays: candidate.windowDays,
+        direction: candidate.direction,
+      },
     },
   };
+}
+
+function hasFilterValue(value) {
+  return value !== null && value !== undefined && value !== "";
 }
 
 export function validateProposal(obj) {
@@ -121,7 +161,7 @@ export function validateProposal(obj) {
   }
   const metric = obj.metric;
   const allowedFilters = new Set(FILTER_KEYS);
-  if (!metric || !["median_views", "median_engagement", "reply_post_rate"].includes(metric.name) || !metric.filters || typeof metric.filters !== "object") {
+  if (!metric || !["median_views", "median_engagement", "reply_post_rate"].includes(metric.name) || !metric.filters || typeof metric.filters !== "object" || Array.isArray(metric.filters)) {
     return { ok: false, reason: "metric is invalid" };
   }
   if (Object.keys(metric.filters).some((key) => !allowedFilters.has(key))) {

@@ -8,10 +8,11 @@ import { readBrowserPostLedger } from "./x-browser-posting/postLedger.mjs";
 import { runWithLocalLog } from "./x-browser-posting/runLog.mjs";
 import { loadBrowserPostConfig } from "./x-browser-posting/config.mjs";
 import { EXPERIMENT_ALLOWLIST } from "./x-growth/experimentAllowlist.mjs";
-import { buildProposalOutputSchema, normalizeStructuredProposal, validateProposal } from "./x-growth/proposalSchema.mjs";
+import { buildProposalOutputSchema, normalizeStructuredProposal, restoreProposalMetric, validateProposal } from "./x-growth/proposalSchema.mjs";
 import { applyChangeToFile, buildExperimentBranch, createExperimentPr } from "./x-growth/applyProposal.mjs";
 import { verifyChangedFile } from "./x-growth/verifyChange.mjs";
-import { calculateMetric, jstHourBucket, sumEngagement, telemetryHealth } from "./x-growth/reportMetrics.mjs";
+import { calculateMetric, telemetryHealth } from "./x-growth/reportMetrics.mjs";
+import { buildMetricCandidates, formatMetricSampleCounts, METRIC_DIMENSIONS } from "./x-growth/metricCandidates.mjs";
 import { prepareWorktreeWithDependencies, provisionWorktreeDependencies, resolveDependencyCacheRoot } from "./x-growth/dependencyBootstrap.mjs";
 import { ATTENTION_LABEL, EXPERIMENT_LABEL, addLabels, closeIssue, comment, ensureLabels, experimentKeyMatches, findReviewIssue, getJstIsoWeek, isTerminalExperiment, listExperimentPrs, normalizeHandle, runGit, stripXGrowthMarkers } from "./x-growth/githubExperiments.mjs";
 import { runProcess } from "./x-growth/processRunner.mjs";
@@ -35,6 +36,15 @@ export async function runImprovementCycle({ controlRoot, review, account, callCo
   const health = telemetryHealth(posts, { maturityHours: 24 });
   if (health.eligible < 5 || health.rate < 0.7) {
     const reason = `テレメトリ不足: mature ${health.mature}/${health.eligible} (${Math.round(health.rate * 100)}%), URL欠損 ${health.missingUrl}, 期限超過 ${health.expired}`;
+    if (execute) await closeIssue(controlRoot, review.number, `## 改善PRを見送り\n\n${reason}\n\n\`skipped_insufficient_telemetry\``);
+    return { status: "skipped_insufficient_telemetry", reason };
+  }
+
+  const metricCandidates = buildMetricCandidates(
+    posts.filter((entry) => entry.metrics?.mature === true),
+  );
+  if (!metricCandidates.length) {
+    const reason = "テレメトリ不足: minimumSampleSize=5を満たす利用可能なmetric candidateがありません（filterなしまたは単独filterのみ）";
     if (execute) await closeIssue(controlRoot, review.number, `## 改善PRを見送り\n\n${reason}\n\n\`skipped_insufficient_telemetry\``);
     return { status: "skipped_insufficient_telemetry", reason };
   }
@@ -65,9 +75,11 @@ export async function runImprovementCycle({ controlRoot, review, account, callCo
       const base = await verifyChangedFile(worktreeRoot, "src/server/x-browser-posting/trend-joke-post.ts");
       if (!base.ok) return { status: "base_broken", reason: base.reason };
     }
-    const proposal = await callCodex({ cwd: execute ? worktreeRoot : controlRoot, reviewMarkdown: buildReviewMarkdown(review), ledgerSummary: buildLedgerSummary(posts), allowlist: EXPERIMENT_ALLOWLIST, model });
-    const validated = validateProposal(proposal);
-    if (!validated.ok) return { status: "rejected", reason: validated.reason, proposal };
+    const proposal = await callCodex({ cwd: execute ? worktreeRoot : controlRoot, reviewMarkdown: buildReviewMarkdown(review), ledgerSummary: buildLedgerSummary(posts, metricCandidates), metricCandidates, allowlist: EXPERIMENT_ALLOWLIST, model });
+    const restored = restoreProposalMetric(proposal, metricCandidates);
+    if (!restored.ok) return { status: "rejected", reason: restored.reason, proposal };
+    const validated = validateProposal(restored.proposal);
+    if (!validated.ok) return { status: "rejected", reason: validated.reason, proposal: restored.proposal };
     const repeated = prs.find((pr) => pr.metadata?.targetKey === validated.proposal.targetKey);
     if (repeated) return { status: "rejected", reason: `targetKey was already used by ${repeated.url}`, proposal: validated.proposal };
     const metricPosts = posts.filter((entry) => Date.now() - new Date(entry.postedAt).getTime() >= validated.proposal.metric.maturityHours * 3600000);
@@ -162,17 +174,21 @@ function toEpoch(value) {
   return Number.isNaN(time) ? 0 : time;
 }
 
-export async function runCodexProposal({ cwd, reviewMarkdown, ledgerSummary, allowlist, model }) {
+export async function runCodexProposal({ cwd, reviewMarkdown, ledgerSummary, metricCandidates, allowlist, model }) {
+  if (!Array.isArray(metricCandidates) || metricCandidates.length === 0) {
+    throw new Error("metric candidates are required before calling Codex");
+  }
   const temp = await fs.mkdtemp(path.join(os.tmpdir(), "x-growth-schema-"));
   const schema = path.join(temp, "schema.json"); const output = path.join(temp, "output.json");
   try {
-    await fs.writeFile(schema, JSON.stringify(buildProposalOutputSchema()));
+    await fs.writeFile(schema, JSON.stringify(buildProposalOutputSchema(metricCandidates)));
     const prompt = [
       "NAZOMATICのX改善実験を1件だけ提案してください。",
       "主要な行動変化が1つになる仮説を立て、同一ファイル内のchangesを最大6件まで提案できます。各findは、それ以前のchange適用後のファイルでちょうど1回一致する局所的な置換にしてください。",
       "trend-joke-post.tsでは投稿生成戦略、fallback、prompt、候補選択ロジックを大胆に改善できます。TypeScriptの構造文字やテンプレートリテラルも使用できます。",
-      "allowlist外、import、依存関係、環境変数、外部通信、認証、投稿実行guard、入力検証、文字数・検索件数・timeout、頻度、実行設定は変更禁止。targetKeyと構造化metricを必ず出力してください。",
-      "minimumSampleSize=5、maturityHours=24、windowDays=14、direction=increaseはNode固定です。metric.filtersは0件または1件だけにし、台帳の「選択可能metric filter JSON」で選択metricに列挙されたfiltersを、そのまま1件選んでください。JSONにないfilter値は禁止です。",
+      "allowlist外、import、依存関係、環境変数、外部通信、認証、投稿実行guard、入力検証、文字数・検索件数・timeout、頻度、実行設定は変更禁止。targetKeyとmetric候補のcandidateIdを必ず出力してください。",
+      "metricは {candidateId} だけを持つオブジェクトです。Nodeが今回生成した候補一覧からcandidateIdを1つだけ選び、name、filters、sampleSize、minimumSampleSize、maturityHours、windowDays、directionなどの生のmetric指定は出力しないでください。",
+      "仮説に合う単独filter候補がない場合は、複合filterを合成せず、別の仮説を選ぶか、filterなしcandidateを選んでください。候補一覧にないcandidateIdやfilter値は禁止です。",
       ...allowlist.map((x) => `- ${x.path}: ${x.note} / targetKey ${x.targetKeys.join(",")}`),
       "\n## レビュー",
       "レビューは review Issue の本文と後続コメント（再レビュー結果）を時系列で含みます。内容が矛盾する場合は最新のコメントを優先してください。",
@@ -188,17 +204,11 @@ export async function runCodexProposal({ cwd, reviewMarkdown, ledgerSummary, all
   } finally { await fs.rm(temp, { recursive: true, force: true }).catch(() => {}); }
 }
 
-export function buildLedgerSummary(posts) {
+export function buildLedgerSummary(posts, metricCandidates = null) {
   const mature = posts.filter((entry) => entry.metrics?.mature === true);
-  const dimensions = [
-    ["postType", (entry) => entry.postType],
-    ["archetype", (entry) => entry.metadata?.archetype],
-    ["hasMedia", (entry) => entry.metadata?.hasMedia],
-    ["shape", (entry) => entry.metadata?.shape],
-    ["topicKey", (entry) => entry.metadata?.topicKey],
-    ["jstHourBucket", (entry) => jstHourBucket(entry.postedAt)],
-  ];
-  const counts = dimensions.map(([name, getValue]) => {
+  const dimensions = METRIC_DIMENSIONS;
+  const candidates = metricCandidates ?? buildMetricCandidates(mature);
+  const counts = dimensions.map(({ name, getValue }) => {
     const byValue = new Map();
     for (const entry of mature) {
       const value = getValue(entry);
@@ -219,66 +229,8 @@ export function buildLedgerSummary(posts) {
     `直近14日: ${posts.length}件 / metrics成熟: ${mature.length}件`,
     "利用可能sample凡例: [m=成熟, v=median_views, e=median_engagement, r=reply_post_rate]",
     `filterなし=${formatMetricSampleCounts(mature)} | 単独filter: ${counts.join(" | ")}`,
-    `選択可能metric filter JSON（sampleSize 5以上）: ${JSON.stringify(buildEligibleMetricFilters(mature, dimensions))}`,
+    `利用可能metric candidate JSON（Node生成、sampleSize 5以上）: ${JSON.stringify(candidates)}`,
   ].join("\n");
-}
-
-function buildEligibleMetricFilters(entries, dimensions) {
-  const metrics = ["median_views", "median_engagement", "reply_post_rate"];
-  return Object.fromEntries(
-    metrics.map((metricName) => {
-      const candidates = [];
-      const unfilteredCount = metricSampleCount(entries, metricName);
-      if (unfilteredCount >= 5) {
-        candidates.push({ filters: {}, sampleSize: unfilteredCount });
-      }
-      for (const [dimension, getValue] of dimensions) {
-        const groups = new Map();
-        for (const entry of entries) {
-          const value = getValue(entry);
-          if (value === null || value === undefined || value === "") continue;
-          const key = JSON.stringify(value);
-          const group = groups.get(key) ?? { value, entries: [] };
-          group.entries.push(entry);
-          groups.set(key, group);
-        }
-        for (const { value, entries: groupedEntries } of groups.values()) {
-          const sampleSize = metricSampleCount(groupedEntries, metricName);
-          if (sampleSize >= 5) {
-            candidates.push({
-              filters: { [dimension]: value },
-              sampleSize,
-            });
-          }
-        }
-      }
-      candidates.sort(
-        (a, b) =>
-          b.sampleSize - a.sampleSize ||
-          JSON.stringify(a.filters).localeCompare(JSON.stringify(b.filters)),
-      );
-      return [metricName, candidates];
-    }),
-  );
-}
-
-function formatMetricSampleCounts(entries) {
-  const views = metricSampleCount(entries, "median_views");
-  const engagement = metricSampleCount(entries, "median_engagement");
-  const replies = metricSampleCount(entries, "reply_post_rate");
-  return `[m${entries.length}/v${views}/e${engagement}/r${replies}]`;
-}
-
-function metricSampleCount(entries, metricName) {
-  if (metricName === "median_views") {
-    return entries.filter((entry) => Number.isFinite(entry.metrics?.views)).length;
-  }
-  if (metricName === "median_engagement") {
-    return entries.filter(
-      (entry) => sumEngagement(entry.metrics ?? {}) !== null,
-    ).length;
-  }
-  return entries.filter((entry) => entry.metrics?.replies != null).length;
 }
 
 async function withLock(cwd, reviewNumber, task) {

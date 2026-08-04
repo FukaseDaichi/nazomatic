@@ -4,9 +4,15 @@ import test from "node:test";
 import {
   buildProposalOutputSchema,
   normalizeStructuredProposal,
+  restoreProposalMetric,
   validateProposal,
 } from "../x-growth/proposalSchema.mjs";
 import { validateAppliedChange } from "../x-growth/experimentAllowlist.mjs";
+import { calculateMetric } from "../x-growth/reportMetrics.mjs";
+import {
+  buildMetricCandidateId,
+  buildMetricCandidates,
+} from "../x-growth/metricCandidates.mjs";
 import { buildLedgerSummary } from "../x-growth-improve.mjs";
 
 function assertStrictObjectSchemas(schema, path = "$") {
@@ -34,53 +40,134 @@ function assertStrictObjectSchemas(schema, path = "$") {
 }
 
 test("proposal output schema satisfies strict object requirements", () => {
-  assertStrictObjectSchemas(buildProposalOutputSchema());
+  assertStrictObjectSchemas(buildProposalOutputSchema([
+    { candidateId: "median_views|none" },
+  ]));
 });
 
-test("structured proposal normalization removes only unused null filters", () => {
-  const proposal = {
-    hypothesis: "画像付き投稿の表示数中央値を改善する",
-    path: "src/server/x-browser-posting/trend-joke-post.ts",
-    kind: "ts-patch",
-    targetKey: "trend-joke:tool-intro-copy",
-    changes: [
-      {
-        find: "old copy",
-        replace: "new copy",
-      },
-    ],
-    metric: {
-      name: "median_views",
-      filters: {
-        postType: "trend_joke",
-        archetype: null,
-        hasMedia: null,
-        shape: null,
-        topicKey: null,
-        jstHourBucket: null,
-      },
-      minimumSampleSize: 5,
-      maturityHours: 24,
-      windowDays: 14,
-      direction: "increase",
+test("structured output selects only a dynamically enumerated candidateId", () => {
+  const candidateIds = [
+    "median_views|none",
+    "reply_post_rate|postType=%22trend_joke%22",
+  ];
+  const schema = buildProposalOutputSchema(candidateIds);
+
+  assert.deepEqual(Object.keys(schema.properties.metric.properties), ["candidateId"]);
+  assert.deepEqual(schema.properties.metric.required, ["candidateId"]);
+  assert.equal(schema.properties.metric.additionalProperties, false);
+  assert.deepEqual(schema.properties.metric.properties.candidateId.enum, candidateIds);
+  assert.equal(normalizeStructuredProposal({ metric: { candidateId: candidateIds[0] } }).metric.candidateId, candidateIds[0]);
+});
+
+test("raw metric fields are not normalized into a candidate selection", () => {
+  const proposal = { metric: { candidateId: "candidate-a", filters: { postType: "trend_joke" } } };
+
+  assert.deepEqual(normalizeStructuredProposal(proposal), proposal);
+  assert.deepEqual(
+    restoreProposalMetric(proposal, [{ candidateId: "candidate-a", filters: {} }]),
+    { ok: false, reason: "metric selection must contain only candidateId" },
+  );
+});
+
+function buildCandidateEntries() {
+  return Array.from({ length: 6 }, (_, index) => ({
+    postType: "trend_joke",
+    postedAt: `2026-07-${String(20 + index).padStart(2, "0")}T12:30:00.000Z`,
+    metadata: {
+      archetype: index < 4 ? "question" : "statement",
+      hasMedia: false,
+      shape: "text",
+      topicKey: "event",
     },
-    rationale: "直近レビューで画像付き投稿の表示数が高かったため",
+    metrics: {
+      mature: true,
+      views: 20 + index,
+      ...(index < 4 ? { replies: index === 0 ? 1 : 0, likes: 1, reposts: 0 } : {}),
+    },
+  }));
+}
+
+test("metric candidates are deterministic, single-filter, and sample-eligible", () => {
+  const entries = buildCandidateEntries();
+  const candidates = buildMetricCandidates(entries);
+
+  assert.deepEqual(candidates, buildMetricCandidates(entries));
+  assert.ok(candidates.length > 0);
+  assert.ok(candidates.every((candidate) => Object.keys(candidate.filters).length <= 1));
+  assert.ok(candidates.every((candidate) => candidate.sampleSize >= 5));
+  assert.ok(candidates.every((candidate) => candidate.minimumSampleSize === 5));
+  assert.ok(candidates.every((candidate) => candidate.maturityHours === 24));
+  assert.ok(candidates.every((candidate) => candidate.windowDays === 14));
+  assert.ok(candidates.every((candidate) => candidate.direction === "increase"));
+  assert.ok(candidates.every((candidate) => !(candidate.filters.postType && candidate.filters.archetype)));
+  assert.equal(
+    candidates.some((candidate) => candidate.name === "median_engagement"),
+    false,
+  );
+  assert.equal(
+    buildMetricCandidateId("median_views", { postType: "trend_joke" }),
+    "median_views|postType=%22trend_joke%22",
+  );
+});
+
+test("candidateId restores the existing proposal metric exactly", () => {
+  const candidate = buildMetricCandidates(buildCandidateEntries()).find(
+    (item) => item.name === "median_views" && item.filters.postType === "trend_joke",
+  );
+  assert.ok(candidate);
+
+  const restored = restoreProposalMetric(
+    {
+      hypothesis: "投稿構成を一つの仮説で改善する",
+      path: "src/server/x-browser-posting/trend-joke-post.ts",
+      kind: "ts-patch",
+      targetKey: "trend-joke:candidate-selection",
+      changes: [{ find: "old", replace: "new" }],
+      metric: { candidateId: candidate.candidateId },
+      rationale: "利用可能なcandidateだけで評価するため",
+    },
+    [candidate],
+  );
+
+  assert.equal(restored.ok, true);
+  assert.deepEqual(restored.proposal.metric, {
+    name: candidate.name,
+    filters: { postType: "trend_joke" },
+    minimumSampleSize: 5,
+    maturityHours: 24,
+    windowDays: 14,
+    direction: "increase",
+  });
+  assert.equal(validateProposal(restored.proposal).ok, true);
+});
+
+test("unknown candidateId is rejected locally", () => {
+  const result = restoreProposalMetric(
+    { metric: { candidateId: "median_views|postType=%22not-available%22" } },
+    [{ candidateId: "median_views|none", filters: {} }],
+  );
+
+  assert.equal(result.ok, false);
+  assert.match(result.reason, /unknown metric candidateId/);
+});
+
+test("restored metric keeps the baseline sample guard", () => {
+  const candidate = {
+    candidateId: "median_views|postType=%22trend_joke%22",
+    name: "median_views",
+    filters: { postType: "trend_joke" },
+    sampleSize: 5,
+    minimumSampleSize: 5,
+    maturityHours: 24,
+    windowDays: 14,
+    direction: "increase",
   };
+  const restored = restoreProposalMetric({ metric: { candidateId: candidate.candidateId } }, [candidate]);
+  const baseline = calculateMetric(buildCandidateEntries().slice(0, 4), restored.proposal.metric);
 
-  const normalized = normalizeStructuredProposal(proposal);
-
-  assert.deepEqual(normalized.metric.filters, {
-    postType: "trend_joke",
-  });
-  assert.deepEqual(proposal.metric.filters, {
-    postType: "trend_joke",
-    archetype: null,
-    hasMedia: null,
-    shape: null,
-    topicKey: null,
-    jstHourBucket: null,
-  });
-  assert.equal(validateProposal(normalized).ok, true);
+  assert.equal(restored.ok, true);
+  assert.equal(baseline.sampleSize, 4);
+  assert.equal(baseline.sampleSize < restored.proposal.metric.minimumSampleSize, true);
 });
 
 test("ts patch allows bounded strategy changes with TypeScript structure", () => {
@@ -340,6 +427,6 @@ test("ledger summary gives Codex mature sample counts for allowed filters", () =
   assert.doesNotMatch(summary, /normal\[m1/);
   assert.match(
     summary,
-    /選択可能metric filter JSON（sampleSize 5以上）: {"median_views":\[\],"median_engagement":\[\],"reply_post_rate":\[\]}/,
+    /利用可能metric candidate JSON（Node生成、sampleSize 5以上）: \[\]/,
   );
 });
