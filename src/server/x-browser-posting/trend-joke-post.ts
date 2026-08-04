@@ -894,15 +894,15 @@ const TREND_JOKE_QUESTION_POOL: TrendJokeFallbackCandidate[] = [
 const TREND_JOKE_ONE_LINER_POOL: TrendJokeFallbackCandidate[] = [
   {
     shape: "void",
-    text: "謎は解けないのに、予定だけはきれいに詰む。",
+    text: "公演ページを保存するたび、予定表の空白だけがはっきりする。",
   },
   {
     shape: "defiance",
-    text: "ヒントを見る前の5分だけ、私は世界でいちばん粘り強い。",
+    text: "「あと1問だけ」で始めた謎解き、終わるのはいつも睡眠のほう。",
   },
   {
     shape: "false_hope",
-    text: "ひらめいたと思った瞬間が、いちばん答えから遠い。",
+    text: "イベント名で行きたくなって、開催日を見てそっと現実に戻る。",
   },
 ];
 
@@ -1138,7 +1138,9 @@ function buildArchetypePromptRules(
     case "question":
       return ["- 読んだ人が短く答えられる自然な質問を1つ入れる。疑問符で終える。"];
     case "one_liner":
-      return ["- 改行なしの一言あるあるにする。説明や二段オチを足さない。"];
+      return [
+        "- 改行なしで、イベント名・開催日・保存・予定表・ヒントなど具体的な行動を1つだけ置き、読んだ瞬間に自分のことだと思える一文にする。説明・質問・二段オチは足さない。",
+      ];
     case "poll":
       return ["- 本文は投票の問いだけにする。選択肢は本文へ書かない。"];
     case "tool_intro":
