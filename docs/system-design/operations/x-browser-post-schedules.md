@@ -2,7 +2,7 @@
 
 ## 位置づけ
 
-この文書は、Codex のローカル automation で動かす X 投稿・週次レビュー・改善 PR・成長計測の運用台帳です。2026-07-24 に `~/.codex/automations/*/automation.toml`、ローカル実行設定、対応 CLI と照合しています。
+この文書は、Codex のローカル automation で動かす X 投稿・週次レビュー・改善 PR・成長計測の運用台帳です。2026-07-24 に `~/.codex/automations/*/automation.toml`、ローカル実行設定と照合し、対応 CLI の記述は 2026-08-05 に現行 `scripts/` と照合しています。
 
 正確な有効・無効状態、時刻、model、通知設定は Codex automation 側を正とし、CLI の挙動は `scripts/` と `src/server/x-browser-posting/` を正とします。登録や実装を変更した場合は、この台帳も同時に更新します。
 
@@ -100,7 +100,7 @@
 
 ## 成長計測メンテナンス
 
-毎日04:30の `nazomatic-x-4` は投稿を行わず、起動済みで login 済みの Chrome CDP セッションを使います。フォロワー snapshot と、20時間〜8日の未取得投稿 metrics を成熟窓の終了が近い順に回収した後、GitHub の実験 PR を照合します。
+毎日04:30の `nazomatic-x-4` は投稿を行わず、起動済みで login 済みの Chrome CDP セッションを使います。開始時にプロフィールページへ明示的に navigation し、blocking state が無いことと login 中 account が対象 account と一致することを検証してから処理します。フォロワー snapshot と、20時間〜8日の未取得投稿 metrics を成熟窓の終了が近い順に回収した後、GitHub の実験 PR を照合します。
 
 merged PR の merge commit、またはその子孫 commit に successful `Production` deployment がある場合だけ activation を進めます。24時間以上8日以内の metrics が5件未満、または成熟率70%未満なら `x-growth:needs-attention` を付けて保留します。十分なら PR metadata の評価予定週を更新し、activation marker と `x-growth:active` label を付けます。GitHub 認証、deployment 照合、Chrome/CDP に失敗した場合は強制 activation しません。
 

@@ -81,7 +81,7 @@
 | 対象 | 設定 |
 |---|---|
 | `(main)` | `index=true`、共通 OGP / Twitter card / favicon / manifest |
-| ツールページ 10 件 | `src/lib/seo.ts` の `generateFeatureMetadata(path)` で個別 title / description / canonical / OGP を生成（`features.json` が情報源） |
+| ツールページ 9 件（calendar を除く） | `src/lib/seo.ts` の `generateFeatureMetadata(path)` で個別 title / description / canonical / OGP を生成（`features.json` が情報源） |
 | `/calendar` | 専用 metadata と `public/img/calendar-ogp.png`（canonical のみ共通ルールに準拠） |
 | Shift Search レポート | 一覧は `generatePageMetadata`、詳細は `generateMetadata` でレポート内容から動的生成 |
 | `(blank25)` | `index=false`, `follow=true` |
@@ -93,4 +93,4 @@ sitemap の `lastModified` はビルド日時ではなく実際の更新日時�
 
 JSON-LD Article は `generateJsonLdArticle` が `mainEntityOfPage`（ページ自身の URL）、`image`、`publisher` を含めて生成します。
 
-新しい公開ページを追加する場合は `generateFeatureMetadata`（features.json 掲載ツール）または `generatePageMetadata`（その他）で metadata を必ず定義し、`"use client"` が必要なページは calendar / shiritori / dice と同様にクライアント部分を `src/components/` へ分離して page.tsx をサーバーコンポーネントに保つこと。
+新しい公開ページを追加する場合は `generateFeatureMetadata`（features.json 掲載ツール）または `generatePageMetadata`（その他）で metadata を必ず定義し、`"use client"` が必要なページは calendar / shiritori / dice と同様にクライアント部分を `src/components/` へ分離して page.tsx をサーバーコンポーネントに保つこと。既存の例外はトップページ（`src/app/(main)/page.tsx` 自体が `"use client"` で、metadata は root layout に依存）のみ。

@@ -1,34 +1,32 @@
-# ドキュメント同期レポート（2026-07-24）
+# ドキュメント同期レポート（2026-08-05）
 
-> 注記: 本文中で触れている `docs/ideas/x-growth-pr-automation-final-spec.md` は 2026-08-02 に削除しました（実装済み機能の実装前仕様記録のため）。現行仕様は [`../system-design/subsystems/x-growth-improve-agent.md`](../system-design/subsystems/x-growth-improve-agent.md)、未確定だった `evaluationBaseline` 再計算の扱いは [`../system-design/quality/known-concerns.md`](../system-design/quality/known-concerns.md) に移しました。以下は当時の記録であり、書き換えていません。
+前回同期（2026-07-24）以降の実装コミットと docs 全体を突合した結果です。docs を同時更新していたコミット（SEO 整備、Core Web Vitals 改善、X 成長ループの structured proposal / 依存 bootstrap / metric candidate 化）は概ね docs と一致しており、修正は取り残しの微差が中心でした。
 
 ## 1. 自動修正したもの
 
-- `docs/system-design/operations/x-browser-post-schedules.md:文書全体`: 「4件稼働・改善エージェント未登録」→「6件すべて ACTIVE」へ修正した。週次改善PR作成を月曜12:30、成長計測メンテナンスを毎日04:30として追加し、automation ID、RRULEの解釈、model / reasoning effort / 通知、秘密値を除く現行ローカル設定、実行契約、ログと状態の保存先を実登録どおり記載した。
-- `docs/system-design/operations/jobs-and-generated-assets.md:ローカル X 自動化`: 「改善枠は月曜12:00想定で未登録」→「改善PR作成は月曜12:30、メンテナンスは毎日04:30にACTIVE登録済み」へ修正した。専用 local log を持たない週次レビューと、`runWithLocalLog` を使う5 CLIの境界も分離した。
-- `docs/development-guide.md:コマンド・Automation一覧`: `package.json` に存在する `x:growth-maintain` がコマンド表に無かったため追加した。登録名を「週次改善PR作成」に合わせ、週次レビューがGitHub Issueを出力して専用 local logを作らないことを追記した。
-- `docs/system-design/subsystems/x-growth-improve-agent.md:登録・GitHub lifecycle`: 登録済みの11:30 / 12:30 / 04:30枠、PR提案時の `proposalBaseline`、production activation、評価週の完全一致条件、`x-growth:needs-attention` からの手動復旧を実装どおり明記した。
-- `docs/system-design/subsystems/x-posting.md:週次レビュー・ローカルファイル`: 「開始時 baseline」→「PR提案時 baseline」へ修正し、lock、改善PR作成log、メンテナンスlogを追加した。
-- `docs/system-design/architecture/overview.md:ローカルPC`: 「ドラフトPRとローカル実験台帳」→「一時worktreeからドラフトPR、実験状態はGitHub正本」へ修正し、日次計測とactivationを追加した。
-- `docs/system-design/architecture/data-and-security.md:正本・外部サービス・秘密情報`: X改善実験状態のGitHub正本、X成長ループがGitHub CLI / APIでIssue、PR、label、metadata、Production deploymentを扱う境界、認証済み`gh`を使う秘密情報の扱いを追加した。
-- `docs/system-design/README.md` / `docs/README.md`: X運用スケジュール文書の説明を、投稿・週次レビューだけから改善PR・成長計測まで含む表現へ更新した。全体図にも週次改善と日次計測を追加した。
-- `docs/ideas/x-growth-pr-automation-final-spec.md:位置づけ`: 「実装目標仕様」→「実装前仕様の記録」へ変更し、本文中の予定時刻や未実装表現を現行運用に使わないことと、現行正本へのリンクを明記した。
-- `docs/system-design/quality/known-concerns.md:優先度 中`: 一時worktree・明示push実装後も残っていた旧PR作成懸念を削除し、baselineの時点差、評価週の取りこぼし、`needs-attention`後の自動再評価停止を現行コードに合わせて追加した。
+- `docs/system-design/operations/jobs-and-generated-assets.md:検証境界`: 「自動 test framework は設定されていません」が残っていたため、`npm run test:x-browser-posting`（Node 標準 test runner）が存在し `src/` 側のみ test が無い、へ修正した（2026-07-25 の修正の取り残し）。
+- `docs/system-design/subsystems/x-posting.md:投稿実行への計測相乗り`: 成熟窓の下限「約24時間」→「20時間」へ修正した（`scripts/x-browser-posting/growthTelemetry.mjs` の `METRIC_MATURITY_MIN_MS`。activation 判定の 24 時間しきい値とは別物）。
+- `docs/system-design/operations/x-browser-post-schedules.md:成長計測メンテナンス`: 開始時のプロフィール明示 navigation、blocking state 検証、login account 一致検証（`scripts/x-growth-maintain.mjs` の `prepareGrowthMaintenancePage`）を追記し、照合日の記述を更新した。
+- `docs/system-design/subsystems/x-growth-improve-agent.md:PR 作成の安全境界 / GitHub lifecycle`: 基底 verify が提案対象パスに関わらず `trend-joke-post.ts` 固定であること、評価予定週の算出式が PR 作成時 `windowDays + 1` 日後・activation 時 `windowDays` 日後で1日ずれることを明記した。
+- `docs/system-design/architecture/overview.md` / `routes-and-apis.md`: `generateFeatureMetadata` の適用は「ツールページ 10 件」ではなく calendar（専用 metadata）を除く 9 件へ修正した。
+- `docs/system-design/architecture/routes-and-apis.md:SEO`: 「page.tsx をサーバーコンポーネントに保つ」ルールの既存例外としてトップページ（`src/app/(main)/page.tsx` 自体が `"use client"`）を明記した。
+- `docs/system-design/architecture/frontend-performance.md:ヘッダー`: `ArticleHeaderComponent` の直接利用は noindex の BLANK25 系ページも含むため「他の公開ページ」→「他のページ」へ修正した。
+- `docs/system-design/architecture/data-and-security.md:認証境界`: middleware の Basic credential 比較が定数時間比較ではない事実を追記した（Bearer 側の `timingSafeEqual` と区別）。
+- `docs/development-guide.md:コマンド・環境変数`: `test:x-browser-posting` の説明を実テスト6ファイル分（依存 bootstrap、成長メンテナンスを含む）へ拡張し、`command` provider へ prompt が環境変数 `X_BROWSER_POST_TREND_JOKE_COPY_PROMPT` でも渡される仕様を追記した。
+- `docs/system-design/quality/known-concerns.md:優先度 高`: テストカバレッジの列挙を実ファイル6件に合わせて更新した。
 
 ## 2. 判断に迷った点
 
-- `nazomatic-x` は3時間間隔のRRULEに`BYHOUR`と`TZID`が無い。特定の実行時刻列を推測せず、「3時間間隔（実行分は00分）」としてRRULEの事実だけを記載した。
-- `.env.x-browser-posting.local` には運用上重要な安全switchがあるが、token、CDP URL、profile pathを文書へ転記すると秘密情報や端末依存情報を固定化する。今回はaccountと非秘密の有効値だけを運用台帳へ反映した。
-- `docs/ideas/x-growth-pr-automation-final-spec.md` には月曜12:00など実装前の値が残る。履歴文書を現行仕様へ全面改稿せず、冒頭を実装前記録へ変更して現行設計・運用台帳へ誘導した。
+- コミット be58488（trend-joke の fallback / provider prompt を具体的な行動へ寄せた実験）は、docs が「一言型は改行なし」等の抽象度で規定しているため矛盾なしと判断し、文言レベルの変更は docs へ転記しなかった。
+- 686d8cd で削除された 4 パッケージ（`@heroicons/react` ほか）への言及は docs に元々無く、修正不要だった。
+- `~/.codex/automations/` の登録時刻・model はリポジトリ外のため今回照合していない。台帳の automation 登録情報は 2026-07-24 照合のまま、CLI 挙動の記述のみ 2026-08-05 に照合した。
 
 ## 3. システム問題点
 
-- 週次レビューの同一週再実行は既存 Issue のコメントへ結果を追記する一方、`scripts/x-growth-improve.mjs` は Issue 本文だけを入力にする。改善提案が最新レビューを見ない可能性がある。
-- PR作成時の`proposalBaseline`をproduction activation時にも流用しており、レビュー・マージ待ちの期間が長いと実験開始直前のbaselineにならない。
-- 週次レビューは`plannedEvaluateWeek === currentWeek`の完全一致だけを評価するため、該当週のautomation失敗を翌週に回収できない。
-- テレメトリ不足で`x-growth:needs-attention`を付けたPRはmaintenanceの対象外になる。後から計測が揃ってもlabelを人間が外すまでactivationを再試行しない。
-- `scripts/x-weekly-growth-review.mjs` の生成配列に `## サマリ` が2回連続で入り、週次Issueに重複見出しが出る。
+- 評価予定週の算出式が PR 作成時（`scripts/x-growth-improve.mjs`: `windowDays + 1` 日後）と activation 時（`scripts/x-growth-maintain.mjs`: `windowDays` 日後）で異なり、activation のタイミング次第で評価週が1週前倒しになり得る。
+- 基底 verify が `trend-joke-post.ts` 固定のため、`comment-patterns.json` など別ファイルを狙う提案でも同一のフルパイプラインが走る。動作上の問題はないが、対象ファイルの基底健全性は検証していない。
+- middleware の Basic credential 比較が定数時間比較ではない（内部 API の Bearer 側は `timingSafeEqual` 済み）。
 
 ## 4. AGENTS.md 推奨修正
 
-- 今回の同期範囲では推奨修正なし。コマンド、正本データ、認証境界、Xローカル運用の参照先は現行実装・docsと一致している。
+- 推奨修正なし。コマンド、正本データ、認証境界、X ローカル運用の参照先は現行実装・docs と一致している。

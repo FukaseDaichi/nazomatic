@@ -10,9 +10,7 @@
 
 ### 自動 test の範囲が X 投稿 script に限られる
 
-test framework 自体はあります。`node:test` を使う `npm run test:x-browser-posting` が `scripts/x-browser-posting/*.test.mjs` を実行し、X 文案 validator、proposal schema、patch 適用、review markdown 生成を回帰確認します。
-
-一方 `src/` 側には test が 1 件もありません。timezone 計算、Yahoo response parsing、Firestore transaction、BLANK25 manifest 編集、生成 scripts の回帰は、lint と build と手動確認だけで担保しています。外部仕様依存の多いサブシステムほど、変更検知が遅れる可能性があります。
+`src/` 側には test が 1 件もありません。timezone 計算、Yahoo response parsing、Firestore transaction、BLANK25 manifest 編集、生成 scripts の回帰は、lint と build と手動確認だけで担保しています。外部仕様依存の多いサブシステムほど、変更検知が遅れる可能性があります。
 
 ## 優先度: 中
 

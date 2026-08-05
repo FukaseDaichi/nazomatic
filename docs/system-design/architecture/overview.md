@@ -76,6 +76,6 @@
 - PC ヘッダーのアイコンナビ
 - sitemap の公開 URL（Shift Search レポートは view manifest から別途追加）
 - 各公開ページの JSON-LD Article 情報
-- 各ツールページの metadata（`src/lib/seo.ts` の `generateFeatureMetadata` が title / description / canonical / OGP を生成）
+- 各ツールページの metadata（`src/lib/seo.ts` の `generateFeatureMetadata` が title / description / canonical / OGP を生成。calendar のみ専用 metadata）
 
 JSON-LD は各 page が `Article path="/dice"` のように path で参照します。path は `src/lib/features.ts` の `FeaturePath` 型で制約され、typo や削除済み path は compile error になります。`FEATURE_PATHS` は module 読み込み時に `features.json` と突き合わせ、差分があれば例外を投げます。配列順の変更は JSON-LD に影響しません。
