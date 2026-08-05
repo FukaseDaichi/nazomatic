@@ -217,6 +217,22 @@ Codex automation から provider 生成文を確認なしで実投稿する場�
 
 各 workflow は repo を checkout し、`scripts/internal-api/post.sh` 経由で署名付き request を送ります。curl の `--retry` は使いません。retry のたびに timestamp と nonce を作り直す必要があるため、retry は `post.sh` 側で行います。
 
+### PR マージ後の `future` 同期と worktree 整理
+
+自動処理用ブランチの PR を `main` へマージした後は、プロジェクトローカルの `$sync-main-and-clean-worktrees` スキルを使います。このスキルは `origin/main` を取得し、fast-forward 可能な場合だけ `future` を同期・pushします。その後、未commit・未追跡・ignoredファイルがなく、ロックされておらず、HEAD が `origin/main` に含まれる一時 worktree だけを削除します。リポジトリ本体と `future` の worktree、ローカル・リモートブランチは削除しません。
+
+最初に dry-run で同期内容と削除候補を確認します。dry-runでもfetchによってローカルの`origin/*`参照は更新されますが、ブランチの更新・push・worktree削除は行いません。
+
+```bash
+.agents/skills/sync-main-and-clean-worktrees/scripts/sync-and-clean.sh
+```
+
+同期と安全な削除候補を実行する場合は `--execute` を付けます。`future` に未取り込みのcommitがある場合、worktreeに未commit変更がある場合、またはfast-forwardできない場合は停止し、mergeや競合解決を自動実行しません。
+
+```bash
+.agents/skills/sync-main-and-clean-worktrees/scripts/sync-and-clean.sh --execute
+```
+
 ## Shift Search レポート更新
 
 Shift Search のレポートは、元成果物と Next.js 表示用 assets が分かれています。
