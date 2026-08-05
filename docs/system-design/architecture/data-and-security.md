@@ -67,7 +67,7 @@ Firestore document id は `{postId}:{RULESET_VERSION}` です。主要フィー�
 
 Basic credential は `BLANK25_EDITOR_USER` / `BLANK25_EDITOR_PASSWORD`、Bearer token は `REALTIME_INTERNAL_API_TOKEN` から読みます。
 
-Bearer 認証は `src/server/internal-api/authorization.ts` の `enforceInternalAuthorization()` に集約し、Realtime / X の全 Route Handler がこれを呼びます。header 比較は `timingSafeEqual` による定数時間比較です。認証仕様を変える場合はこの module だけを変更します。
+Bearer 認証は `src/server/internal-api/authorization.ts` の `enforceInternalAuthorization()` に集約し、Realtime / X の全 Route Handler がこれを呼びます。header 比較は `timingSafeEqual` による定数時間比較です。認証仕様を変える場合はこの module だけを変更します。一方、middleware の Basic credential 比較は文字列の単純比較で、定数時間比較ではありません。
 
 ### 内部 API の request 署名
 

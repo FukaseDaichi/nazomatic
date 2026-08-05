@@ -23,7 +23,7 @@ Codex automation には、レビューが毎週月曜11:30 JST、`x:growth-impro
 
 ## PR 作成の安全境界
 
-`--execute` は control checkout を変更しない。`git fetch origin main` の後、OS 一時ディレクトリの worktree を `origin/main` から detach で作成する。依存関係は package / lockfile と実行環境が一致する検証済み cache から復元し、cache miss のときだけ `npm ci` を実行する。その後、基底の verify、単一ファイル変更、verify、commit、push、PR 作成を行い、完了時は worktree を除去する。
+`--execute` は control checkout を変更しない。`git fetch origin main` の後、OS 一時ディレクトリの worktree を `origin/main` から detach で作成する。依存関係は package / lockfile と実行環境が一致する検証済み cache から復元し、cache miss のときだけ `npm ci` を実行する。その後、基底の verify、単一ファイル変更、verify、commit、push、PR 作成を行い、完了時は worktree を除去する。基底の verify は提案対象パスに関わらず `src/server/x-browser-posting/trend-joke-post.ts` を対象に固定で実行する。
 
 提案生成の Codex CLI は read-only sandbox であり、変更は Node 側が実行する。1つの仮説と1つの targetKey に対し、同一ファイル内で最大6件の局所 find/replace を提案できる。編集先は次だけである。
 
@@ -70,7 +70,7 @@ PR は `x-growth-experiment` label、`Closes #<review Issue>`、次の metadata 
 
 review Issue との対応は `reviewIssue + account` で冪等に検索する。PR 作成コマンドが timeout した場合は、branch 名で PR を再検索し、存在すれば partial success として branch を残す。
 
-PR 作成時に、その時点の直近投稿から `proposalBaseline` と評価予定週を metadata へ保存します。maintenance は merged PR の merge commit を ancestor とする successful production deployment を許可します。これは merge SHA の deployment が cancel され、その子孫 commit の deployment が成功したケースを含みます。deployment 未確認は `activation_pending` のままです。
+PR 作成時に、その時点の直近投稿から `proposalBaseline` と評価予定週を metadata へ保存します。評価予定週は PR 作成時が `windowDays + 1` 日後、activation 時の再計算が `windowDays` 日後の JST ISO 週で、両者の式は1日ずれています。maintenance は merged PR の merge commit を ancestor とする successful production deployment を許可します。これは merge SHA の deployment が cancel され、その子孫 commit の deployment が成功したケースを含みます。deployment 未確認は `activation_pending` のままです。
 
 deployment を確認した時点でテレメトリが不足していれば `x-growth:needs-attention` を付けます。十分なら deployment 時刻を `activeAt` とし、評価予定週を更新して activation marker と `x-growth:active` label を付けます。現行実装は activation 時に baseline を再集計せず、PR 作成時の `proposalBaseline` を `evaluationBaseline` として marker へ引き継ぎます。
 

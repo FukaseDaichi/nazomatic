@@ -29,7 +29,7 @@
 
 ## ヘッダーの出し分けは CSS だけで行う
 
-`HeaderComponent` を使うのは**トップページのみ**です。他の公開ページは `ArticleHeaderComponent` を全幅で直接使います。
+`HeaderComponent` を使うのは**トップページのみ**です。他のページ（noindex の BLANK25 系を含む）は `ArticleHeaderComponent` を全幅で直接使います。
 
 - `HeaderComponent` はモバイル用とデスクトップ用の**両方を常に描画**し、`sm` ブレークポイントの CSS(`sm:hidden` / `hidden sm:block`)だけで切り替えます。
 - `ArticleHeaderComponent` は任意の `className` を受け取り、ルートの `<header>` に連結します。`HeaderComponent` からは `sm:hidden` を渡します。

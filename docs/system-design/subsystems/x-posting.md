@@ -130,7 +130,7 @@ validator は自然な hashtag を最大1個だけ許可し、mention、emoji、
 `X_BROWSER_POST_CAPTURE_TELEMETRY=true`（既定）のとき、3種類のブラウザ投稿は投稿成功後に、そのログイン済み CDP セッションのまま計測を行います。目的はフォロワー数という主要指標を安定して残すことです。投稿が止まっても成熟窓を取りこぼさないよう、`npm run x:growth-maintain` が同じ計測を投稿なしで日次実行できます。
 
 - プロフィールを開いてフォロワー数・累計投稿数を読み、`follower-snapshots.json` へ JST の日付単位で追記します。値が取れなかった項目は同日の既存値を維持し、null で上書きしません。
-- 投稿から約24時間〜8日の範囲で、まだ数値を取得していない過去投稿を最大 `X_BROWSER_POST_METRICS_MAX_PER_RUN`（既定8）件だけ開き、表示数・返信・リポスト・いいねを `post-ledger.json` の該当エントリへ `metrics` として書き戻します。成熟窓の終了が近い古い投稿から優先し、取得済みは `metrics.mature` で二度取得しません。
+- 投稿から20時間〜8日の範囲で、まだ数値を取得していない過去投稿を最大 `X_BROWSER_POST_METRICS_MAX_PER_RUN`（既定8）件だけ開き、表示数・返信・リポスト・いいねを `post-ledger.json` の該当エントリへ `metrics` として書き戻します。成熟窓の終了が近い古い投稿から優先し、取得済みは `metrics.mature` で二度取得しません。
 
 計測はベストエフォートで、失敗しても投稿処理を止めません。ログイン画面、blocking state、CAPTCHA を検出した場合は他の処理と同様に停止します。Playwright fallback セッション（CDP 非使用）では計測を行いません。
 

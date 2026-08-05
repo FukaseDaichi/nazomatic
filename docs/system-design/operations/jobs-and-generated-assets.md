@@ -72,4 +72,4 @@ artifacts を変更した commit では、両 command の出力を同期させ�
 
 ## 検証境界
 
-自動 test framework は設定されていません。通常の変更確認は `npm run lint` と、変更対象に応じた `npm run build`、API dry-run、ブラウザ手動確認です。X ブラウザ投稿は dry-run を既定とし、Shift Search artifact の更新は両生成 command の差分を確認します。
+自動 test は `npm run test:x-browser-posting`（Node 標準 test runner、`scripts/x-browser-posting/*.test.mjs`）のみで、`src/` 側に test はありません。通常の変更確認は `npm run lint` と `npm run test:x-browser-posting`、変更対象に応じた `npm run build`、API dry-run、ブラウザ手動確認です。X ブラウザ投稿は dry-run を既定とし、Shift Search artifact の更新は両生成 command の差分を確認します。

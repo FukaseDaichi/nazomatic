@@ -27,7 +27,7 @@ npm run dev
 | `npm run x:growth-review` | 直近7日の X 運用を集計し、必要に応じて GitHub Issue を作る CLI |
 | `npm run x:growth-improve` | 週次レビューから改善実験を1件提案し、`--execute` 時だけドラフト PR を作る CLI |
 | `npm run x:growth-maintain` | 投稿せず follower / metrics を回収し、実験の production activation を照合する CLI |
-| `npm run test:x-browser-posting` | X トレンド投稿の schema、provider error 分類、履歴類似、投票 validator の回帰テスト |
+| `npm run test:x-browser-posting` | `scripts/x-browser-posting/*.test.mjs` 全件の回帰テスト（X 文案 validator、proposal schema、patch 適用、review markdown、依存 bootstrap、成長メンテナンス） |
 | `npm run shift:report:meta` | Shift Search レポート元成果物から manifest / index を生成 |
 | `npm run shift:report:view-assets` | Shift Search レポート表示用 JSON を `src/generated/shift-search` に生成 |
 
@@ -108,7 +108,7 @@ GitHub Actions では `REALTIME_API_TOKEN` secret として同じ値を渡しま
 | `X_BROWSER_POST_TREND_JOKE_LINE` | 謎解き界隈トレンドのネタ投稿文。空欄なら provider またはローカル候補文を使う |
 | `X_BROWSER_POST_TREND_JOKE_COPY_PROVIDER` | トレンドネタ投稿の文案生成 provider。`fallback` / `codex` / `command`。未設定時は `fallback` |
 | `X_BROWSER_POST_TREND_JOKE_CODEX_MODEL` | `codex` provider で使うモデル。空欄なら Codex CLI の既定モデル |
-| `X_BROWSER_POST_TREND_JOKE_PROVIDER_COMMAND` | `command` provider の shell command。stdin の JSON を読み、JSON または本文を stdout に返す |
+| `X_BROWSER_POST_TREND_JOKE_PROVIDER_COMMAND` | `command` provider の shell command。stdin の JSON を読み、JSON または本文を stdout に返す。prompt は子プロセスの環境変数 `X_BROWSER_POST_TREND_JOKE_COPY_PROMPT` でも渡される |
 | `X_BROWSER_POST_TREND_JOKE_PROVIDER_TIMEOUT_MS` | 文案生成 provider のタイムアウト。未設定時は `120000` |
 | `X_BROWSER_POST_TREND_JOKE_PROVIDER_ATTEMPTS` | 文案生成 provider の試行回数。未設定時は `2`、最大 `3` |
 | `X_BROWSER_POST_TREND_JOKE_PROVIDER_AUTO_APPROVE` | provider 生成文を `CONFIRMATION_MODE=auto` で投稿するための追加ロック。初期は `false` 推奨 |
