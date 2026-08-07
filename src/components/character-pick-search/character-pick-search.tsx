@@ -327,9 +327,16 @@ export default function CharacterPickSearch() {
                     setInputMessage(null);
                   }}
                   onKeyDown={(event) => {
-                    if (event.key === "Enter") {
-                      handleAddWord();
+                    if (event.key !== "Enter") {
+                      return;
                     }
+                    // IME 変換確定の Enter で追加すると、確定後の文字列が
+                    // input に戻り入力値が消えないため、変換中は無視する。
+                    if (event.nativeEvent.isComposing) {
+                      return;
+                    }
+                    event.preventDefault();
+                    handleAddWord();
                   }}
                   className="h-10 border-gray-600 bg-gray-700/90 text-base text-white focus-visible:ring-purple-400 focus-visible:ring-offset-gray-900"
                   placeholder={
