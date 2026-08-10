@@ -77,12 +77,15 @@ export async function findProductionDeployment(cwd, mergeSha) {
 }
 
 export function parseExperimentMarker(body) {
-  const match = /<!--\s*x-growth-experiment:v1\s+(\{[^]*?\})\s*-->/.exec(String(body ?? ""));
-  if (!match) return null;
-  try {
-    const value = JSON.parse(match[1]);
-    return value?.reviewIssue && value?.account && value?.targetKey ? value : null;
-  } catch { return null; }
+  const marker = locateExperimentMarker(body);
+  return marker?.value ?? null;
+}
+
+export function replaceExperimentMarker(body, metadata) {
+  const marker = locateExperimentMarker(body);
+  if (!marker || !isExperimentMetadata(metadata)) return null;
+  const replacement = `<!-- x-growth-experiment:v1 ${JSON.stringify(metadata)} -->`;
+  return `${marker.source.slice(0, marker.start)}${replacement}${marker.source.slice(marker.end)}`;
 }
 
 // `<!-- x-growth-experiment:v1 ... -->` などの機械可読 marker は LLM 入力では雑音なので落とす。
@@ -100,7 +103,20 @@ export function experimentKeyMatches(pr, { reviewIssue, account }) {
 }
 
 export function isTerminalExperiment(pr) {
-  return pr.labels?.includes(KEEP_LABEL) || pr.labels?.includes(REVERTED_LABEL);
+  return classifyExperiment(pr).phase === "terminal";
+}
+
+export function classifyExperiment(pr) {
+  const labels = pr.labels ?? [];
+  if (labels.includes(KEEP_LABEL) || labels.includes(REVERTED_LABEL)) {
+    return { phase: "terminal", blocking: false };
+  }
+  if (labels.includes(ATTENTION_LABEL)) return { phase: "needs_attention", blocking: true };
+  if (labels.includes(REVERT_LABEL)) return { phase: "revert_requested", blocking: true };
+  if (labels.includes(ACTIVE_LABEL)) return { phase: "active", blocking: true };
+  if (pr.state === "OPEN") return { phase: "open_pr", blocking: true };
+  if (pr.mergedAt || pr.state === "MERGED") return { phase: "pending_activation", blocking: true };
+  return { phase: "closed_unmerged", blocking: false };
 }
 
 export async function ensureLabels(cwd) {
@@ -115,9 +131,9 @@ export async function addLabels(cwd, issueOrPr, labels) {
 }
 
 export async function updateExperimentMetadata(cwd, pr, metadata) {
-  const marker = `<!-- x-growth-experiment:v1 ${JSON.stringify(metadata)} -->`;
-  const body = String(pr.body ?? "").replace(/<!--\s*x-growth-experiment:v1\s+\{[^]*?\}\s*-->/, marker);
-  if (body === pr.body) throw new Error(`experiment metadata marker is missing on PR #${pr.number}`);
+  const body = replaceExperimentMarker(pr.body, metadata);
+  if (body == null) throw new Error(`experiment metadata marker is missing or invalid on PR #${pr.number}`);
+  if (body === String(pr.body ?? "")) return;
   await runGh(cwd, ["pr", "edit", String(pr.number), "--body", body]);
 }
 
@@ -142,6 +158,35 @@ function normalizeIssue(item) {
       body: String(entry?.body ?? ""),
     })),
   };
+}
+
+function locateExperimentMarker(body) {
+  const source = String(body ?? "");
+  const startMatch = /<!--\s*x-growth-experiment:v1\s+/.exec(source);
+  if (!startMatch) return null;
+  const contentStart = startMatch.index + startMatch[0].length;
+  const commentEnd = source.indexOf("-->", contentStart);
+  if (commentEnd === -1) return null;
+  const end = commentEnd + 3;
+  if (/<!--\s*x-growth-experiment:v1\s+/.test(source.slice(end))) return null;
+  try {
+    const value = JSON.parse(source.slice(contentStart, commentEnd).trim());
+    if (!isExperimentMetadata(value)) return null;
+    return { source, start: startMatch.index, end, value };
+  } catch {
+    return null;
+  }
+}
+
+function isExperimentMetadata(value) {
+  return Boolean(
+    value &&
+    typeof value === "object" &&
+    !Array.isArray(value) &&
+    value.reviewIssue &&
+    value.account &&
+    value.targetKey,
+  );
 }
 
 async function isAncestor(cwd, ancestor, descendant) {

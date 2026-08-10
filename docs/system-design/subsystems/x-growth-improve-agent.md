@@ -70,11 +70,15 @@ PR は `x-growth-experiment` label、`Closes #<review Issue>`、次の metadata 
 
 review Issue との対応は `reviewIssue + account` で冪等に検索する。PR 作成コマンドが timeout した場合は、branch 名で PR を再検索し、存在すれば partial success として branch を残す。
 
-PR 作成時に、その時点の直近投稿から `proposalBaseline` と評価予定週を metadata へ保存します。評価予定週は PR 作成時が `windowDays + 1` 日後、activation 時の再計算が `windowDays` 日後の JST ISO 週で、両者の式は1日ずれています。maintenance は merged PR の merge commit を ancestor とする successful production deployment を許可します。これは merge SHA の deployment が cancel され、その子孫 commit の deployment が成功したケースを含みます。deployment 未確認は `activation_pending` のままです。
+metadata marker はコメント終端 `-->` までを JSON 本文として解析し、`metric.filters` や `proposalBaseline` のようなネスト object を保持する。marker が欠損、不正、または重複している実験 PR は fail closed とし、改善 PR 作成を `rejected` で止める。maintenance が merged PR の不正 marker を検出した場合は `x-growth:needs-attention` を付け、自動 activation を行わない。
+
+PR 作成時に、その時点の直近投稿から `proposalBaseline` と評価予定週を metadata へ保存します。評価予定週は PR 作成時が `windowDays + 1` 日後、activation 時の再計算が `windowDays` 日後の JST ISO 週で、両者の式は1日ずれています。maintenance は merged PR の merge commit を ancestor とする successful production deployment を許可します。これは merge SHA の deployment が cancel され、その子孫 commit の deployment が成功したケースを含みます。deployment 未確認時の maintenance 結果は `activation_pending`、実験 phase は `pending_activation` のままです。
 
 deployment を確認した時点でテレメトリが不足していれば `x-growth:needs-attention` を付けます。十分なら deployment 時刻を `activeAt` とし、評価予定週を更新して activation marker と `x-growth:active` label を付けます。現行実装は activation 時に baseline を再集計せず、PR 作成時の `proposalBaseline` を `evaluationBaseline` として marker へ引き継ぎます。
 
 人間は評価後、継続なら `x-growth:keep`、revert を行うなら `x-growth:revert`、revert 完了なら `x-growth:reverted` を PR に付ける。keep / reverted は終端状態なので新規実験を許可する。
+
+実験状態は `open_pr`、`pending_activation`、`active`、`needs_attention`、`revert_requested`、`terminal`、`closed_unmerged` に分類する。merged だが `x-growth:active` がない PR は `pending_activation` であり、production 反映待ちなので新規実験をまだ許可しない。`x-growth:active` 付きは評価待ちの `active`、`x-growth:keep` / `x-growth:reverted` は `terminal`、未mergeでcloseされた PR は `closed_unmerged` とする。1アカウント1実験の guard は同じ account の非終端 PR だけを対象にし、従来の `skipped_active_experiment` status に `phase` と理由を添えて状態を区別する。
 
 週次レビューが「実験の勝敗」へ出すのは、`x-growth:active` で metadata の `plannedEvaluateWeek` が実行週と完全一致する merged PR だけです。比較には PR 作成時の `proposalBaseline` を表示し、keep / revert は人間が判断します。
 

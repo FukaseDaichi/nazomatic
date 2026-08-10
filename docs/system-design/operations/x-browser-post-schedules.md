@@ -98,6 +98,8 @@
 
 実験状態は GitHub の review Issue、`x-growth-experiment` PR、label、metadata marker が正本です。ローカル実験台帳はありません。詳細は [`../subsystems/x-growth-improve-agent.md`](../subsystems/x-growth-improve-agent.md) を参照します。
 
+merged PR は実験終了ではなく、production deployment 確認前は `pending_activation`、`x-growth:active` 付与後は評価中です。`x-growth:keep` または `x-growth:reverted` の終端状態になるまで、同じ account の次の改善 PR は作成しません。marker 不正や要手動対応は理由付きで停止し、guard を迂回しません。
+
 ## 成長計測メンテナンス
 
 毎日04:30の `nazomatic-x-4` は投稿を行わず、起動済みで login 済みの Chrome CDP セッションを使います。開始時にプロフィールページへ明示的に navigation し、blocking state が無いことと login 中 account が対象 account と一致することを検証してから処理します。フォロワー snapshot と、20時間〜8日の未取得投稿 metrics を成熟窓の終了が近い順に回収した後、GitHub の実験 PR を照合します。
