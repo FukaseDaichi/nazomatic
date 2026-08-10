@@ -9,7 +9,7 @@ import { recordFollowerSnapshot } from "./x-browser-posting/followerSnapshots.mj
 import { readBrowserPostLedger } from "./x-browser-posting/postLedger.mjs";
 import { telemetryHealth } from "./x-growth/reportMetrics.mjs";
 import { runWithLocalLog } from "./x-browser-posting/runLog.mjs";
-import { ACTIVE_LABEL, ATTENTION_LABEL, addLabels, comment, findProductionDeployment, getJstIsoWeek, listExperimentPrs, runGit, updateExperimentMetadata } from "./x-growth/githubExperiments.mjs";
+import { ACTIVE_LABEL, ATTENTION_LABEL, addLabels, classifyExperiment, comment, findProductionDeployment, getJstIsoWeek, listExperimentPrs, runGit, updateExperimentMetadata } from "./x-growth/githubExperiments.mjs";
 
 function parseArgs(argv) {
   const args = { metricsMaxPerRun: null };
@@ -51,7 +51,17 @@ export async function reconcileExperimentActivation({ cwd, telemetry }) {
   await runGit(cwd, ["fetch", "--prune", "origin", "main"]);
   const prs = await listExperimentPrs(cwd);
   const results = [];
-  for (const pr of prs.filter((item) => item.mergedAt && !item.labels.includes(ACTIVE_LABEL) && !item.labels.includes("x-growth:keep") && !item.labels.includes("x-growth:reverted") && !item.labels.includes(ATTENTION_LABEL))) {
+  for (const pr of prs.filter((item) => (item.mergedAt || item.state === "MERGED") && classifyExperiment(item).blocking)) {
+    const lifecycle = classifyExperiment(pr);
+    if (!pr.metadata) {
+      if (lifecycle.phase !== "needs_attention") {
+        await comment(cwd, pr.number, "## 実験開始を保留\n\nexperiment metadata marker が欠損または不正なため、自動 activation を停止しました。");
+        await addLabels(cwd, pr.number, [ATTENTION_LABEL]);
+        results.push({ pr: pr.number, status: "activation_blocked_invalid_metadata" });
+      }
+      continue;
+    }
+    if (lifecycle.phase !== "pending_activation") continue;
     const mergeSha = pr.mergeCommit?.oid ?? pr.headRefOid;
     if (!mergeSha) {
       results.push({ pr: pr.number, status: "activation_pending", reason: "merge commit is unavailable" });

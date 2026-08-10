@@ -14,7 +14,7 @@ import { verifyChangedFile } from "./x-growth/verifyChange.mjs";
 import { calculateMetric, telemetryHealth } from "./x-growth/reportMetrics.mjs";
 import { buildMetricCandidates, formatMetricSampleCounts, METRIC_DIMENSIONS } from "./x-growth/metricCandidates.mjs";
 import { prepareWorktreeWithDependencies, provisionWorktreeDependencies, resolveDependencyCacheRoot } from "./x-growth/dependencyBootstrap.mjs";
-import { ATTENTION_LABEL, EXPERIMENT_LABEL, addLabels, closeIssue, comment, ensureLabels, experimentKeyMatches, findReviewIssue, getJstIsoWeek, isTerminalExperiment, listExperimentPrs, normalizeHandle, runGit, stripXGrowthMarkers } from "./x-growth/githubExperiments.mjs";
+import { ATTENTION_LABEL, EXPERIMENT_LABEL, addLabels, classifyExperiment, closeIssue, comment, ensureLabels, experimentKeyMatches, findReviewIssue, getJstIsoWeek, listExperimentPrs, normalizeHandle, runGit, stripXGrowthMarkers } from "./x-growth/githubExperiments.mjs";
 import { runProcess } from "./x-growth/processRunner.mjs";
 
 const LOCK_PATH = "local/x-browser-posting/locks/x-growth-improve.lock";
@@ -26,11 +26,8 @@ const OMISSION_SUFFIX = "\n\n…（入力上限のため以降を省略）";
 
 export async function runImprovementCycle({ controlRoot, review, account, callCodex, execute, model }) {
   const prs = await listExperimentPrs(controlRoot);
-  const same = prs.filter((pr) => experimentKeyMatches(pr, { reviewIssue: review.number, account }));
-  if (same.length > 1) return { status: "rejected", reason: "duplicate experiment PRs for review issue" };
-  if (same.length === 1) return { status: "existing_pr", prUrl: same[0].url, branch: same[0].headRefName };
-  const active = prs.find((pr) => !isTerminalExperiment(pr) && (pr.state === "OPEN" || pr.mergedAt || pr.labels.includes("x-growth:revert")));
-  if (active) return { status: "skipped_active_experiment", prUrl: active.url, branch: active.headRefName };
+  const gate = evaluateExperimentPrGate(prs, { reviewIssue: review.number, account });
+  if (gate) return gate;
 
   const ledger = await readBrowserPostLedger({ cwd: controlRoot });
   const posts = ledger.entries.filter((entry) => normalizeHandle(entry.accountHandle) === account && Date.now() - new Date(entry.postedAt).getTime() <= 14 * 86400000);
@@ -122,6 +119,46 @@ export async function runImprovementCycle({ controlRoot, review, account, callCo
     if (localBranch && !preserveBranch) await runGit(controlRoot, ["branch", "-D", localBranch]).catch(() => {});
     await fs.rm(tempRoot, { recursive: true, force: true }).catch(() => {});
   }
+}
+
+export function evaluateExperimentPrGate(prs, { reviewIssue, account }) {
+  const invalid = prs.find((pr) => !pr.metadata);
+  if (invalid) {
+    return {
+      status: "rejected",
+      reason: `experiment metadata is missing or invalid on ${invalid.url}`,
+      prUrl: invalid.url,
+      branch: invalid.headRefName,
+    };
+  }
+  const same = prs.filter((pr) => experimentKeyMatches(pr, { reviewIssue, account }));
+  if (same.length > 1) return { status: "rejected", reason: "duplicate experiment PRs for review issue" };
+  if (same.length === 1) return { status: "existing_pr", prUrl: same[0].url, branch: same[0].headRefName };
+  const blockers = prs
+    .filter((pr) => normalizeHandle(pr.metadata.account) === normalizeHandle(account))
+    .map((pr) => ({ pr, lifecycle: classifyExperiment(pr) }))
+    .filter((entry) => entry.lifecycle.blocking);
+  if (blockers.length > 1) {
+    return { status: "rejected", reason: "multiple non-terminal experiment PRs exist for account" };
+  }
+  if (blockers.length === 0) return null;
+  const [{ pr, lifecycle }] = blockers;
+  return {
+    status: "skipped_active_experiment",
+    phase: lifecycle.phase,
+    reason: experimentBlockReason(lifecycle.phase),
+    prUrl: pr.url,
+    branch: pr.headRefName,
+  };
+}
+
+function experimentBlockReason(phase) {
+  if (phase === "pending_activation") return "merged experiment is waiting for production activation";
+  if (phase === "active") return "experiment is active and waiting for evaluation";
+  if (phase === "open_pr") return "experiment PR is still open";
+  if (phase === "revert_requested") return "experiment revert is pending";
+  if (phase === "needs_attention") return "experiment requires manual attention";
+  return `experiment is non-terminal (${phase})`;
 }
 
 // 週次レビューの再実行結果は既存 Issue のコメントとして積まれる。本文だけでは古い初回レビューを見てしまうため、
