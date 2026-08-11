@@ -1,4 +1,4 @@
 interface:
   display_name: "Sync Main and Clean Worktrees"
-  short_description: "mainをfutureへ同期しmerged worktreeとlocal/remoteブランチを整理する"
-  default_prompt: "Use $sync-main-and-clean-worktrees to check out future when needed, fast-forward it from origin/main, push it, remove only safe merged worktrees, and delete eligible merged local and remote branches while preserving protected branches."
+  short_description: "任意のbase/targetを同期しmerged worktreeとlocal/remoteブランチを整理する"
+  default_prompt: "Use $sync-main-and-clean-worktrees to check out the target when needed, fast-forward it from origin/<base>, push it, force-remove eligible merged worktrees including ignored and dirty files, and delete eligible merged local and remote branches while preserving protected branches."
