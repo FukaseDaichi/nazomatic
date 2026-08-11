@@ -305,20 +305,22 @@ if [ "$mode" = "execute" ]; then
   case "$local_base_sync_mode" in
     merge_worktree)
       if worktree_is_locked "$local_base_worktree" || ! worktree_is_clean "$local_base_worktree"; then
-        echo "Local $base_branch worktree changed after inspection; refusing to fast-forward: $local_base_worktree" >&2
-        exit 1
+        echo "SKIP LOCAL BASE: $base_branch (worktree changed after inspection: $local_base_worktree)"
+      elif git -C "$local_base_worktree" merge --ff-only "$base_ref"; then
+        echo "FAST-FORWARDED LOCAL BASE: $base_branch in $local_base_worktree"
+      else
+        echo "SKIP LOCAL BASE: $base_branch (fast-forward failed in $local_base_worktree)" >&2
       fi
-      git -C "$local_base_worktree" merge --ff-only "$base_ref"
-      echo "FAST-FORWARDED LOCAL BASE: $base_branch in $local_base_worktree"
       ;;
     update_ref)
       local_base_worktree=$(find_worktree_for_branch "$base_branch")
       if [ -n "$local_base_worktree" ]; then
-        echo "Local $base_branch became checked out after inspection; refusing direct ref update: $local_base_worktree" >&2
-        exit 1
+        echo "SKIP LOCAL BASE: $base_branch (became checked out after inspection: $local_base_worktree)"
+      elif git -C "$repo_root" update-ref "$local_base_ref" "$base_commit" "$local_base_commit"; then
+        echo "FAST-FORWARDED LOCAL BASE: $base_branch (not checked out)"
+      else
+        echo "SKIP LOCAL BASE: $base_branch (atomic ref update failed)" >&2
       fi
-      git -C "$repo_root" update-ref "$local_base_ref" "$base_commit" "$local_base_commit"
-      echo "FAST-FORWARDED LOCAL BASE: $base_branch (not checked out)"
       ;;
   esac
 else
