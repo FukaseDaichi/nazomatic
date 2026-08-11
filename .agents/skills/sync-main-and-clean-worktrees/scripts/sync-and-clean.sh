@@ -14,7 +14,8 @@ usage() {
     "Usage: sync-and-clean.sh [--execute] [--no-fetch] [--repo PATH] [--base NAME] [--target NAME] [--keep-branch NAME]" \
     "" \
     "Default mode is a dry run. Remote-tracking refs are fetched unless --no-fetch is set." \
-    "In execute mode, the target branch is checked out, synchronized, and merged local and remote branches are deleted safely." \
+    "In execute mode, the target branch is checked out, synchronized, and obsolete merged worktrees and local/remote branches are removed." \
+    "Eligible secondary worktrees are removed with git worktree remove --force, including ignored and dirty files." \
     "--keep-branch may be repeated for merged local or remote branches that must remain."
 }
 
@@ -80,11 +81,11 @@ if [ "$base_branch" = "$target_branch" ]; then
   exit 1
 fi
 
-repo_root=$(git -C "$repo" rev-parse --show-toplevel)
-requested_worktree="$repo_root"
-primary_worktree=$(git -C "$repo_root" worktree list --porcelain | awk '
+requested_worktree=$(git -C "$repo" rev-parse --show-toplevel)
+primary_worktree=$(git -C "$requested_worktree" worktree list --porcelain | awk '
   /^worktree / { print substr($0, 10); exit }
 ')
+repo_root="$primary_worktree"
 
 if ! git -C "$repo_root" remote get-url origin >/dev/null 2>&1; then
   echo "Remote 'origin' is required." >&2
@@ -117,22 +118,8 @@ worktree_status_or_error() {
   printf '%s' "$status_output"
 }
 
-worktree_ignored_or_error() {
-  local worktree_path="$1"
-  local ignored_output
-  if ! ignored_output=$(git -C "$worktree_path" ls-files --others --ignored --exclude-standard 2>/dev/null); then
-    printf '%s' '__ignored_scan_error__'
-    return 0
-  fi
-  printf '%s' "$ignored_output"
-}
-
 worktree_is_clean() {
   [ -z "$(worktree_status_or_error "$1")" ]
-}
-
-worktree_has_no_ignored_files() {
-  [ -z "$(worktree_ignored_or_error "$1")" ]
 }
 
 is_protected_branch() {
@@ -206,10 +193,6 @@ if [ -z "$target_worktree" ]; then
     echo "The requested worktree must be clean before checking out $target_branch: $target_worktree" >&2
     exit 1
   fi
-  if ! worktree_has_no_ignored_files "$target_worktree"; then
-    echo "The requested worktree contains ignored files; refusing to switch branches: $target_worktree" >&2
-    exit 1
-  fi
 
   target_checkout_from_branch=$(git -C "$target_worktree" symbolic-ref --quiet --short HEAD 2>/dev/null || true)
   add_planned_branch_release "$target_checkout_from_branch"
@@ -221,10 +204,6 @@ else
   fi
   if ! worktree_is_clean "$target_worktree"; then
     echo "Target worktree is not clean: $target_worktree" >&2
-    exit 1
-  fi
-  if ! worktree_has_no_ignored_files "$target_worktree"; then
-    echo "Target worktree contains ignored files: $target_worktree" >&2
     exit 1
   fi
 fi
@@ -303,16 +282,6 @@ inspect_worktree() {
     return 0
   fi
 
-  if ! worktree_is_clean "$candidate_path"; then
-    echo "SKIP: $candidate_path (dirty or unreadable)"
-    return 0
-  fi
-
-  if ! worktree_has_no_ignored_files "$candidate_path"; then
-    echo "SKIP: $candidate_path (contains ignored files)"
-    return 0
-  fi
-
   if [ -z "$candidate_head" ] || ! git -C "$repo_root" merge-base --is-ancestor "$candidate_head" "$base_ref"; then
     echo "SKIP: $candidate_path (HEAD is not contained in origin/$base_branch)"
     return 0
@@ -320,10 +289,10 @@ inspect_worktree() {
 
   add_planned_branch_release "$candidate_branch"
   if [ "$mode" = "execute" ]; then
-    git -C "$repo_root" worktree remove "$candidate_path"
-    echo "REMOVED WORKTREE: $candidate_path"
+    git -C "$repo_root" worktree remove --force "$candidate_path"
+    echo "FORCE REMOVED WORKTREE: $candidate_path"
   else
-    echo "REMOVE WORKTREE: $candidate_path (dry-run candidate)"
+    echo "FORCE REMOVE WORKTREE: $candidate_path (dry-run candidate; ignored/dirty files included)"
   fi
 }
 
