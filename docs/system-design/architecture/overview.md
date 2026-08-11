@@ -33,7 +33,9 @@
 
 - Realtime 収集、古いイベント削除、Post 可視性検証を定期実行する。
 - X API 再投稿は workflow_dispatch のみで起動する。
-- Actions はサイトの内部 API を Bearer token 付きで呼ぶだけで、処理本体は Route Handler 側に置く。
+- `main` 向けの `x-growth-experiment` PR は TypeScript、lint、X 投稿回帰テスト、production build を検証する。
+- CI に成功した対象 PR は、label と最新 head SHA を再確認して自動マージする。
+- 定期実行 Actions はサイトの内部 API を Bearer token 付きで呼ぶだけで、処理本体は Route Handler 側に置く。
 
 ### ローカル PC
 
@@ -41,7 +43,7 @@
 - Cookie や profile は `local/`、実行ログは `logs/` に置き、Git 管理しない。
 - 候補予約や集計は内部 API、X 画面操作と投稿前確認はローカル CLI が担当する。
 - 週次レビューは投稿台帳・フォロワー snapshot・実行ログを集計して GitHub Issue を作る。
-- 週次改善PR作成は Codex CLI に read-only で提案させ、Node.js 側の allowlist と検証を通った1件だけを一時 worktree からドラフト PR へ反映する。実験状態は GitHub が正本で、ローカル実験台帳は使わない。
+- 週次改善PR作成は Codex CLI に read-only で提案させ、Node.js 側の allowlist と検証を通った1件だけを一時 worktree からドラフト PR へ反映する。PR は GitHub Actions の CI 成功後に自動マージされる。実験状態は GitHub が正本で、ローカル実験台帳は使わない。
 - 日次の成長計測メンテナンスは投稿せず follower / metrics を回収し、successful production deployment を確認できた merged 実験 PR の activation を進める。
 
 ## 主なディレクトリ

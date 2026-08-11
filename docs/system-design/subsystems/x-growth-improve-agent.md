@@ -2,7 +2,7 @@
 
 ## 目的と正本
 
-X 投稿の改善は、週次レビュー、1件のドラフト PR、production 反映後の評価を順番に行う。自動化は PR を作成するまでで、自動マージ、自動 keep、自動 revert は行わない。
+X 投稿の改善は、週次レビュー、1件のドラフト PR、CI 成功後の自動マージ、production 反映後の評価を順番に行う。自動 keep と自動 revert は行わない。
 
 実験の正本は GitHub の PR、review Issue、label、本文・コメントの機械可読 marker である。`local/x-browser-posting/experiment-ledger.json` は作成・参照しない。投稿台帳とフォロワー snapshot はローカル PC 固有の計測データとして残す。
 
@@ -36,7 +36,7 @@ Codex automation には、レビューが毎週月曜11:30 JST、`x:growth-impro
 
 `ts-patch` は投稿生成戦略、fallback、prompt、候補選択ロジックの変更を許可し、TypeScript の構造文字や template literal、最上位フロー内の安全なデータ受け渡し、archetypeの既定選択も扱える。ただし import、環境変数、外部 I/O、process 実行、投稿実行 guard、入力validator本体、URL構築、文字数・検索件数・timeout などの運用・安全境界は変更できない。Node は TypeScript AST から import、保護宣言、外部取得・validator・fingerprint・上限付き正規化の重要 call を変更前後で比較する。archetype validator は引数の戦略変更を許しつつ呼出回数を固定する。さらに追加コードの禁止 API、最大120変更行、最大12000置換文字を検査する。`json-patch` は配列長を維持する。
 
-各 `find` はそれ以前の patch 適用後の内容にちょうど1回一致する必要がある。同じ targetKey を使った過去の PR は再提案しない。変更後は TypeScript、lint、X投稿回帰テスト、production build をtimeout付きで実行する。検証を通った変更も必ずドラフト PR とし、実装差分と実験仮説を人間が確認してから merge する。1実験で許すのは主要な行動変化1つであり、変更行数1行という意味ではない。
+各 `find` はそれ以前の patch 適用後の内容にちょうど1回一致する必要がある。同じ targetKey を使った過去の PR は再提案しない。変更後は TypeScript、lint、X投稿回帰テスト、production build をtimeout付きで実行する。検証を通った変更はドラフト PR として作成し、GitHub Actions の `X Growth PR CI` が同じ検証を再実行する。CI が成功し、最新 commit と `x-growth-experiment` label を確認できた場合だけ、`X Growth Auto Merge` が PR を ready にして merge commit 方式で自動マージする。1実験で許すのは主要な行動変化1つであり、変更行数1行という意味ではない。
 
 ## 提案入力（review Issue の会話）
 
@@ -69,6 +69,8 @@ PR は `x-growth-experiment` label、`Closes #<review Issue>`、次の metadata 
 ```
 
 review Issue との対応は `reviewIssue + account` で冪等に検索する。PR 作成コマンドが timeout した場合は、branch 名で PR を再検索し、存在すれば partial success として branch を残す。
+
+自動マージは `workflow_run` から起動し、書き込み権限を持つ job では PR のコードを checkout しない。`verify` job が skip ではなく成功していること、CI 対象だった head SHA と現在の PR head SHA が一致すること、PR が open、base が `main`、`x-growth-experiment` label 付きであることを GitHub API から再確認する。条件不一致や CI 失敗時はマージせず、最新 commit の `X Growth PR CI` 成功を待つ。
 
 metadata marker はコメント終端 `-->` までを JSON 本文として解析し、`metric.filters` や `proposalBaseline` のようなネスト object を保持する。marker が欠損、不正、または重複している実験 PR は fail closed とし、改善 PR 作成を `rejected` で止める。maintenance が merged PR の不正 marker を検出した場合は `x-growth:needs-attention` を付け、自動 activation を行わない。
 

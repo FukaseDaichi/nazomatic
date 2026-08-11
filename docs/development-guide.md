@@ -163,7 +163,7 @@ Codex automation から provider 生成文を確認なしで実投稿する場�
 
 実投稿が成功すると、3種類の CLI は共通の `local/x-browser-posting/post-ledger.json` に投稿 URL と実験 metadata を保存します。`X_BROWSER_POST_CAPTURE_TELEMETRY=true`（既定）なら、続けて同じ CDP セッションでフォロワー数を `local/x-browser-posting/follower-snapshots.json` へ JST 日付単位で追記し、投稿から約24時間〜8日で未取得の過去投稿を最大 `X_BROWSER_POST_METRICS_MAX_PER_RUN` 件だけ開いて表示数・返信・リポスト・いいねを台帳の `metrics` に書き戻します。`npm run x:growth-maintain` は投稿を行わず、この計測を日次で実行するための CLI です。成熟窓の終了が近い古い投稿から回収します。取得済みは `metrics.mature` で再取得しません。計測はベストエフォートで投稿処理を止めません。`npm run x:growth-review` は直近7日、実行 log、台帳の `metrics`、フォロワー snapshot を集計します。投稿別数値は台帳に無い投稿だけをログイン済み Chrome で追加確認します。`--create-issue` 付きでは `[X週次レビュー] YYYY-Www @account` の GitHub Issue を `x-growth-review` label 付きで作り、同じ週の再実行は既存 Issue へのコメントになります。公開数値を取得できない場合は0とせず「取得不能」と出力します。
 
-`npm run x:growth-improve` は当週・account 固有の週次レビュー Issue 本文と直近14日の投稿台帳を読み、Codex CLI を read-only で呼んで allowlist 内の実験を1件提案します。提案は主要な仮説・targetKey・編集ファイルを各1件に保ちつつ、同一ファイル内で最大6件の局所 patch を使えるため、投稿生成戦略の複数行変更も可能です。Node 側は import、環境変数、外部 I/O、認証、投稿実行 guard、入力検証、各種上限を保護し、変更量も制限します。評価のminimum sampleは5件、成熟時間は24時間、評価窓は14日に固定し、filterは0件または1件、選択metricで利用可能なsampleが5件以上あるfilterだけを提案候補にします。`--execute` は通常の開発 checkout とは分離した専用 automation checkout から起動し、テレメトリ成熟率が70%以上かつ5件以上であることを確認し、`origin/main` から作った一時 worktree 内だけで検証・commit・push・ドラフト PR 作成を行います。提案生成のCodex CLI timeoutは1200秒です。PR は `Closes #<review Issue>` と機械可読 metadata を持つため、PR が GitHub 上の実験の正本です。ローカルの実験台帳は作成しません。作成済みまたは進行中の実験、同じ targetKey の再提案、基底branchの検証失敗は PR を作りません。ドラフト PR は必ず人間が差分と仮説を確認し、自動マージはしません。`--execute` には認証済みの `gh`、Git remote、利用可能な `codex` が必要です。詳細は `docs/system-design/subsystems/x-growth-improve-agent.md` を参照します。
+`npm run x:growth-improve` は当週・account 固有の週次レビュー Issue 本文と直近14日の投稿台帳を読み、Codex CLI を read-only で呼んで allowlist 内の実験を1件提案します。提案は主要な仮説・targetKey・編集ファイルを各1件に保ちつつ、同一ファイル内で最大6件の局所 patch を使えるため、投稿生成戦略の複数行変更も可能です。Node 側は import、環境変数、外部 I/O、認証、投稿実行 guard、入力検証、各種上限を保護し、変更量も制限します。評価のminimum sampleは5件、成熟時間は24時間、評価窓は14日に固定し、filterは0件または1件、選択metricで利用可能なsampleが5件以上あるfilterだけを提案候補にします。`--execute` は通常の開発 checkout とは分離した専用 automation checkout から起動し、テレメトリ成熟率が70%以上かつ5件以上であることを確認し、`origin/main` から作った一時 worktree 内だけで検証・commit・push・ドラフト PR 作成を行います。提案生成のCodex CLI timeoutは1200秒です。PR は `Closes #<review Issue>` と機械可読 metadata を持つため、PR が GitHub 上の実験の正本です。ローカルの実験台帳は作成しません。作成済みまたは進行中の実験、同じ targetKey の再提案、基底branchの検証失敗は PR を作りません。作成後は GitHub Actions が TypeScript、lint、X投稿回帰テスト、production build を再実行し、CI 成功・`x-growth-experiment` label・最新 commit の一致を確認できた PR を ready にして自動マージします。`--execute` には認証済みの `gh`、Git remote、利用可能な `codex` が必要です。詳細は `docs/system-design/subsystems/x-growth-improve-agent.md` を参照します。
 
 `--execute` の依存準備は package / lockfile と Node・npm・OS・CPU architecture を key にした検証済み `node_modules` cache を使います。cache miss だけ `npm ci` を実行し、timeout・process signal・一時的な network error では process group と不完全 worktree を破棄して新しい worktreeで1回だけ再試行します。決定的な install error、提案、guard、検証、GitHub 操作は再試行しません。失敗 log には両 attempt の exit code、signal、timeout、経過時間、stdout / stderr を残します。
 
@@ -212,10 +212,14 @@ Codex automation から provider 生成文を確認なしで実投稿する場�
 | `realtime-verify-post-visibility.yml` | 毎時 10 分・45 分 | `POST /api/internal/realtime/verify-post-visibility` |
 | `realtime-prune.yml` | 毎日 00:15 UTC | `POST /api/internal/realtime/prune` |
 | `x-repost-events.yml` | 手動実行のみ | `POST /api/internal/x/repost/events` |
+| `x-growth-pr-ci.yml` | `x-growth-experiment` PR の更新 | TypeScript、lint、X投稿回帰テスト、production build |
+| `x-growth-auto-merge.yml` | `X Growth PR CI` 完了 | CI成功した対象 PR の自動マージ |
 
 `x-repost-events.yml` の自動 schedule は、X 投稿 credits の都合でコメントアウトされています。
 
-各 workflow は repo を checkout し、`scripts/internal-api/post.sh` 経由で署名付き request を送ります。curl の `--retry` は使いません。retry のたびに timestamp と nonce を作り直す必要があるため、retry は `post.sh` 側で行います。
+`x-growth-pr-ci.yml` は read-only token で `x-growth-experiment` PR のコードを検証します。`x-growth-auto-merge.yml` は書き込み権限を分離した `workflow_run` で動き、PR のコードを checkout しません。`verify` job が skip ではなく成功し、対象 PR が open、base が `main`、head SHA が CI 対象と一致し、`x-growth-experiment` label 付きである場合だけ、ドラフトを ready に変更して merge commit 方式でマージします。
+
+内部 API を呼ぶ各定期実行 workflow は repo を checkout し、`scripts/internal-api/post.sh` 経由で署名付き request を送ります。curl の `--retry` は使いません。retry のたびに timestamp と nonce を作り直す必要があるため、retry は `post.sh` 側で行います。
 
 ### PR マージ後の `future` 同期と worktree 整理
 
@@ -232,6 +236,8 @@ Codex automation から provider 生成文を確認なしで実投稿する場�
 ```bash
 .agents/skills/sync-main-and-clean-worktrees/scripts/sync-and-clean.sh --execute
 ```
+
+この手順はCodexローカルautomation `nazomatic-git-cleanup` にACTIVE登録し、毎日02:30 JSTに実行します。automationは最初にdry-runを1回実行し、成功した場合だけ `--execute` を1回実行します。ローカルbase branchだけが同期できない場合はそのbranchをskipしてcleanupを続け、targetの `future` がdirty・non-fast-forwardなどでdry-runに失敗した場合は回避せず、その夜の処理をskipとして報告します。変更候補がないno-opは正常終了とし、失敗時だけ通知します。登録の正本は `~/.codex/automations/nazomatic-git-cleanup/automation.toml`、運用台帳は [`system-design/operations/x-browser-post-schedules.md`](./system-design/operations/x-browser-post-schedules.md) です。
 
 ## Shift Search レポート更新
 

@@ -1,8 +1,8 @@
-# X ローカル運用の稼働スケジュール
+# X ローカル運用と Git cleanup の稼働スケジュール
 
 ## 位置づけ
 
-この文書は、Codex のローカル automation で動かす X 投稿・週次レビュー・改善 PR・成長計測の運用台帳です。2026-07-24 に `~/.codex/automations/*/automation.toml`、ローカル実行設定と照合し、対応 CLI の記述は 2026-08-05 に現行 `scripts/` と照合しています。
+この文書は、Codex のローカル automation で動かす X 投稿・週次レビュー・改善 PR・成長計測と、マージ後 Git cleanup の運用台帳です。2026-08-12 に `~/.codex/automations/*/automation.toml`、ローカル実行設定、対応する `scripts/` と照合しています。
 
 正確な有効・無効状態、時刻、model、通知設定は Codex automation 側を正とし、CLI の挙動は `scripts/` と `src/server/x-browser-posting/` を正とします。登録や実装を変更した場合は、この台帳も同時に更新します。
 
@@ -16,21 +16,23 @@
 | `nazomatic-x-3` | NAZOMATIC X 週次改善レビュー | ACTIVE | 毎週月曜 11:30 | `npm run x:growth-review -- --create-issue` | 直近7日を集計し GitHub Issue を作成または追記 |
 | `nazomatic-x-pr` | NAZOMATIC X 週次改善PR作成 | ACTIVE | 毎週月曜 12:30 | `npm run x:growth-improve -- --execute` | 当週レビューから実験を1件選びドラフト PR を作成 |
 | `nazomatic-x-4` | NAZOMATIC X 成長計測メンテナンス | ACTIVE | 毎日 04:30 | `npm run x:growth-maintain` | 投稿せず follower / metrics を回収し、実験 activation を照合 |
+| `nazomatic-git-cleanup` | NAZOMATIC Git cleanup | ACTIVE | 毎日 02:30 | `sync-and-clean.sh` dry-run → `--execute` | `future` / ローカル `main` 同期とマージ済み worktree・branch 整理 |
 
-`nazomatic-x` の RRULE は `FREQ=HOURLY;INTERVAL=3;BYMINUTE=0;BYSECOND=0` で、特定の `BYHOUR` や `TZID` は持ちません。そのため台帳では固定の時刻列を推測せず、「3時間間隔（実行分は00分）」と記載します。ほかの5件は `TZID=Asia/Tokyo` を明示しています。
+`nazomatic-x` の RRULE は `FREQ=HOURLY;INTERVAL=3;BYMINUTE=0;BYSECOND=0` で、特定の `BYHOUR` を持ちません。そのため台帳では固定の時刻列を推測せず、「3時間間隔（実行分は00分）」と記載します。全7件が `TZID=Asia/Tokyo` を明示しています。
 
 ## 登録済みの実行設定
 
-全6件とも `execution_environment=local` で、対象 project と実行ディレクトリはこのリポジトリです。
+全7件とも `execution_environment=local` で、同じローカル project を対象にします。`nazomatic-x-pr` だけは専用 automation checkout、ほかの6件はこのリポジトリを実行ディレクトリにします。
 
 | Automation ID | Model | Reasoning effort | 通知 |
 |---|---|---|---|
-| `nazomatic-x` | `gpt-5.6-sol` | `medium` | Codex automation の既定 |
-| `nazomatic-x-2` | `gpt-5.5` | `medium` | Codex automation の既定 |
-| `nazomatic` | `gpt-5.5` | `low` | Codex automation の既定 |
-| `nazomatic-x-3` | `gpt-5.6-sol` | `medium` | Codex automation の既定 |
-| `nazomatic-x-pr` | `gpt-5.6-sol` | `medium` | Codex automation の既定 |
-| `nazomatic-x-4` | `gpt-5.6-sol` | `medium` | 失敗時のみ通知 |
+| `nazomatic-x` | `gpt-5.6-luna` | `medium` | Codex automation の既定 |
+| `nazomatic-x-2` | `gpt-5.6-luna` | `xhigh` | Codex automation の既定 |
+| `nazomatic` | `gpt-5.6-luna` | `low` | Codex automation の既定 |
+| `nazomatic-x-3` | `gpt-5.6-luna` | `max` | Codex automation の既定 |
+| `nazomatic-x-pr` | `gpt-5.6-luna` | `max` | Codex automation の既定 |
+| `nazomatic-x-4` | `gpt-5.6-luna` | `low` | 失敗時のみ通知 |
+| `nazomatic-git-cleanup` | `gpt-5.6-luna` | `low` | 失敗時のみ通知 |
 
 ## 現行ローカル実行設定
 
@@ -59,7 +61,13 @@
 - X の login、account 不一致、rate limit、UI 変更、CAPTCHA、2FA を検出した場合は回避せず停止する。
 - 投稿成功後は `local/x-browser-posting/post-ledger.json` に投稿種別、本文、投稿 URL、実験 metadata を記録する。
 - `X_BROWSER_POST_CAPTURE_TELEMETRY=true`（既定）なら、投稿成功後に同じセッションでフォロワー数を `follower-snapshots.json` へ日次追記し、20時間〜8日の過去投稿の公開数値を最大 `X_BROWSER_POST_METRICS_MAX_PER_RUN`（既定8）件だけ台帳へ書き戻す。計測はベストエフォートで投稿処理を止めない。
-- 週次改善エージェントは主要な仮説を1件・targetKeyを1件・編集ファイルを1件に限定し、同一ファイル内では最大6件の局所 patch を許可する。投稿生成戦略の複数行変更、最上位フロー内の安全なデータ受け渡し、archetypeの既定選択は可能だが、allowlist 外、import、環境変数、外部 I/O、認証、validator本体、fingerprint、上限付き正規化、投稿実行 guard、rate limit、timeout、`--execute` 系への変更は Node 側が自動で拒否する。変更量上限と保護宣言・重要callのAST比較を通し、適用後に tsc、lint、X投稿回帰テスト、production build が通らなければ変更を破棄して PR を作らない。各検証にはtimeoutを設ける。PR はドラフトで作成し、自動マージはしない。採用可否は人間が Issue と PR 上で判断する。
+- 週次改善エージェントは主要な仮説を1件・targetKeyを1件・編集ファイルを1件に限定し、同一ファイル内では最大6件の局所 patch を許可する。投稿生成戦略の複数行変更、最上位フロー内の安全なデータ受け渡し、archetypeの既定選択は可能だが、allowlist 外、import、環境変数、外部 I/O、認証、validator本体、fingerprint、上限付き正規化、投稿実行 guard、rate limit、timeout、`--execute` 系への変更は Node 側が自動で拒否する。変更量上限と保護宣言・重要callのAST比較を通し、適用後に tsc、lint、X投稿回帰テスト、production build が通らなければ変更を破棄して PR を作らない。各検証にはtimeoutを設ける。PR はドラフトで作成し、GitHub Actions が同じ検証を再実行する。CI 成功後、`x-growth-experiment` label と最新 commit を確認できた PR だけを ready にして自動マージする。
+
+## Git cleanup
+
+毎日02:30の `nazomatic-git-cleanup` は、`sync-main-and-clean-worktrees` スキルに従い、最初に `sync-and-clean.sh` を引数なしでdry-runします。dry-runが成功した場合だけ同じスクリプトを `--execute` 付きで1回実行し、`future` と安全に更新できるローカル `main` を `origin/main` へfast-forwardした後、マージ済みのworktree・local branch・remote branchを整理します。
+
+ローカル `main` がmissing・diverged・dirty・locked・stale、または更新に失敗した場合は、`main` だけをskipしてcleanupを続けます。targetの `future` がdirty・non-fast-forward、またはfetch・push・target ancestry checkが失敗した場合は回避せず、その夜の実行をskipとして報告します。変更候補がないno-opは正常終了です。手動merge、reset、force-push、`git branch -D`、独自の削除、automation層からのretryは行いません。
 
 ## トレンドジョークの運用
 
@@ -94,7 +102,7 @@
 
 週次レビューは分析と提案までです。投稿文、schedule、コードを自動変更せず、採用する実験を Issue 上で決めてから反映します。
 
-月曜12:30の `nazomatic-x-pr` は、通常の開発 checkout とは分離した専用 automation checkout から起動します。11:30のレビューが作成または更新した当週・対象 account の Issue 本文を入力にします。直近14日の投稿で、24時間以上8日以内の metrics 成熟率が70%以上かつ5件以上の場合だけ、Codex CLI の read-only 提案を Node 側の allowlist と検証へ通します。`origin/main` から作った一時 worktree で commit、push、ドラフト PR 作成を行い、通常 checkout は変更しません。提案生成のCodex CLI timeoutは1200秒です。
+月曜12:30の `nazomatic-x-pr` は、通常の開発 checkout とは分離した専用 automation checkout から起動します。11:30のレビューが作成または更新した当週・対象 account の Issue 本文を入力にします。直近14日の投稿で、24時間以上8日以内の metrics 成熟率が70%以上かつ5件以上の場合だけ、Codex CLI の read-only 提案を Node 側の allowlist と検証へ通します。`origin/main` から作った一時 worktree で commit、push、ドラフト PR 作成を行い、通常 checkout は変更しません。提案生成のCodex CLI timeoutは1200秒です。作成後は `X Growth PR CI` が TypeScript、lint、X投稿回帰テスト、production build を行い、成功した対象 PR を `X Growth Auto Merge` が自動マージします。
 
 実験状態は GitHub の review Issue、`x-growth-experiment` PR、label、metadata marker が正本です。ローカル実験台帳はありません。詳細は [`../subsystems/x-growth-improve-agent.md`](../subsystems/x-growth-improve-agent.md) を参照します。
 
@@ -118,3 +126,4 @@ merged PR の merge commit、またはその子孫 commit に successful `Produc
 | 週次改善レビュー | GitHub の `x-growth-review` Issue。専用 local log は作らない |
 | 週次改善PR作成 | `logs/x-growth-improve/`、GitHub の review Issue / experiment PR |
 | 成長計測メンテナンス | `logs/x-growth-maintain/`、投稿台帳・フォロワー snapshot |
+| Git cleanup | Codex automation のrun結果、`~/.codex/automations/nazomatic-git-cleanup/memory.md` |
