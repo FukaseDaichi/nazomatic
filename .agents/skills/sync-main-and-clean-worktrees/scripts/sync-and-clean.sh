@@ -14,7 +14,7 @@ usage() {
     "Usage: sync-and-clean.sh [--execute] [--no-fetch] [--repo PATH] [--base NAME] [--target NAME] [--keep-branch NAME]" \
     "" \
     "Default mode is a dry run. Remote-tracking refs are fetched unless --no-fetch is set." \
-    "In execute mode, the target branch is checked out, synchronized, and obsolete merged worktrees and local/remote branches are removed." \
+    "In execute mode, the target branch and a safe local base branch are fast-forwarded, then obsolete merged worktrees and local/remote branches are removed." \
     "Eligible secondary worktrees are removed with git worktree remove --force, including ignored and dirty files." \
     "--keep-branch may be repeated for merged local or remote branches that must remain."
 }
@@ -210,6 +210,7 @@ fi
 
 target_ref="refs/heads/$target_branch"
 base_ref="refs/remotes/origin/$base_branch"
+local_base_ref="refs/heads/$base_branch"
 
 if ! git -C "$repo_root" merge-base --is-ancestor "$target_ref" "$base_ref"; then
   echo "Local $target_branch is not an ancestor of origin/$base_branch; refusing a non-fast-forward update." >&2
@@ -225,6 +226,38 @@ current_commit=$(git -C "$repo_root" rev-parse "$target_ref")
 base_commit=$(git -C "$repo_root" rev-parse "$base_ref")
 commit_count=$(git -C "$repo_root" rev-list --count "$target_ref..$base_ref")
 
+local_base_sync_mode="missing"
+local_base_worktree=""
+local_base_commit=""
+local_base_commit_count=0
+
+if git -C "$repo_root" show-ref --verify --quiet "$local_base_ref"; then
+  local_base_commit=$(git -C "$repo_root" rev-parse "$local_base_ref")
+  if [ "$local_base_commit" = "$base_commit" ]; then
+    local_base_sync_mode="current"
+  elif ! git -C "$repo_root" merge-base --is-ancestor "$local_base_ref" "$base_ref"; then
+    local_base_sync_mode="diverged"
+  else
+    local_base_commit_count=$(git -C "$repo_root" rev-list --count "$local_base_ref..$base_ref")
+    local_base_worktree=$(find_worktree_for_branch "$base_branch")
+    if [ -n "$local_base_worktree" ]; then
+      if [ "$target_needs_checkout" -eq 1 ] && [ "$local_base_worktree" = "$target_worktree" ] && [ "$target_checkout_from_branch" = "$base_branch" ]; then
+        local_base_sync_mode="update_ref"
+      elif [ ! -d "$local_base_worktree" ]; then
+        local_base_sync_mode="missing_worktree"
+      elif worktree_is_locked "$local_base_worktree"; then
+        local_base_sync_mode="locked_worktree"
+      elif ! worktree_is_clean "$local_base_worktree"; then
+        local_base_sync_mode="dirty_worktree"
+      else
+        local_base_sync_mode="merge_worktree"
+      fi
+    else
+      local_base_sync_mode="update_ref"
+    fi
+  fi
+fi
+
 echo "Mode: $mode"
 echo "Target worktree: $target_worktree"
 if [ "$target_needs_checkout" -eq 1 ]; then
@@ -235,6 +268,32 @@ if [ "$target_needs_checkout" -eq 1 ]; then
   fi
 fi
 echo "Sync: $target_branch $current_commit -> $base_commit ($commit_count commit(s))"
+case "$local_base_sync_mode" in
+  missing)
+    echo "SKIP LOCAL BASE: $base_branch (local branch does not exist)"
+    ;;
+  current)
+    echo "Local base: $base_branch is already at $base_commit (0 commit(s))"
+    ;;
+  diverged)
+    echo "SKIP LOCAL BASE: $base_branch (not an ancestor of origin/$base_branch)"
+    ;;
+  missing_worktree)
+    echo "SKIP LOCAL BASE: $base_branch (checked-out worktree path is missing: $local_base_worktree)"
+    ;;
+  locked_worktree)
+    echo "SKIP LOCAL BASE: $base_branch (checked-out worktree is locked: $local_base_worktree)"
+    ;;
+  dirty_worktree)
+    echo "SKIP LOCAL BASE: $base_branch (checked-out worktree is not clean: $local_base_worktree)"
+    ;;
+  merge_worktree)
+    echo "Local base: $base_branch $local_base_commit -> $base_commit ($local_base_commit_count commit(s), clean worktree: $local_base_worktree)"
+    ;;
+  update_ref)
+    echo "Local base: $base_branch $local_base_commit -> $base_commit ($local_base_commit_count commit(s), branch will not be checked out)"
+    ;;
+esac
 
 if [ "$mode" = "execute" ]; then
   if [ "$target_needs_checkout" -eq 1 ]; then
@@ -242,8 +301,30 @@ if [ "$mode" = "execute" ]; then
   fi
   git -C "$target_worktree" merge --ff-only "$base_ref"
   git -C "$target_worktree" push origin "refs/heads/$target_branch:refs/heads/$target_branch"
+
+  case "$local_base_sync_mode" in
+    merge_worktree)
+      if worktree_is_locked "$local_base_worktree" || ! worktree_is_clean "$local_base_worktree"; then
+        echo "SKIP LOCAL BASE: $base_branch (worktree changed after inspection: $local_base_worktree)"
+      elif git -C "$local_base_worktree" merge --ff-only "$base_ref"; then
+        echo "FAST-FORWARDED LOCAL BASE: $base_branch in $local_base_worktree"
+      else
+        echo "SKIP LOCAL BASE: $base_branch (fast-forward failed in $local_base_worktree)" >&2
+      fi
+      ;;
+    update_ref)
+      local_base_worktree=$(find_worktree_for_branch "$base_branch")
+      if [ -n "$local_base_worktree" ]; then
+        echo "SKIP LOCAL BASE: $base_branch (became checked out after inspection: $local_base_worktree)"
+      elif git -C "$repo_root" update-ref "$local_base_ref" "$base_commit" "$local_base_commit"; then
+        echo "FAST-FORWARDED LOCAL BASE: $base_branch (not checked out)"
+      else
+        echo "SKIP LOCAL BASE: $base_branch (atomic ref update failed)" >&2
+      fi
+      ;;
+  esac
 else
-  echo "Dry run: checkout, branch update, push, worktree removal, and local/remote branch deletion were not performed."
+  echo "Dry run: checkout, branch updates, push, worktree removal, and local/remote branch deletion were not performed."
 fi
 
 worktree_state=$(mktemp)
