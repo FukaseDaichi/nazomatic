@@ -23,11 +23,11 @@ Codex automation には、レビューが毎週月曜11:30 JST、`x:growth-impro
 
 ## PR 作成の安全境界
 
-`--execute` は control checkout を変更しない。`git fetch origin main` の後、OS 一時ディレクトリの worktree を `origin/main` から detach で作成する。依存関係は package / lockfile と実行環境が一致する検証済み cache から復元し、cache miss のときだけ `npm ci` を実行する。その後、基底の verify、単一ファイル変更、verify、commit、push、PR 作成を行い、完了時は worktree を除去する。基底の verify は提案対象パスに関わらず `src/server/x-browser-posting/trend-joke-post.ts` を対象に固定で実行する。
+`--execute` は通常の開発 checkout を変更しない。Codex automation は専用の automation checkout を control checkout として使い、そこから `git fetch origin main` の後、OS 一時ディレクトリの worktree を `origin/main` から detach で作成する。依存関係は package / lockfile と実行環境が一致する検証済み cache から復元し、cache miss のときだけ `npm ci` を実行する。その後、基底の verify、単一ファイル変更、verify、commit、push、PR 作成を行い、完了時は一時 worktree を除去する。基底の verify は提案対象パスに関わらず `src/server/x-browser-posting/trend-joke-post.ts` を対象に固定で実行する。
 
 提案生成の Codex CLI は read-only sandbox であり、変更は Node 側が実行する。1つの仮説と1つの targetKey に対し、同一ファイル内で最大6件の局所 find/replace を提案できる。編集先は次だけである。
 
-提案生成の Codex CLI には600秒の制限時間を設ける。timeoutまたはCodex実行失敗は `proposal_broken` として review Issue に記録し、提案・検証・GitHub操作の自動リトライは行わない。詳細な終了コード、signal、経過時間、標準出力・標準エラーは `logs/x-growth-improve/` の実行ログへ残す。
+提案生成の Codex CLI には1200秒の制限時間を設ける。timeoutまたはCodex実行失敗は `proposal_broken` として review Issue に記録し、提案・検証・GitHub操作の自動リトライは行わない。詳細な終了コード、signal、経過時間、標準出力・標準エラーは `logs/x-growth-improve/` の実行ログへ残す。
 
 | path | kind | targetKey |
 |---|---|---|
