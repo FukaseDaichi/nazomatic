@@ -50,15 +50,15 @@ test("proposal output schema satisfies strict object requirements", () => {
 });
 
 test("Codex proposal timeout is bounded and reported as a proposal failure", () => {
-  assert.equal(CODEX_PROPOSAL_TIMEOUT_MS, 600000);
+  assert.equal(CODEX_PROPOSAL_TIMEOUT_MS, 1200000);
   assert.equal(
     formatProposalFailure({
       timedOut: true,
       timeoutMs: CODEX_PROPOSAL_TIMEOUT_MS,
-      durationMs: 600008,
+      durationMs: 1200008,
       signal: "SIGTERM",
     }),
-    "提案生成がタイムアウトしました（timeout=600000ms duration=600008ms signal=SIGTERM）。詳細はlocal logを確認してください。",
+    "提案生成がタイムアウトしました（timeout=1200000ms duration=1200008ms signal=SIGTERM）。詳細はlocal logを確認してください。",
   );
 });
 

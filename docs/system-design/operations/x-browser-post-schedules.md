@@ -94,7 +94,7 @@
 
 週次レビューは分析と提案までです。投稿文、schedule、コードを自動変更せず、採用する実験を Issue 上で決めてから反映します。
 
-月曜12:30の `nazomatic-x-pr` は、11:30のレビューが作成または更新した当週・対象 account の Issue 本文を入力にします。直近14日の投稿で、24時間以上8日以内の metrics 成熟率が70%以上かつ5件以上の場合だけ、Codex CLI の read-only 提案を Node 側の allowlist と検証へ通します。`origin/main` から作った一時 worktree で commit、push、ドラフト PR 作成を行い、通常 checkout は変更しません。
+月曜12:30の `nazomatic-x-pr` は、通常の開発 checkout とは分離した専用 automation checkout から起動します。11:30のレビューが作成または更新した当週・対象 account の Issue 本文を入力にします。直近14日の投稿で、24時間以上8日以内の metrics 成熟率が70%以上かつ5件以上の場合だけ、Codex CLI の read-only 提案を Node 側の allowlist と検証へ通します。`origin/main` から作った一時 worktree で commit、push、ドラフト PR 作成を行い、通常 checkout は変更しません。提案生成のCodex CLI timeoutは1200秒です。
 
 実験状態は GitHub の review Issue、`x-growth-experiment` PR、label、metadata marker が正本です。ローカル実験台帳はありません。詳細は [`../subsystems/x-growth-improve-agent.md`](../subsystems/x-growth-improve-agent.md) を参照します。
 

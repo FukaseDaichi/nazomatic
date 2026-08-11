@@ -18,7 +18,7 @@ import { ATTENTION_LABEL, EXPERIMENT_LABEL, addLabels, classifyExperiment, close
 import { runProcess } from "./x-growth/processRunner.mjs";
 
 const LOCK_PATH = "local/x-browser-posting/locks/x-growth-improve.lock";
-export const CODEX_PROPOSAL_TIMEOUT_MS = 600000;
+export const CODEX_PROPOSAL_TIMEOUT_MS = 1200000;
 export const REVIEW_MARKDOWN_MAX_CHARS = 20000;
 const REVIEW_MARKDOWN_NOTE_RESERVE = 240;
 const REVIEW_MARKDOWN_MIN_COMMENT_CHARS = 200;
