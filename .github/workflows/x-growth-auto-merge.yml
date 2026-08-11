@@ -1,0 +1,77 @@
+name: X Growth Auto Merge
+
+on:
+  workflow_run:
+    workflows:
+      - X Growth PR CI
+    types:
+      - completed
+
+permissions:
+  actions: read
+  contents: write
+  pull-requests: write
+
+jobs:
+  merge:
+    if: >-
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Merge eligible X growth pull requests
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          WORKFLOW_RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          set -euo pipefail
+
+          JOBS_JSON=$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${WORKFLOW_RUN_ID}/jobs")
+          if ! jq -e '.jobs | any(.name == "verify" and .conclusion == "success")' >/dev/null <<<"$JOBS_JSON"; then
+            echo "The verify job did not complete successfully."
+            exit 0
+          fi
+
+          mapfile -t PR_NUMBERS < <(
+            jq -r '.workflow_run.pull_requests[].number' "$GITHUB_EVENT_PATH"
+          )
+
+          if [ "${#PR_NUMBERS[@]}" -eq 0 ]; then
+            echo "No pull request is associated with this workflow run."
+            exit 0
+          fi
+
+          for PR_NUMBER in "${PR_NUMBERS[@]}"; do
+            PR_JSON=$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}")
+
+            STATE=$(jq -r '.state' <<<"$PR_JSON")
+            BASE_REF=$(jq -r '.base.ref' <<<"$PR_JSON")
+            CURRENT_HEAD_SHA=$(jq -r '.head.sha' <<<"$PR_JSON")
+            IS_DRAFT=$(jq -r '.draft' <<<"$PR_JSON")
+
+            if [ "$STATE" != "open" ] || [ "$BASE_REF" != "main" ]; then
+              echo "PR #${PR_NUMBER} is not an open pull request targeting main."
+              continue
+            fi
+
+            if [ "$CURRENT_HEAD_SHA" != "$HEAD_SHA" ]; then
+              echo "PR #${PR_NUMBER} has moved since CI ran; waiting for the latest CI run."
+              continue
+            fi
+
+            if ! jq -e '.labels | any(.name == "x-growth-experiment")' >/dev/null <<<"$PR_JSON"; then
+              echo "PR #${PR_NUMBER} does not have the x-growth-experiment label."
+              continue
+            fi
+
+            if [ "$IS_DRAFT" = "true" ]; then
+              gh pr ready "$PR_NUMBER" --repo "$GITHUB_REPOSITORY"
+            fi
+
+            gh pr merge "$PR_NUMBER" \
+              --repo "$GITHUB_REPOSITORY" \
+              --merge \
+              --match-head-commit "$HEAD_SHA"
+          done

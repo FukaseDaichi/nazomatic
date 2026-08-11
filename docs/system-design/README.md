@@ -52,7 +52,7 @@ flowchart LR
 | 文書 | 内容 |
 |---|---|
 | [`operations/jobs-and-generated-assets.md`](./operations/jobs-and-generated-assets.md) | GitHub Actions、ローカル CLI、生成物同期 |
-| [`operations/x-browser-post-schedules.md`](./operations/x-browser-post-schedules.md) | 稼働中の X 投稿・週次レビュー・改善 PR・成長計測のスケジュールと実行契約 |
+| [`operations/x-browser-post-schedules.md`](./operations/x-browser-post-schedules.md) | 稼働中の X 投稿・週次レビュー・改善 PR・成長計測・Git cleanup のスケジュールと実行契約 |
 | [`quality/known-concerns.md`](./quality/known-concerns.md) | 現行コードから確認できる懸念点と影響 |
 
 ## 設計上の不変条件

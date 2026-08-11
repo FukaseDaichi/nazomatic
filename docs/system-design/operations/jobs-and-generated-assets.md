@@ -2,7 +2,7 @@
 
 ## GitHub Actions
 
-| Workflow | 起動 | 呼び出す API |
+| Workflow | 起動 | 処理 |
 |---|---|---|
 | `realtime-register.yml` | 毎時 0 分 | register: `#謎チケ売ります` |
 | `realtime-register-transfer.yml` | 毎時 15 分 | register: `#謎チケ譲ります` |
@@ -10,10 +10,14 @@
 | `realtime-verify-post-visibility.yml` | 毎時 10 分・45 分 | verify visibility |
 | `realtime-prune.yml` | 毎日 00:15 UTC | prune: cutoff 1 日 |
 | `x-repost-events.yml` | 手動 | X API Repost |
+| `x-growth-pr-ci.yml` | `x-growth-experiment` PR の更新 | TypeScript、lint、X 投稿回帰テスト、production build |
+| `x-growth-auto-merge.yml` | `X Growth PR CI` 完了 | 成功した対象 PR の最新 SHA と label を確認して自動マージ |
 
-Workflow は `REALTIME_API_BASE_URL` と `REALTIME_API_TOKEN` secrets を使います。token 値はアプリの `REALTIME_INTERNAL_API_TOKEN` と一致させます。
+内部 API を呼ぶ定期実行 Workflow は `REALTIME_API_BASE_URL` と `REALTIME_API_TOKEN` secrets を使います。token 値はアプリの `REALTIME_INTERNAL_API_TOKEN` と一致させます。
 
 `x-repost-events.yml` の終了コード方針は次の通りです。`204`（repost 候補なし）と `429`（rate limit）は意図した alert 抑制として成功終了し、その他の 2xx も成功終了します。それ以外の status、および `scripts/internal-api/post.sh` が status を返せなかった場合（空文字や数値以外）は job を失敗させ、credential error・server error・X API 仕様変更が GitHub Actions の赤い run として見えるようにします。
+
+`x-growth-pr-ci.yml` は read-only token で `x-growth-experiment` PR のコードを検証します。`x-growth-auto-merge.yml` は別の `workflow_run` として動き、PR のコードを checkout せず、`verify` job の成功、open、base `main`、最新 head SHA、`x-growth-experiment` label を再確認します。すべて一致する場合はドラフトを ready に変更し、merge commit 方式でマージします。
 
 ## ローカル X 自動化
 
