@@ -948,38 +948,39 @@ function pickTool(excludedToolPaths: string[]): TrendJokeTool {
 function buildToolIntroCandidates(
   tool: TrendJokeTool
 ): TrendJokeFallbackCandidate[] {
+  const benefit = tool.description.replace(/[。！!？?]+$/u, "");
   return [
     {
       shape: "fake_calm",
-      text: `${tool.title}、必要になる前に置いておきます。${tool.description}\n${tool.url} #謎解き`,
+      text: `${benefit}。${tool.title}を、必要になる前に置いておきます。\n${tool.url} #謎解き`,
     },
     {
       shape: "defiance",
-      text: `詰まったら、${tool.title}を開くところから。答えではなく、手元を整える道具です。\n${tool.url}`,
+      text: `${benefit}。詰まったら、${tool.title}を開くところから。答えではなく、手元を整える道具です。\n${tool.url}`,
     },
     {
       shape: "sugari",
-      text: `検索欄を迷子にする前に、${tool.title}だけ置いておきます。\n${tool.url}`,
+      text: `${benefit}。検索欄を迷子にする前に、${tool.title}の入口だけ置いておきます。\n${tool.url}`,
     },
     {
       shape: "suneru",
-      text: `${tool.title}を使う場面、来ないほうが平和です。来たときのために入口だけ。\n${tool.url}`,
+      text: `${benefit}。${tool.title}を使う場面、来ないほうが平和です。来たときのために入口だけ。\n${tool.url}`,
     },
     {
       shape: "midnight",
-      text: `深夜に変換や確認が必要になった人へ。${tool.title}はまだ起きています。\n${tool.url}`,
+      text: `${benefit}。深夜に変換や確認が必要になった人へ。${tool.title}はまだ起きています。\n${tool.url}`,
     },
     {
       shape: "false_hope",
-      text: `これでひらめくとは言いません。${tool.title}で、調べる手間だけ先に片づけます。\n${tool.url}`,
+      text: `${benefit}。これでひらめくとは言いません。${tool.title}で、調べる手間だけ先に片づけます。\n${tool.url}`,
     },
     {
       shape: "heavy_love",
-      text: `${tool.title}、使わない日は静かです。必要な日にだけ急に頼もしい。\n${tool.url}`,
+      text: `${benefit}。${tool.title}、使わない日は静かです。必要な日にだけ急に頼もしい。\n${tool.url}`,
     },
     {
       shape: "mood_swing",
-      text: `謎より先に作業で詰まりたくないので、${tool.title}を道具箱の手前に置きました。\n${tool.url}`,
+      text: `${benefit}。謎より先に作業で詰まりたくないので、${tool.title}を道具箱の手前に置きました。\n${tool.url}`,
     },
   ];
 }
@@ -1147,7 +1148,7 @@ function buildArchetypePromptRules(
       return tool
         ? [
             `- 紹介対象: ${tool.title}（${tool.description}）`,
-            "- 誇張せず、どんな場面で使えるかを一言で伝える。",
+            "- 1文目は紹介対象の便益（何の手間・迷い・詰まりが減るか）から始め、ツール名やURLより先に置く。誇張せず、便益の後にどんな場面で使えるかを一言で伝える。",
           ]
         : [];
     case "monologue":
