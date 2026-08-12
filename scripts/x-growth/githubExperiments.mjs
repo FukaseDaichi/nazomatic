@@ -8,6 +8,9 @@ export const REVERT_LABEL = "x-growth:revert";
 export const REVERTED_LABEL = "x-growth:reverted";
 export const ATTENTION_LABEL = "x-growth:needs-attention";
 
+const EXPERIMENT_PR_JSON_FIELDS = "number,url,title,body,state,isDraft,mergedAt,mergeCommit,closedAt,headRefName,headRefOid,baseRefName,labels";
+const PR_LOOKUP_RETRY_DELAYS_MS = [250, 500, 1000, 2000, 4000];
+
 export function getJstIsoWeek(date = new Date()) {
   const parts = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Tokyo", year: "numeric", month: "2-digit", day: "2-digit",
@@ -53,13 +56,91 @@ async function viewIssue(cwd, number) {
   return normalizeIssue(JSON.parse(await runGh(cwd, ["issue", "view", String(number), "--json", ISSUE_VIEW_FIELDS])));
 }
 
-export async function listExperimentPrs(cwd) {
-  const json = await runGh(cwd, [
-    "pr", "list", "--state", "all", "--label", EXPERIMENT_LABEL,
-    "--json", "number,url,title,body,state,isDraft,mergedAt,mergeCommit,closedAt,headRefName,headRefOid,baseRefName,labels",
+export async function listExperimentPrs(cwd, { runCommand = runGh } = {}) {
+  const json = await runCommand(cwd, [
+    "pr", "list", "--state", "all",
+    "--json", EXPERIMENT_PR_JSON_FIELDS,
     "--limit", "1000",
   ]);
-  return JSON.parse(json).map((pr) => ({ ...pr, labels: (pr.labels ?? []).map((label) => label.name), metadata: parseExperimentMarker(pr.body) }));
+  return JSON.parse(json)
+    .map(normalizePullRequest)
+    .filter((pr) => pr.labels.includes(EXPERIMENT_LABEL) || hasExperimentMarker(pr.body));
+}
+
+// 作成直後は label 検索の反映が遅れることがあるため、まず作成結果の URL を直接読み、
+// 取得できない場合は完全一致する head branch で再検索する。どちらも label 条件を使わない。
+export async function findCreatedExperimentPr(
+  cwd,
+  {
+    prUrl,
+    branch,
+    attempts = PR_LOOKUP_RETRY_DELAYS_MS.length + 1,
+    sleep = wait,
+    runCommand = runGh,
+  } = {},
+) {
+  const reference = String(prUrl ?? "").trim();
+  const headBranch = String(branch ?? "").trim();
+  if (!reference && !headBranch) return null;
+
+  const retryCount = Math.max(1, Number(attempts) || 1);
+  for (let attempt = 0; attempt < retryCount; attempt += 1) {
+    if (attempt > 0) {
+      await sleep(PR_LOOKUP_RETRY_DELAYS_MS[Math.min(attempt - 1, PR_LOOKUP_RETRY_DELAYS_MS.length - 1)]);
+    }
+
+    if (reference) {
+      const viewed = await tryViewPullRequest(cwd, reference, runCommand);
+      if (viewed && (!headBranch || viewed.headRefName === headBranch)) return viewed;
+    }
+
+    if (headBranch) {
+      const listed = await tryListPullRequestsByHead(cwd, headBranch, runCommand);
+      const exact = listed.find((pr) => pr.headRefName === headBranch);
+      if (exact) return exact;
+    }
+  }
+  return null;
+}
+
+// PR作成の応答直後に label の読み取りが古い場合もあるため、付与後のPRを直接再取得して確認する。
+// 同じ label の再付与は GitHub 側で冪等なので、反映遅延・一時的なCLI失敗の両方を再試行できる。
+export async function ensurePullRequestLabels(
+  cwd,
+  pullRequest,
+  labels,
+  {
+    attempts = PR_LOOKUP_RETRY_DELAYS_MS.length + 1,
+    sleep = wait,
+    runCommand = runGh,
+  } = {},
+) {
+  const expectedLabels = [...new Set((labels ?? []).map((label) => String(label).trim()).filter(Boolean))];
+  if (!expectedLabels.length) return pullRequest;
+  if (!pullRequest?.number) throw new Error("pull request number is required for label assignment");
+
+  let current = normalizePullRequest(pullRequest);
+  let lastError = null;
+  const retryCount = Math.max(1, Number(attempts) || 1);
+  for (let attempt = 0; attempt < retryCount; attempt += 1) {
+    if (attempt > 0) {
+      await sleep(PR_LOOKUP_RETRY_DELAYS_MS[Math.min(attempt - 1, PR_LOOKUP_RETRY_DELAYS_MS.length - 1)]);
+    }
+    if (expectedLabels.every((label) => current.labels.includes(label))) return current;
+
+    try {
+      await addLabels(cwd, current.number, expectedLabels, { runCommand });
+      current = await viewPullRequest(cwd, current.number, runCommand);
+      if (expectedLabels.every((label) => current.labels.includes(label))) return current;
+      lastError = new Error(`labels were not visible on PR #${current.number} after assignment`);
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  const error = new Error(`labels could not be confirmed on PR #${pullRequest.number} after ${retryCount} attempts`);
+  if (lastError) error.cause = lastError;
+  throw error;
 }
 
 export async function findProductionDeployment(cwd, mergeSha) {
@@ -125,9 +206,9 @@ export async function ensureLabels(cwd) {
   }
 }
 
-export async function addLabels(cwd, issueOrPr, labels) {
-  if (!labels.length) return;
-  await runGh(cwd, ["issue", "edit", String(issueOrPr), "--add-label", labels.join(",")]);
+export async function addLabels(cwd, issueOrPr, labels, { runCommand = runGh } = {}) {
+  if (!labels?.length) return;
+  await runCommand(cwd, ["issue", "edit", String(issueOrPr), "--add-label", labels.join(",")]);
 }
 
 export async function updateExperimentMetadata(cwd, pr, metadata) {
@@ -158,6 +239,50 @@ function normalizeIssue(item) {
       body: String(entry?.body ?? ""),
     })),
   };
+}
+
+function normalizePullRequest(item) {
+  return {
+    ...item,
+    labels: (item.labels ?? [])
+      .map((label) => typeof label === "string" ? label : label?.name)
+      .filter(Boolean),
+    metadata: parseExperimentMarker(item.body),
+  };
+}
+
+function hasExperimentMarker(body) {
+  return /<!--\s*x-growth-experiment:v1\b/.test(String(body ?? ""));
+}
+
+async function viewPullRequest(cwd, reference, runCommand) {
+  const json = await runCommand(cwd, ["pr", "view", String(reference), "--json", EXPERIMENT_PR_JSON_FIELDS]);
+  return normalizePullRequest(JSON.parse(json));
+}
+
+async function tryViewPullRequest(cwd, reference, runCommand) {
+  try {
+    return await viewPullRequest(cwd, reference, runCommand);
+  } catch {
+    return null;
+  }
+}
+
+async function tryListPullRequestsByHead(cwd, branch, runCommand) {
+  try {
+    const json = await runCommand(cwd, [
+      "pr", "list", "--state", "all", "--head", branch,
+      "--json", EXPERIMENT_PR_JSON_FIELDS,
+      "--limit", "20",
+    ]);
+    return JSON.parse(json).map(normalizePullRequest);
+  } catch {
+    return [];
+  }
+}
+
+function wait(milliseconds) {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
 function locateExperimentMarker(body) {

@@ -4,6 +4,9 @@ import test from "node:test";
 import { evaluateExperimentPrGate } from "../x-growth-improve.mjs";
 import {
   classifyExperiment,
+  ensurePullRequestLabels,
+  findCreatedExperimentPr,
+  listExperimentPrs,
   parseExperimentMarker,
   replaceExperimentMarker,
 } from "../x-growth/githubExperiments.mjs";
@@ -56,6 +59,85 @@ test("experiment marker replacement updates nested metadata and preserves the PR
 
   assert.ok(body?.startsWith("PR body\n\n"));
   assert.deepEqual(parseExperimentMarker(body), updated);
+});
+
+test("created PR lookup retries direct URL and branch lookup without a label filter", async () => {
+  const calls = [];
+  const delays = [];
+  let viewAttempts = 0;
+  const branch = "x-growth/issue-52-2026-w34-trend-joke-post-ts";
+  const runCommand = async (_cwd, args) => {
+    calls.push(args);
+    if (args[0] === "pr" && args[1] === "view") {
+      viewAttempts += 1;
+      if (viewAttempts === 1) throw new Error("GitHub has not indexed the PR yet");
+      return JSON.stringify(buildPr({ labels: [], state: "OPEN", mergedAt: null }));
+    }
+    if (args[0] === "pr" && args[1] === "list") return "[]";
+    throw new Error(`unexpected gh command: ${args.join(" ")}`);
+  };
+
+  const found = await findCreatedExperimentPr("/repo", {
+    prUrl: "https://github.com/FukaseDaichi/nazomatic/pull/56",
+    branch,
+    attempts: 2,
+    sleep: async (milliseconds) => delays.push(milliseconds),
+    runCommand,
+  });
+
+  assert.equal(found.number, 56);
+  assert.deepEqual(delays, [250]);
+  assert.equal(calls.some((args) => args.includes("--label")), false);
+  assert.deepEqual(calls[0].slice(0, 3), ["pr", "view", "https://github.com/FukaseDaichi/nazomatic/pull/56"]);
+});
+
+test("experiment PR listing keeps valid marker PRs even before their label is visible", async () => {
+  const unlabelled = buildPr({ labels: [], body: buildBody(), state: "OPEN", mergedAt: null });
+  const malformed = buildPr({ number: 57, labels: [], body: "<!-- x-growth-experiment:v1 {broken} -->" });
+  const unrelated = buildPr({ number: 58, labels: [], body: "ordinary PR" });
+  const result = await listExperimentPrs("/repo", {
+    runCommand: async (_cwd, args) => {
+      assert.equal(args.includes("--label"), false);
+      return JSON.stringify([unlabelled, malformed, unrelated]);
+    },
+  });
+
+  assert.deepEqual(result.map((pr) => pr.number), [56, 57]);
+  assert.equal(result[0].metadata.targetKey, metadata.targetKey);
+  assert.equal(result[1].metadata, null);
+});
+
+test("created PR label assignment retries transient failures and confirms the label", async () => {
+  const delays = [];
+  let editAttempts = 0;
+  let viewAttempts = 0;
+  const runCommand = async (_cwd, args) => {
+    if (args[0] === "issue" && args[1] === "edit") {
+      editAttempts += 1;
+      if (editAttempts === 1) throw new Error("label API is temporarily unavailable");
+      return "";
+    }
+    if (args[0] === "pr" && args[1] === "view") {
+      viewAttempts += 1;
+      return JSON.stringify(buildPr({
+        labels: viewAttempts >= 2 ? [{ name: "x-growth-experiment" }] : [],
+        state: "OPEN",
+        mergedAt: null,
+      }));
+    }
+    throw new Error(`unexpected gh command: ${args.join(" ")}`);
+  };
+
+  const result = await ensurePullRequestLabels("/repo", buildPr({ labels: [] }), ["x-growth-experiment"], {
+    attempts: 3,
+    sleep: async (milliseconds) => delays.push(milliseconds),
+    runCommand,
+  });
+
+  assert.deepEqual(result.labels, ["x-growth-experiment"]);
+  assert.equal(editAttempts, 3);
+  assert.equal(viewAttempts, 2);
+  assert.deepEqual(delays, [250, 500]);
 });
 
 test("malformed or duplicate experiment markers fail closed", () => {
@@ -133,4 +215,14 @@ test("PR gate keeps the same review issue idempotent", () => {
 
   assert.equal(result.status, "existing_pr");
   assert.equal(result.prUrl, "https://github.com/FukaseDaichi/nazomatic/pull/56");
+});
+
+test("PR gate still blocks the same experiment while its label is not visible", () => {
+  const result = evaluateExperimentPrGate([buildPr({ labels: [] })], {
+    reviewIssue: 52,
+    account: "nazomaticapp",
+  });
+
+  assert.equal(result.status, "existing_pr");
+  assert.equal(result.branch, "x-growth/issue-52-2026-w34-trend-joke-post-ts");
 });

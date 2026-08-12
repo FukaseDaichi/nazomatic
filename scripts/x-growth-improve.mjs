@@ -14,7 +14,7 @@ import { verifyChangedFile } from "./x-growth/verifyChange.mjs";
 import { calculateMetric, telemetryHealth } from "./x-growth/reportMetrics.mjs";
 import { buildMetricCandidates, formatMetricSampleCounts, METRIC_DIMENSIONS } from "./x-growth/metricCandidates.mjs";
 import { prepareWorktreeWithDependencies, provisionWorktreeDependencies, resolveDependencyCacheRoot } from "./x-growth/dependencyBootstrap.mjs";
-import { ATTENTION_LABEL, EXPERIMENT_LABEL, addLabels, classifyExperiment, closeIssue, comment, ensureLabels, experimentKeyMatches, findReviewIssue, getJstIsoWeek, listExperimentPrs, normalizeHandle, runGit, stripXGrowthMarkers } from "./x-growth/githubExperiments.mjs";
+import { ATTENTION_LABEL, EXPERIMENT_LABEL, addLabels, classifyExperiment, closeIssue, comment, ensureLabels, ensurePullRequestLabels, experimentKeyMatches, findCreatedExperimentPr, findReviewIssue, getJstIsoWeek, listExperimentPrs, normalizeHandle, runGit, stripXGrowthMarkers } from "./x-growth/githubExperiments.mjs";
 import { runProcess } from "./x-growth/processRunner.mjs";
 
 const LOCK_PATH = "local/x-browser-posting/locks/x-growth-improve.lock";
@@ -27,7 +27,14 @@ const OMISSION_SUFFIX = "\n\n…（入力上限のため以降を省略）";
 export async function runImprovementCycle({ controlRoot, review, account, callCodex, execute, model }) {
   const prs = await listExperimentPrs(controlRoot);
   const gate = evaluateExperimentPrGate(prs, { reviewIssue: review.number, account });
-  if (gate) return gate;
+  if (gate) {
+    // 前回のPR作成後に label 反映だけが遅延した場合、markerで検出した同一PRをここで修復する。
+    const existing = prs.find((pr) => experimentKeyMatches(pr, { reviewIssue: review.number, account }));
+    if (execute && gate.status === "existing_pr" && existing) {
+      await ensurePullRequestLabels(controlRoot, existing, [EXPERIMENT_LABEL]);
+    }
+    return gate;
+  }
 
   const ledger = await readBrowserPostLedger({ cwd: controlRoot });
   const posts = ledger.entries.filter((entry) => normalizeHandle(entry.accountHandle) === account && Date.now() - new Date(entry.postedAt).getTime() <= 14 * 86400000);
@@ -98,22 +105,31 @@ export async function runImprovementCycle({ controlRoot, review, account, callCo
     const verified = await verifyChangedFile(worktreeRoot, validated.proposal.path);
     if (!verified.ok) return { status: "proposal_broken", reason: verified.reason, proposal: validated.proposal };
     const baseSha = (await runGit(worktreeRoot, ["rev-parse", "HEAD"])).trim();
-    let pr;
+    let pr = null;
+    let creationError = null;
     try {
       pr = await createExperimentPr(worktreeRoot, validated.proposal, { reviewIssue: review, account, plannedEvaluateWeek, baseSha, proposalBaseline });
     } catch (error) {
-      const found = (await listExperimentPrs(controlRoot)).find((item) => item.headRefName === branch);
-      if (found) {
-        preserveBranch = true;
-        return { status: "partial_success", prUrl: found.url, branch };
-      }
-      preserveBranch = true;
-      throw error;
+      creationError = error;
     }
-    const found = (await listExperimentPrs(controlRoot)).find((item) => item.headRefName === branch);
-    if (!found) throw new Error("PR was created but could not be found for label assignment");
-    await addLabels(controlRoot, found.number, [EXPERIMENT_LABEL]);
-    return { status: "pr_created", proposal: validated.proposal, branch, ...pr };
+    const found = await findCreatedExperimentPr(controlRoot, { prUrl: pr?.prUrl, branch });
+    if (!found) {
+      preserveBranch = true;
+      if (creationError) throw creationError;
+      throw new Error("PR was created but could not be resolved by URL or branch for label assignment");
+    }
+    try {
+      await ensurePullRequestLabels(controlRoot, found, [EXPERIMENT_LABEL]);
+    } catch (error) {
+      // リモートPRが存在する状態で後続処理に失敗した場合は、次回の再開に必要なlocal branchを残す。
+      preserveBranch = true;
+      throw new Error(`PR #${found.number} was created but label assignment could not be confirmed: ${error.message}`, { cause: error });
+    }
+    if (creationError) {
+      preserveBranch = true;
+      return { status: "partial_success", prUrl: found.url, branch };
+    }
+    return { status: "pr_created", proposal: validated.proposal, branch, ...pr, prUrl: pr?.prUrl ?? found.url };
   } finally {
     if (execute && worktreeRoot) await runGit(controlRoot, ["worktree", "remove", "--force", worktreeRoot]).catch(() => {});
     if (localBranch && !preserveBranch) await runGit(controlRoot, ["branch", "-D", localBranch]).catch(() => {});
