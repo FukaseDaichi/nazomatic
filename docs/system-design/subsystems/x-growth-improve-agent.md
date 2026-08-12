@@ -70,6 +70,10 @@ PR は `x-growth-experiment` label、`Closes #<review Issue>`、次の metadata 
 
 review Issue との対応は `reviewIssue + account` で冪等に検索する。PR 作成コマンドが timeout した場合は、branch 名で PR を再検索し、存在すれば partial success として branch を残す。
 
+PR 作成直後の確認は `x-growth-experiment` label の一覧検索に依存しない。`gh pr create` の戻りURLを直接取得し、取得できない場合は head branch の完全一致検索へフォールバックして、GitHub の反映遅延を一定回数再試行する。PRが見つかった後はPR番号へ label を冪等に付与し、直接取得したPRに label が反映されたことを確認する。作成コマンドが失敗してもPRが見つかれば label 付与後に `partial_success` として branch を保持する。label の確認まで完了できない場合は失敗終了し、次回再開用に branch を保持する。
+
+実験PRの一覧は label 付きPRに加え、`x-growth-experiment:v1` marker を含む未label PRも含める。不正な marker も fail closed の判定対象に残す。作成直後の label 反映遅延中でも、marker の `reviewIssue + account` と1アカウント1実験 guard が働き、同じ実験の重複作成を防ぐ。
+
 自動マージは `workflow_run` から起動し、書き込み権限を持つ job では PR のコードを checkout しない。`verify` job が skip ではなく成功していること、CI 対象だった head SHA と現在の PR head SHA が一致すること、PR が open、base が `main`、`x-growth-experiment` label 付きであることを GitHub API から再確認する。条件不一致や CI 失敗時はマージせず、最新 commit の `X Growth PR CI` 成功を待つ。
 
 metadata marker はコメント終端 `-->` までを JSON 本文として解析し、`metric.filters` や `proposalBaseline` のようなネスト object を保持する。marker が欠損、不正、または重複している実験 PR は fail closed とし、改善 PR 作成を `rejected` で止める。maintenance が merged PR の不正 marker を検出した場合は `x-growth:needs-attention` を付け、自動 activation を行わない。
