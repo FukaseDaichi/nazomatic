@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { buildReviewMarkdown } from "../x-growth-improve.mjs";
+import { buildReport } from "../x-weekly-growth-review.mjs";
 
 function buildReview(comments) {
   return {
@@ -71,4 +72,21 @@ test("review markdown keeps the newest comments and notes dropped ones over the 
   assert.ok(!markdown.includes("OLDEST_MARK"), "the oldest comment must be dropped first");
   assert.match(markdown, /> 注記: コメント全3件のうち古い2件は入力上限（1200文字）のため省略しました。/);
   assert.match(markdown, /Issue本文/);
+});
+
+test("weekly review omits the experiment outcome report", () => {
+  const report = buildReport({
+    accountHandle: "nazomaticapp",
+    now: new Date("2026-08-17T02:30:00.000Z"),
+    since: new Date("2026-08-10T02:30:00.000Z"),
+    week: { key: "2026-W34" },
+    recentPosts: [],
+    profileStats: { followers: null, posts: null, error: null },
+    previousSnapshot: null,
+    postMetrics: [],
+    logStats: { success: 0, failed: 0, noCandidate: 0, files: 0 },
+  });
+
+  assert.ok(!report.body.includes("## 実験の勝敗"));
+  assert.ok(!report.body.includes("x-growth:keep"));
 });

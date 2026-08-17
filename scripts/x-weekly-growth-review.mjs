@@ -5,6 +5,7 @@ import fsSync from "fs";
 import os from "os";
 import path from "path";
 import { spawn } from "child_process";
+import { pathToFileURL } from "url";
 
 import { readBrowserPostLedger } from "./x-browser-posting/postLedger.mjs";
 import {
@@ -21,7 +22,7 @@ import {
   median,
   summarizeByDimension,
 } from "./x-growth/reportMetrics.mjs";
-import { REVIEW_LABEL, ensureLabels, listExperimentPrs } from "./x-growth/githubExperiments.mjs";
+import { REVIEW_LABEL, ensureLabels } from "./x-growth/githubExperiments.mjs";
 
 const REVIEW_DAYS = 7;
 const AUTOMATION_LOG_IDS = [
@@ -88,15 +89,6 @@ async function main() {
   const postMetrics = [...ledgerPostMetrics, ...scrapedPostMetrics];
   const logStats = await collectAutomationLogStats(cwd, since);
   const week = getJstIsoWeek(now);
-  const experiments = await listExperimentPrs(cwd);
-  const dueExperiments = experiments.filter(
-    (entry) =>
-      entry.mergedAt &&
-      entry.labels.includes("x-growth:active") &&
-      !entry.labels.includes("x-growth:keep") &&
-      !entry.labels.includes("x-growth:reverted") &&
-      entry.metadata?.plannedEvaluateWeek === week.key
-  );
   const report = buildReport({
     accountHandle,
     now,
@@ -107,7 +99,6 @@ async function main() {
     previousSnapshot,
     postMetrics,
     logStats,
-    dueExperiments,
   });
 
   await recordFollowerSnapshot(cwd, {
@@ -305,7 +296,7 @@ async function collectAutomationLogStats(cwd, since) {
   return result;
 }
 
-function buildReport({
+export function buildReport({
   accountHandle,
   now,
   since,
@@ -315,7 +306,6 @@ function buildReport({
   previousSnapshot,
   postMetrics,
   logStats,
-  dueExperiments = [],
 }) {
   const counts = countBy(recentPosts, (entry) => entry.postType ?? "unknown");
   const trendPosts = recentPosts.filter((entry) => entry.postType === "trend_joke");
@@ -420,24 +410,6 @@ function buildReport({
     "## 次週の改善候補",
     "",
     ...recommendations.map((item) => `- [ ] ${item}`),
-    "",
-    "## 実験の勝敗",
-    "",
-    ...(dueExperiments.length
-      ? dueExperiments.flatMap((entry) => [
-          `### ${entry.title}`,
-          `- 対象: \`${entry.metadata?.targetKey ?? "未記録"}\``,
-          `- 指標: ${entry.metadata?.metric?.name ?? "未記録"}`,
-          `- PR: ${entry.url}`,
-          `- 開始時の状況: ${
-            entry.metadata?.proposalBaseline
-              ? `baseline=${entry.metadata.proposalBaseline.value ?? "取得不能"}, sample=${entry.metadata.proposalBaseline.sampleSize ?? 0}`
-              : "記録なし"
-          }`,
-          "- 判定: 上の「型別・時間帯別・実験別の比較」と開始時を見比べ、改善が無ければ PR に `x-growth:revert`、あれば `x-growth:keep` label を付ける。",
-          "",
-        ])
-      : ["今週評価予定の実験はありません。"]),
     "",
     "## 判定メモ",
     "",
@@ -669,15 +641,17 @@ function normalizeHandle(value) {
   return String(value ?? "").trim().replace(/^@/, "").toLowerCase();
 }
 
-let exitCode = 0;
-try {
-  await main();
-} catch (error) {
-  exitCode = 1;
-  console.error(error instanceof Error ? error.message : String(error));
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  let exitCode = 0;
+  try {
+    await main();
+  } catch (error) {
+    exitCode = 1;
+    console.error(error instanceof Error ? error.message : String(error));
+  }
+  await Promise.all([flushStream(process.stdout), flushStream(process.stderr)]);
+  process.exit(exitCode);
 }
-await Promise.all([flushStream(process.stdout), flushStream(process.stderr)]);
-process.exit(exitCode);
 
 function flushStream(stream) {
   return new Promise((resolve) => stream.write("", resolve));

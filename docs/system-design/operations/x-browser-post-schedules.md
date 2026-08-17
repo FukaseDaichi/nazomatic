@@ -15,7 +15,7 @@
 | `nazomatic` | NAZOMATIC 週末謎チケサマリ投稿 | ACTIVE | 毎日 18:30 | `npm run x:browser-post:weekend-summary -- --execute` | 対象週末の土日別件数サマリ |
 | `nazomatic-x-3` | NAZOMATIC X 週次改善レビュー | ACTIVE | 毎週月曜 11:30 | `npm run x:growth-review -- --create-issue` | 直近7日を集計し GitHub Issue を作成または追記 |
 | `nazomatic-x-pr` | NAZOMATIC X 週次改善PR作成 | ACTIVE | 毎週月曜 12:30 | `npm run x:growth-improve -- --execute` | 当週レビューから実験を1件選びドラフト PR を作成 |
-| `nazomatic-x-4` | NAZOMATIC X 成長計測メンテナンス | ACTIVE | 毎日 04:30 | `npm run x:growth-maintain` | 投稿せず follower / metrics を回収し、実験 activation を照合 |
+| `nazomatic-x-4` | NAZOMATIC X 成長計測メンテナンス | ACTIVE | 毎日 04:30 | `npm run x:growth-maintain` | 投稿せず follower / metrics を回収し、実験 activation と72時間後の自動 keep を照合 |
 | `nazomatic-git-cleanup` | NAZOMATIC Git cleanup | ACTIVE | 毎日 02:30 | `sync-and-clean.sh` dry-run → `--execute` | `future` / ローカル `main` 同期とマージ済み worktree・branch 整理 |
 
 `nazomatic-x` の RRULE は `FREQ=HOURLY;INTERVAL=3;BYMINUTE=0;BYSECOND=0` で、特定の `BYHOUR` を持ちません。そのため台帳では固定の時刻列を推測せず、「3時間間隔（実行分は00分）」と記載します。全7件が `TZID=Asia/Tokyo` を明示しています。
@@ -106,13 +106,13 @@
 
 実験状態は GitHub の review Issue、`x-growth-experiment` PR、label、metadata marker が正本です。ローカル実験台帳はありません。詳細は [`../subsystems/x-growth-improve-agent.md`](../subsystems/x-growth-improve-agent.md) を参照します。
 
-merged PR は実験終了ではなく、production deployment 確認前は `pending_activation`、`x-growth:active` 付与後は評価中です。`x-growth:keep` または `x-growth:reverted` の終端状態になるまで、同じ account の次の改善 PR は作成しません。marker 不正や要手動対応は理由付きで停止し、guard を迂回しません。
+merged PR は実験終了ではなく、production deployment 確認前は `pending_activation`、`x-growth:active` 付与後は72時間の安全確認中です。問題がある場合だけ人間が `x-growth:revert` を付け、指定がなければ日次 maintenance が `x-growth:keep` に遷移させます。`x-growth:keep` または `x-growth:reverted` の終端状態になるまで、同じ account の次の改善 PR は作成しません。marker 不正や要手動対応は理由付きで停止し、guard を迂回しません。
 
 ## 成長計測メンテナンス
 
 毎日04:30の `nazomatic-x-4` は投稿を行わず、起動済みで login 済みの Chrome CDP セッションを使います。開始時にプロフィールページへ明示的に navigation し、blocking state が無いことと login 中 account が対象 account と一致することを検証してから処理します。フォロワー snapshot と、20時間〜8日の未取得投稿 metrics を成熟窓の終了が近い順に回収した後、GitHub の実験 PR を照合します。
 
-merged PR の merge commit、またはその子孫 commit に successful `Production` deployment がある場合だけ activation を進めます。24時間以上8日以内の metrics が5件未満、または成熟率70%未満なら `x-growth:needs-attention` を付けて保留します。十分なら PR metadata の評価予定週を更新し、activation marker と `x-growth:active` label を付けます。GitHub 認証、deployment 照合、Chrome/CDP に失敗した場合は強制 activation しません。
+merged PR の merge commit、またはその子孫 commit に successful `Production` deployment がある場合だけ activation を進めます。24時間以上8日以内の metrics が5件未満、または成熟率70%未満なら `x-growth:needs-attention` を付けて保留します。十分なら deployment 時刻を `activeAt`、72時間後を `autoKeepAt` として PR metadata に保存し、activation marker と `x-growth:active` label を付けます。以後の日次実行では期限を過ぎた PR を再取得し、`x-growth:revert` / `x-growth:needs-attention` がなく active のままなら `x-growth:active` を外して `x-growth:keep` を付けます。日次実行間隔により実際の keep は72〜96時間後です。GitHub 認証、deployment 照合、Chrome/CDP に失敗した場合は状態を強制変更しません。
 
 ## ログと確認先
 

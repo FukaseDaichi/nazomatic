@@ -4,6 +4,7 @@ import test from "node:test";
 import { evaluateExperimentPrGate } from "../x-growth-improve.mjs";
 import {
   classifyExperiment,
+  editLabels,
   ensurePullRequestLabels,
   findCreatedExperimentPr,
   listExperimentPrs,
@@ -138,6 +139,22 @@ test("created PR label assignment retries transient failures and confirms the la
   assert.equal(editAttempts, 3);
   assert.equal(viewAttempts, 2);
   assert.deepEqual(delays, [250, 500]);
+});
+
+test("label editing can atomically transition active to keep", async () => {
+  const calls = [];
+  await editLabels(
+    "/repo",
+    56,
+    { add: ["x-growth:keep"], remove: ["x-growth:active"] },
+    { runCommand: async (_cwd, args) => calls.push(args) },
+  );
+
+  assert.deepEqual(calls, [[
+    "issue", "edit", "56",
+    "--add-label", "x-growth:keep",
+    "--remove-label", "x-growth:active",
+  ]]);
 });
 
 test("malformed or duplicate experiment markers fail closed", () => {
