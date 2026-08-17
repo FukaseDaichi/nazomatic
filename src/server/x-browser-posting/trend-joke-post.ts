@@ -879,15 +879,15 @@ const TREND_JOKE_FALLBACK_POOL: TrendJokeFallbackCandidate[] = [
 const TREND_JOKE_QUESTION_POOL: TrendJokeFallbackCandidate[] = [
   {
     shape: "sugari",
-    text: "謎解きの予定を入れるとき、最初に見るのは日付？タイトル？それとも同行者？",
+    text: "謎解きで詰まったら、あと5分考える派？すぐヒントを見る派？",
   },
   {
     shape: "fake_calm",
-    text: "あと1問だけ考えるつもりが深夜になったこと、みんなは何回くらいありますか？",
+    text: "イベントを選ぶとき、タイトルで決める派？日程から絞る派？",
   },
   {
     shape: "mood_swing",
-    text: "解けない問題、すぐ検索する派？一晩だけ寝かせる派？私は検索欄を開いてから悩む派です。",
+    text: "公演が終わったあと、すぐ感想を読む派？余韻が消えるまで読まない派？",
   },
 ];
 
@@ -1137,7 +1137,10 @@ function buildArchetypePromptRules(
 ) {
   switch (archetype) {
     case "question":
-      return ["- 読んだ人が短く答えられる自然な質問を1つ入れる。疑問符で終える。"];
+      return [
+        "- 読んだ瞬間に選べる「A派？B派？」の二択1組にする。選択肢は謎解き中の行動、予定の決め方、感想の読み方など、知識や参加歴がなくても答えられる身近な習慣に絞る。",
+        "- 前置き込みで2文以内にし、説明、自分の回答、第三の選択肢は足さない。最後を疑問符で終える。",
+      ];
     case "one_liner":
       return [
         "- 改行なしで、イベント名・開催日・保存・予定表・ヒントなど具体的な行動を1つだけ置き、読んだ瞬間に自分のことだと思える一文にする。説明・質問・二段オチは足さない。",
