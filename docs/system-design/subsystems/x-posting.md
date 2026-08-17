@@ -142,7 +142,7 @@ validator は自然な hashtag を最大1個だけ許可し、mention、emoji、
 
 `--create-issue` を付けると GitHub CLI で週次 Issue を作成します。同じ ISO week・account の title が既にあれば Issue を増やさずコメントを追加します。レビューは改善候補を最大4件提示しますが、コードや schedule は自動変更しません。
 
-レポートには「実験の勝敗」節もあり、GitHub の `x-growth-experiment` PR のうち `x-growth:active` かつ metadata の評価予定週が実行週と一致する merged PR を一覧します。仮説・targetKey・PR・PR提案時の baseline を添えて、上の次元別比較と見比べた継続 / revert を人間が判断します。自動 revert はせず、継続時は `x-growth:keep`、revert 完了時は `x-growth:reverted` を PR に付けます。実験の正本は GitHub であり、ローカル実験台帳は使いません。
+週次レポートは実験の勝敗を個別に一覧・判定しません。production activation 後の実験は日次の `x:growth-maintain` が72時間監視し、問題を示す `x-growth:revert` または `x-growth:needs-attention` がなければ自動 keep します。週次レポートの集計は次の改善提案の入力として使います。
 
 ## ローカルファイル
 

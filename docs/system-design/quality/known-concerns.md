@@ -18,13 +18,9 @@
 
 Yahoo!リアルタイム検索と X syndication endpoint は外部 response の構造に依存します。schema 契約や fixture test がなく、形式変更が収集停止・parse error・可視性 `unknown` の増加として現れます。
 
-### 実験の baseline と評価週に取りこぼし余地がある
+### 72時間の自動 keep は改善効果を判定しない
 
-`x-growth-improve` は PR 作成時の `proposalBaseline` を保存し、`x-growth-maintain` は production activation 時に再集計せず、その値を `evaluationBaseline` として引き継ぎます。レビューやマージ待ちが長いと、表示する baseline が実験開始直前の状態を表さない可能性があります。
-
-実装前に検討された仕様では、production activation 時に `activeAt - maturityHours` を終端とする直前 `windowDays` を対象に、同じ metric / filters で `evaluationBaseline` を再計算して activation コメントへ固定する想定でした。成熟待ち時間を空けることで、実験開始直前の未成熟投稿を 0 として扱わないことが狙いです。この再計算にも sample size とテレメトリ成熟率のゲートを適用します。現行実装はこの再計算に未対応で、検討時の仕様と現行実装のどちらを正とするかが未確定のため、実装判断は保留しています。
-
-また、週次レビューは `plannedEvaluateWeek` が実行週と完全一致する active PR だけを評価対象にします。該当週のレビューが失敗または未実行だった場合、翌週以降に自動で拾い直しません。
+`x-growth-maintain` は production activation から72時間、`x-growth:revert` または `x-growth:needs-attention` が付かなければ変更を自動 keep します。これは明示的な運用問題が報告されなかったことだけを表し、表示数・反応・フォロワー増加などの改善効果を証明しません。問題がGitHub labelへ反映されなければ自動 keepされるため、異常を見つけた人が72時間以内に `x-growth:revert` を付ける運用に依存します。
 
 ### テレメトリ不足で保留した実験は自動再評価されない
 

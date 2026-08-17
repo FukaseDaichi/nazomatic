@@ -207,8 +207,21 @@ export async function ensureLabels(cwd) {
 }
 
 export async function addLabels(cwd, issueOrPr, labels, { runCommand = runGh } = {}) {
-  if (!labels?.length) return;
-  await runCommand(cwd, ["issue", "edit", String(issueOrPr), "--add-label", labels.join(",")]);
+  return editLabels(cwd, issueOrPr, { add: labels }, { runCommand });
+}
+
+export async function editLabels(cwd, issueOrPr, { add = [], remove = [] } = {}, { runCommand = runGh } = {}) {
+  const additions = [...new Set(add.map((label) => String(label).trim()).filter(Boolean))];
+  const removals = [...new Set(remove.map((label) => String(label).trim()).filter(Boolean))];
+  if (!additions.length && !removals.length) return;
+  const args = ["issue", "edit", String(issueOrPr)];
+  if (additions.length) args.push("--add-label", additions.join(","));
+  if (removals.length) args.push("--remove-label", removals.join(","));
+  await runCommand(cwd, args);
+}
+
+export async function getExperimentPr(cwd, reference, { runCommand = runGh } = {}) {
+  return viewPullRequest(cwd, reference, runCommand);
 }
 
 export async function updateExperimentMetadata(cwd, pr, metadata) {
