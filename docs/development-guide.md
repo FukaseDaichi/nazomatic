@@ -20,7 +20,9 @@ npm run dev
 | `npm run dev` | 開発サーバーを起動 |
 | `npm run build` | production build |
 | `npm run start` | production server を起動 |
-| `npm run lint` | ESLint |
+| `npm run lint` | Agent Skill 生成ミラー検証後に ESLint を実行 |
+| `npm run skills:sync` | `.agents/skills` の正本から `.claude/skills` の生成ミラーを再構築 |
+| `npm run skills:check` | Codex / Claude Code 共有 Agent Skill の構成と内容一致を検証 |
 | `npm run x:browser-post` | X API を使わないローカルブラウザ投稿 CLI |
 | `npm run x:browser-post:weekend-summary` | `#謎チケ売ります` の週末土日別件数をローカルブラウザで投稿する CLI |
 | `npm run x:browser-post:trend-joke` | Yahoo!リアルタイム検索で拾ったイベント名を材料に短文ネタ投稿を行う CLI |
@@ -32,6 +34,35 @@ npm run dev
 | `npm run shift:report:view-assets` | Shift Search レポート表示用 JSON を `src/generated/shift-search` に生成 |
 
 汎用テストフレームワークは未設定です。X ブラウザ投稿の純粋ロジックには Node.js 標準 test runner を使います。変更内容に応じて `npm run test:x-browser-posting`、`npm run lint`、`npm run build`、ブラウザでの手動確認を使い分けます。
+
+## Codex / Claude Code 共有 Agent Skill
+
+リポジトリ固有スキルの唯一の編集元は `.agents/skills/<name>/` です。Codex はこの場所を探索し `$<name>` で呼び出します。Claude Code が `/name` で呼び出せるよう、同じディレクトリ一式を `.claude/skills/<name>/` に生成ミラーとしてコミットします。`CLAUDE.md` は `@AGENTS.md` で共通ルールを読み込むため、作成・インストール・更新を行うどちらのエージェントにも同じ手順が適用されます。
+
+Codex と Claude Code はどちらもスキルディレクトリの symbolic link を追跡できます。ただし Windows では Git の `core.symlinks=false` により、インデックスの mode が `120000` でもリンク先パスが1行だけ書かれた通常ファイルとして checkout される場合があります。junction も Git で可搬に表現できません。このリポジトリでは、OS、権限、Git 設定に依存せず clone 直後から動作するコミット済み生成ミラーを採用し、symbolic link、junction、手書き wrapper は使いません。
+
+スキルを作成・インストール・更新・改名・削除するときは、次の手順を必ず使います。
+
+1. `.agents/skills/<name>/` だけを編集する。フォルダ名と `SKILL.md` frontmatter の `name` を同じ kebab-case 名にする。
+2. 補助スクリプト、references、assets、`agents/openai.yaml` を含め、スキルに必要なファイルを正本側へ置く。
+3. `npm run skills:sync` を実行し、`.claude/skills/` を全スキル分再生成する。
+4. `npm run skills:check` を実行する。差分がある場合は失敗するため、生成ミラーを直接直さず正本を修正して再同期する。
+5. `.agents/skills/` と `.claude/skills/` の差分を一緒に commit する。
+
+同期スクリプトは、正本の各エントリが実ディレクトリであること、`SKILL.md` が存在すること、フォルダ名と frontmatter `name` が一致すること、スキル内部に非可搬な symbolic link がないこと、生成ミラーの全ファイルが正本と一致することを検証します。`.claude/skills/` は生成物専用であり、Claude Code 専用の Custom Prompt や `.claude/commands/` を共有スキルの代替にしません。
+
+Windows で実体を確認する場合は次を使います。正常時は各 `<name>` が `Directory`、`LinkType` は空、`SKILL.md` は `True` で、Git インデックスには配下ファイルが `100644` または実行ファイルの `100755` として現れます。トップレベルの `<name>` が `120000` のみなら壊れやすい symlink 構成が残っています。
+
+```powershell
+Get-Item -Force .claude/skills/<name> |
+  Format-List FullName,Attributes,LinkType,Target
+git config --get core.symlinks
+git ls-files -s -- .claude/skills/<name>
+Test-Path .claude/skills/<name>/SKILL.md
+npm run skills:check
+```
+
+Codex が更新を表示しない場合、または Claude Code のセッション開始時に `.claude/skills` 自体が存在しなかった場合は、同期後にセッションを再起動します。
 
 ## 広告表示
 

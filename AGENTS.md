@@ -25,6 +25,8 @@ Keep this file short and operational. Put durable project details in Japanese do
 npm run dev
 npm run build
 npm run lint
+npm run skills:sync
+npm run skills:check
 npm run test:x-browser-posting
 npm run shift:report:meta
 npm run shift:report:view-assets
@@ -33,6 +35,14 @@ npm run shift:report:view-assets
 - Automated tests exist only for the X posting / growth scripts under `scripts/x-browser-posting/*.test.mjs`, run via Node's built-in `node:test`. Nothing under `src/` has test coverage.
 - Use `npm run lint` plus `npm run test:x-browser-posting`, and focused manual verification, unless a task provides another check.
 - After changing Shift Search report artifacts, run both `shift:report:*` commands and keep `src/generated/shift-search/*` in sync.
+
+## Shared Agent Skills
+
+- `CLAUDE.md` imports this file, so these rules apply to Codex and Claude Code.
+- Keep each shared skill's only editable source in `.agents/skills/<name>/`; the directory and frontmatter `name` must match.
+- Treat `.claude/skills/` as a committed generated mirror. Never edit it directly or replace entries with symlinks, junctions, or path-only files.
+- After creating, installing, updating, renaming, or deleting a skill, run `npm run skills:sync` and `npm run skills:check`, then commit both the source and mirror changes.
+- Invoke a shared skill as `$<name>` in Codex and `/<name>` in Claude Code. See `docs/development-guide.md` for setup and recovery details.
 
 ## Non-Negotiable Rules
 

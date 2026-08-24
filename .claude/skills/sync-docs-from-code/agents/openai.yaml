@@ -1,0 +1,7 @@
+interface:
+  display_name: "Sync Docs From Code"
+  short_description: "コード正本でNazomatic docsを同期する"
+  default_prompt: "Use $sync-docs-from-code to reconcile Nazomatic docs and the root README against the current implementation, then overwrite the Japanese audit report with fixes, judgment calls, and noticed system issues."
+
+policy:
+  allow_implicit_invocation: true
