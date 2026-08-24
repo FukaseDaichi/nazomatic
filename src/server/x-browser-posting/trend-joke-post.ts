@@ -178,7 +178,7 @@ export async function prepareTrendJokePost(
     sampleTicketTitles,
     frequentTitleWords,
   });
-  const archetype = normalized.archetype;
+  const archetype = "poll" as TrendJokeArchetype;
   const tool =
     archetype === "tool_intro" ? pickTool(normalized.excludedToolPaths) : null;
   const trendSummary = buildTrendSummary({
