@@ -63,3 +63,9 @@ npm run shift:report:view-assets
 - Prefer existing components, utilities, routes, and styling patterns over new abstractions.
 - Keep diffs scoped to the request.
 - Do not introduce new dependencies, storage locations, or color systems without a clear need.
+
+## LEARNINGS.md ループ
+
+各セッションの開始時に、リポジトリ直下の LEARNINGS.md を読め。
+読んだ内容を1〜3行で要約して提示し、読み込みが行われたことを可視化せよ。
+セッション終了時には `update-learnings` スキルの実行を促せ。

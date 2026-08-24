@@ -64,6 +64,12 @@ npm run skills:check
 
 Codex が更新を表示しない場合、または Claude Code のセッション開始時に `.claude/skills` 自体が存在しなかった場合は、同期後にセッションを再起動します。
 
+### LEARNINGS.md ループ
+
+各セッションの開始時にリポジトリ直下の `LEARNINGS.md` を読み、内容を1〜3行で要約します。セッション終了時は Claude Code では `/update-learnings`、Codex では `$update-learnings` または `/skills` から同スキルを実行し、再利用価値のある新しい洞察だけを日付付きで追記します。
+
+週1回、または `Consolidated Principles` を除く生の観察が80〜100件に達したときは、Claude Code では `/consolidate-learnings`、Codex では `$consolidate-learnings` または `/skills` から同スキルを実行します。統合時に指示ファイルや別スキルへの転記が必要になった場合は、変更差分への承認を得てから適用します。
+
 ## 広告表示
 
 公開メイン領域の Google Ad は `src/components/googleAd/google-ad-component.tsx` で表示します。localhost、PWA standalone、X アプリ内ブラウザまたは `x.com` / `twitter.com` / `t.co` 経由で開かれたセッションでは広告を表示しません。
