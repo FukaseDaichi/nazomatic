@@ -2,6 +2,19 @@
 
 Keep this file short and operational. Put durable project details in Japanese docs under `docs/`, not here.
 
+## Response Language
+
+- Always reply to the user in Japanese: plans, progress narration, summaries, and completion reports.
+- Codex and subagents return English. Never relay that output verbatim — restate it in Japanese. Keep code, file paths, identifiers, and command names as they are.
+
+## Decision Defaults
+
+- Default to acting with a recommendation, not to asking. Surface only the decisions that actually change the outcome, and state your recommendation for each.
+- Do not write a spec or a design document unless the user asks for one. "Refactor X" and "Fix X" mean implement it.
+- Do the work yourself. Never hand back a CLI command or a manual step the available tools can perform — editing `.mcp.json`, `.claude/`, `.agents/skills/`, or any settings file included.
+- Install skills and MCP servers at project scope (`.mcp.json`, `.agents/skills/`) unless the user says otherwise.
+- Performance and SEO audits target production `https://nazomatic.vercel.app` unless a local URL is given.
+
 ## Required References
 
 - Follow `docs/ai-coding-rules.md` as the source of truth for AI implementation rules, especially UI and form work.
@@ -36,6 +49,13 @@ npm run shift:report:view-assets
 - Use `npm run lint` plus `npm run test:x-browser-posting`, and focused manual verification, unless a task provides another check.
 - After changing Shift Search report artifacts, run both `shift:report:*` commands and keep `src/generated/shift-search/*` in sync.
 
+## Standard Workflows
+
+- Branching: work lands on `future`, then a pull request from `future` to `main`. Never commit directly to `main`.
+- Review: after a substantial change, run a Codex review over the diff (`codex:rescue` in Claude Code), fix what it finds, and report the findings in Japanese.
+- Parallel work: when a task list has independent items, split them across subagents.
+- Post-merge cleanup of branches and worktrees: use the `sync-main-and-clean-worktrees` skill.
+
 ## Shared Agent Skills
 
 - `CLAUDE.md` imports this file, so these rules apply to Codex and Claude Code.
@@ -43,6 +63,21 @@ npm run shift:report:view-assets
 - Treat `.claude/skills/` as a committed generated mirror. Never edit it directly or replace entries with symlinks, junctions, or path-only files.
 - After creating, installing, updating, renaming, or deleting a skill, run `npm run skills:sync` and `npm run skills:check`, then commit both the source and mirror changes.
 - Invoke a shared skill as `$<name>` in Codex and `/<name>` in Claude Code. See `docs/development-guide.md` for setup and recovery details.
+
+| Skill | Use for |
+|---|---|
+| `seo` | Meta tags, structured data, sitemap, and other search-visibility work. |
+| `sync-docs-from-code` | Reconcile `docs/**` and the root `README.md` with the current implementation. |
+| `sync-main-and-clean-worktrees` | Post-merge cleanup: sync a branch, remove merged worktrees and branches. |
+| `nazomatic-mobile-first-ux-overhaul` | Page and component redesign, mobile-first UX rework. |
+| `update-learnings` | End of a session: append new insights to `LEARNINGS.md`. |
+| `consolidate-learnings` | Weekly, or at 80–100 raw observations: compact `LEARNINGS.md`. |
+
+## Document Lifecycle
+
+- When changing behavior, update the relevant Japanese doc under `docs/` in the same change, and refresh `docs/README.md` if the document map changes.
+- Implementation plans and specs are temporary. Put them in `docs/ideas/`, then delete them in the same pull request that completes the implementation, folding anything durable into `docs/system-design/`.
+- When you resolve an item listed in `docs/system-design/quality/known-concerns.md`, delete that entry in the same change. Leaving a fixed item in the list is a defect.
 
 ## Non-Negotiable Rules
 
@@ -56,7 +91,6 @@ npm run shift:report:view-assets
 - Preserve internal API authentication behavior:
   - BLANK25 editor routes use HTTP Basic auth in `src/middleware.ts`.
   - Realtime/X internal APIs use `Authorization: Bearer <REALTIME_INTERNAL_API_TOKEN>` plus HMAC request signing. Always call `enforceInternalAuthorization()` from `src/server/internal-api/authorization.ts`; never re-implement it per route.
-- When changing behavior, update the relevant Japanese doc under `docs/` and refresh `docs/README.md` if the document map changes.
 
 ## Working Style
 
