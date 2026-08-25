@@ -2,6 +2,12 @@
 
 Keep this file short and operational. Put durable project details in Japanese docs under `docs/`, not here.
 
+## LEARNINGS.md ループ
+
+各セッションの開始時に、リポジトリ直下の LEARNINGS.md を読め。
+読んだ内容を1〜3行で要約して提示し、読み込みが行われたことを可視化せよ。
+実質的なリポジトリ作業を完了して最終回答を返す前に、 `update-learnings` スキルを1回だけ実行せよ。 雑談、単純な質問、変更や再利用可能な学びがない作業では実行不要とする。
+
 ## Response Language
 
 - Always reply to the user in Japanese: plans, progress narration, summaries, and completion reports.
@@ -64,14 +70,14 @@ npm run shift:report:view-assets
 - After creating, installing, updating, renaming, or deleting a skill, run `npm run skills:sync` and `npm run skills:check`, then commit both the source and mirror changes.
 - Invoke a shared skill as `$<name>` in Codex and `/<name>` in Claude Code. See `docs/development-guide.md` for setup and recovery details.
 
-| Skill | Use for |
-|---|---|
-| `seo` | Meta tags, structured data, sitemap, and other search-visibility work. |
-| `sync-docs-from-code` | Reconcile `docs/**` and the root `README.md` with the current implementation. |
-| `sync-main-and-clean-worktrees` | Post-merge cleanup: sync a branch, remove merged worktrees and branches. |
-| `nazomatic-mobile-first-ux-overhaul` | Page and component redesign, mobile-first UX rework. |
-| `update-learnings` | End of a session: append new insights to `LEARNINGS.md`. |
-| `consolidate-learnings` | Weekly, or at 80–100 raw observations: compact `LEARNINGS.md`. |
+| Skill                                | Use for                                                                       |
+| ------------------------------------ | ----------------------------------------------------------------------------- |
+| `seo`                                | Meta tags, structured data, sitemap, and other search-visibility work.        |
+| `sync-docs-from-code`                | Reconcile `docs/**` and the root `README.md` with the current implementation. |
+| `sync-main-and-clean-worktrees`      | Post-merge cleanup: sync a branch, remove merged worktrees and branches.      |
+| `nazomatic-mobile-first-ux-overhaul` | Page and component redesign, mobile-first UX rework.                          |
+| `update-learnings`                   | End of a session: append new insights to `LEARNINGS.md`.                      |
+| `consolidate-learnings`              | Weekly, or at 80–100 raw observations: compact `LEARNINGS.md`.                |
 
 ## Document Lifecycle
 
@@ -97,9 +103,3 @@ npm run shift:report:view-assets
 - Prefer existing components, utilities, routes, and styling patterns over new abstractions.
 - Keep diffs scoped to the request.
 - Do not introduce new dependencies, storage locations, or color systems without a clear need.
-
-## LEARNINGS.md ループ
-
-各セッションの開始時に、リポジトリ直下の LEARNINGS.md を読め。
-読んだ内容を1〜3行で要約して提示し、読み込みが行われたことを可視化せよ。
-セッション終了時には `update-learnings` スキルの実行を促せ。
