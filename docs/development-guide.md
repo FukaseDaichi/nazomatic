@@ -20,9 +20,9 @@ npm run dev
 | `npm run dev` | 開発サーバーを起動 |
 | `npm run build` | production build |
 | `npm run start` | production server を起動 |
-| `npm run lint` | Agent Skill 生成ミラー検証後に ESLint を実行 |
-| `npm run skills:sync` | `.agents/skills` の正本から `.claude/skills` の生成ミラーを再構築 |
-| `npm run skills:check` | Codex / Claude Code 共有 Agent Skill の構成と内容一致を検証 |
+| `npm run lint` | Agent Skill 参照スタブ検証後に ESLint を実行 |
+| `npm run skills:sync` | `.agents/skills` の正本から `.claude/skills` の参照スタブを再生成 |
+| `npm run skills:check` | Codex / Claude Code 共有 Agent Skill の構成、スタブ一致、パス規約を検証 |
 | `npm run x:browser-post` | X API を使わないローカルブラウザ投稿 CLI |
 | `npm run x:browser-post:weekend-summary` | `#謎チケ売ります` の週末土日別件数をローカルブラウザで投稿する CLI |
 | `npm run x:browser-post:trend-joke` | Yahoo!リアルタイム検索で拾ったイベント名を材料に短文ネタ投稿を行う CLI |
@@ -37,21 +37,67 @@ npm run dev
 
 ## Codex / Claude Code 共有 Agent Skill
 
-リポジトリ固有スキルの唯一の編集元は `.agents/skills/<name>/` です。Codex はこの場所を探索し `$<name>` で呼び出します。Claude Code が `/name` で呼び出せるよう、同じディレクトリ一式を `.claude/skills/<name>/` に生成ミラーとしてコミットします。`CLAUDE.md` は `@AGENTS.md` で共通ルールを読み込むため、作成・インストール・更新を行うどちらのエージェントにも同じ手順が適用されます。
+### 正本と公開方法
 
-Codex と Claude Code はどちらもスキルディレクトリの symbolic link を追跡できます。ただし Windows では Git の `core.symlinks=false` により、インデックスの mode が `120000` でもリンク先パスが1行だけ書かれた通常ファイルとして checkout される場合があります。junction も Git で可搬に表現できません。このリポジトリでは、OS、権限、Git 設定に依存せず clone 直後から動作するコミット済み生成ミラーを採用し、symbolic link、junction、手書き wrapper は使いません。
+リポジトリ固有スキルの唯一の編集元（正本）は `.agents/skills/<name>/` です。Codex はこのパスを直接探索し、`$<name>` または `/skills` で呼び出します。
 
-スキルを作成・インストール・更新・改名・削除するときは、次の手順を必ず使います。
+Claude Code へは、`.claude/skills/<name>/SKILL.md` を**参照スタブ**としてコミットして公開します。スタブは次の条件を満たす通常ファイルです。
+
+- frontmatter の `name` と `description` を正本と完全に一致させる。
+- 本文には手順を書かず、正本 `.agents/skills/<name>/SKILL.md` を読ませる指示だけを書く。
+
+Claude Code はディレクトリ名からコマンド名を決めるため、`.claude/skills/<name>/` に置けば `/<name>` で呼び出せます。スタブは `npm run skills:sync` が生成するので、手書きしません。
+
+`CLAUDE.md` は `@AGENTS.md` を読み込み、`AGENTS.md` の "Shared Agent Skills" がこの節を参照します。したがって Codex と Claude Code のどちらでスキルを作成・インストール・更新しても同じ手順が適用されます。
+
+### 参照スタブを採用する理由
+
+手順の本体は正本にしか存在しないため、二重管理になるのは `description` の1行だけです。実体を読ませる方式なので、補助スクリプトや references も正本側から辿れます。OS、権限、Git 設定、チェックアウト方式に依存しないため、fresh clone、worktree 実行、クラウド実行、他 OS でも同じように登録されます。
+
+次の方式は採用しません。過去に機能しなかったため、代替として提案し直さないでください。
+
+- **symbolic link / junction**: Windows では Git の `core.symlinks=false` により、インデックスの mode が `120000` でも「リンク先パスが1行だけ書かれた通常ファイル」として checkout され、`SKILL.md` が存在しなくなります。junction は Git で可搬に表現できません。参照スタブに対する利点もありません。
+- **ディレクトリ一式のコピー同期**: 参照スタブで実体を読ませれば足りるため不要で、二重管理とドリフトだけが増えます。
+- **Claude Code 専用の Custom Prompt や `.claude/commands/`**: 共有スキルの代替にしません。
+
+### 補助ファイルのパス規約
+
+正本 `SKILL.md` からスクリプトや参照ファイルを指すパスは、必ずリポジトリルート相対で書きます。
+
+```text
+.agents/skills/<name>/scripts/foo.sh
+```
+
+スタブ経由で起動した場合、ホストが渡すスキルのベースディレクトリは `.claude/skills/<name>/` になります。`scripts/foo.sh` のようなスキルディレクトリ相対の書き方は解決できません。`npm run skills:check` はこの違反を検出して失敗します。
+
+### 作成・インストール・更新・改名・削除の手順
 
 1. `.agents/skills/<name>/` だけを編集する。フォルダ名と `SKILL.md` frontmatter の `name` を同じ kebab-case 名にする。
-2. 補助スクリプト、references、assets、`agents/openai.yaml` を含め、スキルに必要なファイルを正本側へ置く。
-3. `npm run skills:sync` を実行し、`.claude/skills/` を全スキル分再生成する。
-4. `npm run skills:check` を実行する。差分がある場合は失敗するため、生成ミラーを直接直さず正本を修正して再同期する。
-5. `.agents/skills/` と `.claude/skills/` の差分を一緒に commit する。
+2. 補助スクリプト、references、assets、`agents/openai.yaml` を含め、スキルに必要なファイルをすべて正本側へ置く。`.claude/skills/` には置かない。
+3. 外部からスキルをインストールする場合も、まず `.agents/skills/<name>/` へ展開し、`SKILL.md` 内の補助ファイル参照をリポジトリルート相対へ書き換える。
+4. 改名・削除は正本側で行う。`npm run skills:sync` が不要になったスタブを削除する。
+5. `npm run skills:sync` を実行し、`.claude/skills/` のスタブを再生成する。
+6. `npm run skills:check` を実行する。差分があれば失敗するため、スタブを直接直さず正本を修正して再同期する。
+7. `.agents/skills/` と `.claude/skills/` の差分を一緒に commit する。
 
-同期スクリプトは、正本の各エントリが実ディレクトリであること、`SKILL.md` が存在すること、フォルダ名と frontmatter `name` が一致すること、スキル内部に非可搬な symbolic link がないこと、生成ミラーの全ファイルが正本と一致することを検証します。`.claude/skills/` は生成物専用であり、Claude Code 専用の Custom Prompt や `.claude/commands/` を共有スキルの代替にしません。
+`npm run lint` は `skills:check` を先に実行するため、通常の lint でも壊れた構成を検出できます。
 
-Windows で実体を確認する場合は次を使います。正常時は各 `<name>` が `Directory`、`LinkType` は空、`SKILL.md` は `True` で、Git インデックスには配下ファイルが `100644` または実行ファイルの `100755` として現れます。トップレベルの `<name>` が `120000` のみなら壊れやすい symlink 構成が残っています。
+### 検証
+
+`npm run skills:check` は次を検証します。
+
+- 正本の各エントリが実ディレクトリで、`SKILL.md` を持ち、フォルダ名と frontmatter `name` が一致すること。
+- 正本の内部に非可搬な symbolic link が無いこと。
+- 補助ファイル参照がリポジトリルート相対で書かれていること。
+- スタブが実ディレクトリ配下の通常ファイルで、symbolic link でないこと。
+- スタブの frontmatter が正本と一致し、本文が生成テンプレートと一致すること。
+- スタブが frontmatter を持つこと（リンク先パスだけの壊れたファイルを検出）。
+- スタブ配下に `SKILL.md` 以外のファイルが無いこと、正本に無いスタブが残っていないこと。
+- `git ls-files -s -- .claude/skills/ .claude/commands/` に mode `120000` が現れないこと。
+
+このリポジトリは `core.autocrlf=true` で `.gitattributes` を持たないため、fresh clone ではスタブが CRLF で checkout されます。検証は改行コードを正規化して比較し、内容が一致するスタブは書き換えません。
+
+Windows で実体を確認する場合は次を使います。正常時は各 `<name>` が `Directory`、`LinkType` が空、`SKILL.md` が `True` で、Git インデックスには `100644` として現れます。
 
 ```powershell
 Get-Item -Force .claude/skills/<name> |
@@ -60,6 +106,16 @@ git config --get core.symlinks
 git ls-files -s -- .claude/skills/<name>
 Test-Path .claude/skills/<name>/SKILL.md
 npm run skills:check
+```
+
+Git インデックスの mode が `120000` でも、ワークツリー上では通常ファイルに展開されていることがあります。インデックスだけで symbolic link と断定せず、`Test-Path .claude/skills/<name>/SKILL.md` と内容が実際に読めることで判定します。また、ローカルで呼び出せることは共有できている証拠になりません。壊れたスタブでもモデルがパスを手繰って実行できてしまう場合があり、「ローカルでは動くがクラウド実行・worktree 実行では呼び出せない」はこの症状です。
+
+symbolic link を実ファイルで上書きしただけでは Git の mode が `120000` のまま残ります。`core.symlinks=false` では作業ツリーもステータスも正常に見えますが、コミットすると symbolic link を復元する環境で本文全体がリンク先パスとして解釈され壊れます。次でモードごと登録し直し、`100644` になったことを確認します。
+
+```powershell
+git rm --cached .claude/skills/<name>/SKILL.md
+git add .claude/skills/<name>/SKILL.md
+git ls-tree -r $(git write-tree) -- .claude
 ```
 
 Codex が更新を表示しない場合、または Claude Code のセッション開始時に `.claude/skills` 自体が存在しなかった場合は、同期後にセッションを再起動します。

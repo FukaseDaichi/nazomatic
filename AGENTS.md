@@ -64,11 +64,14 @@ npm run shift:report:view-assets
 
 ## Shared Agent Skills
 
-- `CLAUDE.md` imports this file, so these rules apply to Codex and Claude Code.
-- Keep each shared skill's only editable source in `.agents/skills/<name>/`; the directory and frontmatter `name` must match.
-- Treat `.claude/skills/` as a committed generated mirror. Never edit it directly or replace entries with symlinks, junctions, or path-only files.
-- After creating, installing, updating, renaming, or deleting a skill, run `npm run skills:sync` and `npm run skills:check`, then commit both the source and mirror changes.
-- Invoke a shared skill as `$<name>` in Codex and `/<name>` in Claude Code. See `docs/development-guide.md` for setup and recovery details.
+- `CLAUDE.md` imports this file, so these rules apply to Codex and Claude Code. Read this section before creating, installing, updating, renaming, or deleting any skill.
+- Keep each shared skill's only editable source in `.agents/skills/<name>/`; the directory and frontmatter `name` must match. Codex discovers this path directly.
+- Expose a skill to Claude Code only through a generated reference stub at `.claude/skills/<name>/SKILL.md`: a real regular file whose frontmatter `name` and `description` match the canonical skill, and whose body only tells the agent to read `.agents/skills/<name>/SKILL.md`. Never duplicate the procedure into the stub.
+- Never publish a skill by symlink, junction, a full copy of the skill directory, `.claude/commands/`, or a Claude-only custom prompt. `core.symlinks=false` expands a symlink into a path-only regular file with no readable `SKILL.md`, and a full copy only creates drift.
+- Inside a canonical `SKILL.md`, write every reference to a script or supporting file repository-root relative (`.agents/skills/<name>/scripts/foo.sh`). A stub-invoked skill resolves its base directory to `.claude/skills/<name>/`, so skill-directory-relative paths cannot resolve.
+- Never hand-edit anything under `.claude/skills/`. Fix the canonical skill and regenerate.
+- After any skill change, run `npm run skills:sync` and `npm run skills:check`, then commit the canonical change and the regenerated stub together. `npm run lint` runs `skills:check` first.
+- Invoke a shared skill as `$<name>` in Codex and `/<name>` in Claude Code. See `docs/development-guide.md` for the full procedure, verification commands, and recovery steps.
 
 | Skill                                | Use for                                                                       |
 | ------------------------------------ | ----------------------------------------------------------------------------- |
