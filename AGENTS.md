@@ -1,44 +1,42 @@
-# NAZOMATIC Agent Instructions
+# NAZOMATIC エージェント指示書
 
-Keep this file short and operational. Put durable project details in Japanese docs under `docs/`, not here.
+このファイルは短く運用的に保つ。プロジェクトの詳細な仕様は `docs/` 配下の日本語ドキュメントに置き、ここには置かない。
 
 ## LEARNINGS.md ループ
 
 各セッションの開始時に、リポジトリ直下の LEARNINGS.md を読め。
 読んだ内容を1〜3行で要約して提示し、読み込みが行われたことを可視化せよ。
-実質的なリポジトリ作業を完了して最終回答を返す前に、 `update-learnings` スキルを1回だけ実行せよ。 雑談、単純な質問、変更や再利用可能な学びがない作業では実行不要とする。
+実質的なリポジトリ作業を完了して最終回答を返す前に、`update-learnings` スキルを1回だけ実行せよ。雑談、単純な質問、変更や再利用可能な学びがない作業では実行不要とする。
 
-## Response Language
+## 応答言語
 
-- Always reply to the user in Japanese: plans, progress narration, summaries, and completion reports.
-- Codex and subagents return English. Never relay that output verbatim — restate it in Japanese. Keep code, file paths, identifiers, and command names as they are.
+- ユーザーへの返信（計画・進捗・要約・完了報告）は常に日本語で行う。
+- Codex やサブエージェントの出力は英語で返るが、そのまま転記せず日本語で言い直す。コード・パス・識別子・コマンド名はそのまま残す。
 
-## Decision Defaults
+## 判断のデフォルト
 
-- Default to acting with a recommendation, not to asking. Surface only the decisions that actually change the outcome, and state your recommendation for each.
-- Do not write a spec or a design document unless the user asks for one. "Refactor X" and "Fix X" mean implement it.
-- Do the work yourself. Never hand back a CLI command or a manual step the available tools can perform — editing `.mcp.json`, `.claude/`, `.agents/skills/`, or any settings file included.
-- Install skills and MCP servers at project scope (`.mcp.json`, `.agents/skills/`) unless the user says otherwise.
-- Performance and SEO audits target production `https://nazomatic.vercel.app` unless a local URL is given.
+- 確認より実行を優先し、推奨案とともに実施する。結果を左右する判断だけをユーザーに提示し、それぞれに推奨を添える。
+- 作業は自分で完了させる。ツールで実行できるCLIコマンドや手作業をユーザーに投げ返さない（`.mcp.json`・`.claude/`・`.agents/skills/`・各種設定ファイルの編集を含む）。
+- スキルとMCPサーバーは、ユーザーの指示がない限りプロジェクトスコープ（`.mcp.json`、`.agents/skills/`）にインストールする。
+- パフォーマンス・SEO監査は、ローカルURLの指定がない限り本番 `https://nazomatic.vercel.app` を対象にする。
 
-## Required References
+## 参照必須ドキュメント
 
-- Follow `docs/ai-coding-rules.md` as the source of truth for AI implementation rules, especially UI and form work.
-- Use `docs/system-design/README.md` for architecture, routes, APIs, data boundaries, SEO, and authentication boundaries.
-- Use `docs/development-guide.md` for setup, commands, environment variables, verification, and generated assets.
-- Use `docs/README.md` to find subsystem documents.
-- Keep `AGENTS.md` in English. Keep files under `docs/` in Japanese.
+- AI実装ルール（特にUI・フォーム作業）の正本: `docs/ai-coding-rules.md`
+- アーキテクチャ・ルーティング・API・データ境界・SEO・認証境界: `docs/system-design/README.md`
+- セットアップ・コマンド・環境変数・検証・生成物: `docs/development-guide.md`
+- サブシステム文書の索引: `docs/README.md`
 
-## Project Snapshot
+## プロジェクト概要
 
-- NAZOMATIC is a Next.js App Router app for Japanese puzzle-solving and event-support tools.
-- Stack: Next.js 14, React 18, TypeScript, Tailwind CSS, shadcn/ui, Radix UI.
-- Main source: `src/`.
-- Human-facing specifications: `docs/`.
-- Generated Shift Search view assets: `src/generated/shift-search/`.
-- Shift Search report artifacts: `artifacts/shift-search/reports/`.
+- NAZOMATIC は謎解き・イベント運営支援ツール向けの Next.js App Router アプリ。
+- スタック: Next.js 14 / React 18 / TypeScript / Tailwind CSS / shadcn/ui / Radix UI。
+- 主要ソース: `src/`。
+- 仕様書: `docs/`。
+- Shift Search の生成ビューアセット: `src/generated/shift-search/`。
+- Shift Search レポート成果物: `artifacts/shift-search/reports/`。
 
-## Commands
+## コマンド
 
 ```bash
 npm run dev
@@ -51,58 +49,45 @@ npm run shift:report:meta
 npm run shift:report:view-assets
 ```
 
-- Automated tests exist only for the X posting / growth scripts under `scripts/x-browser-posting/*.test.mjs`, run via Node's built-in `node:test`. Nothing under `src/` has test coverage.
-- Use `npm run lint` plus `npm run test:x-browser-posting`, and focused manual verification, unless a task provides another check.
-- After changing Shift Search report artifacts, run both `shift:report:*` commands and keep `src/generated/shift-search/*` in sync.
+- 自動テストは `scripts/x-browser-posting/*.test.mjs`（Node標準 `node:test`）のみ。`src/` 配下にテストはない。
+- 特に指定がない限り `npm run lint` と `npm run test:x-browser-posting`、加えて対象を絞った手動確認を行う。
+- Shift Search のレポート成果物を変更したら `shift:report:*` 両方を実行し、`src/generated/shift-search/*` と同期させる。
 
-## Standard Workflows
+## 標準ワークフロー
 
-- Branching: work lands on `future`, then a pull request from `future` to `main`. Never commit directly to `main`.
-- Review: after a substantial change, run a Codex review over the diff (`codex:rescue` in Claude Code), fix what it finds, and report the findings in Japanese.
-- Parallel work: when a task list has independent items, split them across subagents.
-- Post-merge cleanup of branches and worktrees: use the `sync-main-and-clean-worktrees` skill.
+- ブランチ運用: 作業は `future` に積み、`future` → `main` へPRを出す。`main` へ直接コミットしない。
+- レビュー: まとまった変更の後は Codex レビュー（Claude Codeでは `codex:rescue`）を diff に対して実行し、指摘を修正して日本語で報告する。
+- 並行作業: タスクが独立して分割できる場合はサブエージェントに振り分ける。
+- マージ後の後片付け（ブランチ・worktree）: `sync-main-and-clean-worktrees` スキルを使う。
 
-## Shared Agent Skills
+## 共有 Agent Skill
 
-- `CLAUDE.md` imports this file, so these rules apply to Codex and Claude Code. Read this section before creating, installing, updating, renaming, or deleting any skill.
-- Keep each shared skill's only editable source in `.agents/skills/<name>/`; the directory and frontmatter `name` must match. Codex discovers this path directly.
-- Expose a skill to Claude Code only through a generated reference stub at `.claude/skills/<name>/SKILL.md`: a real regular file whose frontmatter `name` and `description` match the canonical skill, and whose body only tells the agent to read `.agents/skills/<name>/SKILL.md`. Never duplicate the procedure into the stub.
-- Never publish a skill by symlink, junction, a full copy of the skill directory, `.claude/commands/`, or a Claude-only custom prompt. `core.symlinks=false` expands a symlink into a path-only regular file with no readable `SKILL.md`, and a full copy only creates drift.
-- Inside a canonical `SKILL.md`, write every reference to a script or supporting file repository-root relative (`.agents/skills/<name>/scripts/foo.sh`). A stub-invoked skill resolves its base directory to `.claude/skills/<name>/`, so skill-directory-relative paths cannot resolve.
-- Never hand-edit anything under `.claude/skills/`. Fix the canonical skill and regenerate.
-- After any skill change, run `npm run skills:sync` and `npm run skills:check`, then commit the canonical change and the regenerated stub together. `npm run lint` runs `skills:check` first.
-- Invoke a shared skill as `$<name>` in Codex and `/<name>` in Claude Code. See `docs/development-guide.md` for the full procedure, verification commands, and recovery steps.
+- `CLAUDE.md` はこのファイルを読み込むため、以下は Codex と Claude Code の両方に適用される。スキルの作成・導入・更新・改名・削除の前に必ず読むこと。
+- 正本は `.agents/skills/<name>/` のみ。ディレクトリ名と frontmatter の `name` を一致させる。Codexはこのパスを直接参照する。
+- Claude Code へは `.claude/skills/<name>/SKILL.md` の参照スタブでのみ公開する。frontmatterは正本と一致させ、本文は正本を読ませる指示のみとする。手順を複製しない。
+- symlink・junction・ディレクトリ丸ごとコピー・`.claude/commands/`・Claude専用プロンプトでの公開は禁止する。
+- 正本 `SKILL.md` 内のスクリプト・参照ファイルへのパスは必ずリポジトリルート相対で書く（例: `.agents/skills/<name>/scripts/foo.sh`）。スタブ経由ではスキルディレクトリ相対パスが解決できない。
+- `.claude/skills/` 配下は絶対に手編集しない。正本を直して再生成する。
+- スキル変更後は必ず `npm run skills:sync` → `npm run skills:check` を実行し、正本とスタブの差分を一緒にコミットする（`npm run lint` も `skills:check` を先に実行する）。
+- 呼び出しは Codexで `$<name>`、Claude Codeで `/<name>`。手順・理由・検証コマンド・復旧手順の詳細は `docs/development-guide.md` を参照。
 
-| Skill                                | Use for                                                                       |
-| ------------------------------------ | ----------------------------------------------------------------------------- |
-| `seo`                                | Meta tags, structured data, sitemap, and other search-visibility work.        |
-| `sync-docs-from-code`                | Reconcile `docs/**` and the root `README.md` with the current implementation. |
-| `sync-main-and-clean-worktrees`      | Post-merge cleanup: sync a branch, remove merged worktrees and branches.      |
-| `nazomatic-mobile-first-ux-overhaul` | Page and component redesign, mobile-first UX rework.                          |
-| `update-learnings`                   | End of a session: append new insights to `LEARNINGS.md`.                      |
-| `consolidate-learnings`              | Weekly, or at 80–100 raw observations: compact `LEARNINGS.md`.                |
+| スキル                               | 用途                                                      |
+| ------------------------------------ | --------------------------------------------------------- |
+| `seo`                                | メタタグ・構造化データ・サイトマップなど検索可視性        |
+| `sync-docs-from-code`                | `docs/**` とルート `README.md` を実装に合わせて整合       |
+| `sync-main-and-clean-worktrees`      | マージ後の後片付け（ブランチ同期・worktree/ブランチ削除） |
+| `nazomatic-mobile-first-ux-overhaul` | ページ・コンポーネントの再設計、モバイルファーストUX改修  |
+| `update-learnings`                   | セッション終了時、LEARNINGS.md への追記                   |
+| `consolidate-learnings`              | 週1回、または生の観察が80〜100件に達したときの棚卸し      |
 
-## Document Lifecycle
+## ドキュメントのライフサイクル
 
-- When changing behavior, update the relevant Japanese doc under `docs/` in the same change, and refresh `docs/README.md` if the document map changes.
-- Implementation plans and specs are temporary. Put them in `docs/ideas/`, then delete them in the same pull request that completes the implementation, folding anything durable into `docs/system-design/`.
-- When you resolve an item listed in `docs/system-design/quality/known-concerns.md`, delete that entry in the same change. Leaving a fixed item in the list is a defect.
+- 挙動を変更したら同じ変更の中で `docs/` 配下の該当文書を更新し、文書マップが変わるなら `docs/README.md` も更新する。
+- 実装計画・仕様書は一時的なもの。`docs/ideas/` に置き、実装完了と同じPRで削除し、恒久的な内容は `docs/system-design/` へ折り込む。
+- `docs/system-design/quality/known-concerns.md` の項目を解消したら、同じ変更でその項目を削除する。解消済み項目の放置は不備とみなす。
 
-## Non-Negotiable Rules
+## 作業スタイル
 
-- Preserve the existing NAZOMATIC visual system unless the user explicitly asks otherwise:
-  - base: `bg-gradient-to-b from-gray-900 to-gray-800 text-white`
-  - accent: `purple-400`
-  - dark theme first
-- Text-like inputs must be at least `16px` on mobile. Do not rely on the default `text-sm` in `src/components/ui/input.tsx` or `src/components/ui/textarea.tsx`.
-- Treat `src/lib/json/features.json` as ordered source-of-truth for the top page cards, header icon nav, sitemap URLs, and JSON-LD article indexing.
-- Keep external data fetching behind `/api/*`; do not call external services directly from client components.
-- Preserve internal API authentication behavior:
-  - BLANK25 editor routes use HTTP Basic auth in `src/middleware.ts`.
-  - Realtime/X internal APIs use `Authorization: Bearer <REALTIME_INTERNAL_API_TOKEN>` plus HMAC request signing. Always call `enforceInternalAuthorization()` from `src/server/internal-api/authorization.ts`; never re-implement it per route.
-
-## Working Style
-
-- Prefer existing components, utilities, routes, and styling patterns over new abstractions.
-- Keep diffs scoped to the request.
-- Do not introduce new dependencies, storage locations, or color systems without a clear need.
+- 新しい抽象を作るより、既存のコンポーネント・ユーティリティ・ルート・スタイルパターンを優先する。
+- 差分は依頼範囲に収める。
+- 明確な必要性なく新しい依存関係・保存先・カラーシステムを増やさない。
