@@ -1,11 +1,11 @@
-import { createHash } from "node:crypto";
+import { spawnSync } from "node:child_process";
 import {
-  cp,
   lstat,
   mkdir,
   readFile,
   readdir,
   rm,
+  writeFile,
 } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -24,53 +24,160 @@ const repositoryRoot = path.resolve(
   "..",
 );
 const sourceRoot = path.join(repositoryRoot, ".agents", "skills");
-const mirrorRoot = path.join(repositoryRoot, ".claude", "skills");
+const stubRoot = path.join(repositoryRoot, ".claude", "skills");
 
 if (
-  path.dirname(mirrorRoot) !== path.join(repositoryRoot, ".claude") ||
-  path.basename(mirrorRoot) !== "skills"
+  path.dirname(stubRoot) !== path.join(repositoryRoot, ".claude") ||
+  path.basename(stubRoot) !== "skills"
 ) {
-  throw new Error(`Refusing to use unexpected mirror path: ${mirrorRoot}`);
+  throw new Error(`Refusing to use unexpected stub path: ${stubRoot}`);
+}
+
+/**
+ * Extracts a top-level frontmatter entry verbatim, including any indented
+ * continuation lines, so quoting and multi-line scalars survive round-trips.
+ */
+function extractFrontmatterEntry(frontmatterLines, key) {
+  const startIndex = frontmatterLines.findIndex((line) =>
+    new RegExp(`^${key}:(\\s|$)`).test(line),
+  );
+
+  if (startIndex === -1) {
+    return null;
+  }
+
+  const entryLines = [frontmatterLines[startIndex]];
+
+  for (let index = startIndex + 1; index < frontmatterLines.length; index += 1) {
+    const line = frontmatterLines[index];
+    if (line.trim() !== "" && !/^\s/.test(line)) {
+      break;
+    }
+    entryLines.push(line);
+  }
+
+  while (entryLines.length > 1 && entryLines.at(-1).trim() === "") {
+    entryLines.pop();
+  }
+
+  return entryLines.join("\n");
+}
+
+/**
+ * This repository runs with core.autocrlf=true and no .gitattributes, so a
+ * fresh clone checks the stubs out as CRLF while this script writes LF.
+ * Every stub comparison therefore normalizes line endings first.
+ */
+function normalizeLineEndings(contents) {
+  return contents.replaceAll("\r\n", "\n");
+}
+
+function buildStub(skillName, nameEntry, descriptionEntry) {
+  return [
+    "---",
+    nameEntry,
+    descriptionEntry,
+    "---",
+    "",
+    `このファイルは Claude Code 用の参照スタブです（\`npm run skills:sync\` が生成）。スキルの実体は \`.agents/skills/${skillName}/SKILL.md\` です。`,
+    "実体を読み、その手順に従って実行してください。編集は実体側だけに行い、このファイルは直接編集しないでください。",
+    "",
+  ].join("\n");
 }
 
 async function readCanonicalSkills() {
-  const entries = await readdir(sourceRoot, { withFileTypes: true });
+  let entries;
+
+  try {
+    entries = await readdir(sourceRoot, { withFileTypes: true });
+  } catch (error) {
+    if (error.code === "ENOENT") {
+      throw new Error(`Canonical skill directory is missing: .agents/skills`);
+    }
+    throw error;
+  }
+
   const skills = [];
 
   for (const entry of entries.sort((a, b) => a.name.localeCompare(b.name))) {
+    if (entry.name === ".gitkeep") {
+      continue;
+    }
+
     if (!entry.isDirectory()) {
       throw new Error(
         `Canonical skill entries must be real directories: ${path.join(sourceRoot, entry.name)}`,
       );
     }
 
-    const skillFile = path.join(sourceRoot, entry.name, "SKILL.md");
-    const contents = await readFile(skillFile, "utf8");
-    const frontmatterMatch = contents.match(/^---\s*\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/);
-    const nameMatch = frontmatterMatch?.[1].match(
-      /^name:\s*["']?([^"'\r\n]+?)["']?\s*$/m,
+    const skillDirectory = path.join(sourceRoot, entry.name);
+    const skillFile = path.join(skillDirectory, "SKILL.md");
+    let contents;
+
+    try {
+      contents = await readFile(skillFile, "utf8");
+    } catch (error) {
+      if (error.code === "ENOENT") {
+        throw new Error(`Canonical skill is missing SKILL.md: ${skillFile}`);
+      }
+      throw error;
+    }
+
+    const frontmatterMatch = contents.match(
+      /^---\s*\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/,
     );
 
-    if (!nameMatch) {
+    if (!frontmatterMatch) {
+      throw new Error(`Missing frontmatter in ${skillFile}`);
+    }
+
+    const frontmatterLines = frontmatterMatch[1].split(/\r?\n/);
+    const nameEntry = extractFrontmatterEntry(frontmatterLines, "name");
+    const descriptionEntry = extractFrontmatterEntry(
+      frontmatterLines,
+      "description",
+    );
+
+    if (!nameEntry) {
       throw new Error(`Missing frontmatter name in ${skillFile}`);
     }
 
-    if (nameMatch[1] !== entry.name) {
+    if (!descriptionEntry) {
+      throw new Error(`Missing frontmatter description in ${skillFile}`);
+    }
+
+    const declaredName = nameEntry
+      .slice("name:".length)
+      .trim()
+      .replace(/^["']|["']$/g, "");
+
+    if (declaredName !== entry.name) {
       throw new Error(
-        `Skill directory and frontmatter name must match: ${entry.name} != ${nameMatch[1]}`,
+        `Skill directory and frontmatter name must match: ${entry.name} != ${declaredName}`,
       );
     }
 
-    skills.push(entry.name);
+    const supportingFiles = await collectSupportingFiles(skillDirectory);
+    assertSupportingPathsAreRepositoryRelative(
+      entry.name,
+      contents,
+      supportingFiles,
+    );
+
+    skills.push({
+      name: entry.name,
+      stub: buildStub(entry.name, nameEntry, descriptionEntry),
+    });
   }
 
   return skills;
 }
 
-async function collectFiles(root, relativePath = "") {
-  const currentPath = path.join(root, relativePath);
-  const entries = await readdir(currentPath, { withFileTypes: true });
-  const files = new Map();
+async function collectSupportingFiles(root, relativePath = "") {
+  const entries = await readdir(path.join(root, relativePath), {
+    withFileTypes: true,
+  });
+  const files = [];
 
   for (const entry of entries.sort((a, b) => a.name.localeCompare(b.name))) {
     const childRelativePath = path.join(relativePath, entry.name);
@@ -78,14 +185,13 @@ async function collectFiles(root, relativePath = "") {
     const stats = await lstat(childPath);
 
     if (stats.isSymbolicLink()) {
-      throw new Error(`Symbolic links are not portable skill contents: ${childPath}`);
+      throw new Error(
+        `Symbolic links are not portable skill contents: ${childPath}`,
+      );
     }
 
     if (stats.isDirectory()) {
-      const childFiles = await collectFiles(root, childRelativePath);
-      for (const [filePath, hash] of childFiles) {
-        files.set(filePath, hash);
-      }
+      files.push(...(await collectSupportingFiles(root, childRelativePath)));
       continue;
     }
 
@@ -93,111 +199,224 @@ async function collectFiles(root, relativePath = "") {
       throw new Error(`Unsupported skill entry: ${childPath}`);
     }
 
-    const contents = await readFile(childPath);
-    files.set(
-      childRelativePath.replaceAll(path.sep, "/"),
-      createHash("sha256").update(contents).digest("hex"),
-    );
+    const posixPath = childRelativePath.replaceAll(path.sep, "/");
+    if (posixPath !== "SKILL.md") {
+      files.push(posixPath);
+    }
   }
 
   return files;
 }
 
-function compareFileMaps(sourceFiles, mirrorFiles) {
-  const differences = [];
+/**
+ * Claude Code resolves a skill's base directory to `.claude/skills/<name>`, so a
+ * stub-invoked skill cannot resolve skill-directory-relative paths. Every
+ * reference to a supporting file must therefore be repository-root relative.
+ */
+function assertSupportingPathsAreRepositoryRelative(
+  skillName,
+  skillContents,
+  supportingFiles,
+) {
+  const expectedPrefix = `.agents/skills/${skillName}/`;
 
-  for (const [filePath, hash] of sourceFiles) {
-    if (!mirrorFiles.has(filePath)) {
-      differences.push(`missing mirror file: ${filePath}`);
-    } else if (mirrorFiles.get(filePath) !== hash) {
-      differences.push(`content differs: ${filePath}`);
+  for (const supportingFile of supportingFiles) {
+    let searchIndex = skillContents.indexOf(supportingFile);
+
+    while (searchIndex !== -1) {
+      const prefixStart = searchIndex - expectedPrefix.length;
+      const isRepositoryRelative =
+        prefixStart >= 0 &&
+        skillContents.slice(prefixStart, searchIndex) === expectedPrefix;
+
+      if (!isRepositoryRelative) {
+        throw new Error(
+          `${skillName}: reference to "${supportingFile}" must be written as "${expectedPrefix}${supportingFile}" because Claude Code resolves the skill base directory to .claude/skills/${skillName}`,
+        );
+      }
+
+      searchIndex = skillContents.indexOf(supportingFile, searchIndex + 1);
     }
   }
-
-  for (const filePath of mirrorFiles.keys()) {
-    if (!sourceFiles.has(filePath)) {
-      differences.push(`unexpected mirror file: ${filePath}`);
-    }
-  }
-
-  return differences;
 }
 
-async function checkMirror(skills) {
+async function checkStubs(skills) {
   const differences = [];
-  let mirrorEntries = [];
+  let stubEntries = [];
 
   try {
-    mirrorEntries = await readdir(mirrorRoot, { withFileTypes: true });
+    stubEntries = await readdir(stubRoot, { withFileTypes: true });
   } catch (error) {
     if (error.code === "ENOENT") {
-      return ["mirror directory is missing: .claude/skills"];
+      return ["stub directory is missing: .claude/skills"];
     }
     throw error;
   }
 
-  const expectedSkills = new Set(skills);
-  const actualSkills = new Set(mirrorEntries.map((entry) => entry.name));
+  const expectedSkills = new Set(skills.map((skill) => skill.name));
 
-  for (const skill of skills) {
-    if (!actualSkills.has(skill)) {
-      differences.push(`missing mirror skill: ${skill}`);
+  for (const { name, stub } of skills) {
+    const stubEntry = stubEntries.find((entry) => entry.name === name);
+
+    if (!stubEntry) {
+      differences.push(`missing stub skill: ${name}`);
       continue;
     }
 
-    const mirrorEntry = mirrorEntries.find((entry) => entry.name === skill);
-    if (!mirrorEntry.isDirectory()) {
-      differences.push(`mirror skill is not a real directory: ${skill}`);
+    const stubDirectory = path.join(stubRoot, name);
+    const directoryStats = await lstat(stubDirectory);
+
+    if (directoryStats.isSymbolicLink()) {
+      differences.push(
+        `${name}: stub entry is a symbolic link or junction; replace it with a real directory`,
+      );
       continue;
     }
 
-    const sourceFiles = await collectFiles(path.join(sourceRoot, skill));
-    const mirrorFiles = await collectFiles(path.join(mirrorRoot, skill));
-    differences.push(
-      ...compareFileMaps(sourceFiles, mirrorFiles).map(
-        (difference) => `${skill}: ${difference}`,
-      ),
-    );
+    if (!directoryStats.isDirectory()) {
+      differences.push(`${name}: stub entry is not a real directory`);
+      continue;
+    }
+
+    const stubFile = path.join(stubDirectory, "SKILL.md");
+    let stubStats;
+
+    try {
+      stubStats = await lstat(stubFile);
+    } catch (error) {
+      if (error.code === "ENOENT") {
+        differences.push(`${name}: stub SKILL.md is missing`);
+        continue;
+      }
+      throw error;
+    }
+
+    if (stubStats.isSymbolicLink()) {
+      differences.push(`${name}: stub SKILL.md is a symbolic link`);
+      continue;
+    }
+
+    if (!stubStats.isFile()) {
+      differences.push(`${name}: stub SKILL.md is not a regular file`);
+      continue;
+    }
+
+    const actual = await readFile(stubFile, "utf8");
+
+    if (!actual.startsWith("---")) {
+      differences.push(
+        `${name}: stub SKILL.md has no frontmatter; it may be a path-only file left behind by a symbolic link`,
+      );
+      continue;
+    }
+
+    if (normalizeLineEndings(actual) !== stub) {
+      differences.push(
+        `${name}: stub SKILL.md does not match the canonical frontmatter`,
+      );
+    }
+
+    const extraEntries = (
+      await readdir(stubDirectory, { withFileTypes: true })
+    ).filter((entry) => entry.name !== "SKILL.md");
+
+    for (const extraEntry of extraEntries) {
+      differences.push(
+        `${name}: unexpected stub entry: ${extraEntry.name}; supporting files belong to .agents/skills/${name}/ only`,
+      );
+    }
   }
 
-  for (const entry of mirrorEntries) {
+  for (const entry of stubEntries) {
+    if (entry.name === ".gitkeep") {
+      continue;
+    }
     if (!expectedSkills.has(entry.name)) {
-      differences.push(`unexpected mirror skill: ${entry.name}`);
+      differences.push(`unexpected stub skill: ${entry.name}`);
     }
   }
 
   return differences;
 }
 
-async function syncMirror(skills) {
-  await mkdir(mirrorRoot, { recursive: true });
-  const existingEntries = await readdir(mirrorRoot, { withFileTypes: true });
+/**
+ * A stub written over a former symbolic link keeps Git mode 120000, which stays
+ * invisible while core.symlinks=false but breaks on any checkout that restores
+ * symbolic links.
+ */
+function checkGitModes() {
+  const result = spawnSync(
+    "git",
+    ["ls-files", "-s", "--", ".claude/skills/", ".claude/commands/"],
+    { cwd: repositoryRoot, encoding: "utf8" },
+  );
 
-  for (const entry of existingEntries) {
-    await rm(path.join(mirrorRoot, entry.name), {
-      recursive: true,
-      force: true,
-    });
+  if (result.error || result.status !== 0) {
+    return [];
   }
 
-  for (const skill of skills) {
-    await cp(path.join(sourceRoot, skill), path.join(mirrorRoot, skill), {
-      recursive: true,
-      force: true,
-    });
+  return result.stdout
+    .split(/\r?\n/)
+    .filter((line) => line.startsWith("120000 "))
+    .map(
+      (line) =>
+        `Git index still records a symbolic link (mode 120000): ${line.split("\t").at(-1)}; re-add it with \`git rm --cached <path>\` then \`git add <path>\``,
+    );
+}
+
+async function syncStubs(skills) {
+  await mkdir(stubRoot, { recursive: true });
+  const expectedSkills = new Set(skills.map((skill) => skill.name));
+  const existingEntries = await readdir(stubRoot, { withFileTypes: true });
+
+  for (const entry of existingEntries) {
+    if (entry.name === ".gitkeep" || expectedSkills.has(entry.name)) {
+      continue;
+    }
+    await rm(path.join(stubRoot, entry.name), { recursive: true, force: true });
+  }
+
+  for (const { name, stub } of skills) {
+    const stubDirectory = path.join(stubRoot, name);
+    const stubFile = path.join(stubDirectory, "SKILL.md");
+
+    const directoryStats = await lstat(stubDirectory).catch(() => null);
+    if (directoryStats && !directoryStats.isDirectory()) {
+      await rm(stubDirectory, { recursive: true, force: true });
+    }
+
+    await mkdir(stubDirectory, { recursive: true });
+
+    // Supporting files live in the canonical skill only; drop mirror leftovers.
+    for (const entry of await readdir(stubDirectory, { withFileTypes: true })) {
+      if (entry.name !== "SKILL.md") {
+        await rm(path.join(stubDirectory, entry.name), {
+          recursive: true,
+          force: true,
+        });
+      }
+    }
+
+    // Leave a matching stub untouched so a CRLF checkout stays byte-stable.
+    const current = await readFile(stubFile, "utf8").catch(() => null);
+    if (current !== null && normalizeLineEndings(current) === stub) {
+      continue;
+    }
+
+    await writeFile(stubFile, stub, "utf8");
   }
 }
 
 const skills = await readCanonicalSkills();
 
 if (!checkOnly) {
-  await syncMirror(skills);
+  await syncStubs(skills);
 }
 
-const differences = await checkMirror(skills);
+const differences = [...(await checkStubs(skills)), ...checkGitModes()];
 
 if (differences.length > 0) {
-  console.error("Agent Skill mirror is out of sync:");
+  console.error("Claude Code Agent Skill stubs are out of sync:");
   for (const difference of differences) {
     console.error(`- ${difference}`);
   }
@@ -205,6 +424,6 @@ if (differences.length > 0) {
   process.exitCode = 1;
 } else {
   console.log(
-    `${checkOnly ? "Verified" : "Synchronized"} ${skills.length} Agent Skill(s): ${skills.join(", ")}`,
+    `${checkOnly ? "Verified" : "Synchronized"} ${skills.length} Agent Skill stub(s): ${skills.map((skill) => skill.name).join(", ")}`,
   );
 }

@@ -1,7 +1,0 @@
-interface:
-  display_name: "Nazomatic Frontend Design"
-  short_description: "Nazomatic向けのUI改善を設計から実装まで進める"
-  default_prompt: "Use $nazomatic-mobile-first-ux-overhaul to redesign and implement the target Nazomatic screen with one clear archetype and one signature interaction, while preserving the existing dark-gradient + purple visual system, keeping mobile text inputs at 16px or larger, and moving long help copy into progressive disclosure such as tooltip or help UI."
-
-policy:
-  allow_implicit_invocation: true
