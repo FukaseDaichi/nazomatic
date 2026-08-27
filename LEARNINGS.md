@@ -14,6 +14,7 @@
 - 2026-08-24: 共有 Agent Skill は `npm run skills:check` で frontmatter・ディレクトリ名・Claude Code 用参照スタブの一致を一括検証でき、PyYAML がない環境でも検証できる。
 - 2026-08-24: `~/.claude/projects/<slug>/*.jsonl` からユーザーの実発話だけを抜くには、`type=="last-prompt"` と `type=="queue-operation"`(operation=="enqueue") を併用して重複排除する。`type=="user"` だけだと task-notification やスキル本文が大量に混ざり、`last-prompt` だけだと取りこぼす。
 - 2026-08-24: アシスタント発話に「かな（U+3040–U+30FF）が1文字も含まれない」件数を数えると、日本語プロジェクトでの英語応答率を定量化できる。体感の指摘より説得力があり、ルール追加の根拠にできる。
+- 2026-08-27: cleanup dry-run は fetch 後に `origin/future` が進んでも、`future` と `origin/main` の ancestry blocker が残る場合は execute を行わず、remote-tracking ref の更新だけで終了する。
 
 ## Mistakes to Avoid
 （失敗と再発防止策）
