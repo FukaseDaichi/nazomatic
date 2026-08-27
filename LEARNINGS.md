@@ -32,6 +32,8 @@
 - 2026-08-28: `firebase-admin` 13.6.0→14.3.0 のメジャー更新で fast-xml-parser/websocket-driver/protobufjs の critical 3件を含む脆弱性を一括解消できた（src/server/firebase/admin.ts のAPI利用はcert/getApp/getApps/initializeApp/getFirestoreのみで破壊的変更の影響なし）。ただし配下の `@google-cloud/storage@7.22.0` は独自にgaxios@6.7.1/uuid@9.0.1系を抱えており、firebase-admin側が追従するまで moderate 脆弱性が残る（overridesでの強制上書きはstorage動作互換のリスクがあるため見送り）。
 - 2026-08-28: picomatch の high脆弱性（ReDoS）は `tailwindcss@3.4.19`（→chokidar→micromatch）と `eslint-config-next@14.2.35`（→tinyglobby）の孫依存で、両者とも現行メジャー内では最新版のため単独では直せない。Next.js 14→15/16のメジャー移行と合わせてでないと解消しない。
 
+- 2026-08-28: nazomatic の X 計測には「成熟」を名乗る窓が2つある。テレメトリ回収窓は `growthTelemetry.mjs` の `METRIC_MATURITY_MIN_MS`（20時間〜8日）、改善提案ゲートは proposal schema の `maturityHours=24`。ドキュメント同期時に混同しやすく、実際に development-guide が回収窓を「約24時間」と誤記していた。
+
 ## Open Questions
 （未解決・要調査）
 

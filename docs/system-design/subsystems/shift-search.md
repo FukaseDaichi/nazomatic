@@ -34,7 +34,7 @@ flowchart LR
 
 | 種別 | パス |
 |---|---|
-| 元 Markdown | `artifacts/shift-search/reports/{jp|en}` |
+| 元 Markdown | `artifacts/shift-search/reports/{jp|en}`（`scripts/batch-shift-search-report.mjs` が辞書全探索から生成） |
 | 元 manifest / index | `artifacts/shift-search/reports/shift-search-report-*` |
 | 外部 URL 定義 | `artifacts/shift-search/reports/shift-search-external-links.json` |
 | 表示 manifest | `src/generated/shift-search/view-manifest.json` |
