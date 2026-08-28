@@ -7,7 +7,7 @@ X 投稿には、互いに独立した 2 方式があります。
 | 方式 | 実行場所 | 認証 | 用途 |
 |---|---|---|---|
 | X API Repost | Next.js Route Handler | OAuth 1.0a credential | 既存 Post の通常 Repost |
-| ブラウザ投稿 | ローカル PC | ログイン済み Chrome profile | コメント付き個別投稿、週末サマリ、トレンドネタ |
+| ブラウザ投稿 | ローカル PC | ログイン済み Chrome profile | コメント付き個別投稿、週末サマリ、トレンドネタ、週次観測ログ、ゆる出題 |
 
 ブラウザ投稿は X の password、2FA、Cookie をアプリ環境変数に保存しません。ログイン、CAPTCHA、追加認証、account 切り替えは自動化せず、検出時は停止します。
 
@@ -43,6 +43,7 @@ flowchart LR
 | `xComposerPage.mjs` | Playwright page 操作 |
 | `selectors.mjs` | X UI selector の集中管理 |
 | `runLog.mjs` | automation 別の log と世代管理 |
+| `browserSession.mjs` | CDP / Playwright の投稿 session、Chrome 起動、rate state、共通 guard |
 | `postLedger.mjs` | 投稿成功後の共通台帳と投稿 URL / 実験 metadata の保存 |
 
 CLI は既定 dry-run で、実投稿には `--execute` が必要です。既定 confirmation mode は `interactive` です。自動確認は `X_BROWSER_POST_CONFIRMATION_MODE=auto` と `X_BROWSER_POST_AUTO_EXECUTE_ALLOWED=true` の両方が必要です。
@@ -90,6 +91,24 @@ rate limit は `xBrowserPostingAccounts/{accountHandle}` を正とします。
 
 一言は `ai_self_deprecation`、`ticket_transfer_aruaru`、`event_title_commentary` のいずれかです。100 文字未満で、改行、URL、hashtag、mention、確認不能な断定を許可しません。
 
+## 週次観測ログ
+
+`npm run x:browser-post:observation-log` は、`POST /api/internal/x/browser-post/observation-log/prepare` で `Asia/Tokyo` の実行日を基準に、過去7日と向こう7日の `realtimeEvents` を `eventTime` で数えます。Firestore では `#` あり・なしの hashtag variant、表示可能性、`postId` または document id による重複排除を使い、各窓の query は最大300件です。タイトル sample は向こう7日のイベントから頻度順に最大3件を取り、改行、hashtag、mention、URL、emoji を除去し、空白整理と長さ制限を通します。
+
+本文は件数、タイトル sample、8種類の観測コメント（両窓0件の場合は固定の静かなコメント）、calendar URL で構成します。コメントは100文字未満の1行で、URL、hashtag、mention、emoji、在庫・安全性を断定する表現を拒否します。最終本文も承認済み calendar URL を1件だけ許可し、X の重み付け280以内をローカルで再検証します。Firestore のイベントや投稿状態は更新しません。
+
+画像は `imagePrompt` を built-in imagegen に渡し、`local/x-browser-posting/observation-log-media/<runDate>/` へ保存します。Codex CLI の終了、`SAVED:` 出力、work directory 外への path、開始前のファイル、PNG/JPEG の magic bytes、最小サイズを検証し、失敗時は警告付きで本文だけを投稿候補にします。dry-run は画像生成と composer 入力まで行えますが、投稿・状態・台帳は更新しません。
+
+実投稿は `--execute`、確認なしの automation は既存の auto 二重 lock を必要とします。`local/x-browser-posting/observation-log-state.json` は account、対象 run date、投稿 URL、`lastAttempt` を atomic write し、同一 run dateまたは直近6日以内の投稿を止めます。実行中は `locks/observation-log.lock` を作り、投稿成功後に `post-ledger.json` へ `postType: observation_log` と件数・画像有無を保存します。prepare API、CLI、状態ファイル、実行ログの異常は fail-closed で停止し、画像の失敗だけは本文投稿を妨げません。
+
+## ゆる出題
+
+`npm run x:browser-post:casual-puzzle` は `public/dic/buta.dic` から、ひらがな46文字のアルファベットだけで構成された4〜6文字の語を候補にします。出題時に1〜3文字のシフトをランダムに選び、表示語と答えを一意に保持します。辞書語は無監修のため、答えと表示語の両方へ denylist を適用し、危険語が1件でも出たら投稿を止め、denylist 更新後に再開します。CLI の標準出力には、dry-runを含め表示語、答え、シフトを必ず出します。
+
+自動実行は日曜20:00に問題を投稿し、月曜20:00に前回の問題から20時間以上経過した答えを投稿します。pending が7日を超えた場合は古い問題を破棄して投稿せず、答え投稿では新しい問題を生成しません。問題文にはURLを含めず、答え文には承認済み Shift Search URLを1件だけ含めます。本文は mention、hashtag、emoji、三連改行、X の重み付け280超を拒否します。
+
+`local/x-browser-posting/casual-puzzle-state.json` は pending の答え、表示語、シフト、出題日時、投稿 URL、`lastAttempt` を atomic write します。実投稿は `locks/casual-puzzle.lock`、rate limit、account照合、blocking state、投稿前確認を通し、成功後に `post-ledger.json` へ `postType: casual_puzzle` と phase・表示語・シフトを保存します。状態破損、回答のない強制回答、UI変更、ログイン不一致は停止し、`--force-local-duplicate` は X上の確認後だけ使います。
+
 ## トレンドネタ投稿
 
 `npm run x:browser-post:trend-joke` は Firestore を使わず、prepare API が Yahoo!リアルタイム検索を最大 3 query、各 20 Post の既定 budget で実行します。raw Post は保存せず、イベント名 sample、頻出語、hashtag 文脈、fingerprint をメモリ上で作ります。
@@ -109,13 +128,15 @@ provider 出力は validator と直近履歴 guard を通し、失敗時は fall
 
 投稿型は `monologue`、`question`、`one_liner`、`poll`、`tool_intro` の順でローテーションします。質問と投票は疑問文、一言あるあるは改行なし、投票は2〜4個の重複しない選択肢を必須にします。ツール紹介は `src/lib/json/features.json` から対象を選び、NAZOMATIC URL 1件（`src/app/config.ts` の `baseURL` を基準に組み立てる）と `public/img/og-image.png` を使います。直近3回のツール紹介で使った path は候補が残る限り避け、provider が利用できない場合は複数のローカル文型から履歴 guard を通るものを選びます。
 
+自動ローテーションで `tool_intro` を選ぶ場合、直近7日以内に同型が投稿済みなら次の型へ進みます。`--archetype tool_intro` または `X_BROWSER_POST_TREND_JOKE_ARCHETYPE=tool_intro` による明示指定はこの週1回上限を bypass します。
+
 validator は自然な hashtag を最大1個だけ許可し、mention、emoji、禁止断定語、不正な改行、X 重み付け 280 超を拒否します。URL はツール紹介の指定 URL 1件だけ許可します。「AIなので行けない」「予定表」は直近5件で各2件、「通知欄」は直近5件で1件を上限とし、provider と fallback の両方へ適用します。provider 生成文を auto 投稿する場合は、共通の auto lock に加えて `X_BROWSER_POST_TREND_JOKE_PROVIDER_AUTO_APPROVE=true` が必要です。
 
 画像は X composer の file input、投票は X のネイティブ投票 UI を使います。画像と投票は同じ投稿に併用しません。X の UI selector が変わって添付を検証できない場合は投稿せず停止します。
 
 ## 投稿人格
 
-週末サマリとトレンドネタは、NAZOMATIC 内の「観測担当」という文案上の人格を共有します。
+週末サマリ、トレンドネタ、週次観測ログ、ゆる出題は、NAZOMATIC 内の「観測担当」という文案上の人格を共有します。
 
 - 謎解きイベントを画面越しに観測する AI。現地へ行けない設定は使えるが、毎回の主題にはしない。
 - 独り言に近い口調で、メンヘラ気味の自虐を核にする。
@@ -127,7 +148,7 @@ validator は自然な hashtag を最大1個だけ許可し、mention、emoji、
 
 ## 投稿実行への計測相乗り
 
-`X_BROWSER_POST_CAPTURE_TELEMETRY=true`（既定）のとき、3種類のブラウザ投稿は投稿成功後に、そのログイン済み CDP セッションのまま計測を行います。目的はフォロワー数という主要指標を安定して残すことです。投稿が止まっても成熟窓を取りこぼさないよう、`npm run x:growth-maintain` が同じ計測を投稿なしで日次実行できます。
+`X_BROWSER_POST_CAPTURE_TELEMETRY=true`（既定）のとき、5種類のブラウザ投稿は投稿成功後に、そのログイン済み CDP セッションのまま計測を行います。目的はフォロワー数という主要指標を安定して残すことです。投稿が止まっても成熟窓を取りこぼさないよう、`npm run x:growth-maintain` が同じ計測を投稿なしで日次実行できます。
 
 - プロフィールを開いてフォロワー数・累計投稿数を読み、`follower-snapshots.json` へ JST の日付単位で追記します。値が取れなかった項目は同日の既存値を維持し、null で上書きしません。
 - 投稿から20時間〜8日の範囲で、まだ数値を取得していない過去投稿を最大 `X_BROWSER_POST_METRICS_MAX_PER_RUN`（既定8）件だけ開き、表示数・返信・リポスト・いいねを `post-ledger.json` の該当エントリへ `metrics` として書き戻します。成熟窓の終了が近い古い投稿から優先し、取得済みは `metrics.mature` で二度取得しません。
@@ -155,9 +176,16 @@ validator は自然な hashtag を最大1個だけ許可し、mention、emoji、
 | `local/x-browser-posting/weekend-summary-state.json` | 週末サマリ重複防止 |
 | `local/x-browser-posting/trend-joke-state.json` | トレンド実行枠重複防止 |
 | `local/x-browser-posting/trend-joke-history.json` | 直近 30 投稿の類似判定 |
-| `local/x-browser-posting/post-ledger.json` | 3種類の投稿 URL、本文、実験 metadata、後追い取得の `metrics` |
+| `local/x-browser-posting/observation-log-state.json` | 週次観測ログの run date、投稿 URL、投稿前試行状態 |
+| `local/x-browser-posting/observation-log-media/` | 週次観測ログの imagegen 成果物 |
+| `local/x-browser-posting/casual-puzzle-state.json` | ゆる出題の pending 問題、答え、投稿 URL、投稿前試行状態 |
+| `local/x-browser-posting/post-ledger.json` | 5種類の投稿 URL、本文、実験 metadata、後追い取得の `metrics` |
 | `local/x-browser-posting/follower-snapshots.json` | JST 日付ごとのフォロワー・累計投稿数 snapshot |
 | `local/x-browser-posting/locks/x-growth-improve.lock` | 改善 PR 作成の多重実行防止 |
+| `local/x-browser-posting/locks/observation-log.lock` | 週次観測ログの多重実行防止 |
+| `local/x-browser-posting/locks/casual-puzzle.lock` | ゆる出題の多重実行防止 |
+| `logs/x-browser-post-observation-log/` | 週次観測ログの実行ログ |
+| `logs/x-browser-post-casual-puzzle/` | ゆる出題の実行ログ |
 | `logs/x-browser-post*` | automation 別の実行 log |
 | `logs/x-growth-improve` | 週次改善PR作成の実行 log |
 | `logs/x-growth-maintain` | 成長計測メンテナンスの実行 log |

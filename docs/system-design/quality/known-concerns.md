@@ -39,3 +39,7 @@ Yahoo!リアルタイム検索と X syndication endpoint は外部 response の�
 - `@react-spring/three`、`@use-gesture/react`: 直接 import はありませんが、使用中の `@react-three/drei` の直接依存です。どちらにせよ install されるため、top-level 記載は必須ではなく冗長です。
 - `shadcn-ui`: CLI のみで import しません。`components.json` があるため component 追加用と推測できますが、`dependencies` ではなく `devDependencies` が適切です。upstream では package 名が `shadcn` に変わっています。
 - `@shadcn/ui`: 上記 CLI の旧 package で、`devDependencies` に残っています。初期 install の残存とみられます。
+
+### local rate state の日次キーが UTC 日付
+
+`local/x-browser-posting/rate-state.json` の日次キーは UTC 日付で管理され、投稿 CLI の Asia/Tokyo 運用日と最大9時間ずれる。現行の投稿数は1日10件未満で hard limit 30件に近くないため影響は小さいが、日次上限を増やす前に JST 基準へ統一する。
