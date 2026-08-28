@@ -25,6 +25,7 @@
 - 2026-08-28: X運用の実態把握は `post-ledger.json` を node ワンライナーで postType×archetype 別に成熟 metrics 集計（中央値・エンゲージ合計・週別推移）すると、ドキュメントだけでは見えない実像（301件中エンゲージあり17件、表示中央値約20で横ばい）が数分で定量化できる。
 - 2026-08-28: 曜日で状態が切り替わるX投稿は、pendingを先に判定し、未成熟ならskip・期限切れなら破棄・新規出題は日曜だけに限定すると、日曜の失敗後に月曜の新規出題で状態が反転する事故を防げる。
 - 2026-08-28: 実装計画（docs/ideas のプランmd）も diff と同様に Codex レビューへかける価値が高い。計画内コード断片の CLI フラグ実在確認（`--full-auto` 廃止）、コピー元 session の export 有無、文案の重み付け文字数超過、無監修辞書の不適切語まで、実装前に19件の妥当な指摘が得られた。指摘は鵜呑みにせず主要なもの（CLIフラグ等）を自分で再現確認してから反映する。
+- 2026-08-28: Codex automation の `memory.md` は実行ごとの全文追記でログの複製になりやすい。変更前を退避し、`Current State` / `Active Issues` / `Recent Runs` / `References` へ再構成したうえで、保存プロンプト側に保持件数・KiB上限・正本を明記すると、現状と未解決事項を保ったまま継続的に抑制できる（今回は7件合計324,378 bytesを7,225 bytesへ圧縮）。
 
 ## Mistakes to Avoid
 （失敗と再発防止策）
@@ -49,7 +50,7 @@
 - 2026-08-28: X の公開ランキングコード解説によると、ブラウザ経由の非API自動投稿は規約上アカウント永久凍結対象で、自動化アカウントには Automated ラベル＋運用者アカウント紐付けの義務がある。nazomatic のブラウザ投稿は常時この存続リスクを抱える（2026-08-28 時点の調査、出典: help.x.com の automation / automated-account-labels）。
 
 - 2026-08-28: Codex画像生成をスクリプトから使う契約は `codex exec --sandbox workspace-write --skip-git-repo-check --ephemeral -C <dir> -- "Use the imagegen skill..."`。**現行 Codex CLI は `--full-auto` を受け付けない**（`unexpected argument` で失敗。codex-image プラグイン 0.2.0 はまだ旧フラグに依存しており、そのままコピーすると動かない）。`SAVED: <絶対パス>` 行は skill 出力任せにせず instruction 側で明示要求し、パース後に workDir 配下 realpath・生成時刻・PNG/JPEGマジックバイトを検証してから使う。
-- 2026-08-28: `~/.codex/automations/<id>/automation.toml` は素朴なTOML（id/name/prompt/status/rrule/model/execution_environment/target/cwds）で、rrule 編集による頻度変更は直接編集で可能。ただし status の停止値の enum は未検証（既存は全て "ACTIVE"）。
+- 2026-08-28: `~/.codex/automations/<id>/automation.toml` は id/name/prompt/status/rrule/model/execution_environment/target/cwds 等を持ち、status は `ACTIVE` / `PAUSED` を確認済み。設定変更は直接編集ではなく Codex app の automation update 経由で全フィールドを保持して更新すると、`updated_at` とアプリ側状態も同期される。
 - 2026-08-28: `public/dic/buta.dic`（豚辞書・約20万語）は無監修で、「しにたい」「せいこうい」「ろりこん」等が文字数・かなフィルタを素通りする。辞書語を自動投稿に使う機能は denylist（部分一致、出力の answer/display 両方に適用）と、実行報告への語の必須表示をセットで入れる。
 - 2026-08-28: X ブラウザ投稿 CLI の state 堅牢性は雛形によって差がある。週末サマリ CLI は fail-open（JSON 破損→`{}` 扱い・直接 writeFile）、トレンド CLI は fail-closed（execute 時に破損停止）+ 一時ファイル→rename の atomic 書き込み。新 CLI を雛形コピーで作るときは state まわりだけトレンド CLI 側のパターンを移植する。
 
