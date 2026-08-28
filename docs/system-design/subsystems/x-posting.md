@@ -45,6 +45,7 @@ flowchart LR
 | `runLog.mjs` | automation 別の log と世代管理 |
 | `browserSession.mjs` | CDP / Playwright の投稿 session、Chrome 起動、rate state、共通 guard |
 | `postLedger.mjs` | 投稿成功後の共通台帳と投稿 URL / 実験 metadata の保存 |
+| `growthTelemetry.mjs` | 投稿成功後の相乗り計測。`profileMetrics.mjs` と `followerSnapshots.mjs` を使う |
 
 CLI は既定 dry-run で、実投稿には `--execute` が必要です。既定 confirmation mode は `interactive` です。自動確認は `X_BROWSER_POST_CONFIRMATION_MODE=auto` と `X_BROWSER_POST_AUTO_EXECUTE_ALLOWED=true` の両方が必要です。
 

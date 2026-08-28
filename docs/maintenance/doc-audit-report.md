@@ -1,24 +1,51 @@
-# ドキュメント同期レポート（2026-08-28）
+# ドキュメント同期レポート（2026-08-28 第2回）
 
-前回（2026-08-17）以降のコード変更は、Agent Skill 共有の参照スタブ方式への移行、依存パッケージ更新（firebase-admin 14 系など）、X 成長実験の自動 keep 化が中心で、いずれも既存ドキュメントへ反映済みだった。今回の全数照合で確認できた不一致は軽微な2点（テレメトリ回収窓の時間表記、Shift Search 元レポート生成スクリプトの未記載）のみで、`docs/README.md` と `docs/system-design/README.md` の索引は変更不要だった。
+前回（同日・第1回）以降のコード変更は、週次観測ログ CLI と prepare API の追加、ゆる出題 CLI の追加、X 投稿の状態分離、X 運用再配分の反映、および `AGENTS.md` の日本語化が中心。運用文書（`x-posting.md`、`x-browser-post-schedules.md`、`jobs-and-generated-assets.md`）は追加機能に追従済みだったが、ルート表・開発ガイド側に取りこぼしが4件あった。`docs/README.md` と `docs/system-design/README.md` の索引は文書の増減がないため変更不要。
+
+環境変数（`X_BROWSER_POST*` / `X_GROWTH*` 48件）はコードとドキュメントで完全一致、docs 内の相対 Markdown リンクとバッククォート付きパス参照も全件解決を確認した。
 
 ## 1. 自動修正したもの
 
-- `docs/development-guide.md:ローカルブラウザ投稿`: 投稿後テレメトリの回収窓「投稿から約24時間〜8日」→「投稿から20時間〜8日」。コードの正本は `scripts/x-browser-posting/growthTelemetry.mjs` の `METRIC_MATURITY_MIN_MS = 20 * 60 * 60 * 1000` で、`x-posting.md` と `x-browser-post-schedules.md` は既に20時間表記だった。
-- `docs/development-guide.md:Shift Search レポート更新`: 手順1に、元 Markdown レポート本体を `node scripts/batch-shift-search-report.mjs` で生成できること（npm script 未登録）を追記。
-- `docs/system-design/subsystems/shift-search.md:レポート配信`: 元 Markdown の行に生成元スクリプト `scripts/batch-shift-search-report.mjs` を追記。
+- `docs/system-design/architecture/routes-and-apis.md:Realtime / X 内部 API`: `POST /api/internal/x/browser-post/observation-log/prepare` の行が欠落していた（実装は `src/app/api/internal/x/browser-post/observation-log/prepare/route.ts`）。→ 表へ追加。
+- `docs/development-guide.md:ドキュメント更新方針`: 「`AGENTS.md` は例外的に**英語**の短いエージェント向け実行ルールとして管理します」→ `AGENTS.md` は d59089d で日本語化済みのため「日本語の短いエージェント向け実行ルールとして管理し、詳細な手順はこの文書と `docs/system-design/` に置きます」へ修正。
+- `docs/development-guide.md:Codex / Claude Code 共有 Agent Skill`: 参照先の節名 `AGENTS.md` の "Shared Agent Skills" → 現行の「共有 Agent Skill」へ修正。
+- `docs/development-guide.md:コマンド表`: `npm run test:x-browser-posting` の内訳に、新規追加された `casualPuzzle.test.mjs`（ゆる出題の語選定と denylist）と `observationLogImage.test.mjs`（観測ログ画像の検証）を追記。実ファイルは9件。
+- `docs/system-design/subsystems/x-posting.md:ブラウザ投稿の共通構成`: 共通部品表に `growthTelemetry.mjs` を追加。5種類の投稿 CLI と `x-growth-maintain.mjs` の計6ファイルが import しており、`profileMetrics.mjs` / `followerSnapshots.mjs` を内部で使う共通部品であるにもかかわらず表に無かった。
+- `docs/ideas/x-growth-backlog.md` の実装状況照合と蒸留（3節を個別に判定）:
+  - 「投稿頻度を増やす実験は原則行わない」は方針として既にコードで強制済みのため、`docs/system-design/subsystems/x-growth-improve-agent.md:PR 作成の安全境界` へ折り込み、backlog から削除した。根拠は `scripts/x-growth/experimentAllowlist.mjs` の `DENY_PATH_PATTERNS`（`config.mjs` / `.env*` / `.github/` / `middleware.ts` / `package(-lock).json`）と `LEGACY_FORBIDDEN_TOKENS`（`max_daily` / `min_cooldown` / `--execute` / `confirmation_mode` / `auto_execute`）、および投稿時刻の正本がリポジトリ外の Codex automation にあること。
+  - 「投稿時間帯の実験」は計測側のみ実装済み（`x-weekly-growth-review.mjs:402` の「時間帯別（JST）」表、`metricCandidates.mjs` の `jstHourBucket` filter）。枠の時刻をずらす操作は未実施のため backlog に残し、実装済み部分と未着手部分を区別する記述へ更新した。
+  - 「リプライ観測」は未実装（会話ページ本文・相手 handle・reply URL の読み取りも、週次レビューの未返信候補出力も存在しない）。件数のみ `profileMetrics.mjs` が取得している旨を追記して backlog に残した。
 
 ## 2. 判断に迷った点
 
-- `docs/system-design/subsystems/x-growth-improve-agent.md` の「24時間以上8日以内の投稿の metrics 成熟率」は修正しなかった。改善提案ゲートは `maturityHours=24`（`xGrowthProposalSchema` 系）が正本で、テレメトリ回収窓の20時間とは別の定数。表記は正しいが、同じ「成熟」という語で2つの窓が存在するため、今回のような誤記が再発しやすい（→ システム問題点3参照）。
-- `scripts/batch-shift-search-report.mjs` を文書化するか迷った。npm script 未登録の単発生成ツールだが、`artifacts/shift-search/reports/{jp|en}` の Markdown がどこから来るかの説明が欠けていたため、参照1行だけを2文書へ追加し、CLI 引数（`--dictionary` / `--out-dir`）の詳細仕様までは書かないことにした。
+- `docs/ideas/x-growth-backlog.md` を丸ごと削除するか迷った。AGENTS.md のドキュメントライフサイクルは「実装完了と同じ PR で `ideas/` を削除」と定めるが、3節のうち完了しているのは方針1件のみで、リプライ観測は完全に未着手、時間帯実験は計測側だけの半分実装だった。完了分だけを system-design へ折り込み、残り2節は着手条件を明確化したうえで `ideas/` に残す判断をした。
+
+- 観測ログ CLI の `--line` / `--run-date` フラグを開発ガイドへ書くか迷った。ドキュメントは `--no-image` だけを例示しているが、これは誤りではなく非網羅であり、他 CLI もフラグを全列挙していない（週末サマリの `--copy-pattern` / `--line` は例示済み）。列挙方針を変えると差分が依頼範囲を超えるため、今回は追記せず据え置いた。
+- `docs/system-design/subsystems/x-growth-improve-agent.md:運用上の注意` の「`x:growth-review` と `x:growth-improve -- --execute` は週次で実行する」は修正しなかった。同文書の上部で `x:growth-improve` が 2026-08-28 から PAUSED であることを明記しているため矛盾ではないが、注意書きだけを読むと稼働中に見える。停止が恒久化する場合は書き換え候補。
+- ゆる出題の投稿 URL（`scripts/x-browser-post-casual-puzzle.mjs` の `PUZZLE_TOOL_URL`）は `https://nazomatic.vercel.app` 直書きで、週末サマリ・トレンドネタが使う `src/app/config.ts` の `baseURL` 経由ではない。ドキュメントは「承認済み Shift Search URL」としか書いておらず誤りではないため文書は変更せず、コード側の非一貫として下記へ回した。
 
 ## 3. システム問題点
 
-- `docs/system-design/quality/known-concerns.md` の全項目は現状も有効。`view-manifest.json` の `unresolvedExternalCount` は4のまま、`@react-spring/three` / `@use-gesture/react` / `shadcn-ui`（dependencies）/ `@shadcn/ui`（devDependencies）も `package.json` に残存していることを確認した。
-- 依存更新（2026-08-28、firebase-admin 13→14）後も、picomatch 系の high 脆弱性（tailwindcss / eslint-config-next の孫依存）と `@google-cloud/storage` 配下の moderate 脆弱性は現行メジャー内で解消不能。Next.js 14→15/16 移行と絡む話題であり、恒久化するなら known-concerns への追記候補（今回はコードから確認できる設計上の弱点ではなく依存供給側の問題のため見送り）。
-- metrics の「成熟」に2定数がある（テレメトリ回収窓 20h〜8日、提案ゲート `maturityHours=24`）。ドキュメント誤記の温床になっており、実際に development-guide が24時間と誤記していた。コード側でどちらかに寄せるか、定数名で区別を明確にする余地がある。
+- **`.agents/skills/sync-docs-from-code/SKILL.md` の指示が自己矛盾している。** スコープに "Keep root `AGENTS.md` in English and unchanged" とあるが、`AGENTS.md` は d59089d で日本語化済み。次にこのスキルを実行する担当が英語化を「修正」と誤認しかねない。正本 `.agents/skills/sync-docs-from-code/SKILL.md` の当該行を「`AGENTS.md` は編集しない（言語は問わない）」相当へ直し、`npm run skills:sync` → `npm run skills:check` を回すのが適切。今回はスキルのスコープ外（編集対象は `docs/**` と `README.md` のみ）のため未修正。
+- **ゆる出題の投稿 URL だけが base URL を直書き。** 週末サマリ・トレンドネタ・観測ログは `src/app/config.ts` の `baseURL` から組み立てるのに対し、`scripts/x-browser-post-casual-puzzle.mjs` の `PUZZLE_TOOL_URL` は production URL をリテラルで持つ。`NEXT_PUBLIC_BASE_URL` を変えても追従せず、投稿系の URL 構築ルールが1か所だけ分岐している。
+- **`docs/system-design/quality/known-concerns.md` の全項目は現状も有効**（コードで再確認済み）。
+  - BLANK25 の `force: true` 更新は `src/server/blank25/github.ts:262` に現存。
+  - `src/` 側のテストは0件、テストは `scripts/x-browser-posting/*.test.mjs` の9件のみ。
+  - `src/generated/shift-search/view-manifest.json` の `delivery` は `{internal:17, external:4, unresolvedExternal:4}` で、external 4件（`jp-3`〜`jp-6`）は `externalUrl` / `internalDataFile` とも `null`。
+  - `@react-spring/three`、`@use-gesture/react`、`shadcn-ui`（dependencies）、`@shadcn/ui`（devDependencies）は `src/` / `scripts/` から直接 import されず `package.json` に残存。
+  - `scripts/x-browser-posting/browserSession.mjs:115,128` の日次キーは `toISOString().slice(0,10)` で UTC 日付のまま。
+- **「成熟」を名乗る窓が依然2つある**（テレメトリ回収窓 `METRIC_MATURITY_MIN_MS=20時間`〜8日 / 提案ゲート `maturityHours=24`）。前回レポートでも指摘した誤記の温床で、コード側の定数名で区別を明示する余地が残る。
+- **依存の脆弱性は現行メジャー内で解消不能な状態が継続**（picomatch 系 high は `tailwindcss` / `eslint-config-next` の孫依存、`@google-cloud/storage` 配下の moderate）。Next.js 14→15/16 移行とセットの話題で、コードから読み取れる設計上の弱点ではないため known-concerns への追記は今回も見送り。
 
 ## 4. AGENTS.md 推奨修正
 
-- 指摘なし。コマンド一覧は `package.json` の scripts と、共有スキル表は `.agents/skills/`（6件）と一致しており、参照先ドキュメントのパスもすべて実在する。
+- 指摘なし。コマンド表は `package.json` の scripts と、共有スキル表は `.agents/skills/`（6件）と一致し、参照先ドキュメントのパスもすべて実在する。日本語化後の分量も短く保たれている。
+
+## 推奨コマンド（本レポートでは未実行）
+
+今回の変更は `docs/**` のみでコード・スキル正本に触れていないため、追加検証は不要。上記「システム問題点」の1点目（SKILL.md の英語前提の記述）を修正する場合のみ、次を実行する。
+
+```bash
+npm run skills:sync
+npm run skills:check
+```

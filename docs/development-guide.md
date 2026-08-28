@@ -31,7 +31,7 @@ npm run dev
 | `npm run x:growth-review` | 直近7日の X 運用を集計し、必要に応じて GitHub Issue を作る CLI |
 | `npm run x:growth-improve` | 週次レビューから改善実験を1件提案し、`--execute` 時だけドラフト PR を作る CLI |
 | `npm run x:growth-maintain` | 投稿せず follower / metrics を回収し、実験の production activation と72時間後の自動 keep を照合する CLI |
-| `npm run test:x-browser-posting` | `scripts/x-browser-posting/*.test.mjs` 全件の回帰テスト（X 文案 validator、proposal schema、patch 適用、review markdown、依存 bootstrap、成長メンテナンス） |
+| `npm run test:x-browser-posting` | `scripts/x-browser-posting/*.test.mjs` 全件の回帰テスト（X 文案 validator、ゆる出題の語選定と denylist、観測ログ画像の検証、proposal schema、patch 適用、review markdown、依存 bootstrap、成長メンテナンス） |
 | `npm run shift:report:meta` | Shift Search レポート元成果物から manifest / index を生成 |
 | `npm run shift:report:view-assets` | Shift Search レポート表示用 JSON を `src/generated/shift-search` に生成 |
 
@@ -50,7 +50,7 @@ Claude Code へは、`.claude/skills/<name>/SKILL.md` を**参照スタブ**と�
 
 Claude Code はディレクトリ名からコマンド名を決めるため、`.claude/skills/<name>/` に置けば `/<name>` で呼び出せます。スタブは `npm run skills:sync` が生成するので、手書きしません。
 
-`CLAUDE.md` は `@AGENTS.md` を読み込み、`AGENTS.md` の "Shared Agent Skills" がこの節を参照します。したがって Codex と Claude Code のどちらでスキルを作成・インストール・更新しても同じ手順が適用されます。
+`CLAUDE.md` は `@AGENTS.md` を読み込み、`AGENTS.md` の「共有 Agent Skill」がこの節を参照します。したがって Codex と Claude Code のどちらでスキルを作成・インストール・更新しても同じ手順が適用されます。
 
 ### 参照スタブを採用する理由
 
@@ -357,7 +357,7 @@ Shift Search のレポートは、元成果物と Next.js 表示用 assets が�
 ## ドキュメント更新方針
 
 - ドキュメントは日本語で書きます。
-- `AGENTS.md` は例外的に英語の短いエージェント向け実行ルールとして管理します。
+- `AGENTS.md` は日本語の短いエージェント向け実行ルールとして管理し、詳細な手順はこの文書と `docs/system-design/` に置きます。
 - 実装と矛盾した場合は、ソースコードを正としてドキュメントを修正します。
 - サブシステムの詳細は `docs/system-design/subsystems/` に集約します。
 - 新しい設計書を追加した場合は `docs/README.md` も更新します。

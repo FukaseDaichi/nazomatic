@@ -19,6 +19,12 @@ const POST_LIMITS = JSON.parse(
 export const DEFAULT_ENV_FILE = ".env.x-browser-posting.local";
 export const DEFAULT_HASHTAG = "#謎チケ売ります";
 export const DEFAULT_API_BASE_URL = "http://localhost:3000";
+// 投稿本文へ載せる公開サイトの base URL。
+// 週末サマリ・トレンドネタ・観測ログの URL は prepare API を持つ Next.js server が
+// src/app/config.ts の baseURL から組み立てるため、API を持たないローカル CLI は
+// 同じ host（apiBaseUrl と同じ解決順）を公開 URL とみなします。
+// 既定は src/app/config.ts と同じ production URL で、localhost へは落としません。
+export const DEFAULT_PUBLIC_BASE_URL = "https://nazomatic.vercel.app";
 export const DEFAULT_COOLDOWN_MINUTES = 120;
 export const DEFAULT_DAILY_LIMIT = 6;
 export const DEFAULT_MAX_PER_RUN = 1;
@@ -118,6 +124,15 @@ export function loadBrowserPostConfig(argv, cwd = process.cwd()) {
       DEFAULT_API_BASE_URL
     )
   );
+  const publicBaseUrl = stripTrailingSlash(
+    firstNonEmpty(
+      args.baseUrl,
+      env.X_BROWSER_POST_API_BASE_URL,
+      env.REALTIME_API_BASE_URL,
+      env.NEXT_PUBLIC_BASE_URL,
+      DEFAULT_PUBLIC_BASE_URL
+    )
+  );
   const internalToken = firstNonEmpty(
     args.token,
     env.X_BROWSER_POST_INTERNAL_TOKEN,
@@ -150,6 +165,7 @@ export function loadBrowserPostConfig(argv, cwd = process.cwd()) {
     storageState: storageState ? path.resolve(cwd, storageState) : "",
     userDataDir: userDataDir ? path.resolve(cwd, userDataDir) : "",
     apiBaseUrl,
+    publicBaseUrl,
     internalToken,
     internalSigningSecret,
     cooldownMinutes,

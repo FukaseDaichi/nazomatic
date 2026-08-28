@@ -15,7 +15,7 @@ This skill is project-local and specific to the NAZOMATIC repository.
 
 - Edit only `docs/**`, root `README.md`, and the report file `docs/maintenance/doc-audit-report.md`.
 - Read `src/`, config files, scripts, generated assets, and artifacts as sources of truth. Never write to `src/`.
-- Never edit `AGENTS.md`; report proposed changes under "AGENTS.md 推奨修正".
+- Never edit `AGENTS.md`; report proposed changes under "AGENTS.md 推奨修正". It is written in Japanese, like the rest of the documentation.
 - Do not run `npm run` commands automatically. If a command should be run, record it as a recommendation in the report.
 - Do not perform an independent code audit. Record only system problems noticed while reconciling docs.
 - Do not preserve temporary skill-design docs as durable project documentation once the project-local skill exists.
@@ -48,7 +48,7 @@ If docs disagree with these rules, fix the docs. If code appears to violate them
 3. Fix documentation to match code:
    - Correct stale specs, APIs, routes, commands, environment variables, data boundaries, generated assets, SEO, and authentication notes.
    - Sync `docs/README.md`: add new docs, remove deleted docs, fix broken links, and correct mismatched descriptions.
-   - Keep docs in Japanese. Keep root `AGENTS.md` in English and unchanged.
+   - Keep docs in Japanese. Leave root `AGENTS.md` unchanged.
    - Use Diataxis as a sorting lens: keep Reference facts and Explanation rationale from blurring together; do not invent Tutorials.
 4. Accumulate report items while working.
 5. Overwrite `docs/maintenance/doc-audit-report.md` with the current run. Create `docs/maintenance/` if it does not exist.
