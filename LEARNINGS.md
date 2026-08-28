@@ -28,6 +28,8 @@
 - 2026-08-28: Codex automation の `memory.md` は実行ごとの全文追記でログの複製になりやすい。変更前を退避し、`Current State` / `Active Issues` / `Recent Runs` / `References` へ再構成したうえで、保存プロンプト側に保持件数・KiB上限・正本を明記すると、現状と未解決事項を保ったまま継続的に抑制できる（今回は7件合計324,378 bytesを7,225 bytesへ圧縮）。
 - 2026-08-28: docs と実装の照合は、目視より機械的な差分が速くて確実。環境変数は `grep -rhoE 'X_(BROWSER_POST|GROWTH)[A-Z_0-9]*' scripts src | sort -u` と docs 側の同抽出を `comm` で突き合わせ（48件完全一致を確認）、Markdown の相対リンクとバッククォート付きパスは python で実在チェックすると、「差分なし」を推測でなく確証として報告できる。
 - 2026-08-28: `docs/ideas/` の蒸留可否は文書単位ではなく節単位で判定する。今回の x-growth-backlog は3節中、方針1節だけがコードで強制済み（`experimentAllowlist.mjs` の DENY_PATH_PATTERNS / LEGACY_FORBIDDEN_TOKENS）で完了、1節は計測だけ実装済みの半分実装、1節は完全未着手だった。「実装完了なら削除」を文書単位で適用すると未着手の案まで消える。
+- 2026-08-29: X の会話ページからリプライ候補を読むときは、元投稿より後ろの全 `article` を候補化せず、`cellInnerDiv` を順に走査して「おすすめ」「Discover more」等の境界で止め、広告も除外すると会話外投稿の混入を抑えられる。
+- 2026-08-29: 週次レビュー Issue は後続の改善 Codex 入力にもなるため、第三者リプライ本文は Git 管理外の local state だけに保存し、公開 Issue には正規化済み URL と15文字以内の handle だけを出すと、プライバシーと間接 prompt injection の両方を避けられる。
 
 ## Mistakes to Avoid
 （失敗と再発防止策）

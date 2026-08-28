@@ -2,7 +2,10 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { buildReviewMarkdown } from "../x-growth-improve.mjs";
-import { buildReport } from "../x-weekly-growth-review.mjs";
+import {
+  buildReport,
+  collectMetricsFromLoggedInChrome,
+} from "../x-weekly-growth-review.mjs";
 
 function buildReview(comments) {
   return {
@@ -89,4 +92,119 @@ test("weekly review omits the experiment outcome report", () => {
 
   assert.ok(!report.body.includes("## 実験の勝敗"));
   assert.ok(!report.body.includes("x-growth:keep"));
+});
+
+test("weekly review lists reply candidates without copying user text and isolates trend hours", () => {
+  const trendPost = {
+    postType: "trend_joke",
+    postedAt: "2026-08-17T03:00:00.000Z",
+    postedPostURL: "https://x.com/nazomaticapp/status/1",
+    metadata: { archetype: "question" },
+  };
+  const report = buildReport({
+    accountHandle: "nazomaticapp",
+    now: new Date("2026-08-17T04:00:00.000Z"),
+    since: new Date("2026-08-10T04:00:00.000Z"),
+    week: { key: "2026-W34" },
+    recentPosts: [trendPost],
+    profileStats: { followers: null, posts: null, error: null },
+    previousSnapshot: null,
+    postMetrics: [
+      { post: trendPost, views: 10, replies: 1, reposts: 0, likes: 0 },
+      {
+        post: {
+          postType: "weekend_summary",
+          postedAt: "2026-08-17T04:00:00.000Z",
+        },
+        views: 999,
+        replies: 0,
+        reposts: 0,
+        likes: 0,
+      },
+    ],
+    logStats: { success: 0, failed: 0, noCandidate: 0, files: 0 },
+    replyObservation: {
+      capturedAt: "2026-08-17T04:00:00.000Z",
+      postsChecked: 1,
+      candidates: [
+        {
+          authorHandle: "alice",
+          textExcerpt: "この本文は公開Issueへ入れない",
+          replyURL: "https://x.com/alice/status/2",
+        },
+      ],
+    },
+  });
+
+  assert.match(report.body, /画面上で未返信に見えるリプライ候補/);
+  assert.match(report.body, /\[候補1\]\(https:\/\/x\.com\/alice\/status\/2\)（@alice）/);
+  assert.ok(!report.body.includes("この本文は公開Issueへ入れない"));
+  assert.match(report.body, /\| 12時台 \| 1 \| 10 \| 1 \|/);
+  assert.ok(!report.body.includes("| 13時台 |"));
+});
+
+test("weekly review keeps collected metrics when reply observation fails", async () => {
+  let closed = false;
+  const page = {
+    async readProfileStats() {
+      return { followers: 27, posts: 676 };
+    },
+    async verifyLoggedInAccount() {
+      return "nazomaticapp";
+    },
+    async readPostMetrics() {
+      return { views: 10, replies: 0, reposts: 0, likes: 0 };
+    },
+    async readConversationReplies() {
+      throw new Error("conversation DOM changed");
+    },
+    async close() {
+      closed = true;
+    },
+  };
+  const post = {
+    postType: "trend_joke",
+    postedAt: "2026-08-17T03:00:00.000Z",
+    postedPostURL: "https://x.com/nazomaticapp/status/1",
+  };
+  const result = await collectMetricsFromLoggedInChrome({
+    accountHandle: "nazomaticapp",
+    posts: [post],
+    replyPosts: [post],
+    cdpUrl: "http://example.invalid",
+    openPage: async () => page,
+  });
+
+  assert.deepEqual(result.profileStats, { followers: 27, posts: 676 });
+  assert.equal(result.postMetrics.length, 1);
+  assert.equal(result.replyObservation, null);
+  assert.equal(result.replyObservationError, "X会話ページの観測を完了できませんでした");
+  assert.equal(closed, true);
+});
+
+test("weekly review stops browser observation but returns a reportable result on blocking", async () => {
+  let closed = false;
+  const page = {
+    async readProfileStats() {
+      throw new Error("X blocking state detected");
+    },
+    async close() {
+      closed = true;
+    },
+  };
+  const result = await collectMetricsFromLoggedInChrome({
+    accountHandle: "nazomaticapp",
+    posts: [],
+    replyPosts: [],
+    cdpUrl: "http://example.invalid",
+    openPage: async () => page,
+  });
+
+  assert.equal(result.profileStats, null);
+  assert.deepEqual(result.postMetrics, []);
+  assert.equal(
+    result.replyObservationError,
+    "ログイン・account・blocking状態を確認できませんでした"
+  );
+  assert.equal(closed, true);
 });

@@ -11,6 +11,8 @@ X 投稿には、互いに独立した 2 方式があります。
 
 ブラウザ投稿は X の password、2FA、Cookie をアプリ環境変数に保存しません。ログイン、CAPTCHA、追加認証、account 切り替えは自動化せず、検出時は停止します。
 
+X の Automation Rules は、X API を使わずWebサイトをスクリプト操作する自動化にアカウント停止リスクがあることと、トレンド話題の自動投稿を許可しないことを明記しています（2026-08-29 再確認: [X's automation development rules](https://help.x.com/en/rules-and-policies/x-automation?lang=browser)）。現行ブラウザ投稿と下記のリプライ観測はこの運用リスクを解消しません。投稿・観測とも対象数を制限し、blocking state を回避せず停止します。
+
 ## X API Repost
 
 `POST /api/internal/x/repost/events` は、直近 24 時間の表示可能な `realtimeEvents` から、指定 hashtag を持ち `lastReviewedAt == null` の候補を選び、X API v2 の repost endpoint を呼びます。成功時は `lastReviewedAt` を更新します。候補なしは 204 です。
@@ -160,7 +162,9 @@ validator は自然な hashtag を最大1個だけ許可し、mention、emoji、
 
 `npm run x:growth-review` は直近7日の共通投稿台帳、ローカル実行 log、フォロワー snapshot を集計して Markdown を出力します。投稿別の公開数値は、まず投稿実行時に相乗りで取得して台帳に残った `metrics` を使い、未取得の投稿だけを追加で確認します。ログイン済み Chrome が CDP で利用可能ならプロフィールと未取得投稿の公開数値を読み、利用できなければ公開 HTML を best effort で使います。取得不能は0として扱いません。フォロワーの前週比は、日次で追記された snapshot のうち5日以上前の最新値と比較します。
 
-レポートは件数集計に加えて、投稿型・JST 時間帯・添付実験（画像 / 投票 / テキストのみ）ごとの表示数中央値と反応中央値を表で比較します。tool_intro の URL には UTM（`utm_campaign=trend_joke_tool_intro`）を付け、投稿からサイト流入を後から突き合わせられるようにします。
+同じログイン済み CDP session で、直近投稿のうち返信数が記録済みの投稿を優先して最大5件の会話ページを開きます。会話timeline上でおすすめ等の境界より前に見える他者リプライについて、相手 handle、160文字以内の本文抜粋、reply URL、取得時刻を最大10件まで読み、当方 account の後続返信が画面上に見える候補を除外します。結果は `local/x-browser-posting/reply-observations.json` へ atomic write し、週次レビューには候補リンクと handle だけを出します。第三者の本文は公開 GitHub Issue や改善エージェント入力へ転載しません。X の thread 折りたたみ、削除、非公開、表示順により完全な返信判定はできないため、レポート上も「画面上で未返信に見える候補」として扱います。返信・いいね・フォローは実行しません。login、account 不一致、blocking、CAPTCHA、会話DOM変更の検出時はX画面の観測だけを停止し、前回成功した snapshot を上書きしません。公開HTML fallbackと週次レポート作成は継続します。
+
+レポートは件数集計に加えて、投稿型・添付実験（画像 / 投票 / テキストのみ）と、トレンド投稿だけを対象にしたJST時間帯ごとの表示数中央値・反応中央値を表で比較します。tool_intro の URL には UTM（`utm_campaign=trend_joke_tool_intro`）を付け、投稿からサイト流入を後から突き合わせられるようにします。
 
 `--create-issue` を付けると GitHub CLI で週次 Issue を作成します。同じ ISO week・account の title が既にあれば Issue を増やさずコメントを追加します。レビューは改善候補を最大4件提示しますが、コードや schedule は自動変更しません。
 
@@ -182,6 +186,7 @@ validator は自然な hashtag を最大1個だけ許可し、mention、emoji、
 | `local/x-browser-posting/casual-puzzle-state.json` | ゆる出題の pending 問題、答え、投稿 URL、投稿前試行状態 |
 | `local/x-browser-posting/post-ledger.json` | 5種類の投稿 URL、本文、実験 metadata、後追い取得の `metrics` |
 | `local/x-browser-posting/follower-snapshots.json` | JST 日付ごとのフォロワー・累計投稿数 snapshot |
+| `local/x-browser-posting/reply-observations.json` | 週次に画面上で未返信と判定した他者リプライの handle、本文抜粋、URL、取得時刻 |
 | `local/x-browser-posting/locks/x-growth-improve.lock` | 改善 PR 作成の多重実行防止 |
 | `local/x-browser-posting/locks/observation-log.lock` | 週次観測ログの多重実行防止 |
 | `local/x-browser-posting/locks/casual-puzzle.lock` | ゆる出題の多重実行防止 |
