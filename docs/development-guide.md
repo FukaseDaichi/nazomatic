@@ -176,6 +176,7 @@ GitHub Actions では `REALTIME_API_TOKEN` secret として同じ値を渡しま
 | `X_BROWSER_POST_ACCOUNT_HANDLE` | 投稿を許可する X handle。ログイン中アカウント照合に使う |
 | `X_BROWSER_POST_HASHTAG` | 個別イベント引用投稿の対象 hashtag。未設定時は `#謎チケ売ります` |
 | `X_BROWSER_POST_API_BASE_URL` | ローカル CLI が呼び出す API origin。未設定時は `REALTIME_API_BASE_URL`、`NEXT_PUBLIC_BASE_URL`、`http://localhost:3000` の順に使う |
+| （公開 URL の解決） | 投稿本文へ載せる公開サイト URL も同じ順に解決する。ただし未設定時の既定は `http://localhost:3000` ではなく `src/app/config.ts` と同じ production URL |
 | `X_BROWSER_POST_INTERNAL_TOKEN` | ローカル CLI が内部 API に送る Bearer token。未設定時は `REALTIME_INTERNAL_API_TOKEN` または `REALTIME_API_TOKEN` を使う |
 | `X_BROWSER_POST_STORAGE_STATE` | Playwright storage state path |
 | `X_BROWSER_POST_USER_DATA_DIR` | Playwright persistent context の user data dir |

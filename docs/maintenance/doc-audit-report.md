@@ -26,8 +26,8 @@
 
 ## 3. システム問題点
 
-- **`.agents/skills/sync-docs-from-code/SKILL.md` の指示が自己矛盾している。** スコープに "Keep root `AGENTS.md` in English and unchanged" とあるが、`AGENTS.md` は d59089d で日本語化済み。次にこのスキルを実行する担当が英語化を「修正」と誤認しかねない。正本 `.agents/skills/sync-docs-from-code/SKILL.md` の当該行を「`AGENTS.md` は編集しない（言語は問わない）」相当へ直し、`npm run skills:sync` → `npm run skills:check` を回すのが適切。今回はスキルのスコープ外（編集対象は `docs/**` と `README.md` のみ）のため未修正。
-- **ゆる出題の投稿 URL だけが base URL を直書き。** 週末サマリ・トレンドネタ・観測ログは `src/app/config.ts` の `baseURL` から組み立てるのに対し、`scripts/x-browser-post-casual-puzzle.mjs` の `PUZZLE_TOOL_URL` は production URL をリテラルで持つ。`NEXT_PUBLIC_BASE_URL` を変えても追従せず、投稿系の URL 構築ルールが1か所だけ分岐している。
+> 本レポート初版で挙げた2件（SKILL.md の英語前提の記述、ゆる出題 URL の直書き）は、同じ作業でオーナー指示により解消済み。経緯は末尾「本レポート後に実施した修正」を参照。
+
 - **`docs/system-design/quality/known-concerns.md` の全項目は現状も有効**（コードで再確認済み）。
   - BLANK25 の `force: true` 更新は `src/server/blank25/github.ts:262` に現存。
   - `src/` 側のテストは0件、テストは `scripts/x-browser-posting/*.test.mjs` の9件のみ。
@@ -41,11 +41,12 @@
 
 - 指摘なし。コマンド表は `package.json` の scripts と、共有スキル表は `.agents/skills/`（6件）と一致し、参照先ドキュメントのパスもすべて実在する。日本語化後の分量も短く保たれている。
 
-## 推奨コマンド（本レポートでは未実行）
+## 本レポート後に実施した修正（オーナー指示・スキルのスコープ外）
 
-今回の変更は `docs/**` のみでコード・スキル正本に触れていないため、追加検証は不要。上記「システム問題点」の1点目（SKILL.md の英語前提の記述）を修正する場合のみ、次を実行する。
+同期作業の後、オーナー指示で次の2件をコード・スキル正本側で修正した。いずれもこのスキルの編集スコープ外だったため、指示を受けてから実施している。
 
-```bash
-npm run skills:sync
-npm run skills:check
-```
+1. `.agents/skills/sync-docs-from-code/SKILL.md`: "Keep root `AGENTS.md` in English and unchanged" → "Leave root `AGENTS.md` unchanged" とし、Scope 側にも `AGENTS.md` が日本語である旨を明記。`npm run skills:sync` → `npm run skills:check` を実行し、スタブ6件の一致を確認した。
+2. ゆる出題の投稿 URL を `baseURL` 経由へ変更。`scripts/x-browser-posting/config.mjs` に `publicBaseUrl` を追加し、`scripts/x-browser-post-casual-puzzle.mjs` の `PUZZLE_TOOL_URL` リテラルを `buildPuzzleToolUrl(config)` へ置き換えた。解決順は `--base-url` → `X_BROWSER_POST_API_BASE_URL` → `REALTIME_API_BASE_URL` → `NEXT_PUBLIC_BASE_URL` → production URL。
+   - 当初は `src/app/config.ts` と同じく `NEXT_PUBLIC_BASE_URL` を最優先にしたが、ローカルの `.env.local` が `NEXT_PUBLIC_BASE_URL=http://localhost:3000`（dev サーバー用）を持つため、投稿 URL が localhost になる回帰を実測で検出し、解決順を API host 優先へ変更した。ほかの3種の URL は prepare API を持つ server が組み立てるため、API を持たないこの CLI は同じ host を公開 URL とみなすのが実装上の等価物になる。
+   - 現行ローカル設定（`X_BROWSER_POST_API_BASE_URL=https://nazomatic.vercel.app`）で変更前と同一の URL になることを実行して確認済み。`npm run lint` と `npm run test:x-browser-posting`（74件）も通過。
+   - 残る注意点: `X_BROWSER_POST_API_BASE_URL` を設定せず `.env.local` の localhost だけがある環境では、投稿 URL も localhost になる。ほかの3種も localhost の prepare API を使えば同じ結果になるため挙動としては一貫しているが、`--execute` を localhost 構成で使わない前提は変わらない。
