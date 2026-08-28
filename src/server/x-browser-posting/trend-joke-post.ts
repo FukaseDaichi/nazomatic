@@ -178,7 +178,7 @@ export async function prepareTrendJokePost(
     sampleTicketTitles,
     frequentTitleWords,
   });
-  const archetype = "poll" as TrendJokeArchetype;
+  const archetype = pickArchetype(normalized);
   const tool =
     archetype === "tool_intro" ? pickTool(normalized.excludedToolPaths) : null;
   const trendSummary = buildTrendSummary({
@@ -419,6 +419,12 @@ function normalizeArchetype(value: string | null | undefined): TrendJokeArchetyp
     return normalized as TrendJokeArchetype;
   }
   throw new BrowserPostConfigError("archetype is invalid");
+}
+
+// 投稿型は CLI 側の5型ローテーションが正本。自動改善実験による固定・上書きは
+// 禁止（2026-08-28 オーナー判断: 投票のみが連投され単調化したため）。
+function pickArchetype(params: NormalizedParams): TrendJokeArchetype {
+  return params.archetype;
 }
 
 function normalizeTimezone(value: string | null | undefined) {

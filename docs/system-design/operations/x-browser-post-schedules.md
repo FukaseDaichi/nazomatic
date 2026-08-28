@@ -61,7 +61,7 @@
 - X の login、account 不一致、rate limit、UI 変更、CAPTCHA、2FA を検出した場合は回避せず停止する。
 - 投稿成功後は `local/x-browser-posting/post-ledger.json` に投稿種別、本文、投稿 URL、実験 metadata を記録する。
 - `X_BROWSER_POST_CAPTURE_TELEMETRY=true`（既定）なら、投稿成功後に同じセッションでフォロワー数を `follower-snapshots.json` へ日次追記し、20時間〜8日の過去投稿の公開数値を最大 `X_BROWSER_POST_METRICS_MAX_PER_RUN`（既定8）件だけ台帳へ書き戻す。計測はベストエフォートで投稿処理を止めない。
-- 週次改善エージェントは主要な仮説を1件・targetKeyを1件・編集ファイルを1件に限定し、同一ファイル内では最大6件の局所 patch を許可する。投稿生成戦略の複数行変更、最上位フロー内の安全なデータ受け渡し、archetypeの既定選択は可能だが、allowlist 外、import、環境変数、外部 I/O、認証、validator本体、fingerprint、上限付き正規化、投稿実行 guard、rate limit、timeout、`--execute` 系への変更は Node 側が自動で拒否する。変更量上限と保護宣言・重要callのAST比較を通し、適用後に tsc、lint、X投稿回帰テスト、production build が通らなければ変更を破棄して PR を作らない。各検証にはtimeoutを設ける。PR はドラフトで作成し、GitHub Actions が同じ検証を再実行する。CI 成功後、`x-growth-experiment` label と最新 commit を確認できた PR だけを ready にして自動マージする。
+- 週次改善エージェントは主要な仮説を1件・targetKeyを1件・編集ファイルを1件に限定し、同一ファイル内では最大6件の局所 patch を許可する。投稿生成戦略の複数行変更、最上位フロー内の安全なデータ受け渡しは可能だが、archetype の既定選択（CLI の5型ローテーションを正本とする `pickArchetype`）、allowlist 外、import、環境変数、外部 I/O、認証、validator本体、fingerprint、上限付き正規化、投稿実行 guard、rate limit、timeout、`--execute` 系への変更は Node 側が自動で拒否する。変更量上限と保護宣言・重要callのAST比較を通し、適用後に tsc、lint、X投稿回帰テスト、production build が通らなければ変更を破棄して PR を作らない。各検証にはtimeoutを設ける。PR はドラフトで作成し、GitHub Actions が同じ検証を再実行する。CI 成功後、`x-growth-experiment` label と最新 commit を確認できた PR だけを ready にして自動マージする。
 
 ## Git cleanup
 

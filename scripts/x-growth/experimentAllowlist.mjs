@@ -13,7 +13,7 @@ export const EXPERIMENT_ALLOWLIST = [
     path: "src/server/x-browser-posting/trend-joke-post.ts",
     kind: "ts-patch",
     targetKeys: ["trend-joke:*"],
-    note: "投稿生成戦略、fallback、prompt、候補選択ロジック（最大6箇所。保護された運用・安全境界は変更不可）",
+    note: "投稿生成戦略、fallback、prompt、候補選択ロジック（最大6箇所。保護された運用・安全境界は変更不可。投稿型 archetype はCLIの5型ローテーションが正本であり、特定の型への固定・既定選択の変更は禁止）",
   },
 ];
 
@@ -52,6 +52,7 @@ const PROTECTED_TS_FUNCTIONS = new Set([
   "validatePollOptions",
   "normalizeExcludedToolPaths",
   "normalizeArchetype",
+  "pickArchetype",
   "normalizeTimezone",
   "normalizeRunDate",
   "formatZonedDate",
@@ -74,6 +75,7 @@ const PROTECTED_TS_FUNCTIONS = new Set([
 
 const PROTECTED_TS_CALLS = new Set([
   "normalizeParams",
+  "pickArchetype",
   "normalizeTimezone",
   "normalizeRunDate",
   "normalizeRunSlot",
