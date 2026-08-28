@@ -2,7 +2,7 @@
 
 ## 位置づけ
 
-この文書は、Codex のローカル automation で動かす X 投稿・週次レビュー・改善 PR・成長計測と、マージ後 Git cleanup の運用台帳です。2026-08-12 に `~/.codex/automations/*/automation.toml`、ローカル実行設定、対応する `scripts/` と照合しています。
+この文書は、Codex のローカル automation で動かす X 投稿・週次レビュー・改善 PR・成長計測と、マージ後 Git cleanup の運用台帳です。2026-08-28 に `~/.codex/automations/*/automation.toml`、ローカル実行設定、対応する `scripts/` と照合しています。
 
 正確な有効・無効状態、時刻、model、通知設定は Codex automation 側を正とし、CLI の挙動は `scripts/` と `src/server/x-browser-posting/` を正とします。登録や実装を変更した場合は、この台帳も同時に更新します。
 
@@ -12,17 +12,19 @@
 |---|---|---|---|---|---|
 | `nazomatic-x` | NAZOMATIC X 投稿 | ACTIVE | 3時間間隔（実行分は00分） | `npm run x:browser-post -- --execute` | 個別イベントのコメント付き投稿 |
 | `nazomatic-x-2` | NAZOMATIC X トレンドジョーク投稿 | ACTIVE | 毎日 09:30 / 15:30 / 21:30 | `npm run x:browser-post:trend-joke -- --execute --copy-provider codex` | 会話の入口となる短文・質問・投票・ツール紹介 |
-| `nazomatic` | NAZOMATIC 週末謎チケサマリ投稿 | ACTIVE | 毎日 18:30 | `npm run x:browser-post:weekend-summary -- --execute` | 対象週末の土日別件数サマリ |
+| `nazomatic` | NAZOMATIC 週末謎チケサマリ投稿 | ACTIVE | 毎週 木・土 18:30 | `npm run x:browser-post:weekend-summary -- --execute` | 対象週末の土日別件数サマリ |
 | `nazomatic-x-3` | NAZOMATIC X 週次改善レビュー | ACTIVE | 毎週月曜 11:30 | `npm run x:growth-review -- --create-issue` | 直近7日を集計し GitHub Issue を作成または追記 |
-| `nazomatic-x-pr` | NAZOMATIC X 週次改善PR作成 | ACTIVE | 毎週月曜 12:30 | `npm run x:growth-improve -- --execute` | 当週レビューから実験を1件選びドラフト PR を作成 |
+| `nazomatic-x-pr` | NAZOMATIC X 週次改善PR作成 | PAUSED（2026-08-28 一時停止。改善ループの目的変数見直しまで） | 毎週月曜 12:30 | `npm run x:growth-improve -- --execute` | 当週レビューから実験を1件選びドラフト PR を作成 |
 | `nazomatic-x-4` | NAZOMATIC X 成長計測メンテナンス | ACTIVE | 毎日 04:30 | `npm run x:growth-maintain` | 投稿せず follower / metrics を回収し、実験 activation と72時間後の自動 keep を照合 |
+| `nazomatic-x-5` | NAZOMATIC X 週次観測ログ投稿 | ACTIVE | 毎週金曜 18:30 | `npm run x:browser-post:observation-log -- --execute` | 過去7日と向こう7日の謎チケ件数を観測ログとして投稿 |
+| `nazomatic-x-6` | NAZOMATIC X ゆる出題投稿 | ACTIVE | 毎週日・月 20:00 | `npm run x:browser-post:casual-puzzle -- --execute` | 日曜に出題し、月曜に前回の答えを投稿 |
 | `nazomatic-git-cleanup` | NAZOMATIC Git cleanup | ACTIVE | 毎日 02:30 | `sync-and-clean.sh` dry-run → `--execute` | `future` / ローカル `main` 同期とマージ済み worktree・branch 整理 |
 
-`nazomatic-x` の RRULE は `FREQ=HOURLY;INTERVAL=3;BYMINUTE=0;BYSECOND=0` で、特定の `BYHOUR` を持ちません。そのため台帳では固定の時刻列を推測せず、「3時間間隔（実行分は00分）」と記載します。全7件が `TZID=Asia/Tokyo` を明示しています。
+`nazomatic-x` の RRULE は `FREQ=HOURLY;INTERVAL=3;BYMINUTE=0;BYSECOND=0` で、特定の `BYHOUR` を持ちません。そのため台帳では固定の時刻列を推測せず、「3時間間隔（実行分は00分）」と記載します。全9件が `TZID=Asia/Tokyo` を明示しています。
 
 ## 登録済みの実行設定
 
-全7件とも `execution_environment=local` で、同じローカル project を対象にします。`nazomatic-x-pr` だけは専用 automation checkout、ほかの6件はこのリポジトリを実行ディレクトリにします。
+全9件とも `execution_environment=local` で、同じローカル project を対象にします。`nazomatic-x-pr` だけは専用 automation checkout、ほかの8件はこのリポジトリを実行ディレクトリにします。
 
 | Automation ID | Model | Reasoning effort | 通知 |
 |---|---|---|---|
@@ -32,6 +34,8 @@
 | `nazomatic-x-3` | `gpt-5.6-luna` | `max` | Codex automation の既定 |
 | `nazomatic-x-pr` | `gpt-5.6-luna` | `max` | Codex automation の既定 |
 | `nazomatic-x-4` | `gpt-5.6-luna` | `low` | 失敗時のみ通知 |
+| `nazomatic-x-5` | `gpt-5.6-luna` | `low` | Codex automation の既定 |
+| `nazomatic-x-6` | `gpt-5.6-luna` | `low` | Codex automation の既定 |
 | `nazomatic-git-cleanup` | `gpt-5.6-luna` | `low` | 失敗時のみ通知 |
 
 ## 現行ローカル実行設定
@@ -79,15 +83,19 @@
 4. 投票 (`poll`)
 5. ツール紹介 (`tool_intro`)
 
+自動ローテーションで `tool_intro` を選ぶ場合、直近7日間に `tool_intro` が投稿済みならスキップし、次の型（独り言）へ進みます（週1回上限）。`--archetype tool_intro` または `X_BROWSER_POST_TREND_JOKE_ARCHETYPE=tool_intro` による明示指定はこの上限の対象外です。
+
 「AIなので行けない」「予定表」は直近5件で各2件まで、「通知欄」は直近5件で1件までです。上限へ達したモチーフは provider prompt に禁止対象として渡し、fallback 選択時も除外します。
 
 自然な hashtag は最大1個、mention と emoji は禁止です。質問型と投票型は疑問文を必須にします。投票型は2〜4選択肢のネイティブ投票、ツール紹介型は `features.json` にある公開ツール URL と既定のブランド画像を実験対象にします。URL はツール紹介で指定された NAZOMATIC URL 1件だけ許可します。
 
 ## 週末サマリ
 
-内容と毎日18:30の頻度は変更しません。`Asia/Tokyo` の実行日から対象週末を決め、`#謎チケ売ります` の表示可能イベントを土日別に集計します。土日合計0件は既定で投稿せず、同日・同対象週末への再投稿は `local/x-browser-posting/weekend-summary-state.json` で停止します。
+内容は変更しない。起動は木・土曜 18:30 の週2回（2026-08-28 に毎日から削減）。木曜はその週末、土曜は次の週末を対象にする（CLI の対象週末決定ルールは従来どおり）。`Asia/Tokyo` の実行日から対象週末を決め、`#謎チケ売ります` の表示可能イベントを土日別に集計します。土日合計0件は既定で投稿せず、同日・同対象週末への再投稿は `local/x-browser-posting/weekend-summary-state.json` で停止します。
 
 ## 週次改善レビューと改善 PR
+
+`nazomatic-x-pr` は 2026-08-28 から一時停止中。週次レビュー（`nazomatic-x-3`）は継続します。
 
 月曜11:30に、直近7日について次を集計します。
 
@@ -121,6 +129,8 @@ merged PR の merge commit、またはその子孫 commit に successful `Produc
 | 通常投稿 | `logs/x-browser-post/` |
 | トレンドジョーク | `logs/x-browser-post-trend-joke/`、`local/x-browser-posting/trend-joke-history.json` |
 | 週末サマリ | `logs/x-browser-post-weekend-summary/`、`local/x-browser-posting/weekend-summary-state.json` |
+| 週次観測ログ | `logs/x-browser-post-observation-log/`、`local/x-browser-posting/observation-log-state.json`、`local/x-browser-posting/observation-log-media/` |
+| ゆる出題 | `logs/x-browser-post-casual-puzzle/`、`local/x-browser-posting/casual-puzzle-state.json` |
 | 共通投稿台帳 | `local/x-browser-posting/post-ledger.json` |
 | フォロワー snapshot | `local/x-browser-posting/follower-snapshots.json` |
 | 週次改善レビュー | GitHub の `x-growth-review` Issue。専用 local log は作らない |

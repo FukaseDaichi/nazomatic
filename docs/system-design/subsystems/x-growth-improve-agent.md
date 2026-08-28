@@ -19,7 +19,7 @@ npm run x:growth-maintain
 - `x:growth-improve`: 既定は dry-run。`--execute` 時だけ GitHub を変更する。
 - `x:growth-maintain`: 投稿を行わず、Chrome CDP で設定対象のプロフィールを開き、blocking state とログイン account を確認してからフォロワー snapshot と成熟済み投稿の公開数値を回収する。さらに、production deployment を確認できた merged 実験 PR を active 化し、72時間を経過した active PR を自動 keep する。
 
-Codex automation には、レビューが毎週月曜11:30 JST、`x:growth-improve -- --execute` が毎週月曜12:30 JST、`x:growth-maintain` が毎日04:30 JSTで ACTIVE 登録されています。登録の正本と model / 通知設定は [`../operations/x-browser-post-schedules.md`](../operations/x-browser-post-schedules.md) を参照します。
+Codex automation には、レビューが毎週月曜11:30 JST、`x:growth-maintain` が毎日04:30 JSTで ACTIVE 登録されています。`x:growth-improve -- --execute` は目的変数を見直すまで 2026-08-28 から PAUSED です。登録の正本と model / 通知設定は [`../operations/x-browser-post-schedules.md`](../operations/x-browser-post-schedules.md) を参照します。
 
 ## PR 作成の安全境界
 

@@ -26,6 +26,7 @@ import {
 import { runWithLocalLog } from "./x-browser-posting/runLog.mjs";
 import {
   buildTrendJokeProviderOutputSchema,
+  capToolIntroArchetype,
   classifyTrendJokeProviderError,
   findTrendJokeHistoryBlockReason,
   getTrendJokeSimilarityEnding,
@@ -1264,13 +1265,23 @@ function selectNextTrendJokeArchetype(history, accountHandle) {
   if (latestKnownIndex >= 0) {
     const current = entries[latestKnownIndex].archetype;
     const currentIndex = TREND_JOKE_ARCHETYPE_ORDER.indexOf(current);
-    return TREND_JOKE_ARCHETYPE_ORDER[
+    const next = TREND_JOKE_ARCHETYPE_ORDER[
       (currentIndex + 1) % TREND_JOKE_ARCHETYPE_ORDER.length
     ];
+    return capToolIntroArchetype({
+      archetype: next,
+      entries,
+      order: TREND_JOKE_ARCHETYPE_ORDER,
+    });
   }
-  return TREND_JOKE_ARCHETYPE_ORDER[
+  const next = TREND_JOKE_ARCHETYPE_ORDER[
     entries.length % TREND_JOKE_ARCHETYPE_ORDER.length
   ];
+  return capToolIntroArchetype({
+    archetype: next,
+    entries,
+    order: TREND_JOKE_ARCHETYPE_ORDER,
+  });
 }
 
 function resolveTrendJokeMediaPath({ config, prepared, trendArgs, trendEnv }) {

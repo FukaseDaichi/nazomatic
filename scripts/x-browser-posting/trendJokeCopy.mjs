@@ -2,6 +2,39 @@ const TREND_JOKE_HISTORY_ENDING_LENGTH = 48;
 const TREND_JOKE_FULL_SIMILARITY_THRESHOLD = 0.68;
 const TREND_JOKE_ENDING_SIMILARITY_THRESHOLD = 0.72;
 
+// tool_intro は表示数中央値が最下位のため週1回を上限にする（2026-08-28 運用判断）。
+export const TOOL_INTRO_MIN_INTERVAL_MS = 7 * 24 * 60 * 60 * 1000;
+
+export function capToolIntroArchetype({
+  archetype,
+  entries,
+  order,
+  now = new Date(),
+  minIntervalMs = TOOL_INTRO_MIN_INTERVAL_MS,
+}) {
+  if (archetype !== "tool_intro") {
+    return archetype;
+  }
+
+  const cutoff = now.getTime() - minIntervalMs;
+  const hasRecentToolIntro = (entries ?? []).some((entry) => {
+    if (entry?.archetype !== "tool_intro") {
+      return false;
+    }
+    const postedAt = Date.parse(entry?.postedAt ?? "");
+    return Number.isFinite(postedAt) && postedAt >= cutoff;
+  });
+  if (!hasRecentToolIntro) {
+    return archetype;
+  }
+
+  const index = order.indexOf("tool_intro");
+  if (index < 0 || order.length === 0) {
+    return archetype;
+  }
+  return order[(index + 1) % order.length];
+}
+
 export function buildTrendJokeProviderOutputSchema(knownShapes) {
   return {
     type: "object",

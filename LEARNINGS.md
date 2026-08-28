@@ -22,10 +22,16 @@
 
 - 2026-08-28: トレンド投稿の挙動異常を調べるときは、まず `local/x-browser-posting/trend-joke-history.json` の archetype 列を新しい順に眺めると異変の開始日が即座に特定でき、その日付で `git log --all --since` を絞ると原因コミット（自動実験PR）まで一直線に辿れる。
 
+- 2026-08-28: X運用の実態把握は `post-ledger.json` を node ワンライナーで postType×archetype 別に成熟 metrics 集計（中央値・エンゲージ合計・週別推移）すると、ドキュメントだけでは見えない実像（301件中エンゲージあり17件、表示中央値約20で横ばい）が数分で定量化できる。
+- 2026-08-28: 曜日で状態が切り替わるX投稿は、pendingを先に判定し、未成熟ならskip・期限切れなら破棄・新規出題は日曜だけに限定すると、日曜の失敗後に月曜の新規出題で状態が反転する事故を防げる。
+- 2026-08-28: 実装計画（docs/ideas のプランmd）も diff と同様に Codex レビューへかける価値が高い。計画内コード断片の CLI フラグ実在確認（`--full-auto` 廃止）、コピー元 session の export 有無、文案の重み付け文字数超過、無監修辞書の不適切語まで、実装前に19件の妥当な指摘が得られた。指摘は鵜呑みにせず主要なもの（CLIフラグ等）を自分で再現確認してから反映する。
+
 ## Mistakes to Avoid
 （失敗と再発防止策）
 
 - 2026-08-24: auto mode では `cat > file <<'EOF'` によるファイル全体の書き換えが classifier にブロックされる。既存ファイルの構造変更は最初から Edit ツールの部分置換で組み立てる方が速い。
+- 2026-08-28: macOS（BSD date）は `date +%s%3N` の `%3N` を解釈せず `1787…N` のような不正値を返す。epoch ミリ秒が要るときは `node -e 'console.log(Date.now())'` を使う（automation.toml の created_at 等に不正値が入ると読み込みが壊れる）。
+- 2026-08-28: 共有 checkout の投稿 state を別アカウントで読むときは、pending の内容検証より先に accountHandle の所有確認を行う。別アカウントの壊れた state を検証してしまうと、現アカウントの投稿まで不必要に停止する。
 
 ## Domain Knowledge
 （業務・仕様に関する事実）
@@ -37,6 +43,15 @@
 
 - 2026-08-28: x-growth 自動改善ループは PR を CI 後に自動マージし、評価で `x-growth:keep` が付くと変更が恒久化する。メトリクス最適化がオーナーの意図（投稿の多様性・面白さ）と衝突した場合、単なる revert では再提案で再発しうるため、`experimentAllowlist.mjs` の PROTECTED_TS_FUNCTIONS / PROTECTED_TS_CALLS への追加と allowlist note への禁止明記をセットで行う（今回 `pickArchetype` で archetype ローテーションを保護）。
 - 2026-08-28: nazomatic の X 計測には「成熟」を名乗る窓が2つある。テレメトリ回収窓は `growthTelemetry.mjs` の `METRIC_MATURITY_MIN_MS`（20時間〜8日）、改善提案ゲートは proposal schema の `maturityHours=24`。ドキュメント同期時に混同しやすく、実際に development-guide が回収窓を「約24時間」と誤記していた。
+
+- 2026-08-28: X改善実験 PR #73 は trend-joke-post.ts の archetype を `"poll"` にハードコードし、5型ローテーションを完全停止させたまま「72時間問題なし」で自動 keep された。現行の自動 keep は指標改善ではなく無事故のみを条件にするため、表示数中央値の微差（21 vs 17）を根拠にした多様性破壊が恒久化しうる。多様性・ローテーション不変条件は allowlist 側で保護するか、実験に自動失効を設ける必要がある。
+- 2026-08-28: X運用のオーナー制約（戦略見直し時に確認済み）: ①週次の人間関与はほぼゼロ（ミニ謎の自作・監修も不可）、②X API有料プランは検討しない（ブラウザ投稿を継続）、③Automatedラベルは運用者アカウント紐付けが必須のため実質不可（bioでのAI公言が唯一の開示）、④謎チケ引用投稿の第一目的は売り手支援ではなくフォロワー獲得（削減可）。X関連の施策提案はこの4制約を前提にする。
+- 2026-08-28: X の公開ランキングコード解説によると、ブラウザ経由の非API自動投稿は規約上アカウント永久凍結対象で、自動化アカウントには Automated ラベル＋運用者アカウント紐付けの義務がある。nazomatic のブラウザ投稿は常時この存続リスクを抱える（2026-08-28 時点の調査、出典: help.x.com の automation / automated-account-labels）。
+
+- 2026-08-28: Codex画像生成をスクリプトから使う契約は `codex exec --sandbox workspace-write --skip-git-repo-check --ephemeral -C <dir> -- "Use the imagegen skill..."`。**現行 Codex CLI は `--full-auto` を受け付けない**（`unexpected argument` で失敗。codex-image プラグイン 0.2.0 はまだ旧フラグに依存しており、そのままコピーすると動かない）。`SAVED: <絶対パス>` 行は skill 出力任せにせず instruction 側で明示要求し、パース後に workDir 配下 realpath・生成時刻・PNG/JPEGマジックバイトを検証してから使う。
+- 2026-08-28: `~/.codex/automations/<id>/automation.toml` は素朴なTOML（id/name/prompt/status/rrule/model/execution_environment/target/cwds）で、rrule 編集による頻度変更は直接編集で可能。ただし status の停止値の enum は未検証（既存は全て "ACTIVE"）。
+- 2026-08-28: `public/dic/buta.dic`（豚辞書・約20万語）は無監修で、「しにたい」「せいこうい」「ろりこん」等が文字数・かなフィルタを素通りする。辞書語を自動投稿に使う機能は denylist（部分一致、出力の answer/display 両方に適用）と、実行報告への語の必須表示をセットで入れる。
+- 2026-08-28: X ブラウザ投稿 CLI の state 堅牢性は雛形によって差がある。週末サマリ CLI は fail-open（JSON 破損→`{}` 扱い・直接 writeFile）、トレンド CLI は fail-closed（execute 時に破損停止）+ 一時ファイル→rename の atomic 書き込み。新 CLI を雛形コピーで作るときは state まわりだけトレンド CLI 側のパターンを移植する。
 
 ## Open Questions
 （未解決・要調査）
