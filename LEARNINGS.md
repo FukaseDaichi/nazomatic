@@ -26,6 +26,8 @@
 - 2026-08-28: 曜日で状態が切り替わるX投稿は、pendingを先に判定し、未成熟ならskip・期限切れなら破棄・新規出題は日曜だけに限定すると、日曜の失敗後に月曜の新規出題で状態が反転する事故を防げる。
 - 2026-08-28: 実装計画（docs/ideas のプランmd）も diff と同様に Codex レビューへかける価値が高い。計画内コード断片の CLI フラグ実在確認（`--full-auto` 廃止）、コピー元 session の export 有無、文案の重み付け文字数超過、無監修辞書の不適切語まで、実装前に19件の妥当な指摘が得られた。指摘は鵜呑みにせず主要なもの（CLIフラグ等）を自分で再現確認してから反映する。
 - 2026-08-28: Codex automation の `memory.md` は実行ごとの全文追記でログの複製になりやすい。変更前を退避し、`Current State` / `Active Issues` / `Recent Runs` / `References` へ再構成したうえで、保存プロンプト側に保持件数・KiB上限・正本を明記すると、現状と未解決事項を保ったまま継続的に抑制できる（今回は7件合計324,378 bytesを7,225 bytesへ圧縮）。
+- 2026-08-28: docs と実装の照合は、目視より機械的な差分が速くて確実。環境変数は `grep -rhoE 'X_(BROWSER_POST|GROWTH)[A-Z_0-9]*' scripts src | sort -u` と docs 側の同抽出を `comm` で突き合わせ（48件完全一致を確認）、Markdown の相対リンクとバッククォート付きパスは python で実在チェックすると、「差分なし」を推測でなく確証として報告できる。
+- 2026-08-28: `docs/ideas/` の蒸留可否は文書単位ではなく節単位で判定する。今回の x-growth-backlog は3節中、方針1節だけがコードで強制済み（`experimentAllowlist.mjs` の DENY_PATH_PATTERNS / LEGACY_FORBIDDEN_TOKENS）で完了、1節は計測だけ実装済みの半分実装、1節は完全未着手だった。「実装完了なら削除」を文書単位で適用すると未着手の案まで消える。
 
 ## Mistakes to Avoid
 （失敗と再発防止策）
@@ -33,6 +35,8 @@
 - 2026-08-24: auto mode では `cat > file <<'EOF'` によるファイル全体の書き換えが classifier にブロックされる。既存ファイルの構造変更は最初から Edit ツールの部分置換で組み立てる方が速い。
 - 2026-08-28: macOS（BSD date）は `date +%s%3N` の `%3N` を解釈せず `1787…N` のような不正値を返す。epoch ミリ秒が要るときは `node -e 'console.log(Date.now())'` を使う（automation.toml の created_at 等に不正値が入ると読み込みが壊れる）。
 - 2026-08-28: 共有 checkout の投稿 state を別アカウントで読むときは、pending の内容検証より先に accountHandle の所有確認を行う。別アカウントの壊れた state を検証してしまうと、現アカウントの投稿まで不必要に停止する。
+- 2026-08-28: ローカル CLI（`.mjs`）で公開 URL を組み立てるとき、`src/app/config.ts` と同じつもりで `NEXT_PUBLIC_BASE_URL` を最優先にすると事故る。このリポジトリの `.env.local` は dev サーバー用に `NEXT_PUBLIC_BASE_URL=http://localhost:3000` を持ち、`config.mjs` がそれを読むため、投稿本文の URL が localhost になる。prepare API を持つ投稿種別の URL は API 先の server が組み立てるので、API を持たない CLI は `X_BROWSER_POST_API_BASE_URL` を先に見るのが実装上の等価物。変更後は実際の `.env` で `loadBrowserPostConfig` を走らせて URL を目視確認する。
+- 2026-08-28: 長いセッション中に、ユーザーが別経路で作業途中をコミットすることがある。`git status` の変更ファイルが突然減っても消失とは限らないので、まず `git log --oneline` と `git show --stat` で取り込み先を確認してから騒ぐ。
 
 ## Domain Knowledge
 （業務・仕様に関する事実）
