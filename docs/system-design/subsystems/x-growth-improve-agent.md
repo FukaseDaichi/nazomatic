@@ -34,7 +34,7 @@ Codex automation には、レビューが毎週月曜11:30 JST、`x:growth-impro
 | `src/server/x-browser-posting/comment-patterns.json` | `json-patch` | `comment-pattern:*` |
 | `src/server/x-browser-posting/trend-joke-post.ts` | `ts-patch` | `trend-joke:*` |
 
-`ts-patch` は投稿生成戦略、fallback、prompt、候補選択ロジックの変更を許可し、TypeScript の構造文字や template literal、最上位フロー内の安全なデータ受け渡し、archetypeの既定選択も扱える。ただし import、環境変数、外部 I/O、process 実行、投稿実行 guard、入力validator本体、URL構築、文字数・検索件数・timeout などの運用・安全境界は変更できない。Node は TypeScript AST から import、保護宣言、外部取得・validator・fingerprint・上限付き正規化の重要 call を変更前後で比較する。archetype validator は引数の戦略変更を許しつつ呼出回数を固定する。さらに追加コードの禁止 API、最大120変更行、最大12000置換文字を検査する。`json-patch` は配列長を維持する。
+`ts-patch` は投稿生成戦略、fallback、prompt、候補選択ロジックの変更を許可し、TypeScript の構造文字や template literal、最上位フロー内の安全なデータ受け渡しも扱える。ただし archetype の既定選択（CLI の5型ローテーションを正本とする `pickArchetype`。2026-08-28 に投票固定実験で単調化したためオーナー判断で保護対象に追加）、import、環境変数、外部 I/O、process 実行、投稿実行 guard、入力validator本体、URL構築、文字数・検索件数・timeout などの運用・安全境界は変更できない。Node は TypeScript AST から import、保護宣言、外部取得・validator・fingerprint・上限付き正規化の重要 call を変更前後で比較する。archetype validator は引数の戦略変更を許しつつ呼出回数を固定する。さらに追加コードの禁止 API、最大120変更行、最大12000置換文字を検査する。`json-patch` は配列長を維持する。
 
 各 `find` はそれ以前の patch 適用後の内容にちょうど1回一致する必要がある。同じ targetKey を使った過去の PR は再提案しない。変更後は TypeScript、lint、X投稿回帰テスト、production build をtimeout付きで実行する。検証を通った変更はドラフト PR として作成し、GitHub Actions の `X Growth PR CI` が同じ検証を再実行する。CI が成功し、最新 commit と `x-growth-experiment` label を確認できた場合だけ、`X Growth Auto Merge` が PR を ready にして merge commit 方式で自動マージする。1実験で許すのは主要な行動変化1つであり、変更行数1行という意味ではない。
 

@@ -18,6 +18,9 @@
 - 2026-08-28: npm脆弱性の棚卸しは `npm audit --omit=dev --json` で severity と `fixAvailable` を機械的に一覧化し、`npm ls <pkg>` で実際の依存ツリー（直接依存かどうか、どのメジャー版に紐づくか）を辿ってから対応方針（そのまま更新／メジャー移行が必要／孫依存で単独修正不可）を切り分けると早い。
 - 2026-08-28: AGENTS.md のような常時ロードされる指示ファイルを編集する前に、各節の内容が `docs/development-guide.md` 等の詳細ドキュメントと重複していないか grep で確認すると良い。重複していた節（理由説明・検証コマンドなど）は箇条書きのルールだけに削ぎ、詳細は docs 側へのポインタに一本化することで、常時課金される分量を増やさずに済む。
 - 2026-08-28: nazomatic では「コーディングの実装ルール（クラス名・パターン）」は `docs/ai-coding-rules.md`、「アーキテクチャ上の不変条件（正本データ・API境界・認証方式）」は `docs/system-design/README.md` の「設計上の不変条件」に分かれて既に定義済み。AGENTS.md からルールを移設する際は移設先を早合点せず、両ファイルを grep して既存の置き場所（性質の近い方）に寄せると新たな重複を作らずに済む。
+- 2026-08-28: cleanup dry-run は local `future` (`a60ea9dcd336f04f6e45b5a0d6b56228069f28e2`) が `origin/main` (`06fff14c4816eeced54009671b35e727d924f53c`) の ancestor ではない場合、fetch 後も exit 1 で execute と cleanup を安全に見送る。
+
+- 2026-08-28: トレンド投稿の挙動異常を調べるときは、まず `local/x-browser-posting/trend-joke-history.json` の archetype 列を新しい順に眺めると異変の開始日が即座に特定でき、その日付で `git log --all --since` を絞ると原因コミット（自動実験PR）まで一直線に辿れる。
 
 ## Mistakes to Avoid
 （失敗と再発防止策）
@@ -31,6 +34,9 @@
 - 2026-08-24: スキルは3スコープに分かれる。共有＝`.agents/skills/`（`skills-lock.json` と `skills:check` で管理）、ユーザー＝`~/.claude/skills/`（lock ファイルなし、アンインストールはディレクトリ削除のみ）、プラグイン＝`~/.claude/plugins/cache/`。どこにあるかで撤去手順が変わるので先に特定する。
 - 2026-08-28: `firebase-admin` 13.6.0→14.3.0 のメジャー更新で fast-xml-parser/websocket-driver/protobufjs の critical 3件を含む脆弱性を一括解消できた（src/server/firebase/admin.ts のAPI利用はcert/getApp/getApps/initializeApp/getFirestoreのみで破壊的変更の影響なし）。ただし配下の `@google-cloud/storage@7.22.0` は独自にgaxios@6.7.1/uuid@9.0.1系を抱えており、firebase-admin側が追従するまで moderate 脆弱性が残る（overridesでの強制上書きはstorage動作互換のリスクがあるため見送り）。
 - 2026-08-28: picomatch の high脆弱性（ReDoS）は `tailwindcss@3.4.19`（→chokidar→micromatch）と `eslint-config-next@14.2.35`（→tinyglobby）の孫依存で、両者とも現行メジャー内では最新版のため単独では直せない。Next.js 14→15/16のメジャー移行と合わせてでないと解消しない。
+
+- 2026-08-28: x-growth 自動改善ループは PR を CI 後に自動マージし、評価で `x-growth:keep` が付くと変更が恒久化する。メトリクス最適化がオーナーの意図（投稿の多様性・面白さ）と衝突した場合、単なる revert では再提案で再発しうるため、`experimentAllowlist.mjs` の PROTECTED_TS_FUNCTIONS / PROTECTED_TS_CALLS への追加と allowlist note への禁止明記をセットで行う（今回 `pickArchetype` で archetype ローテーションを保護）。
+- 2026-08-28: nazomatic の X 計測には「成熟」を名乗る窓が2つある。テレメトリ回収窓は `growthTelemetry.mjs` の `METRIC_MATURITY_MIN_MS`（20時間〜8日）、改善提案ゲートは proposal schema の `maturityHours=24`。ドキュメント同期時に混同しやすく、実際に development-guide が回収窓を「約24時間」と誤記していた。
 
 ## Open Questions
 （未解決・要調査）

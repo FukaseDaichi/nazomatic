@@ -254,7 +254,7 @@ Codex automation から provider 生成文を確認なしで実投稿する場�
 
 ローカルブラウザ投稿 CLI は、通常投稿、週末サマリ投稿、トレンドネタ投稿の実行ログを Git 管理外の `logs/{automationId}/` に保存します。ログには開始時刻、実行コマンド、標準出力、標準エラー、終了時刻、終了ステータスを残します。`X_BROWSER_POST_LOG_RETENTION_COUNT` で automation ごとの保持世代数を指定でき、未設定時は `70` 世代だけ残します。現行ローカル設定も70世代で、3時間ごとの通常投稿を含む7日分と余裕を確保します。
 
-実投稿が成功すると、3種類の CLI は共通の `local/x-browser-posting/post-ledger.json` に投稿 URL と実験 metadata を保存します。`X_BROWSER_POST_CAPTURE_TELEMETRY=true`（既定）なら、続けて同じ CDP セッションでフォロワー数を `local/x-browser-posting/follower-snapshots.json` へ JST 日付単位で追記し、投稿から約24時間〜8日で未取得の過去投稿を最大 `X_BROWSER_POST_METRICS_MAX_PER_RUN` 件だけ開いて表示数・返信・リポスト・いいねを台帳の `metrics` に書き戻します。`npm run x:growth-maintain` は投稿を行わず、この計測を日次で実行するための CLI です。成熟窓の終了が近い古い投稿から回収します。取得済みは `metrics.mature` で再取得しません。計測はベストエフォートで投稿処理を止めません。`npm run x:growth-review` は直近7日、実行 log、台帳の `metrics`、フォロワー snapshot を集計します。投稿別数値は台帳に無い投稿だけをログイン済み Chrome で追加確認します。`--create-issue` 付きでは `[X週次レビュー] YYYY-Www @account` の GitHub Issue を `x-growth-review` label 付きで作り、同じ週の再実行は既存 Issue へのコメントになります。公開数値を取得できない場合は0とせず「取得不能」と出力します。
+実投稿が成功すると、3種類の CLI は共通の `local/x-browser-posting/post-ledger.json` に投稿 URL と実験 metadata を保存します。`X_BROWSER_POST_CAPTURE_TELEMETRY=true`（既定）なら、続けて同じ CDP セッションでフォロワー数を `local/x-browser-posting/follower-snapshots.json` へ JST 日付単位で追記し、投稿から20時間〜8日で未取得の過去投稿を最大 `X_BROWSER_POST_METRICS_MAX_PER_RUN` 件だけ開いて表示数・返信・リポスト・いいねを台帳の `metrics` に書き戻します。`npm run x:growth-maintain` は投稿を行わず、この計測を日次で実行するための CLI です。成熟窓の終了が近い古い投稿から回収します。取得済みは `metrics.mature` で再取得しません。計測はベストエフォートで投稿処理を止めません。`npm run x:growth-review` は直近7日、実行 log、台帳の `metrics`、フォロワー snapshot を集計します。投稿別数値は台帳に無い投稿だけをログイン済み Chrome で追加確認します。`--create-issue` 付きでは `[X週次レビュー] YYYY-Www @account` の GitHub Issue を `x-growth-review` label 付きで作り、同じ週の再実行は既存 Issue へのコメントになります。公開数値を取得できない場合は0とせず「取得不能」と出力します。
 
 `npm run x:growth-improve` は当週・account 固有の週次レビュー Issue 本文と直近14日の投稿台帳を読み、Codex CLI を read-only で呼んで allowlist 内の実験を1件提案します。提案は主要な仮説・targetKey・編集ファイルを各1件に保ちつつ、同一ファイル内で最大6件の局所 patch を使えるため、投稿生成戦略の複数行変更も可能です。Node 側は import、環境変数、外部 I/O、認証、投稿実行 guard、入力検証、各種上限を保護し、変更量も制限します。minimum sampleは5件、成熟時間は24時間、提案時のbaseline参照窓は14日に固定し、filterは0件または1件、選択metricで利用可能なsampleが5件以上あるfilterだけを提案候補にします。`--execute` は通常の開発 checkout とは分離した専用 automation checkout から起動し、テレメトリ成熟率が70%以上かつ5件以上であることを確認し、`origin/main` から作った一時 worktree 内だけで検証・commit・push・ドラフト PR 作成を行います。提案生成のCodex CLI timeoutは1200秒です。PR は `Closes #<review Issue>` と機械可読 metadata を持つため、PR が GitHub 上の実験の正本です。ローカルの実験台帳は作成しません。作成済みまたは進行中の実験、同じ targetKey の再提案、基底branchの検証失敗は PR を作りません。作成後は GitHub Actions が TypeScript、lint、X投稿回帰テスト、production build を再実行し、CI 成功・`x-growth-experiment` label・最新 commit の一致を確認できた PR を ready にして自動マージします。Production反映確認後は72時間のactive期間に入り、問題を示すlabelがなければ日次maintenanceが自動keepします。週次レビューは実験の勝敗を出力しません。`--execute` には認証済みの `gh`、Git remote、利用可能な `codex` が必要です。詳細は `docs/system-design/subsystems/x-growth-improve-agent.md` を参照します。
 
@@ -336,7 +336,7 @@ Codex automation から provider 生成文を確認なしで実投稿する場�
 
 Shift Search のレポートは、元成果物と Next.js 表示用 assets が分かれています。
 
-1. `artifacts/shift-search/reports/{jp|en}` に Markdown レポートを配置する。
+1. `artifacts/shift-search/reports/{jp|en}` に Markdown レポートを配置する。全探索レポート本体は `node scripts/batch-shift-search-report.mjs` で生成できる（npm script 未登録）。
 2. 必要に応じて `artifacts/shift-search/reports/shift-search-external-links.json` を更新する。
 3. `npm run shift:report:meta` を実行する。
 4. `npm run shift:report:view-assets` を実行する。
