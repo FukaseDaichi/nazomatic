@@ -3,6 +3,7 @@ import test from "node:test";
 
 import {
   buildTrendJokeProviderOutputSchema,
+  capToolIntroArchetype,
   classifyTrendJokeProviderError,
   findTrendJokeHistoryBlockReason,
   getTrendJokeSimilarityEnding,
@@ -10,9 +11,64 @@ import {
   normalizeTrendJokeSimilarityText,
   summarizeTrendJokeProviderError,
   validateTrendJokePollOptions,
+  TOOL_INTRO_MIN_INTERVAL_MS,
 } from "./trendJokeCopy.mjs";
 
 const SHAPES = new Set(["sugari", "fake_calm"]);
+const ARCHETYPE_ORDER = [
+  "monologue",
+  "question",
+  "one_liner",
+  "poll",
+  "tool_intro",
+];
+
+test("capToolIntroArchetype keeps non-tool_intro archetypes unchanged", () => {
+  const result = capToolIntroArchetype({
+    archetype: "poll",
+    entries: [{ archetype: "tool_intro", postedAt: new Date().toISOString() }],
+    order: ARCHETYPE_ORDER,
+  });
+  assert.equal(result, "poll");
+});
+
+test("capToolIntroArchetype skips tool_intro when one was posted within 7 days", () => {
+  const now = new Date("2026-08-28T12:00:00Z");
+  const result = capToolIntroArchetype({
+    archetype: "tool_intro",
+    entries: [
+      { archetype: "poll", postedAt: "2026-08-28T00:00:00Z" },
+      { archetype: "tool_intro", postedAt: "2026-08-25T12:00:00Z" },
+    ],
+    order: ARCHETYPE_ORDER,
+    now,
+  });
+  assert.equal(result, "monologue");
+});
+
+test("capToolIntroArchetype allows tool_intro when the last one is older than 7 days", () => {
+  const now = new Date("2026-08-28T12:00:00Z");
+  const result = capToolIntroArchetype({
+    archetype: "tool_intro",
+    entries: [{ archetype: "tool_intro", postedAt: "2026-08-20T11:00:00Z" }],
+    order: ARCHETYPE_ORDER,
+    now,
+  });
+  assert.equal(result, "tool_intro");
+});
+
+test("capToolIntroArchetype ignores entries with invalid postedAt", () => {
+  const result = capToolIntroArchetype({
+    archetype: "tool_intro",
+    entries: [{ archetype: "tool_intro", postedAt: "not-a-date" }],
+    order: ARCHETYPE_ORDER,
+  });
+  assert.equal(result, "tool_intro");
+});
+
+test("TOOL_INTRO_MIN_INTERVAL_MS is one week", () => {
+  assert.equal(TOOL_INTRO_MIN_INTERVAL_MS, 7 * 24 * 60 * 60 * 1000);
+});
 
 test("provider schema contains structural constraints only", () => {
   const schema = buildTrendJokeProviderOutputSchema(SHAPES);
