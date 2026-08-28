@@ -59,7 +59,10 @@ async function main() {
     if (config.execute) {
       lock = await acquireLock(config);
     }
-    const rawState = await readState(config, { strict: config.execute });
+    const rawState = await readState(config, {
+      strict: config.execute,
+      accountHandle: config.accountHandle,
+    });
     const state = stateForCurrentAccount(rawState, config.accountHandle);
     if (rawState.accountHandle && rawState.accountHandle !== config.accountHandle) {
       console.warn(
@@ -421,12 +424,17 @@ async function releaseLock(lock) {
   await fs.unlink(lock.filePath).catch(() => {});
 }
 
-async function readState(config, { strict }) {
+async function readState(config, { strict, accountHandle }) {
   const filePath = getStatePath(config);
   try {
     const parsed = JSON.parse(await fs.readFile(filePath, "utf8"));
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
       throw new Error("state root must be an object");
+    }
+    // 別アカウントの state は内容を検査せず、そのまま呼び出し側で無視する。
+    // 共有 checkout 上の別アカウントに対して、壊れた pending が実行を妨げないようにする。
+    if (parsed.accountHandle && parsed.accountHandle !== accountHandle) {
+      return parsed;
     }
     if (parsed.pending !== null && parsed.pending !== undefined) {
       if (

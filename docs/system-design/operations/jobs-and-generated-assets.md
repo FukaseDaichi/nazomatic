@@ -28,17 +28,19 @@
 | `x:browser-post` | 個別イベントのコメント付き投稿 | ログイン済みローカル PC |
 | `x:browser-post:weekend-summary` | 週末土日別件数サマリ | ログイン済みローカル PC |
 | `x:browser-post:trend-joke` | Yahoo 検索材料から短文投稿 | ログイン済みローカル PC |
+| `x:browser-post:observation-log` | 過去7日・向こう7日の観測ログ | ログイン済みローカル PC |
+| `x:browser-post:casual-puzzle` | 日曜出題・月曜解答 | ログイン済みローカル PC |
 | `x:growth-review` | 直近7日の X 運用集計と週次 Issue | ログイン済みローカル PC |
 | `x:growth-improve` | 週次レビューから改善実験を提案し、実行時はドラフト PR を作成 | Codex / GitHub CLI が使えるローカル PC |
 | `x:growth-maintain` | 投稿なしで計測回収と実験 activation 照合 | ログイン済み Chrome と GitHub CLI が使えるローカル PC |
 
 実投稿は `--execute` を要求します。GitHub Actions はログイン済み browser profile を持たないため、ブラウザ投稿を実行しません。
 
-3種類の投稿 CLI、週次改善PR作成、成長計測メンテナンスの実行ログは automation id ごとの `logs/{automationId}` に置きます。`X_BROWSER_POST_LOG_RETENTION_COUNT` の既定は70世代で、各 automation 内の古い `*.log` だけを削除します。週次改善レビューは専用 local log を作らず、投稿 CLI の log を集計して GitHub Issue へ出力します。投稿成功時の共通台帳は `local/x-browser-posting/post-ledger.json`、日次 follower snapshot は `local/x-browser-posting/follower-snapshots.json` に保存します。
+5種類の投稿 CLI、週次改善PR作成、成長計測メンテナンスの実行ログは automation id ごとの `logs/{automationId}` に置きます。`X_BROWSER_POST_LOG_RETENTION_COUNT` の既定は70世代で、各 automation 内の古い `*.log` だけを削除します。週次改善レビューは専用 local log を作らず、投稿 CLI の log を集計して GitHub Issue へ出力します。投稿成功時の共通台帳は `local/x-browser-posting/post-ledger.json`、日次 follower snapshot は `local/x-browser-posting/follower-snapshots.json` に保存します。
 
 週次改善レビューは毎週月曜11:30 JSTのローカル automation で実行し、`npm run x:growth-review -- --create-issue` が同一週・同一 account の GitHub Issue を作成または更新します。ログイン済み Chrome profile とローカル台帳が必要なため GitHub Actions へは移しません。
 
-週次改善PR作成は毎週月曜12:30 JSTに `npm run x:growth-improve -- --execute` を実行し、実行ログを `logs/x-growth-improve/` に保存します。実験状態は GitHub の review Issue、PR、label、metadata marker が正本です。成長計測メンテナンスは毎日04:30 JSTに `npm run x:growth-maintain` を実行し、投稿せず metrics を回収して、successful production deployment を確認した merged PR を active 化します。いずれも Codex automation に ACTIVE で登録済みです。
+週次改善PR作成は毎週月曜12:30 JSTの登録を一時停止中です。再開時は `npm run x:growth-improve -- --execute` を実行し、実行ログを `logs/x-growth-improve/` に保存します。実験状態は GitHub の review Issue、PR、label、metadata marker が正本です。成長計測メンテナンスは毎日04:30 JSTに `npm run x:growth-maintain` を実行し、投稿せず metrics を回収して、successful production deployment を確認した merged PR を active 化します。週次レビューと成長計測メンテナンスは Codex automation に ACTIVE で登録済みです。
 
 ## Shift Search 生成物
 
