@@ -264,7 +264,7 @@ export async function prepareTrendJokePost(
 
 // X の重み付け文字数の近似。0x10FF 以下（半角英数・改行など）は 1、それ以外
 // （全角・かな・漢字・絵文字など）は 2。無料アカウントは合計 280 が上限。
-function weightedTextLength(text: string) {
+export function weightedTextLength(text: string) {
   let weight = 0;
   for (const char of text) {
     const codePoint = char.codePointAt(0) ?? 0;

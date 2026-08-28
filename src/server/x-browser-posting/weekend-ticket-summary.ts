@@ -592,7 +592,7 @@ function formatLocalDate(date: LocalDateParts) {
   ).padStart(2, "0")}`;
 }
 
-function zonedStartOfDayToUtc(date: LocalDateParts, timeZone: string) {
+export function zonedStartOfDayToUtc(date: LocalDateParts, timeZone: string) {
   const utcGuess = new Date(Date.UTC(date.year, date.month - 1, date.day));
   const offset = getTimeZoneOffsetMs(utcGuess, timeZone);
   return new Date(utcGuess.getTime() - offset);
@@ -620,7 +620,7 @@ function getTimeZoneOffsetMs(date: Date, timeZone: string) {
   return asUtc - date.getTime();
 }
 
-function readDate(obj: unknown, key: string): Date | null {
+export function readDate(obj: unknown, key: string): Date | null {
   if (!obj || typeof obj !== "object") {
     return null;
   }
@@ -643,7 +643,7 @@ function readDate(obj: unknown, key: string): Date | null {
   return null;
 }
 
-function readString(obj: unknown, key: string): string | null {
+export function readString(obj: unknown, key: string): string | null {
   if (!obj || typeof obj !== "object") {
     return null;
   }
