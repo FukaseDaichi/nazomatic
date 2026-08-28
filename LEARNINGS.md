@@ -18,6 +18,7 @@
 - 2026-08-28: npm脆弱性の棚卸しは `npm audit --omit=dev --json` で severity と `fixAvailable` を機械的に一覧化し、`npm ls <pkg>` で実際の依存ツリー（直接依存かどうか、どのメジャー版に紐づくか）を辿ってから対応方針（そのまま更新／メジャー移行が必要／孫依存で単独修正不可）を切り分けると早い。
 - 2026-08-28: AGENTS.md のような常時ロードされる指示ファイルを編集する前に、各節の内容が `docs/development-guide.md` 等の詳細ドキュメントと重複していないか grep で確認すると良い。重複していた節（理由説明・検証コマンドなど）は箇条書きのルールだけに削ぎ、詳細は docs 側へのポインタに一本化することで、常時課金される分量を増やさずに済む。
 - 2026-08-28: nazomatic では「コーディングの実装ルール（クラス名・パターン）」は `docs/ai-coding-rules.md`、「アーキテクチャ上の不変条件（正本データ・API境界・認証方式）」は `docs/system-design/README.md` の「設計上の不変条件」に分かれて既に定義済み。AGENTS.md からルールを移設する際は移設先を早合点せず、両ファイルを grep して既存の置き場所（性質の近い方）に寄せると新たな重複を作らずに済む。
+- 2026-08-28: cleanup dry-run は local `future` (`a60ea9dcd336f04f6e45b5a0d6b56228069f28e2`) が `origin/main` (`06fff14c4816eeced54009671b35e727d924f53c`) の ancestor ではない場合、fetch 後も exit 1 で execute と cleanup を安全に見送る。
 
 ## Mistakes to Avoid
 （失敗と再発防止策）
