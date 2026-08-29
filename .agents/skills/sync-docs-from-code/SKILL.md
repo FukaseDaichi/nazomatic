@@ -50,9 +50,10 @@ If docs disagree with these rules, fix the docs. If code appears to violate them
    - Sync `docs/README.md`: add new docs, remove deleted docs, fix broken links, and correct mismatched descriptions.
    - Keep docs in Japanese. Leave root `AGENTS.md` unchanged.
    - Use Diataxis as a sorting lens: keep Reference facts and Explanation rationale from blurring together; do not invent Tutorials.
-4. Accumulate report items while working.
-5. Overwrite `docs/maintenance/doc-audit-report.md` with the current run. Create `docs/maintenance/` if it does not exist.
-6. Summarize changed docs and point the user to the report for judgment calls, system issues, and AGENTS.md recommendations.
+4. Verify claims mechanically rather than by eye. Extract environment variable names from `scripts` and `src` and diff them against the docs with `comm`; check that every relative link and backticked path in the docs exists on disk. Report "no drift" only when a command confirms it.
+5. Accumulate report items while working.
+6. Overwrite `docs/maintenance/doc-audit-report.md` with the current run. Create `docs/maintenance/` if it does not exist.
+7. Summarize changed docs and point the user to the report for judgment calls, system issues, and AGENTS.md recommendations.
 
 ## Report Format
 
