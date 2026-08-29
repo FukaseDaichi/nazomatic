@@ -7,6 +7,7 @@ import path from "path";
 import { spawn } from "child_process";
 import { pathToFileURL } from "url";
 
+import { openCdpChromePage } from "./x-browser-posting/cdpChromePage.mjs";
 import { readBrowserPostLedger } from "./x-browser-posting/postLedger.mjs";
 import {
   findPreviousSnapshot,
@@ -14,9 +15,9 @@ import {
   recordFollowerSnapshot,
 } from "./x-browser-posting/followerSnapshots.mjs";
 import {
-  findLocalizedMetric,
-  parseCompactNumber,
-} from "./x-browser-posting/profileMetrics.mjs";
+  collectReplyObservations,
+  writeReplyObservationSnapshot,
+} from "./x-browser-posting/replyObservations.mjs";
 import {
   jstHourBucket,
   median,
@@ -66,6 +67,7 @@ async function main() {
   const browserMetrics = await collectMetricsFromLoggedInChrome({
     accountHandle,
     posts: postsNeedingMetrics,
+    replyPosts: recentPosts,
     cdpUrl:
       env.X_BROWSER_POST_CDP_URL ??
       `http://127.0.0.1:${env.X_BROWSER_POST_REMOTE_DEBUGGING_PORT ?? "9222"}`,
@@ -89,6 +91,9 @@ async function main() {
   const postMetrics = [...ledgerPostMetrics, ...scrapedPostMetrics];
   const logStats = await collectAutomationLogStats(cwd, since);
   const week = getJstIsoWeek(now);
+  if (browserMetrics.replyObservation) {
+    await writeReplyObservationSnapshot(cwd, browserMetrics.replyObservation);
+  }
   const report = buildReport({
     accountHandle,
     now,
@@ -99,6 +104,8 @@ async function main() {
     previousSnapshot,
     postMetrics,
     logStats,
+    replyObservation: browserMetrics.replyObservation,
+    replyObservationError: browserMetrics.replyObservationError,
   });
 
   await recordFollowerSnapshot(cwd, {
@@ -122,63 +129,68 @@ async function main() {
   }
 }
 
-async function collectMetricsFromLoggedInChrome({ accountHandle, posts, cdpUrl }) {
+export async function collectMetricsFromLoggedInChrome({
+  accountHandle,
+  posts,
+  replyPosts,
+  cdpUrl,
+  openPage = openCdpChromePage,
+}) {
   let page = null;
   try {
-    const { chromium } = await import("playwright");
-    const browser = await chromium.connectOverCDP(cdpUrl, { timeout: 5000 });
-    const context = browser.contexts()[0];
-    if (!context) return { profileStats: null, postMetrics: [] };
-    page = await context.newPage();
-    await page.goto(`https://x.com/${accountHandle}`, {
-      waitUntil: "domcontentloaded",
-      timeout: 30000,
-    });
-    await page.waitForTimeout(2500);
-    const profileText = await page.locator("body").innerText().catch(() => "");
-    const profileStats = {
-      followers: findLocalizedMetric(profileText, ["フォロワー", "Followers"]),
-      posts: findLocalizedMetric(profileText, ["件のポスト", "posts", "Posts"]),
-      error: null,
+    page = await openPage(cdpUrl, { bringToFront: false });
+  } catch (error) {
+    console.warn(`Reply observation skipped: ${formatError(error)}`);
+    return {
+      profileStats: null,
+      postMetrics: [],
+      replyObservation: null,
+      replyObservationError: "Chrome CDPへ接続できませんでした",
     };
-
-    const postMetrics = [];
-    for (const post of posts.filter((entry) => entry.postedPostURL).slice(0, 30)) {
-      await page.goto(post.postedPostURL, {
-        waitUntil: "domcontentloaded",
-        timeout: 30000,
-      });
-      await page.waitForTimeout(1500);
-      const article = page.locator("article").first();
-      postMetrics.push({
-        post,
-        replies: await readActionMetric(article, "reply"),
-        reposts: await readActionMetric(article, "retweet"),
-        likes: await readActionMetric(article, "like"),
-        views: await readViewsMetric(article),
-      });
-    }
-    return { profileStats, postMetrics };
-  } catch {
-    return { profileStats: null, postMetrics: [] };
-  } finally {
-    await page?.close().catch(() => {});
   }
-}
-
-async function readActionMetric(article, testId) {
-  const element = article.locator(`[data-testid="${testId}"]`).first();
-  if ((await element.count()) === 0) return null;
-  const label = await element.getAttribute("aria-label").catch(() => "");
-  const text = await element.innerText().catch(() => "");
-  return parseCompactNumber(`${label} ${text}`) ?? 0;
-}
-
-async function readViewsMetric(article) {
-  const link = article.locator('a[href$="/analytics"]').first();
-  const label = await link.getAttribute("aria-label").catch(() => "");
-  const text = await link.innerText().catch(() => "");
-  return parseCompactNumber(`${label} ${text}`);
+  try {
+    let profileStats = null;
+    const postMetrics = [];
+    try {
+      profileStats = await page.readProfileStats(accountHandle);
+      await page.verifyLoggedInAccount(accountHandle);
+      for (const post of posts.filter((entry) => entry.postedPostURL).slice(0, 30)) {
+        const metrics = await page.readPostMetrics(post.postedPostURL);
+        if (!metrics) {
+          continue;
+        }
+        postMetrics.push({ post, ...metrics });
+      }
+    } catch (error) {
+      console.warn(`Logged-in X observation stopped: ${formatError(error)}`);
+      return {
+        profileStats: null,
+        postMetrics: [],
+        replyObservation: null,
+        replyObservationError: "ログイン・account・blocking状態を確認できませんでした",
+      };
+    }
+    let replyObservation = null;
+    let replyObservationError = null;
+    try {
+      replyObservation = await collectReplyObservations({
+        page,
+        posts: replyPosts,
+        accountHandle,
+      });
+    } catch (error) {
+      console.warn(`Reply observation stopped: ${formatError(error)}`);
+      replyObservationError = "X会話ページの観測を完了できませんでした";
+    }
+    return {
+      profileStats,
+      postMetrics,
+      replyObservation,
+      replyObservationError,
+    };
+  } finally {
+    await page.close().catch(() => {});
+  }
 }
 
 function parseArgs(argv) {
@@ -306,6 +318,8 @@ export function buildReport({
   previousSnapshot,
   postMetrics,
   logStats,
+  replyObservation = null,
+  replyObservationError = null,
 }) {
   const counts = countBy(recentPosts, (entry) => entry.postType ?? "unknown");
   const trendPosts = recentPosts.filter((entry) => entry.postType === "trend_joke");
@@ -338,8 +352,9 @@ export function buildReport({
     postMetrics,
     (post) => post.metadata?.archetype ?? post.postType ?? null
   );
-  const byHour = summarizeByDimension(postMetrics, (post) =>
-    post.postedAt ? jstHourBucket(post.postedAt) : null
+  const byHour = summarizeByDimension(
+    postMetrics.filter((entry) => entry.post?.postType === "trend_joke"),
+    (post) => (post.postedAt ? jstHourBucket(post.postedAt) : null)
   );
   const byMedia = summarizeByDimension(postMetrics, (post) =>
     post.postType === "trend_joke"
@@ -399,13 +414,17 @@ export function buildReport({
     "",
     ...formatDimensionTable(byArchetype),
     "",
-    "### 時間帯別（JST）",
+    "### 時間帯別（JST・トレンド投稿のみ）",
     "",
     ...formatDimensionTable(byHour),
     "",
     "### 添付実験別（トレンド投稿）",
     "",
     ...formatDimensionTable(byMedia),
+    "",
+    "## 画面上で未返信に見えるリプライ候補",
+    "",
+    ...formatReplyObservation(replyObservation, replyObservationError),
     "",
     "## 次週の改善候補",
     "",
@@ -635,6 +654,32 @@ function formatJstDate(date) {
     month: "2-digit",
     day: "2-digit",
   }).format(date);
+}
+
+function formatReplyObservation(observation, error) {
+  if (!observation) {
+    return [`（観測未実施: ${error || "ログイン済みChromeを利用できませんでした"}）`];
+  }
+  const lines = [
+    `確認投稿: ${observation.postsChecked}件 / 候補: ${observation.candidates.length}件 / 取得: ${observation.capturedAt}`,
+  ];
+  if (observation.candidates.length === 0) {
+    return [...lines, "", "（表示範囲内に未返信候補はありません）"];
+  }
+  return [
+    ...lines,
+    "",
+    ...observation.candidates.map(
+      (candidate, index) =>
+        `- [候補${index + 1}](${candidate.replyURL})（@${candidate.authorHandle}）`
+    ),
+    "",
+    "本文抜粋は公開Issueへ転載せず、Git管理外の `local/x-browser-posting/reply-observations.json` だけに保存します。",
+  ];
+}
+
+function formatError(error) {
+  return error instanceof Error ? error.message : String(error);
 }
 
 function normalizeHandle(value) {

@@ -31,7 +31,7 @@ npm run dev
 | `npm run x:growth-review` | 直近7日の X 運用を集計し、必要に応じて GitHub Issue を作る CLI |
 | `npm run x:growth-improve` | 週次レビューから改善実験を1件提案し、`--execute` 時だけドラフト PR を作る CLI |
 | `npm run x:growth-maintain` | 投稿せず follower / metrics を回収し、実験の production activation と72時間後の自動 keep を照合する CLI |
-| `npm run test:x-browser-posting` | `scripts/x-browser-posting/*.test.mjs` 全件の回帰テスト（X 文案 validator、proposal schema、patch 適用、review markdown、依存 bootstrap、成長メンテナンス） |
+| `npm run test:x-browser-posting` | `scripts/x-browser-posting/*.test.mjs` 全件の回帰テスト（X 文案 validator、ゆる出題の語選定と denylist、観測ログ画像、リプライ観測、proposal schema、patch 適用、review markdown、依存 bootstrap、成長メンテナンス） |
 | `npm run shift:report:meta` | Shift Search レポート元成果物から manifest / index を生成 |
 | `npm run shift:report:view-assets` | Shift Search レポート表示用 JSON を `src/generated/shift-search` に生成 |
 
@@ -50,7 +50,7 @@ Claude Code へは、`.claude/skills/<name>/SKILL.md` を**参照スタブ**と�
 
 Claude Code はディレクトリ名からコマンド名を決めるため、`.claude/skills/<name>/` に置けば `/<name>` で呼び出せます。スタブは `npm run skills:sync` が生成するので、手書きしません。
 
-`CLAUDE.md` は `@AGENTS.md` を読み込み、`AGENTS.md` の "Shared Agent Skills" がこの節を参照します。したがって Codex と Claude Code のどちらでスキルを作成・インストール・更新しても同じ手順が適用されます。
+`CLAUDE.md` は `@AGENTS.md` を読み込み、`AGENTS.md` の「共有 Agent Skill」がこの節を参照します。したがって Codex と Claude Code のどちらでスキルを作成・インストール・更新しても同じ手順が適用されます。
 
 ### 参照スタブを採用する理由
 
@@ -176,6 +176,7 @@ GitHub Actions では `REALTIME_API_TOKEN` secret として同じ値を渡しま
 | `X_BROWSER_POST_ACCOUNT_HANDLE` | 投稿を許可する X handle。ログイン中アカウント照合に使う |
 | `X_BROWSER_POST_HASHTAG` | 個別イベント引用投稿の対象 hashtag。未設定時は `#謎チケ売ります` |
 | `X_BROWSER_POST_API_BASE_URL` | ローカル CLI が呼び出す API origin。未設定時は `REALTIME_API_BASE_URL`、`NEXT_PUBLIC_BASE_URL`、`http://localhost:3000` の順に使う |
+| （公開 URL の解決） | 投稿本文へ載せる公開サイト URL も同じ順に解決する。ただし未設定時の既定は `http://localhost:3000` ではなく `src/app/config.ts` と同じ production URL |
 | `X_BROWSER_POST_INTERNAL_TOKEN` | ローカル CLI が内部 API に送る Bearer token。未設定時は `REALTIME_INTERNAL_API_TOKEN` または `REALTIME_API_TOKEN` を使う |
 | `X_BROWSER_POST_STORAGE_STATE` | Playwright storage state path |
 | `X_BROWSER_POST_USER_DATA_DIR` | Playwright persistent context の user data dir |
@@ -260,7 +261,7 @@ Codex automation から provider 生成文を確認なしで実投稿する場�
 
 ローカルブラウザ投稿 CLI は、通常投稿、週末サマリ投稿、トレンドネタ投稿、週次観測ログ、ゆる出題の実行ログを Git 管理外の `logs/{automationId}/` に保存します。ログには開始時刻、実行コマンド、標準出力、標準エラー、終了時刻、終了ステータスを残します。`X_BROWSER_POST_LOG_RETENTION_COUNT` で automation ごとの保持世代数を指定でき、未設定時は `70` 世代だけ残します。現行ローカル設定も70世代で、3時間ごとの通常投稿を含む7日分と余裕を確保します。
 
-週次観測ログとゆる出題を含む5種類の CLI は、実投稿成功時に共通の `local/x-browser-posting/post-ledger.json` へ投稿 URL と実験 metadata を保存します。`X_BROWSER_POST_CAPTURE_TELEMETRY=true`（既定）なら、続けて同じ CDP セッションでフォロワー数を `local/x-browser-posting/follower-snapshots.json` へ JST 日付単位で追記し、投稿から20時間〜8日で未取得の過去投稿を最大 `X_BROWSER_POST_METRICS_MAX_PER_RUN` 件だけ開いて表示数・返信・リポスト・いいねを台帳の `metrics` に書き戻します。`npm run x:growth-maintain` は投稿を行わず、この計測を日次で実行するための CLI です。成熟窓の終了が近い古い投稿から回収します。取得済みは `metrics.mature` で再取得しません。計測はベストエフォートで投稿処理を止めません。`npm run x:growth-review` は直近7日、実行 log、台帳の `metrics`、フォロワー snapshot を集計します。投稿別数値は台帳に無い投稿だけをログイン済み Chrome で追加確認します。`--create-issue` 付きでは `[X週次レビュー] YYYY-Www @account` の GitHub Issue を `x-growth-review` label 付きで作り、同じ週の再実行は既存 Issue へのコメントになります。公開数値を取得できない場合は0とせず「取得不能」と出力します。
+週次観測ログとゆる出題を含む5種類の CLI は、実投稿成功時に共通の `local/x-browser-posting/post-ledger.json` へ投稿 URL と実験 metadata を保存します。`X_BROWSER_POST_CAPTURE_TELEMETRY=true`（既定）なら、続けて同じ CDP セッションでフォロワー数を `local/x-browser-posting/follower-snapshots.json` へ JST 日付単位で追記し、投稿から20時間〜8日で未取得の過去投稿を最大 `X_BROWSER_POST_METRICS_MAX_PER_RUN` 件だけ開いて表示数・返信・リポスト・いいねを台帳の `metrics` に書き戻します。`npm run x:growth-maintain` は投稿を行わず、この計測を日次で実行するための CLI です。成熟窓の終了が近い古い投稿から回収します。取得済みは `metrics.mature` で再取得しません。計測はベストエフォートで投稿処理を止めません。`npm run x:growth-review` は直近7日、実行 log、台帳の `metrics`、フォロワー snapshot を集計します。投稿別数値は台帳に無い投稿だけをログイン済み Chrome で追加確認します。さらに直近投稿を最大5件だけ開き、会話timeline上でおすすめ等の境界より前にあり、画面上で未返信に見える他者リプライを最大10件まで `local/x-browser-posting/reply-observations.json` へ atomic 保存します。公開Issueには候補リンクとhandleだけを載せ、第三者の本文抜粋はローカルstateから外へ出しません。`--create-issue` 付きでは `[X週次レビュー] YYYY-Www @account` の GitHub Issue を `x-growth-review` label 付きで作り、同じ週の再実行は既存 Issue へのコメントになります。公開数値を取得できない場合は0とせず「取得不能」と出力します。login、account不一致、blocking、CAPTCHA、会話DOM変更を検出した場合はX画面の観測だけを停止し、公開HTML fallbackと週次レポート作成を継続します。
 
 週次観測ログは `--no-image` で imagegen を省略できます。既定では prepare API が過去7日・向こう7日の件数、タイトル sample、観測コメント、calendar URL、画像 prompt を返し、CLI が最終本文と画像 path を再検証してから composer へ入力します。画像生成は best effort で、失敗時は本文だけを投稿候補にします。`local/x-browser-posting/observation-log-state.json` と `casual-puzzle-state.json` は atomic write、account 照合、`lastAttempt`、多重 lock を使い、dry-run では投稿・状態・台帳を変更しません。ゆる出題は `buta.dic` の4〜6文字候補へ answer/display 両方の denylist を適用し、日曜の問題と翌日以降の答えを pending でつなぎます。無監修語が1件でも不適切なら投稿を止め、denylist を更新してから automation を再開します。
 
@@ -357,7 +358,7 @@ Shift Search のレポートは、元成果物と Next.js 表示用 assets が�
 ## ドキュメント更新方針
 
 - ドキュメントは日本語で書きます。
-- `AGENTS.md` は例外的に英語の短いエージェント向け実行ルールとして管理します。
+- `AGENTS.md` は日本語の短いエージェント向け実行ルールとして管理し、詳細な手順はこの文書と `docs/system-design/` に置きます。
 - 実装と矛盾した場合は、ソースコードを正としてドキュメントを修正します。
 - サブシステムの詳細は `docs/system-design/subsystems/` に集約します。
 - 新しい設計書を追加した場合は `docs/README.md` も更新します。

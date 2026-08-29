@@ -75,6 +75,7 @@
 | `POST /api/internal/x/browser-post/events/confirm` | ブラウザ投稿結果を反映 |
 | `POST /api/internal/x/browser-post/weekend-ticket-summary/prepare` | 週末分の件数と本文材料を返す |
 | `POST /api/internal/x/browser-post/trend-joke/prepare` | Yahoo 検索からネタ投稿材料を返す |
+| `POST /api/internal/x/browser-post/observation-log/prepare` | 過去7日・向こう7日の件数とタイトル sample、観測コメント、画像 prompt を返す |
 
 ## SEO とクロール
 

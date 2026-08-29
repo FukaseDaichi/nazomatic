@@ -2,7 +2,7 @@
 
 ## 位置づけ
 
-この文書は、Codex のローカル automation で動かす X 投稿・週次レビュー・改善 PR・成長計測と、マージ後 Git cleanup の運用台帳です。2026-08-28 に `~/.codex/automations/*/automation.toml`、ローカル実行設定、対応する `scripts/` と照合しています。
+この文書は、Codex のローカル automation で動かす X 投稿・週次レビュー・改善 PR・成長計測と、マージ後 Git cleanup の運用台帳です。2026-08-29 に `~/.codex/automations/*/automation.toml`、ローカル実行設定、対応する `scripts/` と照合しています。
 
 正確な有効・無効状態、時刻、model、通知設定は Codex automation 側を正とし、CLI の挙動は `scripts/` と `src/server/x-browser-posting/` を正とします。登録や実装を変更した場合は、この台帳も同時に更新します。
 
@@ -11,7 +11,7 @@
 | Automation ID | Automation 名 | 状態 | JST の実行時刻 | コマンド | 役割 |
 |---|---|---|---|---|---|
 | `nazomatic-x` | NAZOMATIC X 投稿 | ACTIVE | 3時間間隔（実行分は00分） | `npm run x:browser-post -- --execute` | 個別イベントのコメント付き投稿 |
-| `nazomatic-x-2` | NAZOMATIC X トレンドジョーク投稿 | ACTIVE | 毎日 09:30 / 15:30 / 21:30 | `npm run x:browser-post:trend-joke -- --execute --copy-provider codex` | 会話の入口となる短文・質問・投票・ツール紹介 |
+| `nazomatic-x-2` | NAZOMATIC X トレンドジョーク投稿 | ACTIVE | 毎日 12:30 / 15:30 / 21:30 | `npm run x:browser-post:trend-joke -- --execute --copy-provider codex` | 会話の入口となる短文・質問・投票・ツール紹介 |
 | `nazomatic` | NAZOMATIC 週末謎チケサマリ投稿 | ACTIVE | 毎週 木・土 18:30 | `npm run x:browser-post:weekend-summary -- --execute` | 対象週末の土日別件数サマリ |
 | `nazomatic-x-3` | NAZOMATIC X 週次改善レビュー | ACTIVE | 毎週月曜 11:30 | `npm run x:growth-review -- --create-issue` | 直近7日を集計し GitHub Issue を作成または追記 |
 | `nazomatic-x-pr` | NAZOMATIC X 週次改善PR作成 | PAUSED（2026-08-28 一時停止。改善ループの目的変数見直しまで） | 毎週月曜 12:30 | `npm run x:growth-improve -- --execute` | 当週レビューから実験を1件選びドラフト PR を作成 |
@@ -89,6 +89,10 @@
 
 自然な hashtag は最大1個、mention と emoji は禁止です。質問型と投票型は疑問文を必須にします。投票型は2〜4選択肢のネイティブ投票、ツール紹介型は `features.json` にある公開ツール URL と既定のブランド画像を実験対象にします。URL はツール紹介で指定された NAZOMATIC URL 1件だけ許可します。
 
+### 時間帯実験
+
+2026-08-29 から投稿数を1日3回のまま維持し、朝枠だけ09:30から12:30へ変更します。15:30と21:30は対照として固定します。変更前の成熟済みトレンド投稿96件では、09時台31件、15時台32件、21時台31件の表示数中央値がすべて15で、優位な枠はありませんでした。12時台を14日間観測し、週次レビューの「時間帯別（JST・トレンド投稿のみ）」で12時台を同期間の15時台・21時台、および変更前09時台の中央値と比較します。投稿内容・投稿型の違いが交絡するため小差だけで優劣を断定せず、実行失敗やaccount制限が増えた場合は09:30へ戻します。時刻変更はこの台帳とCodex automationを同時に更新し、コードや環境変数へ時刻の定義を追加しません。
+
 ## 週末サマリ
 
 内容は変更しない。起動は木・土曜 18:30 の週2回（2026-08-28 に毎日から削減）。木曜はその週末、土曜は次の週末を対象にする（CLI の対象週末決定ルールは従来どおり）。`Asia/Tokyo` の実行日から対象週末を決め、`#謎チケ売ります` の表示可能イベントを土日別に集計します。土日合計0件は既定で投稿せず、同日・同対象週末への再投稿は `local/x-browser-posting/weekend-summary-state.json` で停止します。
@@ -102,7 +106,8 @@
 - フォロワー数と前回 snapshot との差
 - 投稿種別、トレンド5型、上限制モチーフの件数
 - 取得できた投稿 URL ごとの表示数、返信、リポスト、いいね
-- 投稿型・JST 時間帯・添付実験別の表示数中央値と反応中央値
+- 投稿型・添付実験別、およびトレンド投稿のJST時間帯別の表示数中央値と反応中央値
+- 直近投稿最大5件から画面上で未返信に見えるリプライ候補（候補最大10件。本文は公開Issueへ転載しない）
 - automation の成功、失敗、候補なし
 - 次週の改善候補（同時に採用する主要変更は1つまで）
 
@@ -133,6 +138,7 @@ merged PR の merge commit、またはその子孫 commit に successful `Produc
 | ゆる出題 | `logs/x-browser-post-casual-puzzle/`、`local/x-browser-posting/casual-puzzle-state.json` |
 | 共通投稿台帳 | `local/x-browser-posting/post-ledger.json` |
 | フォロワー snapshot | `local/x-browser-posting/follower-snapshots.json` |
+| リプライ観測 snapshot | `local/x-browser-posting/reply-observations.json` |
 | 週次改善レビュー | GitHub の `x-growth-review` Issue。専用 local log は作らない |
 | 週次改善PR作成 | `logs/x-growth-improve/`、GitHub の review Issue / experiment PR |
 | 成長計測メンテナンス | `logs/x-growth-maintain/`、投稿台帳・フォロワー snapshot |

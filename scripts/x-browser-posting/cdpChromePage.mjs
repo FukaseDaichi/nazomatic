@@ -386,6 +386,178 @@ export async function openCdpChromePage(cdpUrl, options = {}) {
       return parsePostMetrics(raw);
     },
 
+    async readConversationReplies(postUrl, accountHandle, limit = 10) {
+      const sourceStatusId = extractStatusId(postUrl);
+      if (!sourceStatusId) {
+        return [];
+      }
+      await this.goto(postUrl);
+      await this.assertNoBlockingState();
+      await wait(1200);
+      return evaluate(
+        client,
+        (statusId, ownHandle, maxReplies) => {
+          const normalizeHandle = (value) =>
+            String(value ?? "").trim().replace(/^@/, "").toLowerCase();
+          const readIdentity = (article) => {
+            const links = [
+              ...Array.from(article.querySelectorAll('a[href*="/status/"] time'))
+                .map((time) => time.closest("a")),
+              ...Array.from(article.querySelectorAll('a[href*="/status/"]')),
+            ].filter(Boolean);
+            for (const link of links) {
+              const href = link.href || link.getAttribute("href") || "";
+              const match = /(?:https?:\/\/[^/]+)?\/([A-Za-z0-9_]{1,15})\/status\/(\d+)/i.exec(
+                href
+              );
+              if (match) {
+                return {
+                  authorHandle: normalizeHandle(match[1]),
+                  statusId: match[2],
+                  replyURL: `https://x.com/${match[1]}/status/${match[2]}`,
+                };
+              }
+            }
+            return null;
+          };
+          const cells = Array.from(
+            document.querySelectorAll('[data-testid="cellInnerDiv"]')
+          );
+          const rows = cells.map((cell) => {
+            const article = cell.querySelector("article");
+            return { cell, article, identity: article ? readIdentity(article) : null };
+          });
+          const sourceIndex = rows.findIndex(
+            (row) => row.identity?.statusId === statusId
+          );
+          if (sourceIndex < 0) {
+            return [];
+          }
+          const seen = new Set();
+          const replies = [];
+          for (let index = sourceIndex + 1; index < rows.length; index += 1) {
+            const { cell, article, identity } = rows[index];
+            const cellText = (cell.innerText || "").trim();
+            if (
+              !article &&
+              /(おすすめ|もっと見つける|関連するポスト|Discover more|More posts|Relevant people)/i.test(
+                cellText
+              )
+            ) {
+              break;
+            }
+            if (
+              !article ||
+              !identity ||
+              identity.statusId === statusId ||
+              identity.authorHandle === normalizeHandle(ownHandle) ||
+              seen.has(identity.statusId) ||
+              article.querySelector('[data-testid="placementTracking"]') ||
+              /(?:^|\n)(?:プロモーション|Promoted)(?:\n|$)/i.test(cellText)
+            ) {
+              continue;
+            }
+            const textElement = article.querySelector(
+              '[data-testid="tweetText"]'
+            );
+            const textExcerpt = (textElement?.innerText || textElement?.textContent || "")
+              .replace(/\s+/g, " ")
+              .trim();
+            if (!textExcerpt) {
+              continue;
+            }
+            seen.add(identity.statusId);
+            replies.push({
+              authorHandle: identity.authorHandle,
+              textExcerpt,
+              replyURL: identity.replyURL,
+            });
+            if (replies.length >= maxReplies) {
+              break;
+            }
+          }
+          return replies;
+        },
+        sourceStatusId,
+        normalizeHandle(accountHandle),
+        Math.max(0, Number(limit) || 0)
+      );
+    },
+
+    async hasOwnReplyToPost(postUrl, accountHandle) {
+      const targetStatusId = extractStatusId(postUrl);
+      if (!targetStatusId) {
+        return false;
+      }
+      await this.goto(postUrl);
+      await this.assertNoBlockingState();
+      await wait(1200);
+      return evaluate(
+        client,
+        (statusId, ownHandle) => {
+          const normalizeHandle = (value) =>
+            String(value ?? "").trim().replace(/^@/, "").toLowerCase();
+          const readIdentity = (article) => {
+            const links = [
+              ...Array.from(article.querySelectorAll('a[href*="/status/"] time'))
+                .map((time) => time.closest("a")),
+              ...Array.from(article.querySelectorAll('a[href*="/status/"]')),
+            ].filter(Boolean);
+            for (const link of links) {
+              const href = link.href || link.getAttribute("href") || "";
+              const match = /(?:https?:\/\/[^/]+)?\/([A-Za-z0-9_]{1,15})\/status\/(\d+)/i.exec(
+                href
+              );
+              if (match) {
+                return {
+                  authorHandle: normalizeHandle(match[1]),
+                  statusId: match[2],
+                };
+              }
+            }
+            return null;
+          };
+          const cells = Array.from(
+            document.querySelectorAll('[data-testid="cellInnerDiv"]')
+          );
+          const rows = cells.map((cell) => {
+            const article = cell.querySelector("article");
+            return { cell, article, identity: article ? readIdentity(article) : null };
+          });
+          const targetIndex = rows.findIndex(
+            (row) => row.identity?.statusId === statusId
+          );
+          if (targetIndex < 0) {
+            return false;
+          }
+          const normalizedOwnHandle = normalizeHandle(ownHandle);
+          for (let index = targetIndex + 1; index < rows.length; index += 1) {
+            const { cell, article, identity } = rows[index];
+            const cellText = (cell.innerText || "").trim();
+            if (
+              !article &&
+              /(おすすめ|もっと見つける|関連するポスト|Discover more|More posts|Relevant people)/i.test(
+                cellText
+              )
+            ) {
+              break;
+            }
+            if (
+              article &&
+              identity?.authorHandle === normalizedOwnHandle &&
+              !article.querySelector('[data-testid="placementTracking"]') &&
+              !/(?:^|\n)(?:プロモーション|Promoted)(?:\n|$)/i.test(cellText)
+            ) {
+              return true;
+            }
+          }
+          return false;
+        },
+        targetStatusId,
+        normalizeHandle(accountHandle)
+      );
+    },
+
     async screenshot(filePath) {
       const { data } = await client.send("Page.captureScreenshot", {
         format: "png",
@@ -551,6 +723,11 @@ function wait(ms) {
 
 function normalizeHandle(value) {
   return String(value).trim().replace(/^@/, "").toLowerCase();
+}
+
+function extractStatusId(value) {
+  const match = /\/status\/(\d+)/.exec(String(value ?? ""));
+  return match ? match[1] : null;
 }
 
 async function readAccountText(client) {

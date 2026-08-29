@@ -31,8 +31,9 @@ const STATE_VERSION = 1;
 const STATE_PATH = "local/x-browser-posting/casual-puzzle-state.json";
 const LOCK_PATH = "local/x-browser-posting/locks/casual-puzzle.lock";
 const DICTIONARY_PATH = "public/dic/buta.dic";
-const PUZZLE_TOOL_URL =
-  "https://nazomatic.vercel.app/shift-search?utm_source=x&utm_medium=social&utm_campaign=casual_puzzle";
+const PUZZLE_TOOL_PATH = "/shift-search";
+const PUZZLE_TOOL_UTM =
+  "utm_source=x&utm_medium=social&utm_campaign=casual_puzzle";
 const LAST_ATTEMPT_MAX_AGE_MS = 24 * 60 * 60 * 1000;
 
 async function main() {
@@ -109,7 +110,7 @@ async function main() {
       state,
       config,
     });
-    assertPuzzleText(payload.text, phase.phase);
+    assertPuzzleText(payload.text, phase.phase, buildPuzzleToolUrl(config));
 
     if (config.execute) {
       await assertLocalRateLimit(config);
@@ -279,6 +280,12 @@ function resolvePhase({ requestedPhase, decision, state, force }) {
   };
 }
 
+// 投稿 URL は config.publicBaseUrl（src/app/config.ts の baseURL と同じ解決規則）
+// から組み立てる。週末サマリ・トレンドネタ・観測ログと同じ規則に揃える。
+function buildPuzzleToolUrl(config) {
+  return `${config.publicBaseUrl}${PUZZLE_TOOL_PATH}?${PUZZLE_TOOL_UTM}`;
+}
+
 async function buildPuzzlePayload({ phase, state, config }) {
   if (phase === "answer") {
     const pending = state.pending;
@@ -287,7 +294,7 @@ async function buildPuzzlePayload({ phase, state, config }) {
         answer: pending.answer,
         display: pending.display,
         shift: pending.shift,
-        toolUrl: PUZZLE_TOOL_URL,
+        toolUrl: buildPuzzleToolUrl(config),
       }),
       answer: pending.answer,
       display: pending.display,
@@ -312,7 +319,7 @@ async function buildPuzzlePayload({ phase, state, config }) {
   };
 }
 
-function assertPuzzleText(text, phase) {
+function assertPuzzleText(text, phase, toolUrl) {
   const value = String(text ?? "");
   const urls = value.match(/https?:\/\/[^\s]+/gi) ?? [];
   if (phase === "question" && urls.length !== 0) {
@@ -320,7 +327,7 @@ function assertPuzzleText(text, phase) {
   }
   if (
     phase === "answer" &&
-    (urls.length !== 1 || urls[0] !== PUZZLE_TOOL_URL)
+    (urls.length !== 1 || urls[0] !== toolUrl)
   ) {
     throw new Error("Answer text must contain exactly the approved tool URL");
   }
