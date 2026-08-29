@@ -56,7 +56,7 @@ npm run shift:report:view-assets
 ## 標準ワークフロー
 
 - ブランチ運用: 作業は `future` に積み、`future` → `main` へPRを出す。`main` へ直接コミットしない。
-- レビュー: まとまった変更の後は Codex レビュー（Claude Codeでは `codex:rescue`）を diff に対して実行し、指摘を修正して日本語で報告する。
+- レビュー: まとまった変更の後は Codex レビュー（Claude Codeでは `codex:rescue`）を diff に対して実行し、指摘を修正して日本語で報告する。`docs/ideas/` の実装計画も、実装に着手する前に同じレビューへかける。
 - 並行作業: タスクが独立して分割できる場合はサブエージェントに振り分ける。
 - マージ後の後片付け（ブランチ・worktree）: `sync-main-and-clean-worktrees` スキルを使う。
 
@@ -83,7 +83,7 @@ npm run shift:report:view-assets
 ## ドキュメントのライフサイクル
 
 - 挙動を変更したら同じ変更の中で `docs/` 配下の該当文書を更新し、文書マップが変わるなら `docs/README.md` も更新する。
-- 実装計画・仕様書は一時的なもの。`docs/ideas/` に置き、実装完了と同じPRで削除し、恒久的な内容は `docs/system-design/` へ折り込む。
+- 実装計画・仕様書は一時的なもの。`docs/ideas/` に置き、実装完了と同じPRで削除し、恒久的な内容は `docs/system-design/` へ折り込む。削除可否は文書単位ではなく節単位で判定し、未着手の節を巻き添えで消さない。
 - `docs/system-design/quality/known-concerns.md` の項目を解消したら、同じ変更でその項目を削除する。解消済み項目の放置は不備とみなす。
 
 ## 作業スタイル
