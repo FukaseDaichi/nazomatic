@@ -46,6 +46,7 @@
 - 2026-08-28: X運用のオーナー制約（戦略見直し時に確認済み）: ①週次の人間関与はほぼゼロ（ミニ謎の自作・監修も不可）、②X API有料プランは検討しない（ブラウザ投稿を継続）、③Automatedラベルは運用者アカウント紐付けが必須のため実質不可（bioでのAI公言が唯一の開示）、④謎チケ引用投稿の第一目的は売り手支援ではなくフォロワー獲得（削減可）。X関連の施策提案はこの4制約を前提にする。
 - 2026-08-28: X の規約上、ブラウザ経由の非API自動投稿はアカウント永久凍結対象で、自動化アカウントには Automated ラベル＋運用者アカウント紐付けの義務がある。nazomatic のブラウザ投稿は常時この存続リスクを抱える（2026-08-28 時点の調査、出典: help.x.com の automation / automated-account-labels）。
 - 2026-08-28: `public/dic/buta.dic`（豚辞書・約20万語）は無監修で、「しにたい」「せいこうい」「ろりこん」等が文字数・かなフィルタを素通りする。`scripts/x-browser-posting/casualPuzzle.mjs` の `DEFAULT_PUZZLE_DENYLIST` が部分一致で answer/display 両方に効く。辞書語を使う機能を増やすときは同じ denylist を必ず通す。
+- 2026-08-30: 辞書から一意解のアナグラムを作るときは、denylist 適用前の有効な辞書語全体で文字構成 signature の件数を数え、その後で答えと表示語へ denylist を適用する。先に禁止語を除くと、禁止語だけが別解になる組み合わせを一意と誤判定する。
 - 2026-08-28: X ブラウザ投稿 CLI の state 堅牢性は雛形によって差がある。週末サマリ CLI は fail-open（JSON 破損→`{}` 扱い・直接 writeFile）、トレンド CLI は fail-closed（execute 時に破損停止）+ 一時ファイル→rename の atomic 書き込み。
 - 2026-08-28: Codex画像生成をスクリプトから使う契約は `codex exec --sandbox workspace-write --skip-git-repo-check --ephemeral -C <dir> -- "Use the imagegen skill..."`。**現行 Codex CLI は `--full-auto` を受け付けない**（`unexpected argument` で失敗。codex-image プラグイン 0.2.0 は旧フラグ依存でそのままコピーすると動かない）。`SAVED: <絶対パス>` 行は skill 出力任せにせず instruction 側で明示要求し、パース後に workDir 配下 realpath・生成時刻・PNG/JPEGマジックバイトを検証してから使う。
 - 2026-08-28: `~/.codex/automations/<id>/automation.toml` は id/name/prompt/status/rrule/model/execution_environment/target/cwds 等を持ち、status は `ACTIVE` / `PAUSED`。設定変更は直接編集ではなく Codex app の automation update 経由で全フィールドを保持して更新すると、`updated_at` とアプリ側状態も同期される。
@@ -77,4 +78,3 @@
 - 環境変数/リンクの機械的照合手順 → .agents/skills/sync-docs-from-code/SKILL.md Workflow 4
 - 投稿 URL の解決順（X_BROWSER_POST_API_BASE_URL 優先）→ docs/system-design/subsystems/x-posting.md
 -->
-

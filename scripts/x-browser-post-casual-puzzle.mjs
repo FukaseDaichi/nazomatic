@@ -9,10 +9,12 @@ import { stdin as input, stdout as output } from "node:process";
 import { loadBrowserPostConfig } from "./x-browser-posting/config.mjs";
 import {
   DEFAULT_PUZZLE_DENYLIST,
+  buildLegacyShiftPuzzleAnswerText,
   buildPuzzleAnswerText,
   buildPuzzleQuestionText,
   decideCasualPuzzlePhase,
   generateCasualPuzzle,
+  isValidAnagramPuzzle,
   loadPuzzleDictionary,
   shiftKanaWord,
 } from "./x-browser-posting/casualPuzzle.mjs";
@@ -27,11 +29,12 @@ import {
 } from "./x-browser-posting/browserSession.mjs";
 import { runWithLocalLog } from "./x-browser-posting/runLog.mjs";
 
-const STATE_VERSION = 1;
+const STATE_VERSION = 2;
 const STATE_PATH = "local/x-browser-posting/casual-puzzle-state.json";
 const LOCK_PATH = "local/x-browser-posting/locks/casual-puzzle.lock";
 const DICTIONARY_PATH = "public/dic/buta.dic";
-const PUZZLE_TOOL_PATH = "/shift-search";
+const ANAGRAM_TOOL_PATH = "/anagram";
+const LEGACY_SHIFT_TOOL_PATH = "/shift-search";
 const PUZZLE_TOOL_UTM =
   "utm_source=x&utm_medium=social&utm_campaign=casual_puzzle";
 const LAST_ATTEMPT_MAX_AGE_MS = 24 * 60 * 60 * 1000;
@@ -110,7 +113,7 @@ async function main() {
       state,
       config,
     });
-    assertPuzzleText(payload.text, phase.phase, buildPuzzleToolUrl(config));
+    assertPuzzleText(payload.text, phase.phase, payload.toolUrl);
 
     if (config.execute) {
       await assertLocalRateLimit(config);
@@ -176,8 +179,9 @@ async function main() {
       postedPostURL,
       metadata: {
         phase: phase.phase,
+        puzzleKind: payload.kind,
         display: payload.display,
-        shift: payload.shift,
+        ...(payload.shift ? { shift: payload.shift } : {}),
         hasMedia: false,
       },
     }).catch((error) =>
@@ -282,23 +286,36 @@ function resolvePhase({ requestedPhase, decision, state, force }) {
 
 // 投稿 URL は config.publicBaseUrl（src/app/config.ts の baseURL と同じ解決規則）
 // から組み立てる。週末サマリ・トレンドネタ・観測ログと同じ規則に揃える。
-function buildPuzzleToolUrl(config) {
-  return `${config.publicBaseUrl}${PUZZLE_TOOL_PATH}?${PUZZLE_TOOL_UTM}`;
+function buildPuzzleToolUrl(config, kind = "anagram") {
+  const toolPath =
+    kind === "legacy_shift" ? LEGACY_SHIFT_TOOL_PATH : ANAGRAM_TOOL_PATH;
+  return `${config.publicBaseUrl}${toolPath}?${PUZZLE_TOOL_UTM}`;
 }
 
 async function buildPuzzlePayload({ phase, state, config }) {
   if (phase === "answer") {
     const pending = state.pending;
+    const legacyShift = isLegacyShiftPending(pending);
+    const kind = legacyShift ? "legacy_shift" : "anagram";
+    const toolUrl = buildPuzzleToolUrl(config, kind);
     return {
-      text: buildPuzzleAnswerText({
-        answer: pending.answer,
-        display: pending.display,
-        shift: pending.shift,
-        toolUrl: buildPuzzleToolUrl(config),
-      }),
+      text: legacyShift
+        ? buildLegacyShiftPuzzleAnswerText({
+            answer: pending.answer,
+            display: pending.display,
+            shift: pending.shift,
+            toolUrl,
+          })
+        : buildPuzzleAnswerText({
+            answer: pending.answer,
+            display: pending.display,
+            toolUrl,
+          }),
+      kind,
       answer: pending.answer,
       display: pending.display,
-      shift: pending.shift,
+      ...(legacyShift ? { shift: pending.shift } : {}),
+      toolUrl,
     };
   }
 
@@ -313,9 +330,10 @@ async function buildPuzzlePayload({ phase, state, config }) {
   }
   return {
     text: buildPuzzleQuestionText(puzzle),
+    kind: puzzle.kind,
     answer: puzzle.answer,
     display: puzzle.display,
-    shift: puzzle.shift,
+    toolUrl: null,
   };
 }
 
@@ -357,9 +375,9 @@ function buildPostedState({
     pending:
       phase === "question"
         ? {
+            kind: payload.kind,
             answer: payload.answer,
             display: payload.display,
-            shift: payload.shift,
             questionPostedAt: new Date().toISOString(),
             questionPostURL: postedPostURL ?? null,
           }
@@ -448,7 +466,6 @@ async function readState(config, { strict, accountHandle }) {
         typeof parsed.pending !== "object" ||
         typeof parsed.pending.answer !== "string" ||
         typeof parsed.pending.display !== "string" ||
-        !Number.isInteger(parsed.pending.shift) ||
         typeof parsed.pending.questionPostedAt !== "string"
       ) {
         throw new Error("pending state has an invalid shape");
@@ -472,20 +489,31 @@ async function readState(config, { strict, accountHandle }) {
 function validatePendingPuzzle(pending) {
   const answerLength = Array.from(pending.answer).length;
   const displayLength = Array.from(pending.display).length;
-  if (
-    answerLength < 4 ||
-    answerLength > 6 ||
-    displayLength < 4 ||
-    displayLength > 6 ||
-    pending.shift < 1 ||
-    pending.shift > 3 ||
-    shiftKanaWord(pending.display, pending.shift) !== pending.answer ||
-    DEFAULT_PUZZLE_DENYLIST.some((pattern) =>
+  const unsafe = DEFAULT_PUZZLE_DENYLIST.some(
+    (pattern) =>
       pending.answer.includes(pattern) || pending.display.includes(pattern)
-    )
-  ) {
+  );
+  const validAnagram =
+    pending.kind === "anagram" && isValidAnagramPuzzle(pending);
+  const validLegacyShift =
+    isLegacyShiftPending(pending) &&
+    answerLength >= 4 &&
+    answerLength <= 6 &&
+    displayLength >= 4 &&
+    displayLength <= 6 &&
+    pending.shift >= 1 &&
+    pending.shift <= 3 &&
+    shiftKanaWord(pending.display, pending.shift) === pending.answer;
+  if ((!validAnagram && !validLegacyShift) || unsafe) {
     throw new Error("pending state contains an invalid or unsafe puzzle");
   }
+}
+
+function isLegacyShiftPending(pending) {
+  return (
+    pending?.kind === undefined &&
+    Number.isInteger(pending?.shift)
+  );
 }
 
 function createEmptyState() {
@@ -532,9 +560,12 @@ function printPreparedPuzzle({
   console.log(`Mode: ${config.execute ? config.confirmationMode : "dry-run"}`);
   console.log(`Account: @${verifiedHandle}`);
   console.log(`Phase: ${phase} (${reason})`);
+  console.log(`Puzzle kind: ${payload.kind}`);
   console.log(`Display: ${payload.display}`);
   console.log(`Answer: ${payload.answer}`);
-  console.log(`Shift: ${payload.shift}`);
+  if (payload.shift) {
+    console.log(`Shift: ${payload.shift}`);
+  }
   console.log(`State: ${statePath}`);
   console.log(
     `Pending question: ${state.pending?.questionPostedAt ?? "(none)"}`
