@@ -17,7 +17,7 @@
 | `nazomatic-x-pr` | NAZOMATIC X 週次改善PR作成 | PAUSED（2026-08-28 一時停止。改善ループの目的変数見直しまで） | 毎週月曜 12:30 | `npm run x:growth-improve -- --execute` | 当週レビューから実験を1件選びドラフト PR を作成 |
 | `nazomatic-x-4` | NAZOMATIC X 成長計測メンテナンス | ACTIVE | 毎日 04:30 | `npm run x:growth-maintain` | 投稿せず follower / metrics を回収し、実験 activation と72時間後の自動 keep を照合 |
 | `nazomatic-x-5` | NAZOMATIC X 週次観測ログ投稿 | ACTIVE | 毎週金曜 18:30 | `npm run x:browser-post:observation-log -- --execute` | 過去7日と向こう7日の謎チケ件数を観測ログとして投稿 |
-| `nazomatic-x-6` | NAZOMATIC X ゆる出題投稿 | ACTIVE | 毎週日・月 20:00 | `npm run x:browser-post:casual-puzzle -- --execute` | 日曜に出題し、月曜に前回の答えを投稿 |
+| `nazomatic-x-6` | NAZOMATIC X ゆる出題投稿 | ACTIVE | 毎週日・月 20:00 | `npm run x:browser-post:casual-puzzle -- --execute` | 日曜に6文字アナグラムを出題し、月曜に前回の答えを投稿 |
 | `nazomatic-git-cleanup` | NAZOMATIC Git cleanup | ACTIVE | 毎日 02:30 | `sync-and-clean.sh` dry-run → `--execute` | `future` / ローカル `main` 同期とマージ済み worktree・branch 整理 |
 
 `nazomatic-x` の RRULE は `FREQ=HOURLY;INTERVAL=3;BYMINUTE=0;BYSECOND=0` で、特定の `BYHOUR` を持ちません。そのため台帳では固定の時刻列を推測せず、「3時間間隔（実行分は00分）」と記載します。全9件が `TZID=Asia/Tokyo` を明示しています。

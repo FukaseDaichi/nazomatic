@@ -8,6 +8,7 @@ export const JP_BASE_ALPHABET =
 const ALPHABET_INDEX = new Map(
   Array.from(JP_BASE_ALPHABET).map((char, index) => [char, index])
 );
+const PUZZLE_WORD_LENGTH = 6;
 const ANSWER_MIN_DELAY_MS = 20 * 60 * 60 * 1000;
 const PENDING_STALE_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -75,22 +76,16 @@ export function shiftKanaWord(word, shift) {
   return shifted.every((char) => char !== null) ? shifted.join("") : null;
 }
 
-export function loadPuzzleDictionary(
-  dicPath,
-  { denylist = DEFAULT_PUZZLE_DENYLIST } = {}
-) {
+export function loadPuzzleDictionary(dicPath) {
   const raw = fsSync.readFileSync(dicPath, "utf8");
   const seen = new Set();
   for (const line of raw.split(/\r?\n/)) {
     const word = line.trim();
     const length = Array.from(word).length;
-    if (length < 4 || length > 6) {
+    if (length !== PUZZLE_WORD_LENGTH) {
       continue;
     }
-    if (Array.from(word).some((char) => !ALPHABET_INDEX.has(char))) {
-      continue;
-    }
-    if (matchesDenylist(word, denylist)) {
+    if (!isPuzzleKanaWord(word)) {
       continue;
     }
     seen.add(word);
@@ -98,8 +93,32 @@ export function loadPuzzleDictionary(
   return Array.from(seen);
 }
 
-// display を shift 個うしろへずらすと answer。ずらしは決定的なので別解は存在しない。
-// display が辞書語だと「どちらが答えか」で紛れるため除外する。
+export function isPuzzleKanaWord(word) {
+  const chars = Array.from(String(word ?? ""));
+  return chars.length > 0 && chars.every((char) => ALPHABET_INDEX.has(char));
+}
+
+export function shuffleKanaWord(word, randomInt = cryptoRandomInt) {
+  const chars = Array.from(String(word ?? ""));
+  if (chars.length < 2) {
+    return null;
+  }
+  for (let index = chars.length - 1; index > 0; index -= 1) {
+    const swapIndex = randomInt(index + 1);
+    if (
+      !Number.isInteger(swapIndex) ||
+      swapIndex < 0 ||
+      swapIndex > index
+    ) {
+      return null;
+    }
+    [chars[index], chars[swapIndex]] = [chars[swapIndex], chars[index]];
+  }
+  return chars.join("");
+}
+
+// 同じ文字構成の辞書語が1件だけの6文字語を使い、辞書語にならない順番へ並び替える。
+// これにより、出題に使った辞書の範囲では答えが一意になる。
 export function generateCasualPuzzle({
   words,
   randomInt = cryptoRandomInt,
@@ -109,32 +128,67 @@ export function generateCasualPuzzle({
   if (!Array.isArray(words) || words.length === 0) {
     return null;
   }
-  const wordSet = new Set(words);
-  const size = JP_BASE_ALPHABET.length;
+  const dictionaryWordSet = new Set(
+    words.filter(
+      (word) =>
+        typeof word === "string" &&
+        Array.from(word).length === PUZZLE_WORD_LENGTH &&
+        isPuzzleKanaWord(word)
+    )
+  );
+  const signatureCounts = new Map();
+  for (const word of dictionaryWordSet) {
+    const signature = anagramSignature(word);
+    signatureCounts.set(signature, (signatureCounts.get(signature) ?? 0) + 1);
+  }
+  const candidates = Array.from(dictionaryWordSet).filter(
+    (word) =>
+      !matchesDenylist(word, denylist) &&
+      signatureCounts.get(anagramSignature(word)) === 1
+  );
+  if (candidates.length === 0) {
+    return null;
+  }
   const attempts = Math.max(0, Math.trunc(Number(maxAttempts)) || 0);
 
   for (let attempt = 0; attempt < attempts; attempt += 1) {
-    const answerIndex = randomInt(words.length);
-    const answer = words[answerIndex];
-    if (typeof answer !== "string") {
+    const answerIndex = randomInt(candidates.length);
+    if (
+      !Number.isInteger(answerIndex) ||
+      answerIndex < 0 ||
+      answerIndex >= candidates.length
+    ) {
       continue;
     }
-    const shift = 1 + randomInt(3); // 1〜3
-    if (matchesDenylist(answer, denylist)) {
-      continue;
-    }
-    const display = shiftKanaWord(answer, size - shift);
+    const answer = candidates[answerIndex];
+    const display = shuffleKanaWord(answer, randomInt);
     if (
       !display ||
       display === answer ||
-      wordSet.has(display) ||
+      dictionaryWordSet.has(display) ||
       matchesDenylist(display, denylist)
     ) {
       continue;
     }
-    return { answer, display, shift };
+    return { kind: "anagram", answer, display };
   }
   return null;
+}
+
+export function isValidAnagramPuzzle(
+  { answer, display },
+  denylist = DEFAULT_PUZZLE_DENYLIST
+) {
+  return (
+    Array.from(String(answer ?? "")).length === PUZZLE_WORD_LENGTH &&
+    Array.from(String(display ?? "")).length === PUZZLE_WORD_LENGTH &&
+    answer !== display &&
+    isPuzzleKanaWord(answer) &&
+    isPuzzleKanaWord(display) &&
+    anagramSignature(answer) === anagramSignature(display) &&
+    !matchesDenylist(answer, denylist) &&
+    !matchesDenylist(display, denylist)
+  );
 }
 
 // 出題は日曜のみ、解答は pending の20時間後以降のみ。日曜の実行失敗で
@@ -165,16 +219,31 @@ export function decideCasualPuzzlePhase({
   return { phase: "question", reason: "question_day" };
 }
 
-export function buildPuzzleQuestionText({ display, shift }) {
+export function buildPuzzleQuestionText({ display }) {
   return [
     "【ゆる出題】観測担当より。",
-    `「${display}」の各文字を、50音（あいうえお…わをん）でうしろに${shift}つ進めると、ある言葉が出てきます。なんでしょう？`,
+    `「${display}」の6文字を並び替えると、ある言葉になります。なんでしょう？`,
     "",
     "答えは明日の夜に。私は出題側なので、解けなくても平気です。平気って言いました。",
   ].join("\n");
 }
 
-export function buildPuzzleAnswerText({ answer, display, shift, toolUrl }) {
+export function buildPuzzleAnswerText({ answer, display, toolUrl }) {
+  return [
+    `【昨日の答え】「${display}」を並び替えると「${answer}」でした。`,
+    "",
+    "解けた人はすごい。私はツールに聞きました。ずるではなく観測です。",
+    toolUrl,
+  ].join("\n");
+}
+
+// 2026-08-30 に投稿済みの旧シフト問題を回答し終えるまでだけ使う。
+export function buildLegacyShiftPuzzleAnswerText({
+  answer,
+  display,
+  shift,
+  toolUrl,
+}) {
   return [
     `【昨日の答え】「${display}」をうしろに${shift}つ進めると「${answer}」でした。`,
     "",
@@ -187,6 +256,10 @@ function matchesDenylist(word, denylist) {
   return (denylist ?? []).some(
     (pattern) => typeof pattern === "string" && pattern && word.includes(pattern)
   );
+}
+
+function anagramSignature(word) {
+  return Array.from(word).sort().join("");
 }
 
 function jstWeekday(now, timezone) {

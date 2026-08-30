@@ -106,11 +106,11 @@ rate limit は `xBrowserPostingAccounts/{accountHandle}` を正とします。
 
 ## ゆる出題
 
-`npm run x:browser-post:casual-puzzle` は `public/dic/buta.dic` から、ひらがな46文字のアルファベットだけで構成された4〜6文字の語を候補にします。出題時に1〜3文字のシフトをランダムに選び、表示語と答えを一意に保持します。辞書語は無監修のため、答えと表示語の両方へ denylist を適用し、危険語が1件でも出たら投稿を止め、denylist 更新後に再開します。CLI の標準出力には、dry-runを含め表示語、答え、シフトを必ず出します。
+`npm run x:browser-post:casual-puzzle` は `public/dic/buta.dic` から、ひらがな46文字のアルファベットだけで構成された6文字語を候補にします。同じ文字構成を持つ辞書語が1件だけの答えを選び、Fisher–Yates shuffle で辞書語にならない文字順へ並び替えて出題します。辞書語は無監修のため、答えと表示語の両方へ denylist を適用します。不適切語を観測した場合は投稿を止め、denylist 更新後に再開します。CLI の標準出力には、dry-runを含め問題種別、表示語、答えを必ず出します。
 
-自動実行は日曜20:00に問題を投稿し、月曜20:00に前回の問題から20時間以上経過した答えを投稿します。pending が7日を超えた場合は古い問題を破棄して投稿せず、答え投稿では新しい問題を生成しません。問題文にはURLを含めず、答え文には承認済み Shift Search URLを1件だけ含めます。URL は `config.mjs` の `publicBaseUrl`（`--base-url`、`X_BROWSER_POST_API_BASE_URL`、`REALTIME_API_BASE_URL`、`NEXT_PUBLIC_BASE_URL` の順に解決し、未設定時は `src/app/config.ts` と同じ production URL）から組み立てます。ほかの3種は prepare API を持つ server が `src/app/config.ts` の `baseURL` で組み立てるため、API を持たないこの CLI は同じ host を公開 URL とみなします。本文は mention、hashtag、emoji、三連改行、X の重み付け280超を拒否します。
+自動実行は日曜20:00に問題を投稿し、月曜20:00に前回の問題から20時間以上経過した答えを投稿します。pending が7日を超えた場合は古い問題を破棄して投稿せず、答え投稿では新しい問題を生成しません。問題文にはURLを含めず、答え文には承認済みアナグラム検索 URLを1件だけ含めます。URL は `config.mjs` の `publicBaseUrl`（`--base-url`、`X_BROWSER_POST_API_BASE_URL`、`REALTIME_API_BASE_URL`、`NEXT_PUBLIC_BASE_URL` の順に解決し、未設定時は `src/app/config.ts` と同じ production URL）から組み立てます。ほかの3種は prepare API を持つ server が `src/app/config.ts` の `baseURL` で組み立てるため、API を持たないこの CLI は同じ host を公開 URL とみなします。本文は mention、hashtag、emoji、三連改行、X の重み付け280超を拒否します。
 
-`local/x-browser-posting/casual-puzzle-state.json` は pending の答え、表示語、シフト、出題日時、投稿 URL、`lastAttempt` を atomic write します。実投稿は `locks/casual-puzzle.lock`、rate limit、account照合、blocking state、投稿前確認を通し、成功後に `post-ledger.json` へ `postType: casual_puzzle` と phase・表示語・シフトを保存します。状態破損、回答のない強制回答、UI変更、ログイン不一致は停止し、`--force-local-duplicate` は X上の確認後だけ使います。
+`local/x-browser-posting/casual-puzzle-state.json` は pending の問題種別、答え、表示語、出題日時、投稿 URL、`lastAttempt` を atomic write します。実投稿は `locks/casual-puzzle.lock`、rate limit、account照合、blocking state、投稿前確認を通し、成功後に `post-ledger.json` へ `postType: casual_puzzle` と phase・問題種別・表示語を保存します。状態破損、回答のない強制回答、UI変更、ログイン不一致は停止し、`--force-local-duplicate` は X上の確認後だけ使います。切替時点ですでに投稿済みの旧シフト問題だけは、既存 pending の shift を検証したうえで従来文面と Shift Search URLを使って回答し、回答後に新形式へ移行します。
 
 ## トレンドネタ投稿
 
