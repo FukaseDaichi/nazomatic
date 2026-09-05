@@ -1,6 +1,11 @@
 import { spawn } from "node:child_process";
 import fsSync from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+import { observationCardLabels, renderObservationLogCard } from "./observationLogCard.mjs";
+
+const CHARACTER_REFERENCE_PATH = fileURLToPath(new URL("../../public/img/calendar-ogp.png", import.meta.url));
 
 const PNG_MAGIC = Buffer.from([
   0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
@@ -10,10 +15,21 @@ const MAX_OUTPUT_BYTES = 256 * 1024;
 
 const GENERATE_INSTRUCTION_PREFIX = [
   "Use the imagegen skill. Built-in image_gen tool path only — do not use the CLI fallback (no OPENAI_API_KEY required).",
-  "Generate exactly one image and save it under the current working directory.",
+  "Generate exactly one new illustration. If the tool saves it outside the working directory, copy the generated file into the current working directory as illustration.png.",
   "After saving, print exactly one line in the form `SAVED: <absolute path>` as your final output.",
   "",
 ].join("\n");
+
+export function buildObservationImageInstruction(prompt, referencePath) {
+  return [
+    GENERATE_INSTRUCTION_PREFIX,
+    `Character and art-style reference image: ${JSON.stringify(referencePath)}`,
+    "First inspect this local reference with view_image. Then pass its absolute path to the built-in image_gen tool in referenced_image_paths. It must be an actual image reference, not only a text description.",
+    "The reference is for character identity and illustration style only. Do not copy its text or logos. Do not return, overwrite or attach the reference itself.",
+    "Draw no text or numbers. The local script will add the verified dates and count afterwards.",
+    prompt,
+  ].join("\n");
+}
 
 export function parseSavedImagePaths(stdout) {
   return String(stdout ?? "")
@@ -74,12 +90,18 @@ export function validateGeneratedImage(filePath, { minBytes = 10_000 } = {}) {
 export async function generateObservationLogImage({
   prompt,
   workDir,
+  pastWindow,
+  browserChannel,
+  chromeExecutablePath,
   timeoutMs = 240_000,
   log = console,
 }) {
   try {
+    observationCardLabels(pastWindow);
+    const referencePath = path.resolve(workDir, "character-reference.png");
+    fsSync.copyFileSync(CHARACTER_REFERENCE_PATH, referencePath);
     const startedAtMs = Date.now();
-    const instruction = `${GENERATE_INSTRUCTION_PREFIX}${prompt}`;
+    const instruction = buildObservationImageInstruction(prompt, referencePath);
     const stdout = await runCodexExec({ instruction, workDir, timeoutMs, log });
     if (stdout === null) {
       return null;
@@ -88,7 +110,13 @@ export async function generateObservationLogImage({
       workDir,
       startedAtMs,
     });
-    const valid = saved.find((filePath) => validateGeneratedImage(filePath));
+    const referenceRealPath = fsSync.realpathSync(referencePath);
+    const referenceBytes = fsSync.readFileSync(referencePath);
+    const valid = saved.find((filePath) =>
+      fsSync.realpathSync(filePath) !== referenceRealPath &&
+      validateGeneratedImage(filePath) &&
+      !fsSync.readFileSync(filePath).equals(referenceBytes)
+    );
     if (!valid) {
       log.warn?.(
         `Observation log image generation returned no valid image (saved: ${
@@ -97,7 +125,17 @@ export async function generateObservationLogImage({
       );
       return null;
     }
-    return valid;
+    const cardPath = await renderObservationLogCard({
+      illustrationPath: valid,
+      workDir,
+      pastWindow,
+      browserChannel,
+      chromeExecutablePath,
+    });
+    if (!validateGeneratedImage(cardPath)) {
+      throw new Error("Composed observation card failed image validation");
+    }
+    return cardPath;
   } catch (error) {
     log.warn?.(
       `Observation log image generation failed unexpectedly: ${

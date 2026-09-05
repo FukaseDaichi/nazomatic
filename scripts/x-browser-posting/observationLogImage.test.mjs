@@ -5,10 +5,51 @@ import os from "node:os";
 import path from "node:path";
 
 import {
+  buildObservationImageInstruction,
   filterSavedPaths,
+  generateObservationLogImage,
   parseSavedImagePaths,
   validateGeneratedImage,
 } from "./observationLogImage.mjs";
+import { observationCardLabels } from "./observationLogCard.mjs";
+
+test("observation card preserves zero, combined query counts and cross-year dates", () => {
+  for (const count of [0, 123, 600]) {
+    assert.deepEqual(observationCardLabels({
+      startDate: "2025-12-29", endDate: "2026-01-04", count,
+    }), { range: "2025.12.29 — 2026.01.04", count: String(count) });
+  }
+});
+
+test("observation card rejects malformed data instead of drawing misleading labels", () => {
+  const valid = { startDate: "2026-08-29", endDate: "2026-09-04", count: 12 };
+  for (const value of [null, {},
+    { ...valid, count: -1 }, { ...valid, count: 1.5 },
+    { ...valid, count: "12" }, { ...valid, count: Number.MAX_SAFE_INTEGER + 1 },
+    { ...valid, startDate: "2026-02-30" },
+    { ...valid, startDate: "<script>alert(1)</script>" },
+    { ...valid, endDate: "2026-09-05" },
+  ]) assert.throws(() => observationCardLabels(value));
+});
+
+test("image instruction supplies an actual image reference and forbids attaching it", () => {
+  const reference = "/tmp/weekly images/character-reference.png";
+  const instruction = buildObservationImageInstruction("scene", reference);
+  assert.ok(instruction.includes(JSON.stringify(reference)));
+  assert.match(instruction, /view_image/);
+  assert.match(instruction, /referenced_image_paths/);
+  assert.match(instruction, /Do not return, overwrite or attach the reference itself/);
+});
+
+test("invalid card data degrades before invoking image generation", async () => {
+  const warnings = [];
+  const result = await generateObservationLogImage({
+    prompt: "unused", workDir: "/nonexistent/unused", pastWindow: null,
+    log: { warn: (message) => warnings.push(message) },
+  });
+  assert.equal(result, null);
+  assert.match(warnings[0], /Invalid observation card date/);
+});
 
 test("parseSavedImagePaths extracts SAVED lines only", () => {
   const stdout = [

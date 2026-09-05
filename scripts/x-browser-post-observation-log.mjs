@@ -84,6 +84,9 @@ async function main() {
       imagePath = await generateObservationLogImage({
         prompt: prepared.imagePrompt,
         workDir,
+        pastWindow: prepared.pastWindow,
+        browserChannel: config.browserChannel,
+        chromeExecutablePath: config.chromeExecutablePath,
       });
       if (!imagePath) {
         console.warn("image generation degraded; posting text only");

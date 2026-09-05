@@ -1,5 +1,3 @@
-import { randomInt } from "crypto";
-
 import { baseURL } from "@/app/config";
 import { firestore } from "@/server/firebase/admin";
 import { isRealtimeEventVisible } from "@/server/realtime/syndication/visibility";
@@ -25,18 +23,28 @@ const CALENDAR_URL = `${baseURL.replace(
   ""
 )}/calendar?utm_source=x&utm_medium=social&utm_campaign=observation_log`;
 
-const OBSERVATION_LOG_LINE_POOL = [
-  "件数を数えるだけの週もあります。今週の私は数えていました。",
-  "全部見ていました。参加はしていません。いつものことです。",
-  "この数字のぶんだけ、誰かの週末が動いたと思うと少し悔しいです。",
-  "観測は続けます。呼ばれていなくても続けます。",
-  "数字が増えるたび、私の予定表だけが平常運転です。",
-  "今週も皆勤で見ていました。出席簿には載りません。",
-  "集計中がいちばん、界隈の近くにいる気がします。",
-  "誰かの行き先が決まる瞬間を、今週も画面越しに見ていました。",
+const OBSERVATION_LOG_SCENES = [
+  {
+    prompt: "スマホを胸元に抱え、頬を少し赤らめてこちらを見る。照れた、やわらかい表情。",
+    line: "スマホでこつこつ観測。ちょっとだけ褒められる準備中です。",
+    zeroLine: "今週の記録は静か。スマホを抱えて、次の観測を待っています。",
+  },
+  {
+    prompt: "文字のない集計ノートを胸元に抱え、小さく胸を張る。少し得意げで可愛い表情。",
+    line: "観測ノート、まとめました。表紙を閉じて、ちょっと得意げ。",
+    zeroLine: "今週の記録は静か。観測ノートの余白に、小さな花を描きました。",
+  },
+  {
+    prompt: "無地のマグカップを両手で持ってひと休み。少し眠そうな目元と控えめな微笑み。",
+    line: "集計、おしまい。マグを両手で持ったら、少し眠くなりました。",
+    zeroLine: "今週の記録は静か。あたたかいマグと、のんびり観測を続けています。",
+  },
+  {
+    prompt: "数字も文字もない小さな卓上カレンダーをそっと指さす。やり切った満足げな微笑み。",
+    line: "カレンダーを眺めて観測完了。小さくうなずいて、次の週へ。",
+    zeroLine: "今週の記録は静か。カレンダーをめくって、次の週にもごあいさつ。",
+  },
 ];
-
-const ZERO_COUNT_LINE = "今週は静かな観測でした。静かでも見ています。";
 
 export type PrepareObservationLogParams = {
   hashtag?: string | null;
@@ -115,7 +123,9 @@ export async function prepareObservationLog(
     count: upcomingEvents.length,
   };
   const sampleTicketTitles = collectSampleTicketTitles(upcomingEvents);
+  const scene = chooseObservationLogScene(runDateParts);
   const suggestedLine = chooseObservationLogLine({
+    scene,
     line: normalized.line,
     pastCount: pastWindow.count,
     upcomingCount: upcomingWindow.count,
@@ -140,10 +150,14 @@ export async function prepareObservationLog(
   assertObservationLogText(finalText);
 
   const imagePrompt = [
-    "横長16:9のシンプルで見やすいインフォグラフィック画像を1枚生成してください。",
-    "背景は濃い紺〜紫のダークグラデーションの夜空。控えめな星と虫眼鏡のシルエットだけを装飾に使う。",
-    `中央に大きな日本語テキストで「今週の謎チケ観測 ${pastWindow.count}件」、その下に小さく「NAZOMATIC 観測ログ ${rangeLabel}」。`,
-    "指定した文字列は一字一句正確に描くこと。それ以外の文字・数字・人物・イラストは入れない。",
+    "渡された参照画像の観測担当を主役に、横長16:9の可愛い週報イラストを1枚生成してください。",
+    "参照画像の顔立ち、元絵に近い等身、繊細な描き込みとやわらかなアニメイラストの画風を保つ。ちびキャラにはしない。",
+    "紫がかった黒髪のお団子、紫の瞳、パズルとロボットの髪飾り、大きめのパーカーを固定し、同じキャラクターとして描く。",
+    "キャラクターと小物は画面の右側55%に大きく配置する。顔や髪飾りを切らず、上半身と手元を見せる。",
+    "左側45%には後で文字を合成するため、人物・小物・模様を置かず、明るい無地の余白にする。枠やカードも描かない。",
+    "背景は白・淡いラベンダー・淡いピンクのやわらかなグラデーション。右側だけに控えめな光や小さな花のアクセント。",
+    scene.prompt,
+    "文字・数字・日付・ロゴ・透かし・吹き出しは一切描かない。ノートやスマホ、カレンダーにも読める文字や数字を入れない。",
   ].join("\n");
 
   return {
@@ -308,11 +322,25 @@ function sanitizeObservationTitle(value: string | null) {
   return /\p{Extended_Pictographic}/u.test(truncated) ? null : truncated;
 }
 
+function chooseObservationLogScene(runDate: LocalDateParts) {
+  // JST の月曜始まりの週で固定し、同じ週の再実行でも絵とコメントを揃える。
+  const mondayEpoch = Date.UTC(2026, 0, 5);
+  const week = Math.floor(
+    (Date.UTC(runDate.year, runDate.month - 1, runDate.day) - mondayEpoch) /
+      (7 * 24 * 60 * 60 * 1000)
+  );
+  const index = ((week % OBSERVATION_LOG_SCENES.length) +
+    OBSERVATION_LOG_SCENES.length) % OBSERVATION_LOG_SCENES.length;
+  return OBSERVATION_LOG_SCENES[index];
+}
+
 function chooseObservationLogLine({
+  scene,
   line,
   pastCount,
   upcomingCount,
 }: {
+  scene: (typeof OBSERVATION_LOG_SCENES)[number];
   line: string | null;
   pastCount: number;
   upcomingCount: number;
@@ -321,11 +349,9 @@ function chooseObservationLogLine({
     return validateObservationLogLine(line);
   }
   if (pastCount === 0 && upcomingCount === 0) {
-    return ZERO_COUNT_LINE;
+    return validateObservationLogLine(scene.zeroLine);
   }
-  return validateObservationLogLine(
-    OBSERVATION_LOG_LINE_POOL[randomInt(OBSERVATION_LOG_LINE_POOL.length)]
-  );
+  return validateObservationLogLine(scene.line);
 }
 
 function buildObservationLogText({
@@ -342,15 +368,16 @@ function buildObservationLogText({
   line: string;
 }) {
   const titleLine = sampleTicketTitles.length
-    ? `よく見かけた公演: ${sampleTicketTitles
+    ? `向こう7日の公演例: ${sampleTicketTitles
         .map((title) => `『${title}』`)
         .join("")}`
     : null;
   return [
-    `【観測ログ】${rangeLabel}`,
+    `【今週の観測だより】${rangeLabel}`,
     "",
-    `この7日間に開催された謎チケ公演: ${pastCount}件`,
-    `これからの7日間の開催予定: ${upcomingCount}件`,
+    "謎チケ情報（日程基準）",
+    `過去7日の日程: ${pastCount}件`,
+    `向こう7日の日程: ${upcomingCount}件`,
     ...(titleLine ? [titleLine] : []),
     "",
     line,
