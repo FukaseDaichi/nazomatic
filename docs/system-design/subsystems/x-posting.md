@@ -98,9 +98,9 @@ rate limit は `xBrowserPostingAccounts/{accountHandle}` を正とします。
 
 `npm run x:browser-post:observation-log` は、`POST /api/internal/x/browser-post/observation-log/prepare` で `Asia/Tokyo` の実行日を基準に、過去7日と向こう7日の `realtimeEvents` を `eventTime` で数えます。Firestore では `#` あり・なしの hashtag variant、表示可能性、`postId` または document id による重複排除を使い、各窓の query は最大300件です。タイトル sample は向こう7日のイベントから頻度順に最大3件を取り、改行、hashtag、mention、URL、emoji を除去し、空白整理と長さ制限を通します。
 
-本文は件数、タイトル sample、8種類の観測コメント（両窓0件の場合は固定の静かなコメント）、calendar URL で構成します。コメントは100文字未満の1行で、URL、hashtag、mention、emoji、在庫・安全性を断定する表現を拒否します。最終本文も承認済み calendar URL を1件だけ許可し、X の重み付け280以内をローカルで再検証します。Firestore のイベントや投稿状態は更新しません。
+本文は「今週の観測だより」として件数、タイトル sample、観測コメント、calendar URL で構成します。件数は公開中の謎チケ情報を公演日程（`eventTime`）基準で数えたもので、新規発見件数・公演の種類数・販売枚数・在庫ではありません。本文には日程基準を明記し、画像には在庫数ではないことも添えます。JST の `runDate` を月曜始まりの週に区切り、スマホで観測・ノートで集計・マグカップで休憩・カレンダーを指さす4場面を確定的にローテーションします。同じ週は同じ場面になり、本文コメントもその場面の照れ・得意げ・眠気・達成感に対応します。両窓0件の場合は同じ場面に対応する静かなコメントを選び、明示された `line` は引き続き優先します。コメントは100文字未満の1行で、URL、hashtag、mention、emoji、在庫・安全性を断定する表現を拒否します。最終本文も承認済み calendar URL を1件だけ許可し、X の重み付け280以内をローカルで再検証します。Firestore のイベントや投稿状態は更新しません。
 
-画像は `imagePrompt` を built-in imagegen に渡し、`local/x-browser-posting/observation-log-media/<runDate>/` へ保存します。Codex CLI の終了、`SAVED:` 出力、work directory 外への path、開始前のファイル、PNG/JPEG の magic bytes、最小サイズを検証し、失敗時は警告付きで本文だけを投稿候補にします。dry-run は画像生成と composer 入力まで行えますが、投稿・状態・台帳は更新しません。
+画像は `public/img/calendar-ogp.png` を作業ディレクトリへコピーし、必須の参照画像として `imagePrompt` とともに built-in imagegen へ渡します。元絵に近い等身・描き込み、紫黒のお団子髪、紫の瞳、パズル・ロボットの髪飾り、大きめのパーカーを固定し、右側55%に週替わりの観測担当、左側45%に文字合成用の無地の余白を描きます。背景は白・ラベンダー・淡いピンクで、画像生成には文字・数字・ロゴを描かせません。生成後は既存の Playwright で1200×675の画像へ整え、左側に見出し・過去7日の対象期間・確定した情報件数・日程基準の説明・NAZOMATIC表記を合成します。成果物は `local/x-browser-posting/observation-log-media/<runDate>/` へ保存します。Codex CLI の終了、`SAVED:` 出力、work directory 外への path、開始前のファイル、PNG/JPEG の magic bytes、最小サイズを検証し、参照画像の準備・画像生成・文字合成のいずれかが失敗した場合は警告付きで本文だけを投稿候補にします。dry-run は画像生成と composer 入力まで行えますが、投稿・状態・台帳は更新しません。
 
 実投稿は `--execute`、確認なしの automation は既存の auto 二重 lock を必要とします。`local/x-browser-posting/observation-log-state.json` は account、対象 run date、投稿 URL、`lastAttempt` を atomic write し、同一 run dateまたは直近6日以内の投稿を止めます。実行中は `locks/observation-log.lock` を作り、投稿成功後に `post-ledger.json` へ `postType: observation_log` と件数・画像有無を保存します。prepare API、CLI、状態ファイル、実行ログの異常は fail-closed で停止し、画像の失敗だけは本文投稿を妨げません。
 
@@ -182,7 +182,7 @@ validator は自然な hashtag を最大1個だけ許可し、mention、emoji、
 | `local/x-browser-posting/trend-joke-state.json` | トレンド実行枠重複防止 |
 | `local/x-browser-posting/trend-joke-history.json` | 直近 30 投稿の類似判定 |
 | `local/x-browser-posting/observation-log-state.json` | 週次観測ログの run date、投稿 URL、投稿前試行状態 |
-| `local/x-browser-posting/observation-log-media/` | 週次観測ログの imagegen 成果物 |
+| `local/x-browser-posting/observation-log-media/` | 週次観測ログの参照画像コピー・imagegen 成果物・文字合成済み画像 |
 | `local/x-browser-posting/casual-puzzle-state.json` | ゆる出題の pending 問題、答え、投稿 URL、投稿前試行状態 |
 | `local/x-browser-posting/post-ledger.json` | 5種類の投稿 URL、本文、実験 metadata、後追い取得の `metrics` |
 | `local/x-browser-posting/follower-snapshots.json` | JST 日付ごとのフォロワー・累計投稿数 snapshot |

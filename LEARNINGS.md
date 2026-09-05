@@ -12,6 +12,8 @@
 
 （効いたやり方・型）
 
+- 2026-09-05: 週次投稿のキャラクター画像は、元絵を imagegen の実画像参照に渡して文字なしで生成し、既存 Playwright とローカルフォントで日付・件数を後から合成すると、キャラの一貫性を狙いながら数値と日本語を確定的に描画できる。
+
 - 2026-08-24: `~/.claude/projects/<slug>/*.jsonl` からユーザーの実発話だけを抜くには、`type=="last-prompt"` と `type=="queue-operation"`(operation=="enqueue") を併用して重複排除する。`type=="user"` だけだと task-notification やスキル本文が大量に混ざり、`last-prompt` だけだと取りこぼす。
 - 2026-08-24: アシスタント発話に「かな（U+3040–U+30FF）が1文字も含まれない」件数を数えると、日本語プロジェクトでの英語応答率を定量化できる。2026-08-29 の再計測で AGENTS.md「応答言語」節の効果を確認（全期間 393件中65件＝16.5% → 節追加後は82件中2件＝2.4%）。フックによる機械的担保は不要と判断。
 - 2026-08-27: `sync-main-and-clean-worktrees` の dry-run は、fetch 後も local `future` が `origin/main` の ancestor でなければ exit 1 で execute と cleanup を安全に見送り、remote-tracking ref の更新だけで終わる（08-27 と 08-28 の2回とも同じ挙動）。
@@ -38,6 +40,8 @@
 ## Domain Knowledge
 
 （業務・仕様に関する事実）
+
+- 2026-09-05: 週次観測ログの300件制限は集計全体ではなく hashtag variant ごとの Firestore query に掛かる。`#` あり・なしが重複しなければ最大600件になるため、画像と本文の境界検証は合算600件でも行う。
 
 - 2026-08-24: スキルは3スコープに分かれる。共有＝`.agents/skills/`（`skills-lock.json` と `skills:check` で管理）、ユーザー＝`~/.claude/skills/`（lock ファイルなし、アンインストールはディレクトリ削除のみ）、プラグイン＝`~/.claude/plugins/cache/`。どこにあるかで撤去手順が変わるので先に特定する。
 - 2026-08-28: 実装ルールの置き場所は2つに分かれている。クラス名・パターン等のコーディング規則は `docs/ai-coding-rules.md`、正本データ・API境界・認証方式などの不変条件は `docs/system-design/README.md` の「設計上の不変条件」。ルールを移設するときは両方を grep して性質の近い方へ寄せると新たな重複を作らずに済む。
