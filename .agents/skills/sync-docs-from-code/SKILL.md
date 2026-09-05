@@ -1,6 +1,6 @@
 ---
 name: sync-docs-from-code
-description: NAZOMATIC repository-specific documentation synchronization skill. Use when Codex needs to review, audit, or update `docs/**` and the root `README.md` against the current codebase, when documentation feels stale, or when a user asks to sync docs from implementation. Treat `src/` and config as the source of truth, edit only docs/README/report files, leave `src/` and `AGENTS.md` unchanged, and overwrite the Japanese audit report with fixes, judgment calls, and noticed system issues.
+description: NAZOMATIC repository-specific documentation synchronization skill. Use when reviewing, auditing, or updating `docs/**` and the root `README.md` against the current codebase, when documentation feels stale, or when a user asks to sync docs from implementation. Treat `src/` and config as the source of truth, edit only docs/README/report files, leave `src/` and `AGENTS.md` unchanged, and overwrite the Japanese audit report with fixes, judgment calls, and noticed system issues.
 ---
 
 # Sync Docs From Code (NAZOMATIC)
@@ -16,7 +16,8 @@ This skill is project-local and specific to the NAZOMATIC repository.
 - Edit only `docs/**`, root `README.md`, and the report file `docs/maintenance/doc-audit-report.md`.
 - Read `src/`, config files, scripts, generated assets, and artifacts as sources of truth. Never write to `src/`.
 - Never edit `AGENTS.md`; report proposed changes under "AGENTS.md 推奨修正". It is written in Japanese, like the rest of the documentation.
-- Do not run `npm run` commands automatically. If a command should be run, record it as a recommendation in the report.
+- Do not run `npm run` scripts that rewrite tracked artifacts (`skills:sync`, `shift:report:*`, `build`); record those as recommendations in the report instead.
+- Read-only verification commands (`grep`, `comm`, `git`, `node -e`, `npm run lint`) are expected: step 4 depends on them.
 - Do not perform an independent code audit. Record only system problems noticed while reconciling docs.
 - Do not preserve temporary skill-design docs as durable project documentation once the project-local skill exists.
 
@@ -73,7 +74,8 @@ Write `docs/maintenance/doc-audit-report.md` in Japanese and replace the whole f
 同期作業中に気づいた矛盾・死んだ記述・設計上の違和感・非交渉ルール違反の疑い。
 
 ## 4. AGENTS.md 推奨修正
-自動修正せず指摘のみ。原則（200行以内 / コマンド先頭 / 非自明な慣習を優先）に照らした過不足。
+自動修正せず指摘のみ。AGENTS.md 記載の参照パス・コマンド・スキル表が現状のコードと一致しているか、
+および docs 側にある詳細が AGENTS.md へ重複コピーされていないかに照らした過不足。
 ```
 
 ## Done When
