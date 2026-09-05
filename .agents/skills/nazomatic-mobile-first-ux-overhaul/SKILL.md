@@ -1,6 +1,6 @@
 ---
 name: nazomatic-mobile-first-ux-overhaul
-description: Nazomatic repository-specific UI redesign and frontend implementation skill. Use when Codex needs to review, redesign, polish, or implement pages, components, tools, dashboards, forms, or interaction flows in `nazomatic`, especially for mobile-first UX improvements, bold layout rework, visual hierarchy cleanup, or progressive-disclosure help patterns that must be coded end-to-end while preserving the existing dark gradient + `purple-400` design system and the 16px mobile text-input rule.
+description: Nazomatic repository-specific UI redesign and frontend implementation skill. Use when reviewing, redesigning, polishing, or implementing pages, components, tools, dashboards, forms, or interaction flows in `nazomatic`, especially for mobile-first UX improvements, bold layout rework, visual hierarchy cleanup, or progressive-disclosure help patterns that must be coded end-to-end while preserving the existing dark gradient + `purple-400` design system and the 16px mobile text-input rule.
 ---
 
 # Nazomatic Frontend Design
@@ -16,12 +16,13 @@ Nazomatic の良いUIは、謎解きツールらしい高密度さと即時理�
 コードを書く前に、必ず次の順で整理する。
 
 1. **Context**: 対象ルート、対象コンポーネント、主タスク、利用頻度、モバイル時の操作姿勢、情報密度を確認し、問題設定を 1〜2 行で言語化する。
+   診断の観点は 情報設計 / 認知負荷 / 操作導線 / 視覚階層 / モバイル到達性 / アクセシビリティ / エラー・空状態。
 2. **Direction**: Section 2 から 1 つ archetype を選び、明示する。
 3. **Differentiator**: 1 つだけ記憶に残る仕掛けを決める。レイアウトの癖、強い見出し、操作フィードバック、質感、ヘルプ導線のいずれかで作る。
 4. **System**: 色の役割、余白リズム、強調ルール、説明情報の扱い、状態変化の見せ方を定義する。
 5. **Implementation**: 構造と状態遷移を決めてから実装する。提案だけで止めない。
 
-**Directive:** 方向性を 1 つに絞ってコミットする。複数スタイルを無難に混ぜて平均化しない。レビュー依頼でも、明示的にレビューのみと言われていない限り実装まで進める。
+**Directive:** 方向性を 1 つに絞ってコミットする。複数スタイルを無難に混ぜて平均化しない。依頼が実装なら提案で止めず実装まで進め、依頼がレビューならレビューに留める。
 
 ## 2. Nazomatic Archetypes
 
@@ -85,41 +86,12 @@ Nazomatic の良いUIは、謎解きツールらしい高密度さと即時理�
 - マイクロコピーは短く、行動を促し、曖昧な説明文を減らす。
 - 説明を増やすより、操作と結果の対応を明快にする。
 
-## 4. Execution Workflow
-
-1. `docs/ai-coding-rules.md` を確認する。
-2. 対象ルートまたは対象コンポーネントから関連ファイルを特定する。必要なら `src/app` と `src/components` を横断する。
-3. 次の観点で現状を診断する。
-   - 情報設計
-   - 認知負荷
-   - 操作導線
-   - 視覚階層
-   - モバイル到達性
-   - アクセシビリティ
-   - エラー / 空状態
-4. archetype と differentiator を 1〜2 行で宣言する。
-5. 残す情報、削る情報、段階表示へ移す情報を決める。
-6. 最小限のトークン設計を決める。surface の役割、accent の比率、余白、radius、shadow / glow を揃える。
-7. コードを実装する。既存コンポーネントの再利用を優先し、必要な場合だけ新規スタイルを追加する。
-8. 変更した入力系コントロールが `16px` 以上になっていることを確認する。
-9. tooltip / help UI が touch と keyboard の両方で使えることを確認する。
-10. モバイル、タブレット、PC の順に見て、破綻を潰す。
-
-## 5. Output Contract
+## 4. Output Contract
 
 作業結果では次を短く明示する。
 
-- **Direction**: 選んだ archetype と differentiator
+- **Direction**: 選んだ archetype と differentiator（説明だけで終わらせず実装に反映する）
 - **Key Issues**: 主要課題 3 件まで
 - **Implementation**: 実際に変更した要点
-- **Verification**: レスポンシブ、入力 16px、help UI、アクセシビリティの確認結果
-
-## 6. Finish Checklist
-
-- 選んだ archetype が全体の見た目と導線に反映されているか。
-- differentiator が実装されているか。説明だけで終わっていないか。
-- ダークグラデーション + `purple-400` のルールを守っているか。
-- 触った text input / textarea / text-like input がモバイル時 `16px` 以上か。
-- 長い説明文を常設せず、段階表示へ移せているか。
-- モバイルでも主操作が迷わず届く位置にあるか。
-- 既存 UI から浮く generic scaffolding が残っていないか。
+- **Verification**: 触った text input / textarea / text-like input がモバイル `16px` 以上か、
+  tooltip / help UI が touch と keyboard の両方で到達できるか、モバイル→タブレット→PC で破綻がないか

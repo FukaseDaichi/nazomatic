@@ -11,6 +11,22 @@ metadata:
 
 Search engine optimization based on Lighthouse SEO audits and Google Search guidelines. Focus on technical SEO, on-page optimization, and structured data.
 
+## このリポジトリでの適用（NAZOMATIC / Next.js 14 App Router）
+
+以下の対応表を先に読み、この文書の生 HTML 例はそのまま書かず App Router の API に読み替える。
+
+| この文書の例 | NAZOMATIC での実装先 |
+|---|---|
+| `<title>` / `<meta name="description">` | `src/app/**/{layout,page}.tsx` の `export const metadata` / `generateMetadata()`（現在16ファイル） |
+| `<link rel="canonical">` | `metadata.alternates.canonical`。共通生成は `src/lib/seo.ts` |
+| `robots.txt` | `src/app/robots.ts` |
+| `sitemap.xml` | `src/app/sitemap.ts`。URL の正本は `src/lib/json/features.json` の順序 |
+| JSON-LD `<script>` | `src/components/common/json-ld-component.tsx` / `generateJsonLdArticle.ts` |
+
+監査対象は、ローカルURLの指定がない限り本番 `https://nazomatic.vercel.app`。
+
+---
+
 ## SEO fundamentals
 
 Search ranking factors (approximate influence):
@@ -20,7 +36,7 @@ Search ranking factors (approximate influence):
 | Content quality & relevance | ~40% | Partial (structure) |
 | Backlinks & authority | ~25% | ✗ |
 | Technical SEO | ~15% | ✓ |
-| Page experience (Core Web Vitals) | ~10% | See [Core Web Vitals](../core-web-vitals/SKILL.md) |
+| Page experience (Core Web Vitals) | ~10% | ✗ (not covered here) |
 | On-page SEO | ~10% | ✓ |
 
 ---
@@ -523,5 +539,3 @@ body {
 
 - [Google Search Central](https://developers.google.com/search)
 - [Schema.org](https://schema.org/)
-- [Core Web Vitals](../core-web-vitals/SKILL.md)
-- [Web Quality Audit](../web-quality-audit/SKILL.md)
