@@ -93,7 +93,7 @@ export async function generateObservationLogImage({
   pastWindow,
   browserChannel,
   chromeExecutablePath,
-  timeoutMs = 240_000,
+  timeoutMs = 900_000,
   log = console,
 }) {
   try {
@@ -146,11 +146,13 @@ export async function generateObservationLogImage({
   }
 }
 
-function runCodexExec({ instruction, workDir, timeoutMs, log }) {
+export function runCodexExec({ instruction, workDir, timeoutMs, log, spawnProcess = spawn }) {
   return new Promise((resolve) => {
+    const startedAt = Date.now();
+    log.info?.(`Observation image generation started (timeout: ${timeoutMs}ms)`);
     let child;
     try {
-      child = spawn(
+      child = spawnProcess(
         "codex",
         [
           "exec",
@@ -186,6 +188,7 @@ function runCodexExec({ instruction, workDir, timeoutMs, log }) {
       }
       settled = true;
       clearTimeout(timeoutHandle);
+      log.info?.(`Observation image generation finished after ${Date.now() - startedAt}ms`);
       resolve(value);
     };
 
@@ -195,6 +198,7 @@ function runCodexExec({ instruction, workDir, timeoutMs, log }) {
       }
       child.kill("SIGKILL");
       log.warn?.(`codex exec timed out after ${timeoutMs}ms`);
+      log.warn?.(`codex exec last output: ${stderr.slice(-4000) || stdout.slice(-4000) || "(none)"}`);
       finish(null);
     }, timeoutMs);
 

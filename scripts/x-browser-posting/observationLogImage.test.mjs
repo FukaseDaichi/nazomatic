@@ -3,15 +3,54 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { EventEmitter } from "node:events";
+import { PassThrough } from "node:stream";
 
 import {
   buildObservationImageInstruction,
   filterSavedPaths,
   generateObservationLogImage,
   parseSavedImagePaths,
+  runCodexExec,
   validateGeneratedImage,
 } from "./observationLogImage.mjs";
 import { observationCardLabels } from "./observationLogCard.mjs";
+
+test("image subprocess timeout stops the process and preserves recent diagnostics", async () => {
+  const child = new EventEmitter();
+  child.stdout = new PassThrough();
+  child.stderr = new PassThrough();
+  const signals = [];
+  child.kill = (signal) => signals.push(signal);
+  const warnings = [];
+  const result = runCodexExec({
+    instruction: "unused", workDir: os.tmpdir(), timeoutMs: 20,
+    log: { warn: (message) => warnings.push(message) },
+    spawnProcess: () => child,
+  });
+  child.stderr.write("x".repeat(5000) + "waiting for image tool");
+  assert.equal(await result, null);
+  assert.deepEqual(signals, ["SIGKILL"]);
+  assert.match(warnings[0], /timed out after 20ms/);
+  assert.ok(warnings[1].endsWith("waiting for image tool"));
+  assert.ok(warnings[1].length < 4100);
+  child.emit("close", 0);
+});
+
+test("image subprocess completion returns output and clears timeout", async () => {
+  const child = new EventEmitter();
+  child.stdout = new PassThrough();
+  child.stderr = new PassThrough();
+  child.kill = () => assert.fail("completed process must not be killed");
+  const result = runCodexExec({
+    instruction: "unused", workDir: os.tmpdir(), timeoutMs: 20,
+    log: {}, spawnProcess: () => child,
+  });
+  child.stdout.write("SAVED: /tmp/image.png\n");
+  child.emit("close", 0);
+  assert.equal(await result, "SAVED: /tmp/image.png\n");
+  await new Promise((resolve) => setTimeout(resolve, 30));
+});
 
 test("observation card preserves zero, combined query counts and cross-year dates", () => {
   for (const count of [0, 123, 600]) {
