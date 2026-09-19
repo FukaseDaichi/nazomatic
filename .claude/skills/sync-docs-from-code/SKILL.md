@@ -1,6 +1,6 @@
 ---
 name: sync-docs-from-code
-description: NAZOMATIC repository-specific documentation synchronization skill. Use when reviewing, auditing, or updating `docs/**` and the root `README.md` against the current codebase, when documentation feels stale, or when a user asks to sync docs from implementation. Treat `src/` and config as the source of truth, edit only docs/README/report files, leave `src/` and `AGENTS.md` unchanged, and overwrite the Japanese audit report with fixes, judgment calls, and noticed system issues.
+description: NAZOMATIC repository-specific documentation synchronization skill. Use when reviewing, auditing, or updating `docs/**` and the root `README.md` against the current codebase, when documentation feels stale, or when a user asks to sync docs from implementation. Treat `src/` and config as the source of truth, limit synchronization edits to docs/README/report files, leave `src/` and `AGENTS.md` unchanged, and overwrite the Japanese audit report with fixes, judgment calls, and noticed system issues. Follow AGENTS.md for session learnings.
 ---
 
 このファイルは Claude Code 用の参照スタブです（`npm run skills:sync` が生成）。スキルの実体は `.agents/skills/sync-docs-from-code/SKILL.md` です。

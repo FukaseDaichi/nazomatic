@@ -1108,7 +1108,7 @@ function buildTrendJokeCopyPrompt({
     `参考候補: ${fallbackText}`,
     "",
     "条件:",
-    "- 出力は投稿文のみ。",
+    "- 以下は投稿文の内容に関する条件。返却形式は呼び出し元の指定に従い、指定がない場合は投稿文のみを返す。",
     `- 今回の型は「${describeArchetype(archetype)}」(${archetype})。ほかの型へ変更しない。`,
     ...buildArchetypePromptRules(archetype, tool),
     "- 感情の温度を1つ選ぶ（すがり／拗ね／深夜／勘違いの希望→急降下／重い愛／虚無／嫉妬／平静→崩壊／乱高下／開き直り）。同じ温度の連投は避ける。",

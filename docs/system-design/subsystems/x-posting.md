@@ -13,6 +13,13 @@ X 投稿には、互いに独立した 2 方式があります。
 
 X の Automation Rules は、X API を使わずWebサイトをスクリプト操作する自動化にアカウント停止リスクがあることと、トレンド話題の自動投稿を許可しないことを明記しています（2026-08-29 再確認: [X's automation development rules](https://help.x.com/en/rules-and-policies/x-automation?lang=browser)）。現行ブラウザ投稿と下記のリプライ観測はこの運用リスクを解消しません。投稿・観測とも対象数を制限し、blocking state を回避せず停止します。
 
+## 運用上の前提
+
+- 週次運用への人間関与はほぼ行わず、ミニ謎の作問・監修も行いません。
+- X API の有料プランへは移行せず、ブラウザ投稿を継続します。
+- Automated ラベルに必要な運用者アカウント紐付けは採用せず、AI運用の開示は bio に限ります。
+- 謎チケ引用投稿は売り手支援よりフォロワー獲得を優先し、必要なら削減できます。
+
 ## X API Repost
 
 `POST /api/internal/x/repost/events` は、直近 24 時間の表示可能な `realtimeEvents` から、指定 hashtag を持ち `lastReviewedAt == null` の候補を選び、X API v2 の repost endpoint を呼びます。成功時は `lastReviewedAt` を更新します。候補なしは 204 です。
@@ -124,6 +131,8 @@ rate limit は `xBrowserPostingAccounts/{accountHandle}` を正とします。
 | `codex` | `codex exec --sandbox read-only --ephemeral` で JSON 文案を生成 |
 | `command` | 指定 shell command へ JSON を stdin で渡す |
 | manual | `--line` / env の固定文を最優先する |
+
+文案プロンプトは投稿本文の内容を定め、返却形式は呼び出し元の指定に従います。単独利用で形式指定がない場合は本文のみ、provider 経由では `text`、`shape`、`pollOptions` を含む JSON を返します。
 
 Codex の出力 schema は `text`、`shape`、`pollOptions` の構造だけを固定し、文字数、投票件数、選択肢の重複などの投稿規則はローカル validator を正とします。schema や認証など再実行しても変わらない provider error は即座に fallback へ戻し、timeout、rate limit、生成文不合格など回復可能な error だけを設定回数まで再試行します。fallback 投稿時は `provider_status=degraded` と原因を log に残します。
 
