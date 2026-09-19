@@ -1,6 +1,6 @@
 ---
 name: nazomatic-mobile-first-ux-overhaul
-description: Nazomatic repository-specific UI redesign and frontend implementation skill. Use when reviewing, redesigning, polishing, or implementing pages, components, tools, dashboards, forms, or interaction flows in `nazomatic`, especially for mobile-first UX improvements, bold layout rework, visual hierarchy cleanup, or progressive-disclosure help patterns that must be coded end-to-end while preserving the existing dark gradient + `purple-400` design system and the 16px mobile text-input rule.
+description: Apply Nazomatic's mobile-first UI rules when reviewing a screen's usability, redesigning a screen, or adding or changing a layout, form, or interaction. Preserve the existing dark gradient, purple accent, and 16px mobile text inputs.
 ---
 
 # Nazomatic Frontend Design
@@ -13,20 +13,17 @@ Nazomatic の良いUIは、謎解きツールらしい高密度さと即時理�
 
 ## 1. Operating Mode
 
-コードを書く前に、必ず次の順で整理する。
+依頼の範囲に応じて適用する。
 
-1. **Context**: 対象ルート、対象コンポーネント、主タスク、利用頻度、モバイル時の操作姿勢、情報密度を確認し、問題設定を 1〜2 行で言語化する。
-   診断の観点は 情報設計 / 認知負荷 / 操作導線 / 視覚階層 / モバイル到達性 / アクセシビリティ / エラー・空状態。
-2. **Direction**: Section 2 から 1 つ archetype を選び、明示する。
-3. **Differentiator**: 1 つだけ記憶に残る仕掛けを決める。レイアウトの癖、強い見出し、操作フィードバック、質感、ヘルプ導線のいずれかで作る。
-4. **System**: 色の役割、余白リズム、強調ルール、説明情報の扱い、状態変化の見せ方を定義する。
-5. **Implementation**: 構造と状態遷移を決めてから実装する。提案だけで止めない。
+- **画面全体の再設計**: 対象画面の主タスク、利用頻度、モバイル時の操作姿勢、情報密度を踏まえ、Section 2 から 1 つ archetype を基調にする。記憶に残る仕掛けを 1 つ選び、レイアウト、見出し、操作フィードバック、質感、ヘルプ導線のいずれかへ反映する。色の役割、余白、強調、説明情報、状態変化をその方向性に揃える。
+- **局所的な修正**: 既存画面の方向性を保ち、依頼された箇所に必要な変更を行う。新しい archetype や仕掛けの追加は求めない。
+- **レビュー**: 情報設計、認知負荷、操作導線、視覚階層、モバイル到達性、アクセシビリティ、エラー・空状態のうち対象に関係する観点で確認し、指摘と改善案の提示で完了する。実装はレビュー依頼に含めない。
 
-**Directive:** 方向性を 1 つに絞ってコミットする。複数スタイルを無難に混ぜて平均化しない。依頼が実装なら提案で止めず実装まで進め、依頼がレビューならレビューに留める。
+実装依頼の完了は、依頼された変更、対象画面の確認、その確認で見つかった今回の変更に起因する不具合の修正までとする。
 
 ## 2. Nazomatic Archetypes
 
-以下から 1 つ選び、基調にする。どの archetype を選んでも配色は Nazomatic の既存ルールから外さない。
+画面全体を再設計するときに以下から 1 つ選び、基調にする。どの archetype を選んでも配色は Nazomatic の既存ルールから外さない。
 
 - **Puzzle Console**: 操作面を主役にする。区切られたパネル、状態の強い切り替え、入力と結果の近接を使う。パズルツール、エディタ、入力密度の高い画面に向く。
 - **Mystery Editorial**: 見出しと導入で空気を作り、本文は読みやすく段階表示する。ルール説明、導入ページ、ストーリー性のある画面に向く。
@@ -88,10 +85,10 @@ Nazomatic の良いUIは、謎解きツールらしい高密度さと即時理�
 
 ## 4. Output Contract
 
-作業結果では次を短く明示する。
+作業結果では依頼の種類に応じて次を短く明示する。
 
-- **Direction**: 選んだ archetype と differentiator（説明だけで終わらせず実装に反映する）
+- **Direction**: 画面全体を再設計した場合は、選んだ archetype と仕掛け、および実装への反映箇所
 - **Key Issues**: 主要課題 3 件まで
-- **Implementation**: 実際に変更した要点
-- **Verification**: 触った text input / textarea / text-like input がモバイル `16px` 以上か、
+- **Implementation**: 実装依頼では変更の要点。レビュー依頼では指摘と改善案
+- **Verification**: 対象に含まれる text input / textarea / text-like input がモバイル `16px` 以上か、
   tooltip / help UI が touch と keyboard の両方で到達できるか、モバイル→タブレット→PC で破綻がないか

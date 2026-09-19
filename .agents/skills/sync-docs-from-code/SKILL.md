@@ -1,6 +1,6 @@
 ---
 name: sync-docs-from-code
-description: NAZOMATIC repository-specific documentation synchronization skill. Use when reviewing, auditing, or updating `docs/**` and the root `README.md` against the current codebase, when documentation feels stale, or when a user asks to sync docs from implementation. Treat `src/` and config as the source of truth, edit only docs/README/report files, leave `src/` and `AGENTS.md` unchanged, and overwrite the Japanese audit report with fixes, judgment calls, and noticed system issues.
+description: NAZOMATIC repository-specific documentation synchronization skill. Use when reviewing, auditing, or updating `docs/**` and the root `README.md` against the current codebase, when documentation feels stale, or when a user asks to sync docs from implementation. Treat `src/` and config as the source of truth, limit synchronization edits to docs/README/report files, leave `src/` and `AGENTS.md` unchanged, and overwrite the Japanese audit report with fixes, judgment calls, and noticed system issues. Follow AGENTS.md for session learnings.
 ---
 
 # Sync Docs From Code (NAZOMATIC)
@@ -13,7 +13,7 @@ This skill is project-local and specific to the NAZOMATIC repository.
 
 ## Scope
 
-- Edit only `docs/**`, root `README.md`, and the report file `docs/maintenance/doc-audit-report.md`.
+- Limit documentation synchronization edits to `docs/**`, root `README.md`, and the report file `docs/maintenance/doc-audit-report.md`. Session-level `LEARNINGS.md` maintenance follows `AGENTS.md` and is separate from this synchronization scope.
 - Read `src/`, config files, scripts, generated assets, and artifacts as sources of truth. Never write to `src/`.
 - Never edit `AGENTS.md`; report proposed changes under "AGENTS.md 推奨修正". It is written in Japanese, like the rest of the documentation.
 - Do not run `npm run` scripts that rewrite tracked artifacts (`skills:sync`, `shift:report:*`, `build`); record those as recommendations in the report instead.
@@ -51,7 +51,12 @@ If docs disagree with these rules, fix the docs. If code appears to violate them
    - Sync `docs/README.md`: add new docs, remove deleted docs, fix broken links, and correct mismatched descriptions.
    - Keep docs in Japanese. Leave root `AGENTS.md` unchanged.
    - Use Diataxis as a sorting lens: keep Reference facts and Explanation rationale from blurring together; do not invent Tutorials.
-4. Verify claims mechanically rather than by eye. Extract environment variable names from `scripts` and `src` and diff them against the docs with `comm`; check that every relative link and backticked path in the docs exists on disk. Report "no drift" only when a command confirms it.
+4. Verify claims mechanically rather than by eye. Extract environment variable names from `scripts` and `src` and diff them against the docs with `comm`. Classify relative links and backticked paths before checking them:
+   - Actual file references: resolve relative paths from the referring document and check existence on disk; resolve explicitly repository-root-relative paths from the repository root.
+   - Globs: check the matching files rather than treating the pattern as a literal filename.
+   - Placeholders and example paths: check the documented substitution or example against the implementation; their literal spelling need not exist on disk.
+   - Generated paths: check the documented generator and output location; distinguish tracked outputs that should exist from outputs created only when the documented command runs. Do not run artifact-rewriting commands outside the scope above.
+   Report "no drift" only for claims supported by these checks; record unverifiable claims in the report.
 5. Accumulate report items while working.
 6. Overwrite `docs/maintenance/doc-audit-report.md` with the current run. Create `docs/maintenance/` if it does not exist.
 7. Summarize changed docs and point the user to the report for judgment calls, system issues, and AGENTS.md recommendations.

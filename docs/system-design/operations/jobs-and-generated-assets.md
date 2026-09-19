@@ -78,4 +78,4 @@ artifacts を変更した commit では、両 command の出力を同期させ�
 
 ## 検証境界
 
-自動 test は `npm run test:x-browser-posting`（Node 標準 test runner、`scripts/x-browser-posting/*.test.mjs`）のみで、`src/` 側に test はありません。通常の変更確認は `npm run lint` と `npm run test:x-browser-posting`、変更対象に応じた `npm run build`、API dry-run、ブラウザ手動確認です。X ブラウザ投稿は dry-run を既定とし、Shift Search artifact の更新は両生成 command の差分を確認します。
+自動 test は `npm run test:x-browser-posting`（Node 標準 test runner、`scripts/x-browser-posting/*.test.mjs`）のみで、`src/` 側に test はありません。変更対象に応じて検証を選びます。`npm run lint` はスキル構成とコードの静的検査、`npm run test:x-browser-posting` はX投稿関連ロジックの回帰確認、`npm run build` はビルドへの影響の確認に使います。API・画面の挙動変更には対象の API dry-run・ブラウザ手動確認を使います。X ブラウザ投稿は dry-run を既定とし、Shift Search artifact の更新は両生成 command の差分を確認します。

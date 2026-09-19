@@ -15,17 +15,18 @@
 
 ## 判断のデフォルト
 
+- リポジトリ内の指示が衝突した場合は、ユーザーの明示指示、`AGENTS.md` のプロジェクト指示、スキルの運用指針の順に優先する。
 - 確認より実行を優先し、推奨案とともに実施する。結果を左右する判断だけをユーザーに提示し、それぞれに推奨を添える。
 - 作業は自分で完了させる。ツールで実行できるCLIコマンドや手作業をユーザーに投げ返さない（`.mcp.json`・`.claude/`・`.agents/skills/`・各種設定ファイルの編集を含む）。
 - スキルとMCPサーバーは、ユーザーの指示がない限りプロジェクトスコープ（`.mcp.json`、`.agents/skills/`）にインストールする。
 - パフォーマンス・SEO監査は、ローカルURLの指定がない限り本番 `https://nazomatic.vercel.app` を対象にする。
 
-## 参照必須ドキュメント
+## 作業別の参照先
 
-- AI実装ルール（特にUI・フォーム作業）の正本: `docs/ai-coding-rules.md`
-- アーキテクチャ・ルーティング・API・データ境界・SEO・認証境界: `docs/system-design/README.md`
-- セットアップ・コマンド・環境変数・検証・生成物: `docs/development-guide.md`
-- サブシステム文書の索引: `docs/README.md`
+- コード、特にUI・フォームを変更するとき: `docs/ai-coding-rules.md`
+- アーキテクチャ・ルーティング・API・データ境界・SEO・認証を扱うとき: `docs/system-design/README.md`
+- セットアップ・コマンド・環境変数・検証方法・生成物を扱うとき: `docs/development-guide.md`
+- 対象機能の文書を探すとき: `docs/README.md`
 
 ## プロジェクト概要
 
@@ -50,7 +51,7 @@ npm run shift:report:view-assets
 ```
 
 - 自動テストは `scripts/x-browser-posting/*.test.mjs`（Node標準 `node:test`）のみ。`src/` 配下にテストはない。
-- 特に指定がない限り `npm run lint` と `npm run test:x-browser-posting`、加えて対象を絞った手動確認を行う。
+- 検証は変更対象に応じて選ぶ。`npm run lint` はスキル構成とコードの静的検査、`npm run test:x-browser-posting` はX投稿関連ロジックの回帰確認に使う。画面の操作・表示を変えた場合は対象画面を確認する。
 - Shift Search のレポート成果物を変更したら `shift:report:*` 両方を実行し、`src/generated/shift-search/*` と同期させる。
 
 ## 標準ワークフロー
@@ -63,11 +64,12 @@ npm run shift:report:view-assets
 ## 共有 Agent Skill
 
 - `CLAUDE.md` はこのファイルを読み込むため、以下は Codex と Claude Code の両方に適用される。スキルの作成・導入・更新・改名・削除の前に必ず読むこと。
+- 外部リポジトリ由来のスキルを取り込むときは、参照リンクの実在と対象リポジトリのフレームワーク/APIへの適合を確認し、必要ならリポジトリ固有の適用対応表を設ける。
 - 正本は `.agents/skills/<name>/` のみ。ディレクトリ名と frontmatter の `name` を一致させる。Codexはこのパスを直接参照する。
 - Claude Code へは `.claude/skills/<name>/SKILL.md` の参照スタブでのみ公開する。frontmatterは正本と一致させ、本文は正本を読ませる指示のみとする。手順を複製しない。
 - symlink・junction・ディレクトリ丸ごとコピー・`.claude/commands/`・Claude専用プロンプトでの公開は禁止する。
 - 正本 `SKILL.md` 内のスクリプト・参照ファイルへのパスは必ずリポジトリルート相対で書く（例: `.agents/skills/<name>/scripts/foo.sh`）。スタブ経由ではスキルディレクトリ相対パスが解決できない。
-- `.claude/skills/` 配下は絶対に手編集しない。正本を直して再生成する。
+- `.claude/skills/` 配下は生成ファイルなので、正本を編集して再生成する。
 - スキル変更後は必ず `npm run skills:sync` → `npm run skills:check` を実行し、正本とスタブの差分を一緒にコミットする（`npm run lint` も `skills:check` を先に実行する）。
 - 呼び出しは Codexで `$<name>`、Claude Codeで `/<name>`。手順・理由・検証コマンド・復旧手順の詳細は `docs/development-guide.md` を参照。
 
@@ -90,4 +92,6 @@ npm run shift:report:view-assets
 
 - 新しい抽象を作るより、既存のコンポーネント・ユーティリティ・ルート・スタイルパターンを優先する。
 - 差分は依頼範囲に収める。
+- 常時ロードされる指示ファイルを編集するときは、編集前にディスクの現在内容を読み直し、追記候補を `docs/` と grep で照合する。詳細は重複させず `docs/` への参照に寄せる。
+- 「差分なし」「ルールが守られている」などの結論は推測で報告せず、対象に応じて grep / comm / node 等で機械的に検証する。
 - 明確な必要性なく新しい依存関係・保存先・カラーシステムを増やさない。

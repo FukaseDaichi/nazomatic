@@ -50,7 +50,7 @@ Claude Code へは、`.claude/skills/<name>/SKILL.md` を**参照スタブ**と�
 
 Claude Code はディレクトリ名からコマンド名を決めるため、`.claude/skills/<name>/` に置けば `/<name>` で呼び出せます。スタブは `npm run skills:sync` が生成するので、手書きしません。
 
-`CLAUDE.md` は `@AGENTS.md` を読み込み、`AGENTS.md` の「共有 Agent Skill」がこの節を参照します。したがって Codex と Claude Code のどちらでスキルを作成・インストール・更新しても同じ手順が適用されます。
+`CLAUDE.md` は `@AGENTS.md` を読み込み、`AGENTS.md` の「共有 Agent Skill」がこの節を参照します。したがって Codex と Claude Code のどちらでスキルを作成・インストール・更新しても同じ手順が適用されます。 リポジトリ内の指示の優先順位は、ユーザーの明示指示、`AGENTS.md`、スキルの運用指針の順です。文書同期スキルの編集対象制限は同期作業に適用し、学びの記録は `AGENTS.md` の運用に従います。
 
 ### 参照スタブを採用する理由
 

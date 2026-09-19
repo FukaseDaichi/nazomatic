@@ -1,7 +1,9 @@
 # NAZOMATIC — usage conventions
 
-NAZOMATIC is a **dark-first** design system (shadcn/ui primitives, Tailwind utility
-classes). Every component is on `window.NAZOMATIC.*` and is styled with **stock
+This bundle extracts the UI components from the NAZOMATIC Next.js app; it is not
+a published React component library. The design system is **dark-first**
+(shadcn/ui primitives, Tailwind utility classes). Every component is on
+`window.NAZOMATIC.*` and is styled with **stock
 Tailwind utility classes** — there is no separate prop-based theming layer.
 
 ## 1. Wrapping & setup (read this first)
@@ -36,9 +38,9 @@ Style via `className` with these families (stock gray palette + purple accent):
 | Borders / dividers | `border-gray-800` `border-gray-700` |
 | Radius | `rounded-md` `rounded-lg` `rounded-full` (badges) |
 
-- **⚠️ Brand color on `Button`/`Badge` backgrounds MUST include a `dark:` variant.**
+- Brand color on `Button`/`Badge` backgrounds requires a matching `dark:` variant.
   Their default variants set `dark:bg-gray-50` (light in dark mode), which overrides a
-  bare `bg-purple-600` → the control renders WHITE. Always pair them:
+  bare `bg-purple-600`, making the control render white. Pair the classes as follows:
   ```jsx
   <Button className="bg-purple-600 text-white hover:bg-purple-500
                      dark:bg-purple-600 dark:text-white dark:hover:bg-purple-500">
