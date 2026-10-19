@@ -6,6 +6,8 @@
 
 ## セットアップ
 
+Node.js は 24.x を使います（`package.json` の `engines.node`）。Vercel のビルドと GitHub Actions もこの版に揃えています。
+
 ```bash
 npm install
 npm run dev
