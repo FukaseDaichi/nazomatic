@@ -21,6 +21,7 @@
 
 - 2026-09-19: 生の観察から恒久文書へ制約を転記するときは、「不可」を「前提にしない」へ弱めたり、唯一の代替策などの付随条件を落としたりしない。元項目の各節を転記先と機械的に照合すると、要件の意味を保ったまま卒業できる。
 - 2026-08-28: macOS（BSD date）は `date +%s%3N` の `%3N` を解釈せず `1787…N` のような不正値を返す。epoch ミリ秒が要るときは `node -e 'console.log(Date.now())'` を使う（automation.toml の created_at 等に不正値が入ると読み込みが壊れる）。
+- 2026-10-20: cleanup 前に `future` を push しても、`origin/main` がその commit を含まない間は ancestry guard が働くため、手動 merge で回避せず cleanup を停止して報告する。
 
 ## Domain Knowledge
 
