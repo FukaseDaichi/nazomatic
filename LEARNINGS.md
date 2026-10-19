@@ -26,6 +26,8 @@
 
 （業務・仕様に関する事実）
 
+- 2026-10-19: X投稿の `fetch failed` は接続先をログだけで判別できない。観測ログ・週末サマリでは prepare API、成長計測では起動時のローカルCDP接続も発生源になるため、CLIの実行順と照合する。修正前の Chrome 起動は stderr と子プロセスの error を破棄していたため、過去の CDP timeout だけではプロファイル競合と起動失敗を確定できない。
+
 - 2026-08-28: Codex画像生成をスクリプトから使う契約は `codex exec --sandbox workspace-write --skip-git-repo-check --ephemeral -C <dir> -- "Use the imagegen skill..."`。現行 Codex CLI は `--full-auto` を受け付けない。`SAVED: <絶対パス>` 行は instruction 側で明示要求し、パース後に workDir 配下 realpath・生成時刻・PNG/JPEGマジックバイトを検証してから使う。
 
 ## Open Questions

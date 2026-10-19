@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { ensureCdpChromeAvailable } from "./x-browser-posting/chromeRuntime.mjs";
 import { pathToFileURL } from "url";
 
 import { loadBrowserPostConfig } from "./x-browser-posting/config.mjs";
@@ -192,6 +193,7 @@ export async function reconcileExperimentActivation({ cwd, telemetry, now = new 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   const config = loadBrowserPostConfig([], process.cwd());
+  await ensureCdpChromeAvailable(config);
   const page = await openCdpChromePage(config.cdpUrl, { bringToFront: config.bringToFront });
   try {
     await prepareGrowthMaintenancePage({
