@@ -6,6 +6,8 @@
 
 ## セットアップ
 
+Node.js は 24.x を使います（`package.json` の `engines.node`）。Vercel のビルドと GitHub Actions もこの版に揃えています。
+
 ```bash
 npm install
 npm run dev
@@ -246,6 +248,10 @@ npm run x:growth-maintain
 ```
 
 `--login-only` は候補取得や内部 API 呼び出しをせず、`X_BROWSER_POST_CHROME_EXECUTABLE_PATH` の通常 Chrome を直接起動し、`X_BROWSER_POST_USER_DATA_DIR` の Chrome プロファイルで `https://x.com/login` を開きます。Chrome for Testing を避けたい初回ログイン用です。初回ログイン後は、通常投稿時に `X_BROWSER_POST_CDP_URL` へ接続し、接続できなければ `X_BROWSER_POST_AUTO_START_CHROME=true` で同じ専用 profile の通常 Chrome を自動起動します。
+
+Chrome の復旧は `npm run x:browser-post -- --login-only` を使います。投稿や DB 更新はせず、専用 profile の Chrome を表示して CDP の応答を確認します。ログイン・追加認証が必要な場合は表示された Chrome で操作します。既存の headless Chrome が動いている場合は再利用されるため、画面が必要ならその専用 Chrome を通常の終了操作で閉じてから login-only を使います。普段使いの Chrome や profile を削除する必要はありません。
+
+`Chrome CDP access was denied by execution permissions`（`EPERM` / `EACCES`）では実行環境の通信権限を確認します。`ECONNREFUSED` では CDP が待ち受けておらず、自動起動が有効なら Chrome を起動します。起動失敗・timeout のログには接続先、専用 profile、終了コードまたは signal、上限付きの Chrome stderr が出ます。プロファイル競合が明示された場合だけ、同じ専用 profile の Chrome を確認します。Singleton ファイルの手動削除や既存プロセスの一括強制終了は行いません。
 
 実投稿時は `--execute` を付けます。人間確認を省略するには `.env.x-browser-posting.local` で `X_BROWSER_POST_CONFIRMATION_MODE=auto` と `X_BROWSER_POST_AUTO_EXECUTE_ALLOWED=true` を両方指定します。
 

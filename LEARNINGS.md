@@ -21,10 +21,14 @@
 
 - 2026-09-19: 生の観察から恒久文書へ制約を転記するときは、「不可」を「前提にしない」へ弱めたり、唯一の代替策などの付随条件を落としたりしない。元項目の各節を転記先と機械的に照合すると、要件の意味を保ったまま卒業できる。
 - 2026-08-28: macOS（BSD date）は `date +%s%3N` の `%3N` を解釈せず `1787…N` のような不正値を返す。epoch ミリ秒が要るときは `node -e 'console.log(Date.now())'` を使う（automation.toml の created_at 等に不正値が入ると読み込みが壊れる）。
+- 2026-10-20: cleanup 前に `future` を push しても、`origin/main` がその commit を含まない間は ancestry guard が働くため、手動 merge で回避せず cleanup を停止して報告する。
 
 ## Domain Knowledge
 
 （業務・仕様に関する事実）
+
+- 2026-10-20: Vercel の Node.js 版はリポジトリに指定がないと Project Settings に従う。`package.json` の `engines.node`（例: `24.x`）を書けばダッシュボードを変えずに上書きできるので、Node 廃止エラーはコード側で直して PR に含める。
+- 2026-10-19: X投稿の `fetch failed` は接続先をログだけで判別できない。観測ログ・週末サマリでは prepare API、成長計測では起動時のローカルCDP接続も発生源になるため、CLIの実行順と照合する。修正前の Chrome 起動は stderr と子プロセスの error を破棄していたため、過去の CDP timeout だけではプロファイル競合と起動失敗を確定できない。
 
 - 2026-08-28: Codex画像生成をスクリプトから使う契約は `codex exec --sandbox workspace-write --skip-git-repo-check --ephemeral -C <dir> -- "Use the imagegen skill..."`。現行 Codex CLI は `--full-auto` を受け付けない。`SAVED: <絶対パス>` 行は instruction 側で明示要求し、パース後に workDir 配下 realpath・生成時刻・PNG/JPEGマジックバイトを検証してから使う。
 

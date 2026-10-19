@@ -1,7 +1,11 @@
+import {
+  ensureCdpChromeAvailable,
+  launchCdpChrome,
+  closeStaleComposeTabs,
+} from "./chromeRuntime.mjs";
 import fs from "node:fs/promises";
 import fsSync from "node:fs";
 import path from "node:path";
-import { spawn } from "node:child_process";
 
 import { openCdpChromePage } from "./cdpChromePage.mjs";
 import {
@@ -187,128 +191,6 @@ async function openBrowserSession(playwright, config) {
   });
   const page = await context.newPage();
   return { page, close: () => browser.close() };
-}
-
-async function ensureCdpChromeAvailable(config) {
-  if (await isCdpAvailable(config.cdpUrl)) {
-    return;
-  }
-  if (!config.autoStartChrome) {
-    throw new Error(
-      [
-        `Could not connect to Chrome at ${config.cdpUrl}.`,
-        "X_BROWSER_POST_AUTO_START_CHROME=false, so Chrome was not started automatically.",
-        "Start Chrome with `npm run x:browser-post -- --login-only` and keep it open, or enable auto start.",
-      ].join("\n")
-    );
-  }
-
-  await launchCdpChrome(config, "https://x.com/home", {
-    headless: config.headless,
-  });
-  await waitForCdpAvailable(config.cdpUrl, config.chromeStartupTimeoutMs).catch(
-    (error) => {
-      throw new Error(
-        [
-          `Chrome was started, but ${config.cdpUrl} did not become available.`,
-          "If an existing Chrome window is already using the same profile, close it and retry.",
-          "For first-time setup, run `npm run x:browser-post -- --login-only` and complete manual login.",
-          error instanceof Error ? error.message : String(error),
-        ].join("\n")
-      );
-    }
-  );
-  console.log(`Started Chrome for X browser posting: ${config.cdpUrl}`);
-}
-
-async function launchCdpChrome(config, url, { headless = false } = {}) {
-  if (!config.chromeExecutablePath) {
-    throw new Error(
-      "Set X_BROWSER_POST_CHROME_EXECUTABLE_PATH so normal Chrome can be launched directly"
-    );
-  }
-  if (!config.userDataDir) {
-    throw new Error(
-      "Set X_BROWSER_POST_USER_DATA_DIR so the login session can be saved in a dedicated Chrome profile"
-    );
-  }
-
-  await fs.access(config.chromeExecutablePath).catch(() => {
-    throw new Error(`Chrome executable was not found: ${config.chromeExecutablePath}`);
-  });
-  await fs.mkdir(config.userDataDir, { recursive: true });
-
-  const child = spawn(
-    config.chromeExecutablePath,
-    [
-      `--user-data-dir=${config.userDataDir}`,
-      `--remote-debugging-port=${config.remoteDebuggingPort}`,
-      ...(headless ? ["--headless=new"] : []),
-      url,
-    ],
-    { detached: true, stdio: "ignore" }
-  );
-  child.on("error", () => {});
-  child.unref();
-}
-
-async function closeStaleComposeTabs(cdpUrl) {
-  const targets = await fetchCdpJson(cdpUrl, "/json/list", 2000);
-  if (!Array.isArray(targets)) {
-    return 0;
-  }
-  const composeTargets = targets.filter(
-    (target) =>
-      target?.type === "page" &&
-      /^https:\/\/(x|twitter)\.com\/compose\/post(?:[?#].*)?$/.test(
-        target.url ?? ""
-      )
-  );
-  for (const target of composeTargets) {
-    await fetchCdpJson(
-      cdpUrl,
-      `/json/close/${encodeURIComponent(target.id)}`,
-      1000
-    );
-  }
-  return composeTargets.length;
-}
-
-async function isCdpAvailable(cdpUrl) {
-  return Boolean(await fetchCdpJson(cdpUrl, "/json/version", 1000));
-}
-
-async function waitForCdpAvailable(cdpUrl, timeoutMs) {
-  const startedAt = Date.now();
-  while (Date.now() - startedAt < timeoutMs) {
-    if (await isCdpAvailable(cdpUrl)) {
-      return;
-    }
-    await wait(500);
-  }
-  throw new Error(`Timed out after ${timeoutMs}ms waiting for Chrome CDP`);
-}
-
-async function fetchCdpJson(cdpUrl, pathname, timeoutMs) {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), timeoutMs);
-  try {
-    const response = await fetch(`${cdpUrl.replace(/\/+$/, "")}${pathname}`, {
-      signal: controller.signal,
-    });
-    if (!response.ok) {
-      return null;
-    }
-    return await response.json();
-  } catch {
-    return null;
-  } finally {
-    clearTimeout(timeout);
-  }
-}
-
-function wait(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 async function saveScreenshot(page, config, label) {

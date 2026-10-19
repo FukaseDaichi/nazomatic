@@ -13,6 +13,14 @@ X 投稿には、互いに独立した 2 方式があります。
 
 X の Automation Rules は、X API を使わずWebサイトをスクリプト操作する自動化にアカウント停止リスクがあることと、トレンド話題の自動投稿を許可しないことを明記しています（2026-08-29 再確認: [X's automation development rules](https://help.x.com/en/rules-and-policies/x-automation?lang=browser)）。現行ブラウザ投稿と下記のリプライ観測はこの運用リスクを解消しません。投稿・観測とも対象数を制限し、blocking state を回避せず停止します。
 
+## Chrome の起動と接続診断
+
+5種類の投稿 CLI は `scripts/x-browser-posting/chromeRuntime.mjs` を共有します。CDP が利用可能なら既存 Chrome を再利用し、未起動なら設定済みの専用 profile で Chrome を起動して準備完了を待ちます。成長計測メンテナンスも同じ起動確認を通します。`--login-only` も接続確認まで行い、起動要求を出しただけでは成功扱いにしません。
+
+接続の `EPERM` / `EACCES` は実行環境の権限拒否として停止します。権限拒否を Chrome 未起動と誤認して繰り返し起動しません。自動起動はローカル CDP に限り、リモート接続先に届かない場合はローカル Chrome を代わりに起動しません。起動時のエラー、早期終了、timeout では、接続先・profile・終了情報と上限付きの stderr を診断として返します。既存 Chrome の強制終了、profile・Cookie・Singleton ファイルの削除、ログイン自動化は行いません。
+
+復旧確認は `npm run x:browser-post -- --login-only` で行います。このモードは投稿しません。ログイン切れや追加認証が表示された場合だけ、専用 Chrome 上で人間が操作します。通信権限の不足は実行環境側で解消する必要があり、Chrome の再起動だけでは解消しません。
+
 ## 運用上の前提
 
 - 週次運用への人間関与はほぼ行わず、ミニ謎の作問・監修も行いません。

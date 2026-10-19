@@ -20,7 +20,7 @@ jobs:
       INTERNAL_API_SIGNING_SECRET: ${{ secrets.INTERNAL_API_SIGNING_SECRET }}
       HASHTAG: "#謎チケ売ります"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Ensure configuration exists
         run: |
           if [ -z "$BASE_URL" ] || [ -z "$API_TOKEN" ]; then

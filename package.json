@@ -2,6 +2,9 @@
   "name": "nazomatic",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -55,7 +58,7 @@
   "devDependencies": {
     "@shadcn/ui": "^0.0.4",
     "@types/canvas-confetti": "^1.9.0",
-    "@types/node": "^20",
+    "@types/node": "^24",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
