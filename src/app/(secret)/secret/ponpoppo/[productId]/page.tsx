@@ -1,29 +1,15 @@
 import QuizFloatingCard from "@/components/ponpoppo/QuizFloatingCard";
-import { headers } from "next/headers";
-
-async function getQuizData(): Promise<any> {
-  const headersList = headers();
-  const protocol = headersList.get("x-forwarded-proto") ?? "https";
-  const host =
-    headersList.get("x-forwarded-host") ?? headersList.get("host") ?? "localhost:3000";
-  const baseUrl = `${protocol}://${host}`;
-
-  const res = await fetch(`${baseUrl}/data/quiz-data.json`, {
-    cache: "no-store",
-  });
-  if (!res.ok) {
-    throw new Error("Failed to fetch quiz data");
-  }
-  return res.json();
-}
+import quizData from "../../../../../../public/data/quiz-data.json";
 
 export default async function QuizPage({
   params,
 }: {
-  params: { productId: string };
+  params: Promise<{ productId: string }>;
 }) {
-  const data = await getQuizData();
-  const quiz = data.products[params.productId];
+  const { productId } = await params;
+  const quiz = Object.hasOwn(quizData.products, productId)
+    ? quizData.products[productId as keyof typeof quizData.products]
+    : undefined;
 
   if (!quiz) {
     return <div>商品が見つかりません。</div>;

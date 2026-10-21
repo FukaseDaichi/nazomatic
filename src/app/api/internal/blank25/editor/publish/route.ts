@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { authorizeBlank25Editor } from "@/server/blank25/authorization";
 
 import {
   buildStorageImagePath,
@@ -175,6 +176,8 @@ const normalizeBase64 = (input: string): string =>
     .replace(/\s+/g, "");
 
 export async function POST(request: Request) {
+  const denied = authorizeBlank25Editor(request);
+  if (denied) return denied;
   try {
     const rawBody = await readJsonBody(request);
     const body = parseBody(rawBody);

@@ -33,11 +33,13 @@ npm run dev
 | `npm run x:growth-review` | 直近7日の X 運用を集計し、必要に応じて GitHub Issue を作る CLI |
 | `npm run x:growth-improve` | 週次レビューから改善実験を1件提案し、`--execute` 時だけドラフト PR を作る CLI |
 | `npm run x:growth-maintain` | 投稿せず follower / metrics を回収し、実験の production activation と72時間後の自動 keep を照合する CLI |
+| `npm run test:security` | Editor APIの認証迂回・CSRF回帰確認 |
+| `npm run audit:production` | devを除いた依存監査（既知のTailwind系指摘があるため現在は非0終了） |
 | `npm run test:x-browser-posting` | `scripts/x-browser-posting/*.test.mjs` 全件の回帰テスト（X 文案 validator、ゆる出題の語選定と denylist、観測ログ画像、リプライ観測、proposal schema、patch 適用、review markdown、依存 bootstrap、成長メンテナンス） |
 | `npm run shift:report:meta` | Shift Search レポート元成果物から manifest / index を生成 |
 | `npm run shift:report:view-assets` | Shift Search レポート表示用 JSON を `src/generated/shift-search` に生成 |
 
-汎用テストフレームワークは未設定です。X ブラウザ投稿の純粋ロジックには Node.js 標準 test runner を使います。変更内容に応じて `npm run test:x-browser-posting`、`npm run lint`、`npm run build`、ブラウザでの手動確認を使い分けます。
+汎用テストフレームワークは未設定です。X ブラウザ投稿とセキュリティ回帰確認には Node.js 標準 test runner を使います。変更内容に応じて `npm run test:x-browser-posting`、`npm run lint`、`npm run build`、ブラウザでの手動確認を使い分けます。
 
 ## Codex / Claude Code 共有 Agent Skill
 

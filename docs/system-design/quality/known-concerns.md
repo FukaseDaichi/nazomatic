@@ -8,9 +8,9 @@
 
 `src/server/blank25/github.ts` は storage branch ref を `force: true` で更新し、base commit の競合を検出しません。複数 Editor が同時に publish すると、後の更新が先の manifest 変更を失わせる可能性があります。更新・削除で不要になった画像も自動削除されないため、orphan file が増えます。
 
-### 自動 test の範囲が X 投稿 script に限られる
+### 自動 test の範囲が X 投稿と Editor 認証に限られる
 
-`src/` 側には test が 1 件もありません。timezone 計算、Yahoo response parsing、Firestore transaction、BLANK25 manifest 編集、生成 scripts の回帰は、lint と build と手動確認だけで担保しています。外部仕様依存の多いサブシステムほど、変更検知が遅れる可能性があります。
+Editor API認証には回帰testがありますが、その他の `src/` 側のtestはありません。timezone 計算、Yahoo response parsing、Firestore transaction、BLANK25 manifest 編集、生成 scripts の回帰は、lint と build と手動確認だけで担保しています。外部仕様依存の多いサブシステムほど、変更検知が遅れる可能性があります。
 
 ## 優先度: 中
 
@@ -43,3 +43,7 @@ Yahoo!リアルタイム検索と X syndication endpoint は外部 response の�
 ### local rate state の日次キーが UTC 日付
 
 `local/x-browser-posting/rate-state.json` の日次キーは UTC 日付で管理され、投稿 CLI の Asia/Tokyo 運用日と最大9時間ずれる。現行の投稿数は1日10件未満で hard limit 30件に近くないため影響は小さいが、日次上限を増やす前に JST 基準へ統一する。
+
+### ビルド依存のDoS指摘が未解消
+
+Tailwind 3 / ESLint配下のbraces、postcss-selector-parser由来の指摘が残ります。公開リクエストからの到達経路は確認していませんが、監査ゼロではありません。適用条件・継続監査・Tailwind移行方針は [セキュリティ調査](../../maintenance/security-assessment-2026-10.md) を参照します。

@@ -22,7 +22,9 @@
     "x:growth-maintain": "node scripts/x-growth-maintain.mjs",
     "test:x-browser-posting": "node --test scripts/x-browser-posting/*.test.mjs",
     "shift:report:meta": "node scripts/build-shift-search-report-meta.mjs",
-    "shift:report:view-assets": "node scripts/build-shift-search-view-assets.mjs"
+    "shift:report:view-assets": "node scripts/build-shift-search-view-assets.mjs",
+    "test:security": "node --test scripts/security/*.test.mjs",
+    "audit:production": "npm audit --omit=dev --audit-level=moderate"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.1",
@@ -32,9 +34,9 @@
     "@radix-ui/react-separator": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.4",
-    "@react-spring/three": "^9.7.5",
-    "@react-three/drei": "^9.116.0",
-    "@react-three/fiber": "^8.17.10",
+    "@react-spring/three": "^10.1.2",
+    "@react-three/drei": "^10.7.9",
+    "@react-three/fiber": "^9.8.2",
     "@types/three": "^0.169.0",
     "@types/webspeechapi": "^0.0.29",
     "@use-gesture/react": "^10.3.1",
@@ -43,11 +45,11 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "firebase-admin": "^14.3.0",
-    "framer-motion": "^11.11.11",
-    "lucide-react": "^0.293.0",
-    "next": "^14.2.35",
-    "react": "^18",
-    "react-dom": "^18",
+    "framer-motion": "^11.18.2",
+    "lucide-react": "^0.468.0",
+    "next": "^15.5.28",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
     "react-easy-crop": "^5.5.6",
     "schema-dts": "^1.1.2",
     "shadcn-ui": "^0.9.3",
@@ -59,14 +61,19 @@
     "@shadcn/ui": "^0.0.4",
     "@types/canvas-confetti": "^1.9.0",
     "@types/node": "^24",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
-    "eslint-config-next": "^14.2.35",
+    "eslint-config-next": "^15.5.28",
     "playwright": "^1.60.0",
     "postcss": "^8",
     "tailwindcss": "^3.3.0",
     "typescript": "^5"
+  },
+  "overrides": {
+    "next": {
+      "postcss": "^8.5.31"
+    }
   }
 }

@@ -1,0 +1,37 @@
+name: Security checks
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, future]
+  schedule:
+    - cron: '30 0 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      # Known build-tool DoS findings remain visible. See the security assessment.
+      - name: Report all dependency vulnerabilities
+        run: npm audit
+        continue-on-error: true
+      - name: Block critical vulnerabilities
+        run: npm audit --audit-level=critical
+      - run: npm run test:security
+      - run: npm run test:x-browser-posting
+      - run: npm run lint
+      - run: npm run build

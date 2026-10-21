@@ -21,6 +21,7 @@
 | [`system-design/quality/`](./system-design/quality/) | コードから確認できる既知の懸念点 |
 | [`development-guide.md`](./development-guide.md) | セットアップ、コマンド、環境変数、変更時確認 |
 | [`ai-coding-rules.md`](./ai-coding-rules.md) | AI がコードや UI を変更するときの必須ルール |
+| [`maintenance/security-assessment-2026-10.md`](./maintenance/security-assessment-2026-10.md) | 公式セキュリティ情報との照合、実施対策、未解消項目 |
 | [`maintenance/doc-audit-report.md`](./maintenance/doc-audit-report.md) | 直近のドキュメント同期結果 |
 
 ## 保守ルール
