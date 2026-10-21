@@ -12,7 +12,7 @@ const CACHE_SECONDS = 60;
 const MAX_LIMIT = PAGE_SIZE;
 
 export const runtime = "nodejs";
-export const revalidate = CACHE_SECONDS;
+export const revalidate = 60;
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);

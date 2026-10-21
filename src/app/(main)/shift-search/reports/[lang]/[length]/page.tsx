@@ -17,10 +17,10 @@ import {
 import { ArrowLeft, Download } from "lucide-react";
 
 type PageProps = {
-  params: {
+  params: Promise<{
     lang: string;
     length: string;
-  };
+  }>;
 };
 
 const NUMBER_FORMAT = new Intl.NumberFormat("ja-JP");
@@ -44,7 +44,8 @@ function parseLanguage(raw: string): ShiftSearchReportLanguage | null {
   return null;
 }
 
-export function generateMetadata({ params }: PageProps): Metadata {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const params = await props.params;
   const language = parseLanguage(params.lang);
   const length = Number(params.length);
   const summary =
@@ -76,7 +77,8 @@ function getRawReportDownloadUrl(
   return `${RAW_REPORT_BASE_URL}/${language}/shift-search-${language}-len-${length}.md`;
 }
 
-export default function ShiftSearchReportDetailPage({ params }: PageProps) {
+export default async function ShiftSearchReportDetailPage(props: PageProps) {
+  const params = await props.params;
   const language = parseLanguage(params.lang);
   const length = Number(params.length);
   if (!language || !Number.isInteger(length) || length <= 0) {

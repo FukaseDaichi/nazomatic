@@ -48,7 +48,7 @@ branch ref は新 commit へ `force: true` で更新します。同時編集の�
 
 ## 認証
 
-`src/middleware.ts` が `/blank25/editor/:path*` と `/api/internal/blank25/editor/:path*` を Basic 認証します。mutation method では、Origin header がある場合だけ request origin と一致することを確認します。
+`src/middleware.ts` が `/blank25/editor/:path*` と `/api/internal/blank25/editor/:path*` を Basic 認証します。API はさらに `src/server/blank25/authorization.ts` を各 Route Handler の先頭で呼び、定数時間で Basic credential を再検証します。mutation では Origin がある場合に同一 origin を要求し、不正・空・null Origin と `Sec-Fetch-Site: cross-site` を拒否します。Origin なしの非ブラウザクライアントも Basic 認証が必須です。
 
 ## ゲーム状態
 
@@ -62,4 +62,4 @@ branch ref は新 commit へ `force: true` で更新します。同時編集の�
 
 ## 配信 URL
 
-画像 URL は `NEXT_PUBLIC_BLANK25_STORAGE_RAW_BASE` を基点にします。未設定時は `https://raw.githubusercontent.com/FukaseDaichi/nazomatic-storage/main` です。Next.js Image は `raw.githubusercontent.com/**` を許可します。
+画像 URL は `NEXT_PUBLIC_BLANK25_STORAGE_RAW_BASE` を基点にします。未設定時は `https://raw.githubusercontent.com/FukaseDaichi/nazomatic-storage/main` です。Next.js Image は `raw.githubusercontent.com/FukaseDaichi/nazomatic-storage/**` を許可します。

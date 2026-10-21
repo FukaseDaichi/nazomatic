@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { authorizeBlank25Editor } from "@/server/blank25/authorization";
 
 import {
   fetchManifestFromRaw,
@@ -20,7 +21,9 @@ type ManifestResponse =
       error: string;
     };
 
-export async function GET() {
+export async function GET(request: Request) {
+  const denied = authorizeBlank25Editor(request);
+  if (denied) return denied;
   try {
     const config = loadBlank25StorageConfig();
     const manifestText = await fetchManifestFromRaw(config);

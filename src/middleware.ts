@@ -64,7 +64,10 @@ export function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
   if (path.startsWith(API_PREFIX) && MUTATION_METHODS.has(request.method)) {
     const origin = request.headers.get("origin");
-    if (origin && origin !== request.nextUrl.origin) {
+    if (
+      (origin !== null && origin !== request.nextUrl.origin) ||
+      request.headers.get("sec-fetch-site") === "cross-site"
+    ) {
       return new NextResponse("Forbidden", { status: 403 });
     }
   }

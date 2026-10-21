@@ -4,7 +4,7 @@
 
 | 領域 | 実装 |
 |---|---|
-| Web アプリ | Next.js 14 App Router、React 18、TypeScript |
+| Web アプリ | Next.js 15.5 App Router、React 19、TypeScript |
 | UI | Tailwind CSS、shadcn/ui、Radix UI、lucide-react、framer-motion |
 | 3D | three、`@react-three/fiber`、`@react-three/drei` |
 | サーバー | Next.js Route Handler、Firebase Admin SDK |

@@ -46,13 +46,7 @@ export async function GET() {
       );
     }
 
-    if (error instanceof Error) {
-      return NextResponse.json<ManifestResponse>(
-        { ok: false, error: error.message },
-        { status: 500 },
-      );
-    }
-
+    console.error("Failed to load BLANK25 manifest", error);
     return NextResponse.json<ManifestResponse>(
       { ok: false, error: "Unexpected server error." },
       { status: 500 },
