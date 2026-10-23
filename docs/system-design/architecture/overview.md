@@ -8,8 +8,7 @@
 | UI | Tailwind CSS、shadcn/ui、Radix UI、lucide-react、framer-motion |
 | 3D | three、`@react-three/fiber`、`@react-three/drei` |
 | サーバー | Next.js Route Handler、Firebase Admin SDK |
-| 外部連携 | Yahoo!リアルタイム検索、GitHub API、X API、X syndication endpoint |
-| ローカル自動化 | Node.js、Playwright、Chrome DevTools Protocol、任意の Codex CLI |
+| 外部連携 | Yahoo!リアルタイム検索、GitHub API、X syndication endpoint |
 | 生成処理 | Node.js scripts、`artifacts/shift-search/reports`、`src/generated/shift-search` |
 
 `package.json` の依存バージョンと scripts を実行時の正本とします。
@@ -32,19 +31,7 @@
 ### GitHub Actions
 
 - Realtime 収集、古いイベント削除、Post 可視性検証を定期実行する。
-- X API 再投稿は workflow_dispatch のみで起動する。
-- `main` 向けの `x-growth-experiment` PR は TypeScript、lint、X 投稿回帰テスト、production build を検証する。
-- CI に成功した対象 PR は、label と最新 head SHA を再確認して自動マージする。
 - 定期実行 Actions はサイトの内部 API を Bearer token 付きで呼ぶだけで、処理本体は Route Handler 側に置く。
-
-### ローカル PC
-
-- X ブラウザ投稿 CLI は、ログイン済み専用 Chrome profile と Playwright / CDP を使う。
-- Cookie や profile は `local/`、実行ログは `logs/` に置き、Git 管理しない。
-- 候補予約や集計は内部 API、X 画面操作と投稿前確認はローカル CLI が担当する。
-- 週次レビューは投稿台帳・フォロワー snapshot・実行ログを集計して GitHub Issue を作る。
-- 週次改善PR作成は Codex CLI に read-only で提案させ、Node.js 側の allowlist と検証を通った1件だけを一時 worktree からドラフト PR へ反映する。PR は GitHub Actions の CI 成功後に自動マージされる。実験状態は GitHub が正本で、ローカル実験台帳は使わない。
-- 日次の成長計測メンテナンスは投稿せず follower / metrics を回収し、successful production deployment を確認できた merged 実験 PR の activation と、問題指定がない active PR の72時間後の自動 keep を進める。
 
 ## 主なディレクトリ
 
@@ -59,7 +46,7 @@
 | `src/server` | サーバー専用外部連携と永続化 |
 | `src/types` | API・Firestore データ型 |
 | `public` | 辞書、画像、manifest などの静的配信物 |
-| `scripts` | Shift Search 生成と X ローカル自動化 |
+| `scripts` | Shift Search 生成、内部 API 署名、セキュリティ回帰確認 |
 | `artifacts/shift-search/reports` | Shift Search レポート元成果物 |
 | `src/generated/shift-search` | Next.js が import する表示用 JSON |
 

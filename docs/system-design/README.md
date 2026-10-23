@@ -4,7 +4,7 @@
 
 ## システムの要約
 
-NAZOMATIC は、謎解き・パズル支援ツール、イベント情報カレンダー、BLANK25、生成済み探索レポート、X 投稿支援を 1 つの Next.js App Router アプリで提供します。公開画面、noindex 画面、Route Handler、サーバー専用外部連携、ローカル CLI が同じリポジトリにあります。
+NAZOMATIC は、謎解き・パズル支援ツール、イベント情報カレンダー、BLANK25、生成済み探索レポートを 1 つの Next.js App Router アプリで提供します。公開画面、noindex 画面、Route Handler、サーバー専用外部連携が同じリポジトリにあります。
 
 ```mermaid
 flowchart LR
@@ -14,13 +14,6 @@ flowchart LR
   next --> yahoo["Yahoo!リアルタイム検索"]
   next --> github["GitHub / nazomatic-storage"]
   actions["GitHub Actions"] --> internalApi["Bearer 保護された内部 API"]
-  localCli["ローカル Playwright CLI"] --> internalApi
-  localCli --> xweb["x.com"]
-  localReview["ローカル週次レビュー"] --> githubIssue["GitHub Issue"]
-  githubIssue --> localImprove["ローカル週次改善"]
-  localImprove --> draftPr["GitHub draft PR"]
-  localMaintain["ローカル日次計測"] --> xweb
-  localMaintain --> draftPr
   artifacts["Shift Search artifacts"] --> generated["表示用 generated JSON"]
   generated --> next
 ```
@@ -44,22 +37,19 @@ flowchart LR
 | [`subsystems/calendar-realtime.md`](./subsystems/calendar-realtime.md) | カレンダー、Realtime 収集、可視性検証 |
 | [`subsystems/blank25.md`](./subsystems/blank25.md) | BLANK25、Editor、外部 storage |
 | [`subsystems/shift-search.md`](./subsystems/shift-search.md) | シフト検索とレポート配信 |
-| [`subsystems/x-posting.md`](./subsystems/x-posting.md) | X API 再投稿とローカルブラウザ投稿 |
-| [`subsystems/x-growth-improve-agent.md`](./subsystems/x-growth-improve-agent.md) | X 週次改善エージェント（codex 提案 → 検証 → ドラフト PR） |
 
 ### Operations / Quality
 
 | 文書 | 内容 |
 |---|---|
-| [`operations/jobs-and-generated-assets.md`](./operations/jobs-and-generated-assets.md) | GitHub Actions、ローカル CLI、生成物同期 |
-| [`operations/x-browser-post-schedules.md`](./operations/x-browser-post-schedules.md) | 稼働中の X 投稿・週次レビュー・改善 PR・成長計測・Git cleanup のスケジュールと実行契約 |
+| [`operations/jobs-and-generated-assets.md`](./operations/jobs-and-generated-assets.md) | GitHub Actions、生成物同期、Git cleanup |
 | [`quality/known-concerns.md`](./quality/known-concerns.md) | 現行コードから確認できる懸念点と影響 |
 
 ## 設計上の不変条件
 
 - 公開導線の順序と列挙は `src/lib/json/features.json` を正本にする。
-- 外部データ取得と永続化はサーバーまたはローカル CLI に閉じ、クライアントは `/api/*` を使う。
-- BLANK25 Editor は HTTP Basic 認証、Realtime / X 内部 API は Bearer 認証と HMAC 署名（有効期限・nonce 付き）を使う。
+- 外部データ取得と永続化はサーバーに閉じ、クライアントは `/api/*` を使う。
+- BLANK25 Editor は HTTP Basic 認証、Realtime 内部 API は Bearer 認証と HMAC 署名（有効期限・nonce 付き）を使う。
 - 通常 UI はダークグラデーションと `purple-400` を基調にする。
 - text-like input はモバイルで 16px 以上にする。
 - three.js 背景は `next/dynamic` でアイドル時に遅延マウントし、背景の下地は遅延対象から分離する。

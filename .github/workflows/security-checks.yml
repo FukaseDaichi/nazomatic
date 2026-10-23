@@ -32,6 +32,5 @@ jobs:
       - name: Block critical vulnerabilities
         run: npm audit --audit-level=critical
       - run: npm run test:security
-      - run: npm run test:x-browser-posting
       - run: npm run lint
       - run: npm run build

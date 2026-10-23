@@ -61,7 +61,7 @@
 | `GET /api/internal/blank25/editor/manifest` | Basic | Editor 用 manifest 取得 |
 | `POST /api/internal/blank25/editor/publish` | Basic + Origin 確認 | create / update / delete を storage repo へ反映 |
 
-### Realtime / X 内部 API
+### Realtime 内部 API
 
 すべて `Authorization: Bearer <REALTIME_INTERNAL_API_TOKEN>` と HMAC 署名 header（`x-internal-timestamp` / `x-internal-nonce` / `x-internal-signature`）を要求します。検証は共通 helper `enforceInternalAuthorization()`（`src/server/internal-api/authorization.ts`）に集約しており、新規 route もこれを `await` で呼びます。署名の詳細は `docs/system-design/architecture/data-and-security.md` を参照します。
 
@@ -70,12 +70,6 @@
 | `POST /api/internal/realtime/register` | Yahoo 検索結果を正規化して Firestore 登録 |
 | `POST /api/internal/realtime/prune` | 古いイベントを削除 |
 | `POST /api/internal/realtime/verify-post-visibility` | X Post の可視性を検証 |
-| `POST /api/internal/x/repost/events` | X API で通常 Repost |
-| `POST /api/internal/x/browser-post/events/prepare` | ブラウザ投稿候補を予約 |
-| `POST /api/internal/x/browser-post/events/confirm` | ブラウザ投稿結果を反映 |
-| `POST /api/internal/x/browser-post/weekend-ticket-summary/prepare` | 週末分の件数と本文材料を返す |
-| `POST /api/internal/x/browser-post/trend-joke/prepare` | Yahoo 検索からネタ投稿材料を返す |
-| `POST /api/internal/x/browser-post/observation-log/prepare` | 過去7日・向こう7日の件数とタイトル sample、観測コメント、画像 prompt を返す |
 
 ## SEO とクロール
 

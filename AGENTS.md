@@ -45,13 +45,13 @@ npm run build
 npm run lint
 npm run skills:sync
 npm run skills:check
-npm run test:x-browser-posting
+npm run test:security
 npm run shift:report:meta
 npm run shift:report:view-assets
 ```
 
-- 自動テストは `scripts/x-browser-posting/*.test.mjs` と `scripts/security/*.test.mjs`（Node標準 `node:test`）。検証対象は `docs/development-guide.md` を参照する。
-- 検証は変更対象に応じて選ぶ。`npm run lint` はスキル構成とコードの静的検査、`npm run test:x-browser-posting` はX投稿関連ロジックの回帰確認に使う。画面の操作・表示を変えた場合は対象画面を確認する。
+- 自動テストは `scripts/security/*.test.mjs`（Node標準 `node:test`）。検証対象は `docs/development-guide.md` を参照する。
+- 検証は変更対象に応じて選ぶ。`npm run lint` はスキル構成とコードの静的検査、`npm run test:security` は認証の回帰確認に使う。画面の操作・表示を変えた場合は対象画面を確認する。
 - Shift Search のレポート成果物を変更したら `shift:report:*` 両方を実行し、`src/generated/shift-search/*` と同期させる。
 
 ## 標準ワークフロー
