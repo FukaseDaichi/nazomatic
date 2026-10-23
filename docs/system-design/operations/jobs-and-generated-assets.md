@@ -9,38 +9,22 @@
 | `realtime-register-accompany.yml` | 毎時 30 分 | register: `#謎解き同行者募集` |
 | `realtime-verify-post-visibility.yml` | 毎時 10 分・45 分 | verify visibility |
 | `realtime-prune.yml` | 毎日 00:15 UTC | prune: cutoff 1 日 |
-| `x-repost-events.yml` | 手動 | X API Repost |
-| `x-growth-pr-ci.yml` | `x-growth-experiment` PR の更新 | TypeScript、lint、X 投稿回帰テスト、production build |
-| `x-growth-auto-merge.yml` | `X Growth PR CI` 完了 | 成功した対象 PR の最新 SHA と label を確認して自動マージ |
 
 内部 API を呼ぶ定期実行 Workflow は `REALTIME_API_BASE_URL` と `REALTIME_API_TOKEN` secrets を使います。token 値はアプリの `REALTIME_INTERNAL_API_TOKEN` と一致させます。
 
-`x-repost-events.yml` の終了コード方針は次の通りです。`204`（repost 候補なし）と `429`（rate limit）は意図した alert 抑制として成功終了し、その他の 2xx も成功終了します。それ以外の status、および `scripts/internal-api/post.sh` が status を返せなかった場合（空文字や数値以外）は job を失敗させ、credential error・server error・X API 仕様変更が GitHub Actions の赤い run として見えるようにします。
+## 廃止した X 自動化の外部登録
 
-`x-growth-pr-ci.yml` は read-only token で `x-growth-experiment` PR のコードを検証します。`x-growth-auto-merge.yml` は別の `workflow_run` として動き、PR のコードを checkout せず、`verify` job の成功、open、base `main`、最新 head SHA、`x-growth-experiment` label を再確認します。すべて一致する場合はドラフトを ready に変更し、merge commit 方式でマージします。
+X 投稿・週次レビュー・成長計測・自動改善 PR の実装と専用 workflow は撤去しました。2026-10-23 のクラウド作業では、接続された automation 検索は0件で、手元 PC のローカル登録にはアクセスできず、登録の削除は未完了です。
 
-## ローカル X 自動化
+削除対象は `~/.codex/automations/` 内の `nazomatic`（週末サマリ）、`nazomatic-x`、`nazomatic-x-2`、`nazomatic-x-3`、`nazomatic-x-4`、`nazomatic-x-5`、`nazomatic-x-6`、`nazomatic-x-pr` です。登録 ID と実際の内容を照合して削除し、無関係の `nazomatic-git-cleanup` は維持します。コード撤去だけで手元の登録が削除されたとは扱いません。
 
-リポジトリ外のスケジューラーで稼働中の登録枠と実行時の報告契約は [`x-browser-post-schedules.md`](./x-browser-post-schedules.md) を参照します。
+## Git cleanup
 
-| npm script | 処理 | 実行場所 |
-|---|---|---|
-| `x:browser-post` | 個別イベントのコメント付き投稿 | ログイン済みローカル PC |
-| `x:browser-post:weekend-summary` | 週末土日別件数サマリ | ログイン済みローカル PC |
-| `x:browser-post:trend-joke` | Yahoo 検索材料から短文投稿 | ログイン済みローカル PC |
-| `x:browser-post:observation-log` | 過去7日・向こう7日の観測ログ | ログイン済みローカル PC |
-| `x:browser-post:casual-puzzle` | 日曜出題・月曜解答 | ログイン済みローカル PC |
-| `x:growth-review` | 直近7日の X 運用集計と週次 Issue | ログイン済みローカル PC |
-| `x:growth-improve` | 週次レビューから改善実験を提案し、実行時はドラフト PR を作成 | Codex / GitHub CLI が使えるローカル PC |
-| `x:growth-maintain` | 投稿なしで計測回収と実験 activation 照合 | ログイン済み Chrome と GitHub CLI が使えるローカル PC |
+X 投稿と独立した `nazomatic-git-cleanup` は維持します。登録先は手元 PC の `~/.codex/automations/nazomatic-git-cleanup/automation.toml`、実行時刻は毎日 02:30 JST（`Asia/Tokyo`）、実行環境は local です。正確な状態・model・通知設定は Codex automation 側を正とし、現在のクラウド環境から登録状態は確認していません。
 
-実投稿は `--execute` を要求します。GitHub Actions はログイン済み browser profile を持たないため、ブラウザ投稿を実行しません。
+`sync-main-and-clean-worktrees` スキルに従い、最初に `.agents/skills/sync-main-and-clean-worktrees/scripts/sync-and-clean.sh` を引数なしで dry-run します。成功した場合だけ同じスクリプトを `--execute` 付きで1回実行し、`future` と安全に更新できるローカル `main` を `origin/main` へ fast-forward した後、マージ済みの worktree・local branch・remote branch を整理します。
 
-5種類の投稿 CLI、週次改善PR作成、成長計測メンテナンスの実行ログは automation id ごとの `logs/{automationId}` に置きます。`X_BROWSER_POST_LOG_RETENTION_COUNT` の既定は70世代で、各 automation 内の古い `*.log` だけを削除します。週次改善レビューは専用 local log を作らず、投稿 CLI の log を集計して GitHub Issue へ出力します。投稿成功時の共通台帳は `local/x-browser-posting/post-ledger.json`、日次 follower snapshot は `local/x-browser-posting/follower-snapshots.json` に保存します。
-
-週次改善レビューは毎週月曜11:30 JSTのローカル automation で実行し、`npm run x:growth-review -- --create-issue` が同一週・同一 account の GitHub Issue を作成または更新します。ログイン済み Chrome profile とローカル台帳が必要なため GitHub Actions へは移しません。
-
-週次改善PR作成は毎週月曜12:30 JSTの登録を一時停止中です。再開時は `npm run x:growth-improve -- --execute` を実行し、実行ログを `logs/x-growth-improve/` に保存します。実験状態は GitHub の review Issue、PR、label、metadata marker が正本です。成長計測メンテナンスは毎日04:30 JSTに `npm run x:growth-maintain` を実行し、投稿せず metrics を回収して、successful production deployment を確認した merged PR を active 化します。週次レビューと成長計測メンテナンスは Codex automation に ACTIVE で登録済みです。
+ローカル `main` が missing・diverged・dirty・locked・stale、または更新に失敗した場合は、`main` だけを skip して cleanup を続けます。target の `future` が dirty・non-fast-forward、または fetch・push・target ancestry check が失敗した場合は回避せず、その夜の実行を skip として報告します。変更候補がない no-op は正常終了です。手動 merge、reset、force-push、`git branch -D`、独自の削除、automation 層からの retry は行いません。通知は失敗時のみとし、結果は Codex automation の run 結果と `~/.codex/automations/nazomatic-git-cleanup/memory.md` で確認します。詳細な実行手順は [開発ガイド](../../development-guide.md) を参照します。
 
 ## Shift Search 生成物
 
@@ -78,4 +62,4 @@ artifacts を変更した commit では、両 command の出力を同期させ�
 
 ## 検証境界
 
-自動 test は `npm run test:x-browser-posting`（Node 標準 test runner、`scripts/x-browser-posting/*.test.mjs`）のみで、`src/` 側に test はありません。変更対象に応じて検証を選びます。`npm run lint` はスキル構成とコードの静的検査、`npm run test:x-browser-posting` はX投稿関連ロジックの回帰確認、`npm run build` はビルドへの影響の確認に使います。API・画面の挙動変更には対象の API dry-run・ブラウザ手動確認を使います。X ブラウザ投稿は dry-run を既定とし、Shift Search artifact の更新は両生成 command の差分を確認します。
+自動 test は `npm run test:security`（Node 標準 test runner、`scripts/security/*.test.mjs`）で Editor API の認証を確認します。変更対象に応じて検証を選びます。`npm run lint` はスキル構成とコードの静的検査、`npm run test:security` は Editor API 認証の回帰確認、`npm run build` はビルドへの影響の確認に使います。API・画面の挙動変更には対象の API dry-run・ブラウザ手動確認を使います。Shift Search artifact の更新は両生成 command の差分を確認します。

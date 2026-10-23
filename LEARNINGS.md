@@ -29,6 +29,8 @@
 
 （業務・仕様に関する事実）
 
+- 2026-10-23: クラウドの automation 検索で0件でも、手元 PC のローカル登録が削除されたことにはならない。X 自動化の撤去時に残った登録 ID と削除状況は `docs/system-design/operations/jobs-and-generated-assets.md` を参照する。
+
 - 2026-10-20: Vercel の Node.js 版はリポジトリに指定がないと Project Settings に従う。`package.json` の `engines.node`（例: `24.x`）を書けばダッシュボードを変えずに上書きできるので、Node 廃止エラーはコード側で直して PR に含める。
 - 2026-10-19: X投稿の `fetch failed` は接続先をログだけで判別できない。観測ログ・週末サマリでは prepare API、成長計測では起動時のローカルCDP接続も発生源になるため、CLIの実行順と照合する。修正前の Chrome 起動は stderr と子プロセスの error を破棄していたため、過去の CDP timeout だけではプロファイル競合と起動失敗を確定できない。
 

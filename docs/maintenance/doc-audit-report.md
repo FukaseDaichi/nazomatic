@@ -1,6 +1,8 @@
 # ドキュメント同期レポート（2026-08-28 第2回）
 
-> 2026-08-29 追記: 下記監査で未着手・部分実装として残したリプライ観測と投稿時間帯実験は、その後実装済み。現行仕様は `docs/system-design/subsystems/x-posting.md` と `docs/system-design/operations/x-browser-post-schedules.md` へ統合し、`docs/ideas/x-growth-backlog.md` は削除した。以下は2026-08-28時点の監査記録として残す。
+> この文書は過去の監査記録です。X 投稿・成長計測・自動改善機能は廃止されており、以下のパスと検証結果は監査当時のものです。
+
+> 2026-08-29 追記: 下記監査で未着手・部分実装として残したリプライ観測と投稿時間帯実験は、その後実装済み。当時の仕様は `docs/system-design/subsystems/x-posting.md` と `docs/system-design/operations/x-browser-post-schedules.md` へ統合し、`docs/ideas/x-growth-backlog.md` は削除した。以下は2026-08-28時点の監査記録として残す。
 
 前回（同日・第1回）以降のコード変更は、週次観測ログ CLI と prepare API の追加、ゆる出題 CLI の追加、X 投稿の状態分離、X 運用再配分の反映、および `AGENTS.md` の日本語化が中心。運用文書（`x-posting.md`、`x-browser-post-schedules.md`、`jobs-and-generated-assets.md`）は追加機能に追従済みだったが、ルート表・開発ガイド側に取りこぼしが4件あった。`docs/README.md` と `docs/system-design/README.md` の索引は文書の増減がないため変更不要。
 

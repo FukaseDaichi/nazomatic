@@ -7,17 +7,13 @@
 | 公開機能一覧 | `src/lib/json/features.json` | トップ、ヘッダー、sitemap、JSON-LD が読む |
 | 日本語・英語辞書 | `public/dic/buta.dic`, `public/dic/CEFR-J.dic` | ブラウザの `SearchManager` が fetch / cache |
 | 星座 | `src/lib/json/constellations-data.json` | 星座検索が読む |
-| Realtime イベント | Firestore `realtimeEvents` | 内部 API が書き、カレンダーと投稿支援が読む |
-| X ブラウザ投稿アカウント状態 | Firestore `xBrowserPostingAccounts` | 個別イベント投稿の lease / rate limit |
+| Realtime イベント | Firestore `realtimeEvents` | 内部 API が書き、カレンダーが読む |
 | 内部 API の nonce | Firestore `internalApiNonces` | 内部 API 認証が replay 検出用に書く |
 | BLANK25 問題 | `nazomatic-storage` の `problems.json`, `img/*` | API が raw 読み込み、Editor が GitHub API 書き込み |
 | BLANK25 プレイ状態 | ブラウザ `localStorage` | ゲーム画面だけが読む・書く |
 | BLANK25 パーティ状態 | ブラウザ `localStorage` | パーティ画面だけが読む・書く |
 | Shift Search 元成果物 | `artifacts/shift-search/reports` | 生成 scripts の入力 |
 | Shift Search 表示データ | `src/generated/shift-search` | Next.js のレポート画面が import |
-| X ローカル投稿状態 | `local/x-browser-posting` | ローカル CLI だけが読む・書く |
-| X 実行ログ | `logs/{automationId}` | ローカル CLI が世代管理 |
-| X 改善実験状態 | GitHub の review Issue、`x-growth-experiment` PR、label、metadata marker | ローカル X 成長 CLI と人間が読む・書く |
 
 ## Realtime イベント
 
@@ -28,7 +24,6 @@ Firestore document id は `{postId}:{RULESET_VERSION}` です。主要フィー�
 - 正規化結果: `eventTime`, `ticketTitle`, `category`, `price`, `quantity`, `deliveryMethod`, `location`
 - 品質: `normalizationEngine`, `confidence`, `notes`, `needsReview`, `reviewStatus`
 - 可視性: `isVisible`, `hiddenReason`, `hiddenAt`, `syndication*`
-- 投稿処理: `lastReviewedAt`, `xBrowserPost`
 
 公開カレンダーは `isRealtimeEventVisible()` が true の document だけを返します。
 
@@ -46,12 +41,9 @@ Firestore document id は `{postId}:{RULESET_VERSION}` です。主要フィー�
 | 外部先 | 呼び出し元 | 用途 |
 |---|---|---|
 | Yahoo!リアルタイム検索 | `src/server/realtime/fetchYahooRealtime.ts` | Post 取得 |
-| Firestore | `src/server/firebase/admin.ts` と Route Handler | イベント、投稿状態 |
+| Firestore | `src/server/firebase/admin.ts` と Route Handler | イベント |
 | GitHub API / raw GitHub | `src/server/blank25/github.ts` | BLANK25 storage 読み書き |
-| GitHub CLI / API | `scripts/x-weekly-growth-review.mjs`, `scripts/x-growth-*`, `scripts/x-growth/*` | X review Issue、実験 PR / label / metadata、Production deployment 照合 |
-| X API v2 | `api/internal/x/repost/events` | 通常 Repost |
 | X syndication endpoint | `src/server/realtime/syndication/verifyPost.ts` | 元 Post の可視性確認 |
-| x.com | ローカル Playwright / CDP | ブラウザ投稿 |
 
 クライアントコンポーネントは外部データストアへ直接書き込みません。辞書やアプリ同梱 JSON など同一 origin の静的データは例外です。
 
@@ -63,11 +55,10 @@ Firestore document id は `{postId}:{RULESET_VERSION}` です。主要フィー�
 | `/api/internal/blank25/editor/*` | middleware と Route Handler の両方で HTTP Basic | 503 |
 | BLANK25 mutation | Basic に加え、Origin がある場合は同一 origin を要求。cross-site Fetch metadata も拒否 | 不正・空・null Origin / cross-site は 403 |
 | `/api/internal/realtime/*` | Bearer token | 500 |
-| `/api/internal/x/*` | Bearer token | 500 |
 
 Basic credential は `BLANK25_EDITOR_USER` / `BLANK25_EDITOR_PASSWORD`、Bearer token は `REALTIME_INTERNAL_API_TOKEN` から読みます。
 
-Bearer 認証は `src/server/internal-api/authorization.ts` の `enforceInternalAuthorization()` に集約し、Realtime / X の全 Route Handler がこれを呼びます。header 比較は `timingSafeEqual` による定数時間比較です。認証仕様を変える場合はこの module だけを変更します。Editor API は `src/server/blank25/authorization.ts` で Basic credential を定数時間比較し、外部データ操作前に検証します。middleware の文字列比較だけには依存しません。
+Bearer 認証は `src/server/internal-api/authorization.ts` の `enforceInternalAuthorization()` に集約し、Realtime の全 Route Handler がこれを呼びます。header 比較は `timingSafeEqual` による定数時間比較です。認証仕様を変える場合はこの module だけを変更します。Editor API は `src/server/blank25/authorization.ts` で Basic credential を定数時間比較し、外部データ操作前に検証します。middleware の文字列比較だけには依存しません。
 
 ### 内部 API の request 署名
 
@@ -91,9 +82,7 @@ retry する client は、必ず timestamp と nonce を作り直します。同
 
 ## 秘密情報
 
-- Firebase、GitHub、X API credential はサーバー環境変数に置く。
-- X 成長改善のローカル CLI は、認証済み `gh` と Git remote を使い、GitHub token をリポジトリへ保存しない。
-- X の Cookie、storage state、Chrome profile は `local/` に置き、環境変数へ内容そのものを保存しない。
+- Firebase、GitHub credential はサーバー環境変数に置く。
 - `.env*.local`、`local*`、`logs/` は `.gitignore` の対象。
 - `NEXT_PUBLIC_*` には公開されてよい URL だけを置く。
 

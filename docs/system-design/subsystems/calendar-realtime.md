@@ -62,13 +62,6 @@ pagination は持ちませんが、取得上限に達したことは response �
 
 `POST /api/internal/realtime/prune` は `eventTime` が cutoff より古い document を削除します。既定 cutoff は 1 日、最大 30 日、1 batch 500 件、最大 20 batch です。dry-run は document cursor で対象をページ送りし、削除せずに重複のない `checked` と `batches` を返します。
 
-## X 連携との共有
-
-- X API Repost と個別ブラウザ投稿は `lastReviewedAt` を候補重複防止に使う。
-- 個別ブラウザ投稿は `xBrowserPost` を document に保存する。
-- 週末サマリは `realtimeEvents` を集計するが、各 document を更新しない。
-- トレンドネタ投稿は Firestore を読まず、Yahoo 検索結果をメモリ上で使う。
-
 ## 外部仕様への依存
 
 - Yahoo!リアルタイム検索の response 形式。
