@@ -9,8 +9,24 @@
 | `realtime-register-accompany.yml` | 毎時 30 分 | register: `#謎解き同行者募集` |
 | `realtime-verify-post-visibility.yml` | 毎時 10 分・45 分 | verify visibility |
 | `realtime-prune.yml` | 毎日 00:15 UTC | prune: cutoff 1 日 |
+| `dependabot-auto-merge.yml` | Security checks完了・毎時7/22/37/52分 UTC・手動 | 全チェック成功後にDependabot PRをマージ |
 
 内部 API を呼ぶ定期実行 Workflow は `REALTIME_API_BASE_URL` と `REALTIME_API_TOKEN` secrets を使います。token 値はアプリの `REALTIME_INTERNAL_API_TOKEN` と一致させます。
+
+## 依存PRの自動マージ
+
+npmとGitHub ActionsのDependabot PRを、メジャー更新も含めて自動マージします。対象は `dependabot[bot]`（GitHub IDも照合）が同一リポジトリ内に作成した、`main` 向けのopen・非draft PRだけです。通常の開発は引き続き `future → main` で進めます。
+
+`scripts/dependabot-auto-merge.mjs` は現在のhead SHAについて次のすべてを確認します。
+
+- 現在の `main` を含むこと。遅れている場合はDependabotによるrebaseとCI再実行を待つ。
+- `security-checks.yml` の最新の `pull_request` 実行成功（監査・認証/自動マージ回帰テスト・lint・build）。push実行や別workflowの成功だけでは許可しない。
+- すべての最新check-runと各contextの最新commit statusが成功。失敗・実行中・skipped・neutral・情報不足は待機する。`Vercel` status自体の成功も必須。
+- マージ直前にもhead/base SHAが一致し、PRがマージ可能であること。merge APIにも確認済みhead SHAを渡す。
+
+判定workflowは信頼済みのdefault branchだけをcheckoutし、PRのコードや依存パッケージをmerge権限付きで実行しません。GitHub標準のauto-merge設定や管理権限には依存せず、Actionsのtokenでmerge APIを呼びます。branch protectionなどGitHub側の制限で拒否された場合は強制マージせずworkflowを失敗させます。管理者設定を取得する権限はなく、その保護を新規設定したという意味ではありません。
+
+Vercel完了や再実行を拾うため定期的にも再確認します。手動起動の `dry_run` は既定でtrueです。停止する場合はこのworkflowを無効化します。`GITHUB_TOKEN` によるマージでは通常、追加のpush用Actionsは起動しないため、マージ前のPR用Security checksを必須にしています。本番デプロイ完了はこのworkflowのマージ条件とは別です。
 
 ## 廃止した X 自動化の外部登録
 
