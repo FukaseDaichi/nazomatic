@@ -85,3 +85,18 @@ PR #91 のHigh件数は現行のregistryでは再現しなかった。`braces@3.
 Security checks は引き続き全指摘を表示し、失敗条件を `npm audit --audit-level=moderate` へ引き下げた。HighとModerateの新規指摘もCIを失敗させる。`npm run audit:production` も正常終了する構成になった。
 
 画面確認・検証の詳細は [Tailwind 4移行の検証記録](./tailwind4-verification-2026-10.md) を参照。
+
+
+## 依存PRの再点検（2026-10-24）
+
+最新の `main@6a90cb1` を取得し、クリーンインストール後に再監査した。全依存・`--omit=dev` とも既知の脆弱性は0件で、今回のchrono-node更新後も0件。新しい強制overrideやフレームワークのメジャー移行は不要と判断した。
+
+| PR | 対応と理由 |
+|---|---|
+| #93 Next.js 15.5.28 → 16.4.2 | 今回は採用しない。15.5.28は上記10月のセキュリティ修正済み。PRのCIは16系で削除された `next lint` により失敗。16系移行時はlint設定とReact rendererの互換性をまとめて確認する |
+| #96 ESLint 8.57.1 → 10.13.0 | 今回は採用しない。`eslint-config-next@15.5.28` のpeer範囲はESLint 7/8/9で、10単独への更新は `npm ci` が `ERESOLVE` で失敗。lint基盤の移行として別途扱う |
+| #95 chrono-node 2.10.1 → 2.10.3 | パッチ更新を `future` に統合。最低版も2.10.3へ更新。セキュリティ修正としては扱わず、日本語日付解析を確認したうえで元PRを重複として整理する |
+
+Dependabotのバージョン更新PRとSecurity checksは有効だが、GitHubのDependabotアラートAPIは「無効」の403を返した。有効化APIも連携権限不足の403で失敗したため、管理権限での有効化は未完了。現行CIの週次npm監査とmoderate以上の失敗条件は維持する。
+
+検証: `npm ci --no-audit --no-fund`、全依存監査、本番依存監査、`npm run lint`、`npm run test:security`（2件）、`npm run build`。日本語の日付・時刻、相対日、年跨ぎ、日付でない入力について、実際の `parseJapaneseDate` の7ケースも確認した。
