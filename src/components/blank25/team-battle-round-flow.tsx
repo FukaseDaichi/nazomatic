@@ -102,7 +102,7 @@ export default function TeamBattleRoundFlow() {
                 transition={{ duration: 0.25, delay: index * 0.04 }}
                 className="relative overflow-hidden rounded-[1.6rem] border border-gray-800 bg-gray-950/60 p-4"
               >
-                <div className="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-purple-300/80 via-purple-400 to-purple-500" />
+                <div className="absolute inset-y-0 left-0 w-1 bg-linear-to-b/srgb from-purple-300/80 via-purple-400 to-purple-500" />
                 <div className="flex items-start gap-4 pl-3">
                   <div className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-purple-300/20 bg-purple-400/10 text-purple-100">
                     <Icon className="h-5 w-5" />

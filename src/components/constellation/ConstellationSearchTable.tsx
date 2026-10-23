@@ -132,7 +132,7 @@ export function ConstellationSearchTable() {
         >
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute bottom-1 block h-1 rounded-full bg-gradient-to-r from-purple-400 via-fuchsia-400 to-pink-400 shadow-[0_0_18px_rgba(217,70,239,0.45)] transition-all duration-300 ease-out"
+            className="pointer-events-none absolute bottom-1 block h-1 rounded-full bg-linear-to-r/srgb from-purple-400 via-fuchsia-400 to-pink-400 shadow-[0_0_18px_rgba(217,70,239,0.45)] transition-all duration-300 ease-out"
             style={{
               width: indicatorStyle.width,
               transform: `translateX(${indicatorStyle.left}px)`,
@@ -149,7 +149,7 @@ export function ConstellationSearchTable() {
                   tabRefs.current[tab.id] = element;
                 }}
                 className={clsx(
-                  "relative z-10 flex flex-col items-center justify-center gap-1 rounded-xl px-2 py-2 transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-300/70",
+                  "relative z-10 flex flex-col items-center justify-center gap-1 rounded-xl px-2 py-2 transition-all duration-300 ease-out focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-purple-300/70",
                   activeTab === tab.id
                     ? "bg-purple-500/60 text-white shadow-[0_6px_18px_rgba(147,51,234,0.3)]"
                     : "text-purple-400 hover:text-purple-200 hover:bg-white/5"
@@ -242,7 +242,7 @@ export function ConstellationSearchTable() {
                         {ZODIAC_SYMBOLS[item.id] && (
                           <span
                             aria-hidden="true"
-                            className="mt-2 sm:mt-0 block text-xl sm:text-2xl text-purple-200 drop-shadow"
+                            className="mt-2 sm:mt-0 block text-xl sm:text-2xl text-purple-200 drop-shadow-sm"
                           >
                             {ZODIAC_SYMBOLS[item.id]}
                           </span>
@@ -270,7 +270,7 @@ export function ConstellationSearchTable() {
                       </div>
                     </TableCell>
                     <TableCell className="p-3 sm:p-4 hidden sm:table-cell text-gray-400">
-                      <span className="inline-block px-2 py-1 bg-gray-700/30 rounded text-xs">
+                      <span className="inline-block px-2 py-1 bg-gray-700/30 rounded-sm text-xs">
                         {formatVisibleMonths(item.visibleMonths)}
                       </span>
                     </TableCell>

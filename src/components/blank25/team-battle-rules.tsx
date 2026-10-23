@@ -68,10 +68,10 @@ export default function TeamBattleRules() {
                     sizes="(max-width: 640px) 100vw, (max-width: 1280px) 92vw, 1200px"
                     className="object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/20 to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t/srgb from-gray-950 via-gray-950/20 to-transparent" />
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(192,132,252,0.14),transparent_60%)]" />
                   <div className="absolute left-4 top-4 sm:left-6 sm:top-6">
-                    <div className="inline-flex items-center gap-2 rounded-full border border-purple-300/20 bg-gray-950/70 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.28em] text-purple-100 backdrop-blur">
+                    <div className="inline-flex items-center gap-2 rounded-full border border-purple-300/20 bg-gray-950/70 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.28em] text-purple-100 backdrop-blur-sm">
                       <PartyPopper className="h-3.5 w-3.5" />
                       BLANK25 Team Battle
                     </div>
@@ -80,7 +80,7 @@ export default function TeamBattleRules() {
               </div>
 
               <div className="relative z-10 mx-auto -mt-6 grid max-w-5xl gap-4">
-                <div className="rounded-[1.85rem] border border-purple-300/20 bg-[radial-gradient(circle_at_top,rgba(192,132,252,0.18),transparent_55%),linear-gradient(to_bottom,rgba(3,7,18,0.96),rgba(17,24,39,0.94))] p-5 shadow-[0_20px_80px_rgba(0,0,0,0.36)] backdrop-blur sm:p-6">
+                <div className="rounded-[1.85rem] border border-purple-300/20 bg-[radial-gradient(circle_at_top,rgba(192,132,252,0.18),transparent_55%),linear-gradient(to_bottom,rgba(3,7,18,0.96),rgba(17,24,39,0.94))] p-5 shadow-[0_20px_80px_rgba(0,0,0,0.36)] backdrop-blur-sm sm:p-6">
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <div className="text-[11px] font-semibold uppercase tracking-[0.32em] text-purple-100/80">
@@ -110,7 +110,7 @@ export default function TeamBattleRules() {
                             duration: 0.24,
                             delay: 0.06 + index * 0.05,
                           }}
-                          className="rounded-[1.45rem] border border-gray-800 bg-gray-950/72 p-4"
+                          className="rounded-[1.45rem] border border-gray-800 p-4"
                         >
                           <div className="flex rounded-2xl border border-purple-300/20 bg-purple-400/10 text-purple-100">
                             <div className="inline-flex h-11 w-11 items-center justify-center">
@@ -156,7 +156,7 @@ export default function TeamBattleRules() {
                 <Sparkles className="h-3.5 w-3.5" />
                 Ready To Play
               </div>
-              <CardTitle className="mt-3 text-2xl font-black tracking-tight text-white sm:text-3xl">
+              <CardTitle className="text-2xl font-black tracking-tight text-white sm:text-3xl">
                 ルール共有が終わったら、すぐ始める
               </CardTitle>
             </CardHeader>

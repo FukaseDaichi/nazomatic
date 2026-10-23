@@ -42,10 +42,10 @@ export function EventDetailDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[85vh] w-[95vw] max-w-md overflow-hidden border-none bg-gradient-to-b from-gray-900 to-gray-800 p-0 text-white shadow-2xl">
+      <DialogContent className="max-h-[85vh] w-[95vw] max-w-md overflow-hidden border-none bg-linear-to-b/srgb from-gray-900 to-gray-800 p-0 text-white shadow-2xl">
         <div className="flex h-full max-h-[85vh] flex-col">
           {/* Compact Header */}
-          <header className="shrink-0 border-b border-white/10 bg-gray-900/50 px-4 py-3 backdrop-blur-sm">
+          <header className="shrink-0 border-b border-white/10 bg-gray-900/50 px-4 py-3 backdrop-blur-xs">
             <div className="flex items-center justify-between">
               <div className="flex-1">
                 <p className="text-xs font-medium text-purple-400">
@@ -147,7 +147,7 @@ export function EventDetailDialog({
                             href={hashtagUrl}
                             target="_blank"
                             rel="noreferrer"
-                            className="rounded px-1 py-0.5 transition hover:bg-purple-400/20 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400"
+                            className="rounded-sm px-1 py-0.5 transition hover:bg-purple-400/20 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400"
                           >
                             #{normalizedTag}
                           </a>
@@ -322,7 +322,7 @@ function AuthorAvatar({ author }: { author: CalendarEvent["author"] }) {
           className="rounded-full border-2 border-purple-400 object-cover shadow-lg animate-in fade-in zoom-in duration-300"
         />
       ) : (
-        <div className="flex h-full w-full items-center justify-center rounded-full border-2 border-purple-400 bg-gradient-to-br from-purple-400 to-purple-600 text-lg font-bold text-white shadow-lg animate-in fade-in zoom-in duration-300">
+        <div className="flex h-full w-full items-center justify-center rounded-full border-2 border-purple-400 bg-linear-to-br/srgb from-purple-400 to-purple-600 text-lg font-bold text-white shadow-lg animate-in fade-in zoom-in duration-300">
           {author.name?.[0] || "?"}
         </div>
       )}

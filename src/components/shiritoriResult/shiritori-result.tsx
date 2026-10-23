@@ -44,7 +44,7 @@ export function ShiritoriResultComponent({
       {onClose && (
         <button
           onClick={onClose}
-          className="absolute right-2 top-0 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-gray-950 focus:ring-offset-2"
+          className="absolute right-2 top-0 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:outline-hidden focus:ring-2 focus:ring-gray-950 focus:ring-offset-2"
           aria-label="閉じる"
         >
           <X className="h-5 w-5" />
@@ -75,7 +75,7 @@ export function ShiritoriResultComponent({
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3 }}
             >
-              <span className="inline-block bg-purple-600 text-white text-sm sm:text-base font-medium px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg shadow-sm">
+              <span className="inline-block bg-purple-600 text-white text-sm sm:text-base font-medium px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg shadow-xs">
                 {word}
               </span>
               {index < shiritoriWords.length - 1 && (

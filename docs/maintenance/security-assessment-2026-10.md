@@ -38,21 +38,21 @@ Realtime / X の内部 Route Handler は既存の Bearer + HMAC + 有効期限 +
 | 変更後・全依存 | 0 | 7 | 2 | 9 |
 | 変更後・omit=dev | 0 | 5 | 2 | 7 |
 
-残りは次の2件と、それらに依存するパッケージへの波及指摘。**監査ゼロではない。**
+PR #91 時点で残ったのは次の2件と、それらに依存するパッケージへの波及指摘。以下の表・説明は当時の記録であり、Tailwind 4移行後の結果は後述する。
 
 - [bracesのスタック枯渇DoS（High）](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm): Tailwind 3 / ESLint の glob 処理。調査時点の braces 3.0.3 に修正版がない。
 - [postcss-selector-parserの計算量DoS（Moderate）](https://github.com/advisories/GHSA-rj75-hqrm-r3gf): Tailwind 3 / postcss-nested 6 に parser 6.1.5 が残る。修正先は7.1.6以降でメジャー更新になる。
 
 これらはビルド時のパターン/CSS処理に使われ、公開APIの利用者が任意パターンやCSSをサーバーで解析させる経路は見つからなかった。`omit=dev` にも出るのは `tailwindcss-animate` の peer dependency によって Tailwind が含まれるためで、実際のHTTPリクエスト処理で使うことを意味しない。ビルド入力を第三者から受理する運用では別途対策が必要。
 
-Tailwind 4への移行・見た目の回帰確認は別途必要。互換性を未検証のまま `npm audit fix --force` や parser のメジャー override は適用しない。Security checks は全指摘をログに残し、現時点では Critical のみ失敗条件にする。High/Moderateが解消したら閾値を引き下げる。Highの新規追加をCIが自動で阻止する構成ではない。
+PR #91 時点では Tailwind 4移行と見た目の回帰確認を別作業とし、CIはCriticalのみを失敗条件にした。今回の移行では `npm audit fix --force` や parser のメジャー override を使わず、以下の対応で残件を解消した。
 
 ## 本番反映・運用で必要な確認
 
 1. PRをマージして修正版を再デプロイし、Vercelの実際の配信版・Editor認証・画像表示を確認する。PR作成だけでは本番の脆弱性は解消しない。
 2. Vercel側で Editor の連続認証失敗、`/api/realtime` / `/api/calendar` / `/api/blank25/manifest` の濫用に対するレート制限と利用量監視を設定する。複数インスタンスに効かないプロセス内カウンタは導入しない。閾値は実アクセス量と契約に合わせる。今回クラウド設定へのアクセス・変更は行っていない。
 3. BasicにはHTTPSを使用し、Editorの長い固有パスワードと最小権限のGitHub tokenを使う。署名検証の無効化を避ける。秘密が漏洩した証拠がある場合は該当credentialをローテーションする。今回の調査だけで侵害や漏洩を断定しない。
-4. 週次のDependabot / Security checks結果を確認し、Tailwind系未解消指摘とNext.jsのサポート期限を追跡する。
+4. 週次のDependabot / Security checks結果を確認し、新規の依存指摘とNext.jsのサポート期限を追跡する。
 
 ## 検証
 
@@ -64,3 +64,24 @@ Tailwind 4への移行・見た目の回帰確認は別途必要。互換性を�
 - Codex CLIレビューは実行環境の認証エラーで完了できず、別Codexエージェントで差分をレビュー。発見されたReact / fiber非互換を修正し、再レビューで解消を確認。
 
 本番のFirebase/GitHub credentialを必要とする更新操作・外部サービスの書き込みは検証していない。
+
+## Tailwind CSS 4移行による残件対応（2026-10-23）
+
+- Tailwind CSS / `@tailwindcss/postcss` 4.3.3、`tailwind-merge` 3.7.0へ更新。Tailwind 3と`postcss-nested` / parser 6の依存経路を除去した。`tailwindcss-animate` 1.0.7はv4の`@plugin`で継続する。
+- `tailwind.config.ts` を削除し、`src/app/globals.css` のCSSテーマ・ソース探索・class方式のdark variant・container・キーフレームへ移行。PostCSSの設定を専用プラグインへ切り替え、不要な直接依存のautoprefixerを削除した。shadcnのconfig参照も更新した。
+- 既存の色、sRGBグラデーション、境界線、placeholder、カーソルを明示。変更された影・角丸・blur・outlineクラスと透過率指定を更新し、フォーム余白・行高・レスポンシブ配置を既存表示に揃えた。v3で未生成だった幅・列数・透過率クラスは、v4で突然有効にならないよう削除した。
+
+同日のregistry情報を使ったパッケージ単位集計:
+
+| 監査 | Critical | High | Moderate | 合計 |
+|---|---:|---:|---:|---:|
+| 今回の移行前・全依存 | 0 | 0 | 3 | 3 |
+| 今回の移行前・omit=dev | 0 | 0 | 3 | 3 |
+| Tailwind 4移行後・全依存 | 0 | 0 | 0 | 0 |
+| Tailwind 4移行後・omit=dev | 0 | 0 | 0 | 0 |
+
+PR #91 のHigh件数は現行のregistryでは再現しなかった。`braces@3.0.3` はESLintの依存に残るが、今回の監査では指摘されない。これはbracesを更新・除去したという意味ではない。Tailwindの更新で除去したのは、今回再現した`postcss-selector-parser`とその依存元への3件の指摘である。将来のアドバイザリ変更で件数は変わり得る。
+
+Security checks は引き続き全指摘を表示し、失敗条件を `npm audit --audit-level=moderate` へ引き下げた。HighとModerateの新規指摘もCIを失敗させる。`npm run audit:production` も正常終了する構成になった。
+
+画面確認・検証の詳細は [Tailwind 4移行の検証記録](./tailwind4-verification-2026-10.md) を参照。

@@ -69,7 +69,7 @@ export default function TeamBattleTutorialImageBoard({
                 </span>
               )}
               {showLegendLabels && isHidden && (
-                <span className="absolute left-1 top-1 rounded-full bg-white/8 px-1.5 py-0.5 text-[8px] font-bold tracking-[0.12em] text-white">
+                <span className="absolute left-1 top-1 rounded-full px-1.5 py-0.5 text-[8px] font-bold tracking-[0.12em] text-white">
                   HIDE
                 </span>
               )}
@@ -97,7 +97,7 @@ export default function TeamBattleTutorialImageBoard({
                 className={cn(
                   "group relative flex items-center justify-center border text-[11px] font-black transition-colors",
                   isHidden ? "border-white" : "border-white/15",
-                  "cursor-pointer focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400/80",
+                  "cursor-pointer focus-visible:z-10 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-purple-400/80",
                 )}
               >
                 {panelContent}

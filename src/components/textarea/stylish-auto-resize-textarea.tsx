@@ -42,12 +42,12 @@ export function StylishAutoResizeTextareaComponent({
         ${isFocused ? "shadow-lg" : "shadow-md"}
         ${
           isFocused
-            ? "bg-gradient-to-r from-primary/20 to-secondary/20"
+            ? "bg-linear-to-r/srgb from-gray-900 to-gray-800"
             : "bg-background"
         }
       `}
       >
-        <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-primary to-secondary opacity-50 blur-sm"></div>
+        <div className="absolute inset-0 rounded-lg bg-linear-to-r/srgb from-gray-900 to-gray-800 opacity-50 blur-xs"></div>
         <div className="relative">
           <Textarea
             ref={textareaRef}
@@ -60,7 +60,7 @@ export function StylishAutoResizeTextareaComponent({
             // [touch-action:manipulation]はスマートフォンのズーム操作の無効化
             className="text-base min-h-[100px] resize-none transition-all duration-300 ease-in-out bg-transparent
                         border-2 border-transparent focus:border-gray-900/50 rounded-lg p-4 text-foreground
-                       placeholder-transparent focus:ring-0 focus:outline-none focus-visible:ring-0 dark:focus:border-gray-50/50
+                       placeholder-transparent focus:ring-0 focus:outline-hidden focus-visible:ring-0 dark:focus:border-gray-50/50
                        bg-gray-700 [touch-action:manipulation]"
           />
           <Label
@@ -68,7 +68,7 @@ export function StylishAutoResizeTextareaComponent({
             className={`absolute left-3 transition-all duration-300 ease-in-out pointer-events-none
               ${value || isFocused ? "-top-4 text-xs" : "top-2 text-base"}
               ${isFocused ? "text-primary/70" : "text-muted-foreground"}
-              bg-background px-1 rounded
+              bg-background px-1 rounded-sm
             `}
           >
             単語は改行して文字を入力してね

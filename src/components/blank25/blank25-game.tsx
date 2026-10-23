@@ -570,7 +570,7 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
             >
               <span
                 aria-hidden="true"
-                className="pointer-events-none absolute bottom-0.5 top-0.5 sm:bottom-1 sm:top-1 z-0 rounded-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-fuchsia-500 shadow-[0_6px_20px_rgba(99,102,241,0.4)] transition-all duration-300 ease-out"
+                className="pointer-events-none absolute bottom-0.5 top-0.5 sm:bottom-1 sm:top-1 z-0 rounded-lg bg-linear-to-r/srgb from-indigo-500 via-purple-500 to-fuchsia-500 shadow-[0_6px_20px_rgba(99,102,241,0.4)] transition-all duration-300 ease-out"
                 style={{
                   left: isSakumonMode ? "calc(50% + 2px)" : "2px",
                   width: "calc(50% - 4px)",
@@ -691,7 +691,7 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
                                   : dimmed
                                     ? "bg-black/50 text-white/70"
                                     : "bg-black text-gray-100 hover:bg-gray-950",
-                                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:bg-purple-700",
+                                "focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:bg-purple-700",
                               ].join(" ")}
                             >
                               {number}
@@ -718,7 +718,7 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
                                 : isEditable
                                   ? "border-white/30 bg-transparent text-transparent hover:bg-black/45 hover:text-gray-100"
                                   : "cursor-default border-transparent bg-transparent text-transparent",
-                              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:bg-black/60",
+                              "focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:bg-black/60",
                             ].join(" ")}
                           >
                             {number}

@@ -184,7 +184,7 @@ export default function CalendarPageClient() {
               <CalendarIcon className="h-6 w-6 text-purple-400 animate-in zoom-in duration-300" />
               <div className="absolute -inset-1 bg-purple-400/20 blur-lg rounded-full animate-pulse" />
             </div>
-            <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+            <h1 className="text-2xl sm:text-3xl font-bold bg-linear-to-r/srgb from-white to-gray-300 bg-clip-text text-transparent">
               謎チケカレンダー
             </h1>
             <HelpTooltip
@@ -198,7 +198,7 @@ export default function CalendarPageClient() {
                   </p>
                   <ul className="space-y-2 text-sm text-gray-300">
                     <li className="flex items-start">
-                      <span className="inline-flex items-center justify-center w-6 h-6 mr-2 bg-purple-500 rounded-full flex-shrink-0 text-xs">
+                      <span className="inline-flex items-center justify-center w-6 h-6 mr-2 bg-purple-500 rounded-full shrink-0 text-xs">
                         1
                       </span>
                       <div>
@@ -209,7 +209,7 @@ export default function CalendarPageClient() {
                       </div>
                     </li>
                     <li className="flex items-start">
-                      <span className="inline-flex items-center justify-center w-6 h-6 mr-2 bg-purple-500 rounded-full flex-shrink-0 text-xs">
+                      <span className="inline-flex items-center justify-center w-6 h-6 mr-2 bg-purple-500 rounded-full shrink-0 text-xs">
                         2
                       </span>
                       <div>
@@ -298,7 +298,7 @@ export default function CalendarPageClient() {
         </header>
 
         {/* Controls - Responsive Row */}
-        <div className="flex items-center justify-center gap-2 py-3 px-1 sm:px-3 rounded-2xl bg-gradient-to-br from-gray-800/80 to-gray-900/80 backdrop-blur-sm border border-white/10 shadow-lg">
+        <div className="flex items-center justify-center gap-2 py-3 px-1 sm:px-3 rounded-2xl bg-linear-to-br/srgb from-gray-800/80 to-gray-900/80 backdrop-blur-xs border border-white/10 shadow-lg">
           {/* Navigation */}
           <div className="hidden sm:flex items-center gap-1.5">
             <Button
@@ -330,7 +330,7 @@ export default function CalendarPageClient() {
             <div className="flex items-center gap-1 sm:gap-1.5 px-1 sm:px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 hover:border-purple-400/30 transition-all duration-300">
               <ListFilter className="h-3.5 w-3 sm:h-4 sm:w-4 text-purple-400" />
               <select
-                className="h-4 sm:h-auto bg-transparent text-xs sm:text-sm text-white outline-none cursor-pointer font-medium"
+                className="h-4 sm:h-auto bg-transparent text-xs sm:text-sm text-white outline-hidden cursor-pointer font-medium"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 aria-label="カレンダークエリ"
@@ -343,7 +343,7 @@ export default function CalendarPageClient() {
               </select>
             </div>
             <div className="flex items-center gap-1 sm:gap-1.5 rounded-xl bg-white/5 border border-white/10 hover:border-purple-400/30 transition-all duration-300 px-2 sm:px-3 py-1.5 w-32 sm:w-64">
-              <Search className="h-3 w-3 sm:h-4 sm:w-4 text-purple-400 flex-shrink-0" />
+              <Search className="h-3 w-3 sm:h-4 sm:w-4 text-purple-400 shrink-0" />
               <Input
                 aria-label="テキスト絞込"
                 placeholder="テキスト絞込"
@@ -408,7 +408,7 @@ function CalendarGrid({
   );
 
   return (
-    <section className="rounded-3xl border border-white/10 bg-gradient-to-b from-gray-900 to-gray-800 text-white shadow-lg">
+    <section className="rounded-3xl border border-white/10 bg-linear-to-b/srgb from-gray-900 to-gray-800 text-white shadow-lg">
       <header className="grid grid-cols-7 border-b border-white/10 text-center text-xs font-medium uppercase tracking-wide text-gray-300">
         {weekDayLabels.map((label) => (
           <div key={label} className="py-3">
@@ -489,7 +489,7 @@ function CalendarDayCell({
             key={event.id}
             className={cn(
               "w-full rounded-md sm:rounded-lg px-1.5 sm:px-2 py-0.5 sm:py-1 text-left transition-all duration-300 hover:scale-[1.02] active:scale-95",
-              "border bg-white/5 backdrop-blur-sm",
+              "border bg-white/5 backdrop-blur-xs",
               event.needsReview
                 ? "border-amber-400/40 bg-amber-400/10 hover:bg-amber-400/20 hover:border-amber-400/60 hover:shadow-lg hover:shadow-amber-400/20"
                 : "border-white/10 hover:border-purple-400/60 hover:bg-purple-400/10 hover:shadow-lg hover:shadow-purple-400/20"
@@ -500,14 +500,14 @@ function CalendarDayCell({
               {/* Indicator Dot - Hidden on mobile, visible on desktop*/}
               <span
                 className={cn(
-                  "hidden sm:block w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full flex-shrink-0",
+                  "hidden sm:block w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full shrink-0",
                   event.needsReview ? "bg-amber-400" : "bg-purple-400"
                 )}
               />
               {/* Time - Always visible */}
               <span
                 className={cn(
-                  "text-[9px] sm:text-xs font-bold flex-shrink-0",
+                  "text-[9px] sm:text-xs font-bold shrink-0",
                   event.needsReview ? "text-amber-300" : "text-purple-300"
                 )}
               >
@@ -545,14 +545,14 @@ function QuerySelect({
   onChange: (value: string) => void;
 }) {
   return (
-    <div className="flex items-center gap-2 border border-purple-300/50 bg-white/80 px-3 py-2 text-sm shadow-sm transition-colors hover:border-purple-400/60 hover:bg-purple-50/50 dark:border-purple-500/50 dark:bg-purple-900/40 dark:hover:border-purple-400/60 dark:hover:bg-purple-800/50">
+    <div className="flex items-center gap-2 border border-purple-300/50 bg-white/80 px-3 py-2 text-sm shadow-xs transition-colors hover:border-purple-400/60 hover:bg-purple-50/50 dark:border-purple-500/50 dark:bg-purple-900/40 dark:hover:border-purple-400/60 dark:hover:bg-purple-800/50">
       <ListFilter className="h-4 w-4 text-purple-600 dark:text-purple-300" />
       <label className="sr-only" htmlFor="calendar-query-select">
         クエリ選択
       </label>
       <select
         id="calendar-query-select"
-        className="bg-transparent text-sm font-medium text-purple-700 outline-none dark:text-purple-200"
+        className="bg-transparent text-sm font-medium text-purple-700 outline-hidden dark:text-purple-200"
         value={value}
         onChange={(event) => onChange(event.target.value)}
       >

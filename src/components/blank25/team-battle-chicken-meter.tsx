@@ -160,7 +160,7 @@ export default function TeamBattleChickenMeter() {
               </div>
               <div className="mt-3 h-3 overflow-hidden rounded-full bg-gray-900">
                 <motion.div
-                  className="h-full rounded-full bg-gradient-to-r from-purple-300 via-purple-400 to-purple-500 shadow-[0_0_20px_rgba(192,132,252,0.45)]"
+                  className="h-full rounded-full bg-linear-to-r/srgb from-purple-300 via-purple-400 to-purple-500 shadow-[0_0_20px_rgba(192,132,252,0.45)]"
                   animate={{ width: `${attackRatio}%` }}
                   transition={{ duration: 0.25, ease: "easeOut" }}
                 />

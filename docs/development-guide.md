@@ -26,11 +26,17 @@ npm run dev
 | `npm run skills:sync` | `.agents/skills` の正本から `.claude/skills` の参照スタブを再生成 |
 | `npm run skills:check` | Codex / Claude Code 共有 Agent Skill の構成、スタブ一致、パス規約を検証 |
 | `npm run test:security` | Editor APIの認証迂回・CSRF回帰確認 |
-| `npm run audit:production` | devを除いた依存監査（既知のTailwind系指摘があるため現在は非0終了） |
+| `npm run audit:production` | devを除いた依存監査（Moderate以上で失敗） |
 | `npm run shift:report:meta` | Shift Search レポート元成果物から manifest / index を生成 |
 | `npm run shift:report:view-assets` | Shift Search レポート表示用 JSON を `src/generated/shift-search` に生成 |
 
 汎用テストフレームワークは未設定です。セキュリティ回帰確認には Node.js 標準 test runner を使います。変更内容に応じて `npm run test:security`、`npm run lint`、`npm run build`、ブラウザでの手動確認を使い分けます。
+
+## Tailwind CSSの設定
+
+Tailwind CSS 4を`@tailwindcss/postcss`経由で使用します。設定の正本は`src/app/globals.css`です。`@import "tailwindcss" source("../")`で`src/`を探索し、`@theme`に既存の色・入場アニメーション、`@utility container`に共通幅を定義します。dark variantはOS設定ではなく`.dark`クラスで切り替わります。`tailwindcss-animate`は`@plugin`で読み込みます。旧`tailwind.config.ts`とautoprefixerの直接設定は使いません。
+
+クラスを合成する`cn()`はv4対応の`tailwind-merge` 3を使います。新しいUIクラスはv4の構文で記述し、色・余白・行高は既存のデザインに揃えます。対応ブラウザの下限はSafari 16.4、Chrome 111、Firefox 128です。移行時の監査・画面検証は[検証記録](maintenance/tailwind4-verification-2026-10.md)を参照してください。
 
 ## Codex / Claude Code 共有 Agent Skill
 

@@ -12,6 +12,7 @@
 
 （効いたやり方・型）
 
+- 2026-10-24: Tailwindのメジャー移行では移行前の画像とDOM寸法を保存して比較すると、廃止クラスだけでなく従来未生成だったクラスの新規適用や行高継承の変化も特定できる。今回の確認項目は `docs/maintenance/tailwind4-verification-2026-10.md` を参照。
 - 2026-08-24: `~/.claude/projects/<slug>/*.jsonl` からユーザーの実発話だけを抜くには、`type=="last-prompt"` と `type=="queue-operation"`(operation=="enqueue") を併用して重複排除する。`type=="user"` だけだと task-notification やスキル本文が大量に混ざり、`last-prompt` だけだと取りこぼす。
 - 2026-08-28: npm脆弱性の棚卸しは `npm audit --omit=dev --json` で severity と `fixAvailable` を機械的に一覧化し、`npm ls <pkg>` で実際の依存ツリーを辿ってから対応方針（そのまま更新／メジャー移行が必要／孫依存で単独修正不可）を切り分けると早い。
 

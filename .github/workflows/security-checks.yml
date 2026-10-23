@@ -25,12 +25,11 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci --no-audit --no-fund
-      # Known build-tool DoS findings remain visible. See the security assessment.
       - name: Report all dependency vulnerabilities
         run: npm audit
         continue-on-error: true
-      - name: Block critical vulnerabilities
-        run: npm audit --audit-level=critical
+      - name: Block moderate and higher vulnerabilities
+        run: npm audit --audit-level=moderate
       - run: npm run test:security
       - run: npm run lint
       - run: npm run build

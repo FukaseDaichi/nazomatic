@@ -96,7 +96,7 @@ const item = {
 
 export function ShiftSearchReportList({ reports }: Props) {
   return (
-    <section className="space-y-3">
+    <section>
       <div className="hidden md:block">
         <DesktopTable reports={reports} />
       </div>
@@ -187,7 +187,7 @@ function MobileCards({ reports }: Props) {
       variants={container}
       initial="hidden"
       animate="show"
-      className="space-y-3"
+      className="[&>div:not(:first-child)]:mt-3"
     >
       {reports.map((report) => (
         <MobileCard key={report.reportKey} report={report} />

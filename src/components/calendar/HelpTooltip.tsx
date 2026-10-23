@@ -85,7 +85,7 @@ export function HelpTooltip({
         ref={helpCircleRef}
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
-        className="hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-50 rounded-full cursor-help"
+        className="hover:text-white transition-colors duration-200 focus:outline-hidden focus:ring-2 focus:ring-purple-400/50 rounded-full cursor-help"
         aria-label="詳細情報"
       >
         <HelpCircle size={20} />

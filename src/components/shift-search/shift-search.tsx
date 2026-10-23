@@ -187,7 +187,7 @@ export default function ShiftSearch() {
               >
                 <button
                   type="button"
-                  className="inline-flex h-6 w-6 items-center justify-center rounded-full text-gray-300 transition-colors outline-none hover:text-purple-200"
+                  className="inline-flex h-6 w-6 items-center justify-center rounded-full text-gray-300 transition-colors outline-hidden hover:text-purple-200"
                   aria-label="シフト検索の説明"
                   aria-expanded={showHelpTooltip}
                   onFocus={() => setShowHelpTooltip(true)}
@@ -197,7 +197,7 @@ export default function ShiftSearch() {
                   <HelpCircle size={20} />
                 </button>
                 {showHelpTooltip && (
-                  <div className="z-10 fixed left-1/2 -translate-x-1/2 mt-2 w-[min(90vw,26rem)]  rounded-lg border border-gray-600 bg-gray-900 p-3 text-sm leading-relaxed text-gray-100 shadow-xl sm:absolute sm:left-auto sm:-translate-x-1/2">
+                  <div className="z-10 fixed left-1/2 -translate-x-1/2 mt-2 w-[min(90vw,26rem)] rounded-lg border border-gray-600 bg-gray-900 p-3 text-sm leading-relaxed text-gray-100 shadow-xl sm:absolute sm:left-auto sm:-translate-x-1/2">
                     <div className="absolute left-1/4 -top-2 h-0 w-0 -translate-x-1/2 border-l-8 border-r-8 border-b-8 border-l-transparent border-r-transparent border-b-gray-900 sm:left-1/2" />
                     <h2 className="font-semibold text-purple-400">
                       この検索でできること
@@ -225,7 +225,7 @@ export default function ShiftSearch() {
           </CardHeader>
           <CardContent className="space-y-3 p-4 pt-0 sm:space-y-3.5 sm:p-5 sm:pt-0">
             <div className="grid gap-2.5 sm:grid-cols-2 sm:gap-3">
-              <div className="space-y-1.5">
+              <div className="*:not-first:mt-1.5">
                 <Label
                   htmlFor="shift-input"
                   className="text-xs font-semibold uppercase tracking-wide text-gray-300"
@@ -250,7 +250,7 @@ export default function ShiftSearch() {
                 </p>
               </div>
 
-              <div className="space-y-1.5">
+              <div className="*:not-first:mt-1.5">
                 <Label className="text-xs font-semibold uppercase tracking-wide text-gray-300">
                   辞書
                 </Label>
@@ -283,7 +283,7 @@ export default function ShiftSearch() {
               htmlFor="include-anagram"
               className={`group relative flex cursor-pointer items-center justify-between gap-2.5 rounded-lg border px-3 py-2.5 transition focus-within:ring-2 focus-within:ring-purple-400/70 ${
                 includeAnagram
-                  ? "border-purple-400/80 bg-gradient-to-r from-purple-500/20 via-purple-500/10 to-gray-900/80 shadow-[0_0_20px_rgba(168,85,247,0.18)]"
+                  ? "border-purple-400/80 bg-linear-to-r/srgb from-purple-500/20 via-purple-500/10 to-gray-900/80 shadow-[0_0_20px_rgba(168,85,247,0.18)]"
                   : "border-gray-700 bg-gray-900/70 hover:border-purple-400/50"
               }`}
             >

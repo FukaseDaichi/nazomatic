@@ -37,7 +37,7 @@ export default function RootLayout({
   return (
     <html lang="ja" style={{ backgroundColor: themeColor }}>
       <body
-        className={`${inter.className} min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white`}
+        className={`${inter.className} min-h-screen bg-linear-to-b/srgb from-gray-900 to-gray-800 text-white`}
       >
         {children}
       </body>

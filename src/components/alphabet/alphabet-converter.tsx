@@ -108,7 +108,7 @@ export const AlphabetConverter = () => {
             </CardHeader>
 
             <CardContent>
-              <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-13 gap-2">
+              <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 gap-2">
                 {alphabet.split("").map((letter, index) => (
                   <Tooltip key={letter}>
                     <TooltipTrigger>

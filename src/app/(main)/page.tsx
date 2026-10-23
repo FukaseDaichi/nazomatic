@@ -156,14 +156,14 @@ export default function Home() {
                     className="group flex flex-col gap-3 rounded-2xl border border-white/10 bg-[rgba(24,21,36,.55)] p-5 backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-purple-500/50 hover:shadow-[0_18px_50px_rgba(124,77,255,.18)] sm:p-6"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-purple-500/35 bg-gradient-to-br from-purple-500/30 to-purple-500/5 text-purple-300 transition-colors duration-300 group-hover:text-purple-200">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-purple-500/35 bg-linear-to-br/srgb from-purple-500/30 to-purple-500/5 text-purple-300 transition-colors duration-300 group-hover:text-purple-200">
                         <IconComponent className="h-6 w-6" aria-hidden="true" />
                       </div>
                       <h3 className="text-lg font-bold sm:text-xl">
                         {feature.title}
                       </h3>
                     </div>
-                    <p className="text-sm leading-relaxed text-[rgba(231,227,245,.65)] sm:text-base">
+                    <p className="text-sm leading-relaxed text-[rgba(231,227,245,.65)] sm:text-base sm:leading-6">
                       {feature.description}
                     </p>
                   </MotionLink>
