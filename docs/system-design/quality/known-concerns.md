@@ -31,7 +31,3 @@ Yahoo!リアルタイム検索と X syndication endpoint は外部 response の�
 - `@react-spring/three`、`@use-gesture/react`: 直接 import はありませんが、使用中の `@react-three/drei` の直接依存です。どちらにせよ install されるため、top-level 記載は必須ではなく冗長です。
 - `shadcn-ui`: CLI のみで import しません。`components.json` があるため component 追加用と推測できますが、`dependencies` ではなく `devDependencies` が適切です。upstream では package 名が `shadcn` に変わっています。
 - `@shadcn/ui`: 上記 CLI の旧 package で、`devDependencies` に残っています。初期 install の残存とみられます。
-
-### ビルド依存のDoS指摘が未解消
-
-Tailwind 3 / ESLint配下のbraces、postcss-selector-parser由来の指摘が残ります。公開リクエストからの到達経路は確認していませんが、監査ゼロではありません。適用条件・継続監査・Tailwind移行方針は [セキュリティ調査](../../maintenance/security-assessment-2026-10.md) を参照します。

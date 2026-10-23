@@ -349,7 +349,7 @@ export default function Blank25ProblemList() {
                         }
                         className={[
                           "group relative block w-full cursor-pointer rounded-xl text-left transition-all duration-200",
-                          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/90 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900",
+                          "focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/90 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900",
                           isNavigating
                             ? "scale-[0.98]"
                             : "hover:-translate-y-0.5",
@@ -395,7 +395,7 @@ export default function Blank25ProblemList() {
         <Link
           href="/blank25/editor"
           prefetch={false}
-          className="inline-flex items-center rounded-full border border-amber-300/60 bg-gray-900/85 px-3 py-1.5 text-xs font-semibold text-amber-200 shadow-lg backdrop-blur transition-colors hover:bg-gray-800"
+          className="inline-flex items-center rounded-full border border-amber-300/60 bg-gray-900/85 px-3 py-1.5 text-xs font-semibold text-amber-200 shadow-lg backdrop-blur-sm transition-colors hover:bg-gray-800"
         >
           Admin
         </Link>

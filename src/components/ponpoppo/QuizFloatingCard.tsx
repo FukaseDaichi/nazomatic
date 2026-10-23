@@ -69,12 +69,12 @@ const QuizFloatingCard = ({ quiz }: QuizFloatingCardProps) => {
   const backZ = !isAnimating && gameState !== "quiz" ? "z-20" : "z-10";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-gray-800 flex items-center justify-center p-8 relative overflow-hidden">
+    <div className="min-h-screen bg-linear-to-br/srgb from-black via-gray-900 to-gray-800 flex items-center justify-center p-8 relative overflow-hidden">
       {/* 背景パーティクル演出 */}
       {showPremiumEffect && (
         <>
           {/* レインボー背景フラッシュ */}
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-600/30 via-pink-500/30 to-yellow-400/30 animate-pulse-rainbow" />
+          <div className="absolute inset-0 bg-linear-to-br/srgb from-purple-600/30 via-pink-500/30 to-yellow-400/30 animate-pulse-rainbow" />
 
           {/* パーティクル群 */}
           {[...Array(20)].map((_, i) => (
@@ -110,7 +110,7 @@ const QuizFloatingCard = ({ quiz }: QuizFloatingCardProps) => {
           {/* レインボーリング */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div
-              className="w-96 h-96 border-4 border-transparent bg-gradient-to-r from-red-500 via-yellow-500 via-green-500 via-blue-500 to-purple-500 rounded-full animate-rainbow-ring bg-clip-border opacity-70"
+              className="w-96 h-96 border-4 border-transparent bg-linear-to-r/srgb from-red-500 via-yellow-500 via-green-500 via-blue-500 to-purple-500 rounded-full animate-rainbow-ring bg-clip-border opacity-70"
               style={{
                 background:
                   "conic-gradient(from 0deg, #ff0000, #ff8800, #ffff00, #88ff00, #00ff00, #00ff88, #00ffff, #0088ff, #0000ff, #8800ff, #ff00ff, #ff0088, #ff0000)",
@@ -131,7 +131,7 @@ const QuizFloatingCard = ({ quiz }: QuizFloatingCardProps) => {
         {showPremiumEffect ? (
           <div className="w-full h-full flex flex-col items-center justify-center text-center p-6 relative">
             {/* SSRプレミアム演出 */}
-            <div className="absolute top-2 right-2 text-yellow-300 text-xs font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent animate-pulse">
+            <div className="absolute top-2 right-2 text-yellow-300 text-xs font-bold bg-linear-to-r/srgb from-yellow-400 to-orange-500 bg-clip-text text-transparent animate-pulse">
               {quiz.product.rarity}
             </div>
 
@@ -151,16 +151,16 @@ const QuizFloatingCard = ({ quiz }: QuizFloatingCardProps) => {
             ))}
 
             <div className="flex items-center justify-center gap-2 mb-4">
-              <div className="w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-sm border-yellow-300/50 animate-pulse">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-xs border-yellow-300/50 animate-pulse">
                 <Trophy className="w-8 h-8 text-yellow-300 animate-bounce" />
               </div>
-              <h1 className="text-2xl font-bold backdrop-blur bg-gradient-to-r from-yellow-300 via-orange-400 to-pink-400 bg-clip-text text-transparent animate-pulse">
+              <h1 className="text-2xl font-bold backdrop-blur-sm bg-linear-to-r/srgb from-yellow-300 via-orange-400 to-pink-400 bg-clip-text text-transparent animate-pulse">
                 {quiz.product.name}をゲット！
               </h1>
             </div>
             <div className="animate-premium-item">
               <Image
-                className="backdrop-blur-sm animate-bounce"
+                className="backdrop-blur-xs animate-bounce"
                 src={quiz.product.image}
                 alt={quiz.product.name}
                 width={100}
@@ -193,7 +193,7 @@ const QuizFloatingCard = ({ quiz }: QuizFloatingCardProps) => {
             >
               {/* ——— 表面 ——— */}
               <div
-                className={`absolute inset-0 w-full h-full rounded-2xl shadow-2xl bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 border border-white/10 ${frontZ}`}
+                className={`absolute inset-0 w-full h-full rounded-2xl shadow-2xl bg-linear-to-br/srgb from-gray-900 via-gray-800 to-gray-700 border border-white/10 ${frontZ}`}
                 style={{ backfaceVisibility: "hidden" }}
               >
                 {isAnimating ? (
@@ -216,7 +216,7 @@ const QuizFloatingCard = ({ quiz }: QuizFloatingCardProps) => {
                       {icons.map((icon, i) => (
                         <div
                           key={icon.id}
-                          className="w-14 h-14 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/30 hover:border-white/50 transition-all duration-300 hover:scale-110 cursor-pointer select-none"
+                          className="w-14 h-14 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center backdrop-blur-xs border border-white/30 hover:border-white/50 transition-all duration-300 hover:scale-110 cursor-pointer select-none"
                         >
                           <Image
                             src={icon.url}
@@ -237,8 +237,8 @@ const QuizFloatingCard = ({ quiz }: QuizFloatingCardProps) => {
               <div
                 className={`absolute inset-0 w-full h-full rounded-2xl shadow-2xl ${
                   gameState === "correct"
-                    ? "bg-gradient-to-br from-indigo-600/80 via-purple-700/80 to-blue-800/80"
-                    : "bg-gradient-to-br from-gray-900 via-gray-800 to-black"
+                    ? "bg-linear-to-br/srgb from-indigo-600/80 via-purple-700/80 to-blue-800/80"
+                    : "bg-linear-to-br/srgb from-gray-900 via-gray-800 to-black"
                 } border border-white/10 ${backZ} gpu-layer`}
                 style={{
                   backfaceVisibility: "hidden",
@@ -252,15 +252,15 @@ const QuizFloatingCard = ({ quiz }: QuizFloatingCardProps) => {
                   !showPremiumEffect && (
                     <div className="w-full h-full flex flex-col items-center justify-center text-center p-6 -webkit-backdrop-filter">
                       <div className="flex items-center justify-center gap-2 mb-4">
-                        <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm border-2 border-white/30">
+                        <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-xs border-2 border-white/30">
                           <Trophy className="w-8 h-8 text-white" />
                         </div>
-                        <h1 className="text-white text-2xl font-bold backdrop-blur">
+                        <h1 className="text-white text-2xl font-bold backdrop-blur-sm">
                           {quiz.product.name}をゲット！
                         </h1>
                       </div>
                       <Image
-                        className="backdrop-blur-sm"
+                        className="backdrop-blur-xs"
                         src={quiz.product.image}
                         alt={quiz.product.name}
                         width={100}
@@ -272,7 +272,7 @@ const QuizFloatingCard = ({ quiz }: QuizFloatingCardProps) => {
                 {/* 不正解時 */}
                 {!isAnimating && gameState === "incorrect" && (
                   <div className="w-full h-full flex flex-col items-center justify-center text-center p-6">
-                    <div className="w-20 h-20 mx-auto mb-4 bg-red-500/30 rounded-full flex items-center justify-center backdrop-blur-sm border-2 border-red-400/50">
+                    <div className="w-20 h-20 mx-auto mb-4 bg-red-500/30 rounded-full flex items-center justify-center backdrop-blur-xs border-2 border-red-400/50">
                       <X className="w-10 h-10 text-red-300" />
                     </div>
                   </div>

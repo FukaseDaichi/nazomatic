@@ -66,7 +66,7 @@ function RegisteredWordRow({
       <button
         type="button"
         onClick={onDelete}
-        className="absolute inset-y-0 right-0 flex w-[88px] items-center justify-center bg-red-500 text-sm font-semibold text-white transition-colors hover:bg-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-200"
+        className="absolute inset-y-0 right-0 flex w-[88px] items-center justify-center bg-red-500 text-sm font-semibold text-white transition-colors hover:bg-red-600 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-red-200"
         aria-label={`${entry.value}を削除`}
       >
         削除
@@ -91,7 +91,7 @@ function RegisteredWordRow({
         <button
           type="button"
           onClick={onDelete}
-          className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-gray-300 opacity-0 transition hover:bg-gray-600 hover:text-red-200 focus:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 group-hover:opacity-100 group-focus-within:opacity-100"
+          className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-gray-300 opacity-0 transition hover:bg-gray-600 hover:text-red-200 focus:opacity-100 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-purple-400 group-hover:opacity-100 group-focus-within:opacity-100"
           aria-label={`${entry.value}を削除`}
         >
           <Trash2 className="h-4 w-4" />
@@ -311,7 +311,7 @@ export default function CharacterPickSearch() {
           </CardHeader>
           <CardContent className="space-y-4 p-4 pt-0 sm:p-5 sm:pt-0">
             <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
-              <div className="space-y-1.5">
+              <div className="*:not-first:mt-1.5">
                 <Label
                   htmlFor="character-pick-word"
                   className="text-xs font-semibold uppercase text-gray-300"
@@ -409,7 +409,7 @@ export default function CharacterPickSearch() {
                   >
                     <button
                       type="button"
-                      className="inline-flex h-7 w-7 items-center justify-center rounded-full text-gray-300 transition hover:text-purple-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400"
+                      className="inline-flex h-7 w-7 items-center justify-center rounded-full text-gray-300 transition hover:text-purple-200 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-purple-400"
                       aria-label="文字の拾い方の説明"
                       aria-expanded={showHelp}
                       onFocus={() => setShowHelp(true)}
@@ -454,7 +454,7 @@ export default function CharacterPickSearch() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1.5">
+                  <div className="*:not-first:mt-1.5">
                     <Label
                       htmlFor="min-pick"
                       className="text-xs font-semibold uppercase text-gray-300"
@@ -474,7 +474,7 @@ export default function CharacterPickSearch() {
                       className="h-10 border-gray-600 bg-gray-700/90 text-base text-white focus-visible:ring-purple-400 disabled:opacity-70"
                     />
                   </div>
-                  <div className="space-y-1.5">
+                  <div className="*:not-first:mt-1.5">
                     <Label
                       htmlFor="max-pick"
                       className="text-xs font-semibold uppercase text-gray-300"
@@ -496,7 +496,7 @@ export default function CharacterPickSearch() {
                   </div>
                 </div>
 
-                <div className="space-y-1.5">
+                <div className="*:not-first:mt-1.5">
                   <Label className="text-xs font-semibold uppercase text-gray-300">
                     辞書
                   </Label>

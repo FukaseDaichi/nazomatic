@@ -39,7 +39,7 @@ const tabs = [
         <p className="mb-2">入力を並び替えてできる文字を検索します。</p>
         <ul className="space-y-4">
           <li className="flex items-start">
-            <span className="inline-flex items-center justify-center w-6 h-6 mr-2 bg-purple-500 rounded-full flex-shrink-0">
+            <span className="inline-flex items-center justify-center w-6 h-6 mr-2 bg-purple-500 rounded-full shrink-0">
               ？
             </span>
             <div>
@@ -65,7 +65,7 @@ const tabs = [
         <p className="mb-3">パターン該当する文字列を検索します。</p>
         <ul className="space-y-4">
           <li className="flex items-start">
-            <span className="inline-flex items-center justify-center w-6 h-6 mr-2 bg-purple-500 rounded-full flex-shrink-0">
+            <span className="inline-flex items-center justify-center w-6 h-6 mr-2 bg-purple-500 rounded-full shrink-0">
               ？
             </span>
             <div>
@@ -78,7 +78,7 @@ const tabs = [
             </div>
           </li>
           <li className="flex items-start">
-            <span className="inline-flex items-center justify-center w-6 h-6 mr-2 bg-purple-500 rounded-full flex-shrink-0">
+            <span className="inline-flex items-center justify-center w-6 h-6 mr-2 bg-purple-500 rounded-full shrink-0">
               123
             </span>
             <div>
@@ -97,7 +97,7 @@ const tabs = [
             </div>
           </li>
           <li className="flex items-start">
-            <span className="inline-flex items-center justify-center w-6 h-6 mr-2 bg-purple-500 rounded-full flex-shrink-0">
+            <span className="inline-flex items-center justify-center w-6 h-6 mr-2 bg-purple-500 rounded-full shrink-0">
               濁
             </span>
             <div>
@@ -129,7 +129,7 @@ const tabs = [
         <ul className="space-y-3 text-sm leading-relaxed">
           <li>
             例:{" "}
-            <code className="bg-gray-900 px-1 py-0.5 rounded">^し.*ん$</code>{" "}
+            <code className="bg-gray-900 px-1 py-0.5 rounded-sm">^し.*ん$</code>{" "}
             で「し」で始まり「ん」で終わる単語を検索
           </li>
         </ul>
@@ -379,7 +379,7 @@ export default function AnagramSearch() {
                       onMouseLeave={() =>
                         setShowTooltips(new Array(tabs.length).fill(false))
                       }
-                      className="hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-50 rounded-full z-2"
+                      className="hover:text-white transition-colors duration-200 focus:outline-hidden focus:ring-2 focus:ring-purple-400/50 rounded-full"
                       aria-label="詳細情報"
                     >
                       <HelpCircle size={20} />
@@ -391,7 +391,7 @@ export default function AnagramSearch() {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: 10 }}
                           transition={{ duration: 0.2 }}
-                          className="absolute top-8 transform -translate-x-1/2 bg-purple-200 text-gray-900 text-sm rounded-lg shadow-xl z-1 w-80"
+                          className="absolute top-8 transform -translate-x-1/2 bg-purple-200 text-gray-900 text-sm rounded-lg shadow-xl w-80"
                           style={{
                             left: `${getTabTooltipLeft(
                               index,

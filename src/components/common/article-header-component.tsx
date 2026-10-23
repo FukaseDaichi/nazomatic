@@ -32,7 +32,7 @@ export default function ArticleHeaderComponent({
 
   return (
     <header
-      className={`relative sticky top-0 z-50 bg-gradient-to-b from-gray-900 text-white shadow-lg ${className}`}
+      className={`relative sticky top-0 z-50 bg-linear-to-b/srgb from-gray-900 text-white shadow-lg ${className}`}
     >
       {/*
         ヘッダーは初期表示に入るため、framer-motion(JS 待ち)ではなく
@@ -84,7 +84,7 @@ export default function ArticleHeaderComponent({
             </div>
             <button
               type="button"
-              className="md:hidden text-white focus:outline-none"
+              className="md:hidden text-white focus:outline-hidden"
               aria-label={isOpen ? "メニューを閉じる" : "メニューを開く"}
               aria-expanded={isOpen}
               // メニューは開いている間しか DOM に存在しないため、

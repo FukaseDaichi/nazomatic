@@ -452,7 +452,7 @@ export default function GraphPaperComponent() {
 
   return (
     <main className="flex items-center justify-center px-3 py-4 sm:px-4">
-      <div className="relative max-w-3xl rounded-2xl border border-purple-500/20 bg-gradient-to-b from-gray-900 to-gray-800 p-4 shadow-xl sm:p-6">
+      <div className="relative max-w-3xl rounded-2xl border border-purple-500/20 bg-linear-to-b/srgb from-gray-900 to-gray-800 p-4 shadow-xl sm:p-6">
         <h1 className="text-3xl font-bold mb-3 text-center text-purple-400">
           方眼紙
         </h1>
@@ -494,7 +494,7 @@ export default function GraphPaperComponent() {
         <p className="mb-3 flex items-center justify-center text-xs text-gray-400">
           <span>＃でマスが黒塗り。色変更も可能。</span>
           <button
-            className="text-purple-400 hover:text-purple-300 focus:outline-none"
+            className="text-purple-400 hover:text-purple-300 focus:outline-hidden"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             onTouchStart={handleTouchStart}
@@ -523,7 +523,7 @@ export default function GraphPaperComponent() {
               htmlFor="autoFill"
               className={`flex h-12 cursor-pointer items-center justify-between rounded-xl border px-2.5 transition focus-within:ring-2 focus-within:ring-purple-400/60 ${
                 isAutoFill
-                  ? "border-purple-400 bg-gradient-to-r from-purple-500/25 to-purple-400/10 shadow-[0_0_18px_rgba(168,85,247,0.22)]"
+                  ? "border-purple-400 bg-linear-to-r/srgb from-purple-500/25 to-purple-400/10 shadow-[0_0_18px_rgba(168,85,247,0.22)]"
                   : "border-gray-700 bg-gray-900/75 hover:border-purple-500/60"
               }`}
             >
@@ -556,7 +556,7 @@ export default function GraphPaperComponent() {
               htmlFor="rock"
               className={`flex h-12 cursor-pointer items-center justify-between rounded-xl border px-2.5 transition focus-within:ring-2 focus-within:ring-purple-400/60 md:hidden ${
                 isColorMode
-                  ? "border-purple-400 bg-gradient-to-r from-purple-500/25 to-purple-400/10 shadow-[0_0_18px_rgba(168,85,247,0.22)]"
+                  ? "border-purple-400 bg-linear-to-r/srgb from-purple-500/25 to-purple-400/10 shadow-[0_0_18px_rgba(168,85,247,0.22)]"
                   : "border-gray-700 bg-gray-900/75 hover:border-purple-500/60"
               }`}
             >
@@ -601,7 +601,7 @@ export default function GraphPaperComponent() {
                   max={MAX_GRID_SIZE}
                   value={rows}
                   onChange={(e) => setRows(parseGridSize(e.target.value))}
-                  className="h-9 w-11 bg-transparent px-1 text-center text-base font-semibold text-white [appearance:textfield] focus:outline-none sm:text-sm [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                  className="h-9 w-11 bg-transparent px-1 text-center text-base font-semibold text-white [appearance:textfield] focus:outline-hidden sm:text-sm [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                 />
                 <div className="flex flex-col border-l border-gray-600">
                   <button
@@ -642,7 +642,7 @@ export default function GraphPaperComponent() {
                   max={MAX_GRID_SIZE}
                   value={cols}
                   onChange={(e) => setCols(parseGridSize(e.target.value))}
-                  className="h-9 w-11 bg-transparent px-1 text-center text-base font-semibold text-white [appearance:textfield] focus:outline-none sm:text-sm [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                  className="h-9 w-11 bg-transparent px-1 text-center text-base font-semibold text-white [appearance:textfield] focus:outline-hidden sm:text-sm [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                 />
                 <div className="flex flex-col border-l border-gray-600">
                   <button
@@ -693,7 +693,7 @@ export default function GraphPaperComponent() {
                   i === currentCell.row && j === currentCell.col
                     ? "border-purple-400"
                     : "border-gray-300"
-                } rounded focus:outline-none focus:border-purple-400`}
+                } rounded-sm focus:outline-hidden focus:border-purple-400`}
                 maxLength={1}
                 value={tmpGrid[i][j] || cell}
                 onChange={(e) => handleChange(i, j, e)}

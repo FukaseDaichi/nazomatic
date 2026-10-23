@@ -239,7 +239,7 @@ const DiceNet = ({
                     rotation: ((faceData[face.id]?.rotation || 0) + 90) % 360,
                   })
                 }
-                className="absolute top-0 right-0 p-1 hover:bg-gray-100 rounded-full transition-all duration-100 ease-in-out active:scale-90 hover:shadow-sm"
+                className="absolute top-0 right-0 p-1 hover:bg-gray-100 rounded-full transition-all duration-100 ease-in-out active:scale-90 hover:shadow-xs"
               >
                 <svg
                   width={16 * percent}

@@ -130,7 +130,7 @@ export default function GoogleMobileHomepage() {
             </Button>
           </header>
 
-          <main className="flex-grow flex flex-col items-center justify-center px-4">
+          <main className="grow flex flex-col items-center justify-center px-4">
             <Image
               src="/img/secret/google.png"
               alt="Google"
@@ -147,7 +147,7 @@ export default function GoogleMobileHomepage() {
                 type="search"
                 value={searchWord}
                 placeholder="Google で検索または URL を入力"
-                className="text-gray-900 w-full h-12 pl-12 pr-12 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="text-gray-900 w-full h-12 pl-12 pr-12 rounded-full border border-gray-300 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 onChange={(e) => {
                   setSearchWord(e.target.value);
                   setSounded(false);

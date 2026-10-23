@@ -49,7 +49,7 @@ const slotConfigByRank: Record<PartyPodiumEntry["slot"], SlotConfig> = {
     bodyNumberClassName: "text-[6.6rem] xl:text-[8.5rem]",
     bodyRankClassName: "text-xl xl:text-2xl",
     glowClassName: "shadow-[0_0_56px_rgba(251,191,36,0.2)]",
-    badgeClassName: "border-amber-300/35 bg-amber-300/14 text-amber-50",
+    badgeClassName: "border-amber-300/35 text-amber-50",
     accentTextClassName: "text-amber-200",
     summaryBorderClassName: "border-amber-300/25",
     summaryBackgroundClassName:
@@ -60,11 +60,11 @@ const slotConfigByRank: Record<PartyPodiumEntry["slot"], SlotConfig> = {
     icon: Medal,
     label: "2 位",
     bodyHeightClassName: "h-32 xl:h-44",
-    bodyGradientClassName: "from-slate-200/70 via-slate-300/18 to-gray-950",
+    bodyGradientClassName: "from-slate-200/70 to-gray-950",
     bodyNumberClassName: "text-[5.2rem] xl:text-[6.8rem]",
     bodyRankClassName: "text-lg xl:text-xl",
     glowClassName: "shadow-[0_0_44px_rgba(203,213,225,0.18)]",
-    badgeClassName: "border-slate-300/30 bg-slate-300/12 text-slate-100",
+    badgeClassName: "border-slate-300/30 text-slate-100",
     accentTextClassName: "text-slate-200",
     summaryBorderClassName: "border-slate-300/20",
     summaryBackgroundClassName:
@@ -75,11 +75,11 @@ const slotConfigByRank: Record<PartyPodiumEntry["slot"], SlotConfig> = {
     icon: Trophy,
     label: "3 位",
     bodyHeightClassName: "h-28 xl:h-36",
-    bodyGradientClassName: "from-orange-300/70 via-orange-400/18 to-gray-950",
+    bodyGradientClassName: "from-orange-300/70 to-gray-950",
     bodyNumberClassName: "text-[4.7rem] xl:text-[6rem]",
     bodyRankClassName: "text-base xl:text-lg",
     glowClassName: "shadow-[0_0_44px_rgba(251,146,60,0.18)]",
-    badgeClassName: "border-orange-300/30 bg-orange-300/12 text-orange-50",
+    badgeClassName: "border-orange-300/30 text-orange-50",
     accentTextClassName: "text-orange-200",
     summaryBorderClassName: "border-orange-300/20",
     summaryBackgroundClassName:
@@ -156,7 +156,7 @@ function PodiumBlock({
           className={cn(
             "inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em]",
             slot === 1
-              ? "border-purple-300/25 bg-purple-400/12 text-purple-50"
+              ? "border-purple-300/25 text-purple-50"
               : "border-gray-700 bg-gray-950/85 text-gray-200",
           )}
         >
@@ -169,7 +169,7 @@ function PodiumBlock({
             <PartyAvatar
               name={entry.participant.name}
               iconDataUrl={entry.participant.iconDataUrl}
-              className="h-16 w-16 rounded-[1.3rem] ring-1 ring-white/8 xl:h-20 xl:w-20"
+              className="h-16 w-16 rounded-[1.3rem] ring-1 ring-blue-500/50 xl:h-20 xl:w-20"
               monogramClassName="text-lg xl:text-xl"
             />
           ) : (
@@ -184,7 +184,7 @@ function PodiumBlock({
           <div className="text-[10px] uppercase tracking-[0.28em] text-gray-500">
             {entry ? kindLabel(entry.participant.kind) : "空きスロット"}
           </div>
-          <div className="max-w-[12rem] break-words text-sm font-black leading-tight text-white xl:text-base">
+          <div className="max-w-[12rem] break-words text-sm font-black leading-tight text-white xl:text-base xl:leading-6">
             {entry?.participant.name ?? "エントリー待ち"}
           </div>
           <div className="flex items-center justify-center gap-2">
@@ -195,7 +195,7 @@ function PodiumBlock({
               )}
             >
               {entry ? entry.participant.score.toLocaleString("ja-JP") : "--"}
-              <span className="ml-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-gray-400">
+              <span className="ml-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-gray-400 xl:leading-8">
                 pt
               </span>
             </div>
@@ -212,16 +212,16 @@ function PodiumBlock({
         <div className="absolute inset-x-6 bottom-2 h-7 rounded-full bg-purple-400/20 blur-2xl" />
         <div
           className={cn(
-            "relative overflow-hidden rounded-t-[1.8rem] border border-white/10 bg-gradient-to-b px-4 pt-4",
+            "relative overflow-hidden rounded-t-[1.8rem] border border-white/10 bg-linear-to-b/srgb px-4 pt-4",
             config.bodyHeightClassName,
             config.bodyGradientClassName,
             config.glowClassName,
           )}
         >
-          <div className="absolute inset-x-4 top-3 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent" />
-          <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-white/20 to-transparent" />
-          <div className="absolute inset-y-0 left-0 w-5 bg-gradient-to-r from-black/28 to-transparent" />
-          <div className="absolute inset-y-0 right-0 w-5 bg-gradient-to-l from-black/28 to-transparent" />
+          <div className="absolute inset-x-4 top-3 h-px bg-linear-to-r/srgb from-transparent via-white/60 to-transparent" />
+          <div className="absolute inset-x-0 top-0 h-16 bg-linear-to-b/srgb from-white/20 to-transparent" />
+          <div className="absolute inset-y-0 left-0 w-5 bg-linear-to-r/srgb to-transparent" />
+          <div className="absolute inset-y-0 right-0 w-5 bg-linear-to-l/srgb to-transparent" />
           <div className="absolute left-4 top-4 text-[10px] font-semibold uppercase tracking-[0.32em] text-white/80">
             Stage
           </div>
@@ -236,7 +236,7 @@ function PodiumBlock({
             </div>
             <div
               className={cn(
-                "mt-1 font-semibold uppercase tracking-[0.18em] text-white/82",
+                "mt-1 font-semibold uppercase tracking-[0.18em]",
                 config.bodyRankClassName,
               )}
             >
@@ -340,7 +340,7 @@ export default function PartyPodium({
       <CardContent className="p-0">
         <div className="flex flex-col lg:flex-row">
           <div className="relative min-w-0 border-b border-gray-800/80 lg:flex-[2] lg:border-b-0 lg:border-r">
-            <div className="absolute inset-x-12 top-8 h-28 rounded-full bg-purple-400/12 blur-3xl" />
+            <div className="absolute inset-x-12 top-8 h-28 rounded-full blur-3xl" />
             <div className="absolute inset-x-10 bottom-0 h-24 rounded-full bg-purple-400/10 blur-3xl" />
             <div className="absolute inset-0 bg-[linear-gradient(rgba(192,132,252,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(192,132,252,0.04)_1px,transparent_1px)] bg-[size:42px_42px] opacity-30" />
 
@@ -349,7 +349,7 @@ export default function PartyPodium({
                 <div className="text-[11px] font-semibold uppercase tracking-[0.34em] text-purple-200/80">
                   表彰台
                 </div>
-                <h2 className="mt-2 text-3xl font-black tracking-[-0.05em] text-white xl:text-[2.8rem]">
+                <h2 className="mt-2 text-3xl font-black tracking-[-0.05em] text-white xl:text-[2.8rem] xl:leading-9">
                   Stage
                 </h2>
               </div>

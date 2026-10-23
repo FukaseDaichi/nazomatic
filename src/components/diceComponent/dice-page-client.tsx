@@ -48,7 +48,7 @@ export default function DicePageClient() {
       <div className="flex-1 flex items-center justify-center w-full sm:max-w-[600px]">
         <DiceNets faceData={faceData} onFaceDataChange={handleFaceDataChange} />
       </div>
-      <div className="flex-1 flex items-center justify-center w-90 sm:max-w-[300px]">
+      <div className="flex-1 flex items-center justify-center sm:max-w-[300px]">
         <DiceComponent faceData={faceData} />
       </div>
     </main>

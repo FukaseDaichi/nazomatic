@@ -418,7 +418,7 @@ export default function Blank25EditorPage() {
   }, []);
 
   return (
-    <main className="flex h-[100dvh] flex-col bg-gradient-to-b from-gray-900 to-gray-800 text-white">
+    <main className="flex h-[100dvh] flex-col bg-linear-to-b/srgb from-gray-900 to-gray-800 text-white">
       <Blank25ImageCropperDialog
         open={cropOpen}
         imageUrl={cropImageUrl}
@@ -641,7 +641,7 @@ export default function Blank25EditorPage() {
                         id="category-select"
                         value={categoryId}
                         onChange={(event) => setCategoryId(event.target.value)}
-                        className="h-10 w-full rounded-lg border border-white/10 bg-gray-800/60 px-3 text-sm text-gray-100 outline-none transition-colors focus:border-purple-400/60 focus:ring-1 focus:ring-purple-400/30"
+                        className="h-10 w-full rounded-lg border border-white/10 bg-gray-800/60 px-3 text-sm text-gray-100 outline-hidden transition-colors focus:border-purple-400/60 focus:ring-1 focus:ring-purple-400/30"
                       >
                         {categories.map((category) => (
                           <option

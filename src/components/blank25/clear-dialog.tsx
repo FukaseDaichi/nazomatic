@@ -27,10 +27,10 @@ export default function Blank25ClearDialog({
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="z-[70] overflow-hidden border-gray-700 bg-gradient-to-b from-gray-950 to-gray-900 text-white">
+      <DialogContent className="z-[70] overflow-hidden border-gray-700 bg-linear-to-b/srgb from-gray-950 to-gray-900 text-white">
         <DialogHeader className="relative">
           <DialogTitle className="text-center text-3xl font-extrabold tracking-tight">
-            <span className="bg-gradient-to-r from-purple-300 via-pink-300 to-yellow-200 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r/srgb from-purple-300 via-pink-300 to-yellow-200 bg-clip-text text-transparent">
               CLEAR!
             </span>
           </DialogTitle>

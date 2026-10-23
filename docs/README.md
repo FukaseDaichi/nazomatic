@@ -21,6 +21,7 @@
 | [`development-guide.md`](./development-guide.md) | セットアップ、コマンド、環境変数、変更時確認 |
 | [`ai-coding-rules.md`](./ai-coding-rules.md) | AI がコードや UI を変更するときの必須ルール |
 | [`maintenance/security-assessment-2026-10.md`](./maintenance/security-assessment-2026-10.md) | 公式セキュリティ情報との照合、実施対策、未解消項目 |
+| [`maintenance/tailwind4-verification-2026-10.md`](./maintenance/tailwind4-verification-2026-10.md) | Tailwind CSS 4移行の表示比較・依存監査・検証範囲 |
 | [`maintenance/doc-audit-report.md`](./maintenance/doc-audit-report.md) | 直近のドキュメント同期結果 |
 
 ## 保守ルール

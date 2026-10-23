@@ -26,6 +26,7 @@
 }
 
 .worddata > .count {
+  line-height: 1.75rem;
   font-size: 0.6rem;
   display: block;
   position: absolute;

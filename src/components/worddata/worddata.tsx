@@ -37,7 +37,7 @@ const WordData: FC<WordInfoProps> = ({
       <div className={styles.count}>{count}</div>
     </div>
   ) : (
-    <div className={`w-1/10 h-1/5`}></div>
+    <div className={`h-1/5`}></div>
   );
 };
 

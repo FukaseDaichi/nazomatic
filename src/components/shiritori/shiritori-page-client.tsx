@@ -58,7 +58,7 @@ export default function ShiritoriPageClient() {
   }, [text]);
 
   return (
-    <main className="flex min-h-screen flex-col items-center bg-gradient-to-b from-gray-900 to-gray-800">
+    <main className="flex min-h-screen flex-col items-center bg-linear-to-b/srgb from-gray-900 to-gray-800">
       <h1 className="text-2xl sm:text-3xl font-bold mb-1 text-center">
         しりとりシステム
       </h1>
