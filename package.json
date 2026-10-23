@@ -54,7 +54,7 @@
     "@types/node": "^24",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "eslint": "^8",
+    "eslint": "^10",
     "eslint-config-next": "^15.5.28",
     "postcss": "^8",
     "tailwindcss": "^4.3.3",
