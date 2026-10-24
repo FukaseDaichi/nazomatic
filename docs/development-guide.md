@@ -85,6 +85,8 @@ Claude Code はディレクトリ名からコマンド名を決めるため、`.
 
 `npm run lint` は `skills:check` を先に実行するため、通常の lint でも壊れた構成を検出できます。
 
+Claude Code では `.agents/skills/` 配下を Write / Edit すると、PostToolUse hook（`.claude/hooks/sync-agent-skills.sh`）が手順5の `npm run skills:sync` を自動実行します。Codex や手作業での編集には効かないため、手順5〜7は省略しません。
+
 ### 検証
 
 `npm run skills:check` は次を検証します。
@@ -219,6 +221,8 @@ Shift Search のレポートは、元成果物と Next.js 表示用 assets が�
 3. `npm run shift:report:meta` を実行する。
 4. `npm run shift:report:view-assets` を実行する。
 5. `artifacts/shift-search/reports/*` と `src/generated/shift-search/*` の差分を確認する。
+
+Claude Code では `artifacts/shift-search/reports/` 配下を Write / Edit すると、PostToolUse hook（`.claude/hooks/sync-shift-search-report.sh`）が手順3・4を自動実行します。スクリプトで生成したレポートや Codex での編集には効かないため、その場合は手順3・4を手で実行します。
 
 詳細は `docs/system-design/subsystems/shift-search.md` を参照します。
 
