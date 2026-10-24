@@ -46,11 +46,11 @@ npm run shift:report:view-assets
 
 - 自動テストは `scripts/security/*.test.mjs`（Node標準 `node:test`）。検証対象は `docs/development-guide.md` を参照する。
 - 検証は変更対象に応じて選ぶ。`npm run lint` はスキル構成とコードの静的検査、`npm run test:security` は認証の回帰確認に使う。画面の操作・表示を変えた場合は対象画面を確認する。
-- Shift Search のレポート成果物を変更したら `shift:report:*` 両方を実行し、`src/generated/shift-search/*` と同期させる。
+- Shift Search のレポート成果物を変更したら `shift:report:*` 両方を実行し、`src/generated/shift-search/*` と同期させる（Claude Code では hook が自動実行する）。
 
 ## 標準ワークフロー
 
-- ブランチ運用: 作業は `future` に積み、`future` → `main` へPRを出す。`main` へ直接コミットしない。
+- ブランチ運用: 作業は `future` に積み、`future` → `main` へPRを出す。`main` へ直接コミットしない（Claude Code では hook が `main` 上の commit / push と `main` への push をブロックする）。
 - レビュー: まとまった変更の後は Codex レビュー（Claude Codeでは `codex:rescue`）を diff に対して実行し、指摘を修正して日本語で報告する。`docs/ideas/` の実装計画も、実装に着手する前に同じレビューへかける。
 - 並行作業: タスクが独立して分割できる場合はサブエージェントに振り分ける。
 - マージ後の後片付け（ブランチ・worktree）: `sync-main-and-clean-worktrees` スキルを使う。
@@ -64,7 +64,7 @@ npm run shift:report:view-assets
 - symlink・junction・ディレクトリ丸ごとコピー・`.claude/commands/`・Claude専用プロンプトでの公開は禁止する。
 - 正本 `SKILL.md` 内のスクリプト・参照ファイルへのパスは必ずリポジトリルート相対で書く（例: `.agents/skills/<name>/scripts/foo.sh`）。スタブ経由ではスキルディレクトリ相対パスが解決できない。
 - `.claude/skills/` 配下は生成ファイルなので、正本を編集して再生成する。
-- スキル変更後は必ず `npm run skills:sync` → `npm run skills:check` を実行し、正本とスタブの差分を一緒にコミットする（`npm run lint` も `skills:check` を先に実行する）。
+- スキル変更後は `npm run skills:sync` → `npm run skills:check` を実行し、正本とスタブの差分を一緒にコミットする（Claude Code では正本の編集時に hook が `skills:sync` を自動実行する。`npm run lint` も `skills:check` を先に実行する）。
 - 呼び出しは Codexで `$<name>`、Claude Codeで `/<name>`。手順・理由・検証コマンド・復旧手順の詳細は `docs/development-guide.md` を参照。
 
 | スキル                               | 用途                                                      |
@@ -72,7 +72,6 @@ npm run shift:report:view-assets
 | `seo`                                | メタタグ・構造化データ・サイトマップなど検索可視性        |
 | `sync-docs-from-code`                | `docs/**` とルート `README.md` を実装に合わせて整合       |
 | `sync-main-and-clean-worktrees`      | マージ後の後片付け（ブランチ同期・worktree/ブランチ削除） |
-| `nazomatic-mobile-first-ux-overhaul` | ページ・コンポーネントの再設計、モバイルファーストUX改修  |
 
 ## ドキュメントのライフサイクル
 
