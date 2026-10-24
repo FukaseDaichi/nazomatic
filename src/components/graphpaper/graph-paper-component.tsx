@@ -1,719 +1,580 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import GraphPaperToolbar from "./graph-paper-toolbar";
+import {
+  CELL_COLORS,
+  EMPTY_CELL,
+  type Grid,
+  type Pos,
+  type Range,
+  clampGridSize,
+  clampPos,
+  columnLabel,
+  createGrid,
+  inRange,
+  isBlack,
+  jumpToEdge,
+  mapRange,
+  nextPos,
+  parseClipboardText,
+  pasteBlock,
+  prevPos,
+  rangeLabel,
+  sameClipboardText,
+  sliceRange,
+  toClipboardText,
+  toRange,
+  writeChars,
+} from "./grid-model";
 
-const patterns = [
-  "bg-white text-gray-900",
-  "bg-red-500 text-white",
-  "bg-green-500 text-white",
-  "bg-blue-500 text-white",
-  "bg-yellow-500 text-white",
-];
+const CELL = 32;
+const HEADER = 24;
+const HISTORY_LIMIT = 100;
 
-const MIN_GRID_SIZE = 1;
-const MAX_GRID_SIZE = 20;
-
-const getPattern = (num: number) => {
-  if (typeof num !== "number") {
-    return patterns[0];
-  }
-  return patterns[num % patterns.length];
+const ARROWS: Record<string, [number, number]> = {
+  ArrowUp: [-1, 0],
+  ArrowDown: [1, 0],
+  ArrowLeft: [0, -1],
+  ArrowRight: [0, 1],
 };
 
-const clampGridSize = (value: number) =>
-  Math.min(MAX_GRID_SIZE, Math.max(MIN_GRID_SIZE, value));
+type Selection = { anchor: Pos; focus: Pos };
+type Clip = { text: string; block: Grid; cutRange: Range | null };
 
-const parseGridSize = (value: string) => {
-  const parsed = Number.parseInt(value, 10);
-  if (Number.isNaN(parsed)) {
-    return MIN_GRID_SIZE;
-  }
-  return clampGridSize(parsed);
+// グリッド外枠1px + 見出し列 + セル間1px の位置
+const cellX = (col: number) => 1 + HEADER + 1 + col * (CELL + 1);
+const cellY = (row: number) => 1 + HEADER + 1 + row * (CELL + 1);
+
+const rangeStyle = (range: Range): React.CSSProperties => ({
+  left: cellX(range.left) - 1,
+  top: cellY(range.top) - 1,
+  width: (range.right - range.left + 1) * (CELL + 1) + 1,
+  height: (range.bottom - range.top + 1) * (CELL + 1) + 1,
+});
+
+const posFromPoint = (x: number, y: number): Pos | null => {
+  const el = document
+    .elementFromPoint(x, y)
+    ?.closest<HTMLElement>("[data-row][data-col]");
+  if (!el) return null;
+  return { row: Number(el.dataset.row), col: Number(el.dataset.col) };
 };
 
 export default function GraphPaperComponent() {
-  //ヘルプテキスト表示メソッド
-  const [showHelp, setShowHelp] = useState(false);
-  const [rows, setRows] = useState(10);
-  const [cols, setCols] = useState(10);
-  const [lastClickedCell, setLastClickedCell] = useState<{
-    row: number;
-    col: number;
-    time: number;
-  } | null>(null);
-  const [grid, setGrid] = useState(
-    Array(rows)
-      .fill(null)
-      .map(() => Array(cols).fill("")),
-  );
-  const [tmpGrid, setTmpGrid] = useState(
-    Array(rows)
-      .fill(null)
-      .map(() => Array(cols).fill("")),
-  );
-  const [gridPattern, setGridPattern] = useState(
-    Array(rows)
-      .fill(null)
-      .map(() => Array(cols).fill(0)),
-  );
-  const [currentCell, setCurrentCell] = useState({ row: 0, col: 0 });
+  const [grid, setGrid] = useState<Grid>(() => createGrid(10, 10));
+  const [past, setPast] = useState<Grid[]>([]);
+  const [future, setFuture] = useState<Grid[]>([]);
+  const [selection, setSelection] = useState<Selection>({
+    anchor: { row: 0, col: 0 },
+    focus: { row: 0, col: 0 },
+  });
+  const [copyRange, setCopyRange] = useState<Range | null>(null);
   const [isComposing, setIsComposing] = useState(false);
-  const inputRefs = useRef<Record<string, HTMLInputElement | null>>({});
-  const [isAutoFill, setIsAutoFill] = useState(false);
-  const [isColorMode, setColorMode] = useState(false);
+  const [isHashFilled, setIsHashFilled] = useState(false);
+  const [isRangeMode, setIsRangeMode] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const clipRef = useRef<Clip | null>(null);
+  const composingRef = useRef(false);
+  const draggingRef = useRef(false);
 
-  const [disableScroll, setDisableScroll] = useState(false);
+  const rows = grid.length;
+  const cols = grid[0].length;
+  // 元に戻す等でグリッドが縮んでも選択位置がはみ出さないようにする
+  const anchor = clampPos(selection.anchor, rows, cols);
+  const focus = clampPos(selection.focus, rows, cols);
+  const range = toRange(anchor, focus);
+  const isSingle = range.top === range.bottom && range.left === range.right;
 
   useEffect(() => {
-    const handleTouchMove = (e: TouchEvent) => {
-      if (disableScroll) {
-        e.preventDefault();
-      }
+    const stopDrag = () => {
+      draggingRef.current = false;
     };
-    // passive: false で touchmove イベントを登録
-    document.addEventListener("touchmove", handleTouchMove, { passive: false });
-
+    window.addEventListener("pointerup", stopDrag);
+    window.addEventListener("pointercancel", stopDrag);
     return () => {
-      // クリーンアップ時に解除
-      document.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("pointerup", stopDrag);
+      window.removeEventListener("pointercancel", stopDrag);
     };
-  }, [disableScroll]); // disableScroll の変更を監視
-
-  const changePattern = useCallback(
-    (row: number, col: number, val: number, isReverse: boolean) => {
-      const newGridPattern = [...gridPattern];
-      if (isReverse) {
-        newGridPattern[row][col] =
-          newGridPattern[row][col] % patterns.length === val % patterns.length
-            ? 0
-            : val;
-      } else {
-        //変更がない場合は処理なし
-        if (newGridPattern[row][col] === val) {
-          return;
-        }
-        newGridPattern[row][col] = val;
-      }
-      setGridPattern(newGridPattern);
-    },
-    [gridPattern],
-  );
-
-  //スマートフォンタッチ操作用
-  const [touchStartPos, setTouchStartPos] = useState<{
-    x: number;
-    y: number;
-  } | null>(null);
+  }, []);
 
   useEffect(() => {
-    setGrid((prevGrid) => {
-      const newGrid = Array(rows)
-        .fill(null)
-        .map((_, rowIndex) =>
-          Array(cols)
-            .fill(null)
-            .map((_, colIndex) => {
-              return prevGrid[rowIndex]?.[colIndex] || "";
-            }),
-        );
-      return newGrid;
+    // PC では開いてすぐ入力できるようにする。スマホでキーボードを勝手に開かない
+    if (window.matchMedia("(pointer: fine)").matches) {
+      inputRef.current?.focus({ preventScroll: true });
+    }
+  }, []);
+
+  const focusInput = () => inputRef.current?.focus({ preventScroll: true });
+
+  // Excel と同じく、切り取り後に別の編集をしたら移動を取り消す
+  const cancelCut = () => {
+    if (!clipRef.current?.cutRange) return;
+    clipRef.current = null;
+    setCopyRange(null);
+  };
+
+  const commit = (next: Grid) => {
+    cancelCut();
+    setPast((prev) => [...prev.slice(-(HISTORY_LIMIT - 1)), grid]);
+    setFuture([]);
+    setGrid(next);
+  };
+
+  const undo = () => {
+    if (past.length === 0) return;
+    cancelCut();
+    setFuture((prev) => [grid, ...prev]);
+    setGrid(past[past.length - 1]);
+    setPast((prev) => prev.slice(0, -1));
+  };
+
+  const redo = () => {
+    if (future.length === 0) return;
+    cancelCut();
+    setPast((prev) => [...prev, grid]);
+    setGrid(future[0]);
+    setFuture((prev) => prev.slice(1));
+  };
+
+  const select = (pos: Pos) => setSelection({ anchor: pos, focus: pos });
+
+  const selectRange = (target: Range) =>
+    setSelection({
+      anchor: { row: target.top, col: target.left },
+      focus: { row: target.bottom, col: target.right },
     });
-    setTmpGrid(
-      Array(rows)
-        .fill(null)
-        .map(() => Array(cols).fill("")),
-    );
 
-    //パターンの保持
-    setGridPattern((prevGridPattern) => {
-      const newGridPattern = Array(rows)
-        .fill(null)
-        .map((_, rowIndex) =>
-          Array(cols)
-            .fill(null)
-            .map((_, colIndex) => {
-              return prevGridPattern[rowIndex]?.[colIndex] || 0;
-            }),
-        );
-      return newGridPattern;
-    });
-  }, [rows, cols]);
+  const typeText = (text: string) => {
+    if (!text) return;
+    const result = writeChars(grid, anchor, text);
+    commit(result.grid);
+    select(result.end);
+  };
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // 行列がフォーカスされている場合は、十字キーイベントを無視
-      if (
-        document.activeElement?.id === "rows" ||
-        document.activeElement?.id === "cols"
-      ) {
-        return;
-      }
+  const clearValues = () =>
+    commit(mapRange(grid, range, (cell) => ({ ...cell, value: "" })));
 
-      switch (e.key) {
-        case "ArrowUp":
-          if (e.shiftKey) {
-            changePattern(currentCell.row, currentCell.col, 1, true);
-            return;
-          }
-          setCurrentCell((prev) => ({
-            ...prev,
-            row: Math.max(0, prev.row - 1),
-          }));
-          break;
-        case "ArrowDown":
-          if (e.shiftKey) {
-            changePattern(currentCell.row, currentCell.col, 2, true);
-            return;
-          }
-          setCurrentCell((prev) => ({
-            ...prev,
-            row: Math.min(rows - 1, prev.row + 1),
-          }));
-          break;
-        case "ArrowLeft":
-          if (e.shiftKey) {
-            changePattern(currentCell.row, currentCell.col, 3, true);
-            return;
-          }
-          setCurrentCell((prev) => ({
-            ...prev,
-            col: Math.max(0, prev.col - 1),
-          }));
-          break;
-        case "ArrowRight":
-          if (e.shiftKey) {
-            changePattern(currentCell.row, currentCell.col, 4, true);
-            return;
-          }
-          setCurrentCell((prev) => ({
-            ...prev,
-            col: Math.min(cols - 1, prev.col + 1),
-          }));
-          break;
-      }
+  const applyColor = (color: number) =>
+    commit(mapRange(grid, range, (cell) => ({ ...cell, color })));
+
+  const copy = (cut: boolean) => {
+    const text = toClipboardText(sliceRange(grid, range));
+    clipRef.current = {
+      text,
+      block: sliceRange(grid, range),
+      cutRange: cut ? range : null,
     };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [rows, cols, currentCell, changePattern]);
-
-  useEffect(() => {
-    const currentInput =
-      inputRefs.current[`${currentCell.row}-${currentCell.col}`];
-    if (currentInput) {
-      currentInput.focus();
-      requestAnimationFrame(() => {
-        const length = currentInput.value.length;
-        currentInput.setSelectionRange(length, length);
-      });
-    }
-  }, [currentCell]);
-
-  useEffect(() => {
-    if (isAutoFill) {
-      fillCellsWithHash();
-    } else {
-      removeHash();
-    }
-  }, [isAutoFill]);
-
-  const nextCell = () => {
-    setCurrentCell((prev) => {
-      if (prev.col === cols - 1) {
-        return {
-          row: Math.min(rows - 1, prev.row + 1),
-          col: 0,
-        };
-      }
-      return {
-        ...prev,
-        col: prev.col + 1,
-      };
-    });
+    setCopyRange(range);
+    navigator.clipboard?.writeText(text).catch(() => {});
   };
 
-  const nextCellDown = () => {
-    setCurrentCell((prev) => ({
-      ...prev,
-      row: Math.min(rows - 1, prev.row + 1),
-    }));
-  };
-
-  const handleChange = (
-    row: number,
-    col: number,
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    if (isComposing) {
-      setTmpGrid((prevGrid) => {
-        const newGrid = [...prevGrid];
-        newGrid[row][col] = event.target.value;
-        return newGrid;
-      });
-      return;
-    }
-    setGrid((prevGrid) => {
-      const newGrid = [...prevGrid];
-      newGrid[row][col] = event.target.value.slice(-1);
-      return newGrid;
-    });
-    nextCell();
-  };
-
-  const handleCompositionStart = () => {
-    setIsComposing(true);
-  };
-  const handleCompositionEnd = (
-    row: number,
-    col: number,
-    e: React.CompositionEvent<HTMLInputElement>,
-  ) => {
-    const value = tmpGrid[row][col];
-    setGrid((prevGrid) => {
-      const newGrid = [...prevGrid];
-      newGrid[row][col] = value.slice(-1);
-      return newGrid;
-    });
-
-    setTmpGrid((prevGrid) => {
-      const newGrid = [...prevGrid];
-      newGrid[row][col] = "";
-      return newGrid;
-    });
-    setIsComposing(false);
-    nextCell();
-  };
-
-  const handleKeyDown = (
-    row: number,
-    col: number,
-    e: React.KeyboardEvent<HTMLInputElement>,
-  ) => {
-    if (e.nativeEvent.isComposing) {
-      return;
-    }
-    switch (e.key) {
-      case "Enter":
-        e.preventDefault();
-        if (e.ctrlKey) {
-          // Ctrl + Enter の場合
-          nextCellDown();
-          break;
-        }
-        nextCell();
-        break;
-      case "Backspace":
-        if (grid[row][col]) {
-          setGrid((prevGrid) => {
-            const newGrid = [...prevGrid];
-            newGrid[row][col] = "";
-            return newGrid;
-          });
-          return;
-        }
-        e.preventDefault();
-        setCurrentCell((prev) => {
-          if (prev.col === 0) {
-            return {
-              row: Math.max(0, prev.row - 1),
-              col: cols - 1,
-            };
-          }
-          return {
-            ...prev,
-            col: prev.col - 1,
-          };
-        });
-        break;
-    }
-  };
-
-  const fillCellsWithHash = () => {
-    setGrid((prevGrid) =>
-      prevGrid.map((row) => row.map((cell) => cell || "＃")),
+  const pasteText = (text: string) => {
+    const clip = clipRef.current;
+    const internal = clip && sameClipboardText(clip.text, text) ? clip : null;
+    // 切り取り後の貼り付けは移動として扱い、元の範囲を空にする
+    const base = internal?.cutRange
+      ? mapRange(grid, internal.cutRange, () => EMPTY_CELL)
+      : grid;
+    const result = pasteBlock(
+      base,
+      range,
+      internal?.block ?? parseClipboardText(text),
     );
+    // 切り取りの貼り付けは1回限りで、commit が切り取り状態を解除する
+    commit(result.grid);
+    selectRange(result.range);
   };
 
-  const removeHash = () => {
-    setGrid((prevGrid) =>
-      prevGrid.map((row) =>
-        row.map((cell) => (cell === "＃" || cell === "#" ? "" : cell)),
+  const pasteFromClipboard = async () => {
+    try {
+      pasteText(await navigator.clipboard.readText());
+    } catch {
+      // 読み取り権限がない場合は画面内でコピーした内容を使う
+      if (clipRef.current) pasteText(clipRef.current.text);
+    }
+  };
+
+  const resize = (nextRows: number, nextCols: number) => {
+    const r = clampGridSize(nextRows);
+    const c = clampGridSize(nextCols);
+    if (r === rows && c === cols) return;
+    commit(createGrid(r, c, grid));
+  };
+
+  const toggleHashFill = (checked: boolean) => {
+    setIsHashFilled(checked);
+    commit(
+      grid.map((row) =>
+        row.map((cell) => {
+          if (checked) return cell.value ? cell : { ...cell, value: "＃" };
+          return isBlack(cell.value) ? { ...cell, value: "" } : cell;
+        }),
       ),
     );
   };
 
-  const handleClickCapture = (row: number, col: number) => {
-    const currentTime = Date.now(); // 現在の時刻をミリ秒単位で取得
-    if (
-      lastClickedCell &&
-      lastClickedCell.row === row &&
-      lastClickedCell.col === col &&
-      currentTime - lastClickedCell.time < 1000
-    ) {
-      // 通常処理
-      setGridPattern((prevGridPattern) => {
-        const newGridPattern = [...prevGridPattern];
-        newGridPattern[row][col]++;
-        return newGridPattern;
-      });
-      setLastClickedCell({ row, col, time: currentTime });
-    } else {
-      // 上記の条件を満たさない場合(ダブルクリックでない場合)
-      setLastClickedCell({ row, col, time: currentTime }); // 最後にクリックされたセル情報を現在の情報で更新
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.nativeEvent.isComposing || e.keyCode === 229) return;
+    const mod = e.metaKey || e.ctrlKey;
+    const arrow = ARROWS[e.key];
+
+    if (arrow) {
+      e.preventDefault();
+      const from = e.shiftKey ? focus : anchor;
+      const to = mod
+        ? jumpToEdge(grid, from, arrow[0], arrow[1])
+        : clampPos(
+            { row: from.row + arrow[0], col: from.col + arrow[1] },
+            rows,
+            cols,
+          );
+      if (e.shiftKey) setSelection({ anchor, focus: to });
+      else select(to);
+      return;
+    }
+
+    if (mod && !e.altKey) {
+      switch (e.key.toLowerCase()) {
+        case "a":
+          selectRange({ top: 0, left: 0, bottom: rows - 1, right: cols - 1 });
+          break;
+        case "c":
+          copy(false);
+          break;
+        case "x":
+          copy(true);
+          break;
+        case "z":
+          if (e.shiftKey) redo();
+          else undo();
+          break;
+        case "y":
+          redo();
+          break;
+        default:
+          // Ctrl/⌘ + V は paste イベントで受け取る
+          return;
+      }
+      e.preventDefault();
+      return;
+    }
+
+    // Option + 数字は記号入力になるため、文字ではなく物理キーで判定する
+    const digit = /^Digit([0-9])$/.exec(e.code);
+    if (e.altKey && digit && Number(digit[1]) < CELL_COLORS.length) {
+      e.preventDefault();
+      applyColor(Number(digit[1]));
+      return;
+    }
+
+    switch (e.key) {
+      case "Enter":
+        e.preventDefault();
+        select(
+          clampPos(
+            { row: anchor.row + (e.shiftKey ? -1 : 1), col: anchor.col },
+            rows,
+            cols,
+          ),
+        );
+        break;
+      case "Tab": {
+        const to = e.shiftKey
+          ? prevPos(anchor, cols)
+          : nextPos(anchor, rows, cols);
+        // 端ではフォーカスをページへ戻し、キーボード操作で閉じ込めない
+        if (to === anchor) return;
+        e.preventDefault();
+        select(to);
+        break;
+      }
+      case "Delete":
+        e.preventDefault();
+        clearValues();
+        break;
+      case "Backspace": {
+        e.preventDefault();
+        if (!isSingle || grid[anchor.row][anchor.col].value) {
+          clearValues();
+          break;
+        }
+        // 空セルでは直前のセルへ戻って消す（連続入力の打ち直し用）
+        const back = prevPos(anchor, cols);
+        commit(
+          mapRange(grid, toRange(back, back), (cell) => ({
+            ...cell,
+            value: "",
+          })),
+        );
+        select(back);
+        break;
+      }
+      case "Escape":
+        clipRef.current = null;
+        setCopyRange(null);
+        break;
     }
   };
 
-  // ホバー時にヘルプテキストを表示
-  const handleMouseEnter = () => {
-    setShowHelp(true);
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (composingRef.current) return;
+    const text = e.target.value;
+    e.target.value = "";
+    typeText(text);
   };
 
-  // ホバーが外れたらヘルプテキストを非表示
-  const handleMouseLeave = () => {
-    setShowHelp(false);
-  };
-
-  // タッチ開始時にヘルプテキストを表示
-  const handleTouchStart = () => {
-    setShowHelp(true);
-  };
-
-  // タッチ終了時にヘルプテキストを非表示
-  const handleTouchEnd = () => {
-    setShowHelp(false);
-  };
-
-  const handleInputTouchStart = (
-    row: number,
-    col: number,
-    e: React.TouchEvent<HTMLInputElement>,
+  const handleCompositionEnd = (
+    e: React.CompositionEvent<HTMLInputElement>,
   ) => {
-    document.body.style.overflow = "hidden"; // ページのスクロールを無効化
-    setDisableScroll(true);
-    setTouchStartPos({
-      x: e.touches[0].clientX,
-      y: e.touches[0].clientY,
-    });
+    composingRef.current = false;
+    setIsComposing(false);
+    const text = e.currentTarget.value;
+    e.currentTarget.value = "";
+    typeText(text);
   };
 
-  const handleInputTouchMove = (
-    row: number,
-    col: number,
-    e: React.TouchEvent<HTMLInputElement>,
-  ) => {
-    if (!touchStartPos) return;
-    const touchEndPos = {
-      x: e.touches[0].clientX,
-      y: e.touches[0].clientY,
-    };
-
-    const diffX = touchEndPos.x - touchStartPos.x;
-    const diffY = touchEndPos.y - touchStartPos.y;
-
-    // スワイプ距離が短い場合は無視
-    if (Math.abs(diffX) < 50 && Math.abs(diffY) < 50) return;
-
-    // 上下左右のスワイプ方向を判定
-    if (Math.abs(diffX) > Math.abs(diffY)) {
-      // 左右スワイプ
-      if (diffX > 0) {
-        // 右スワイプ
-        changePattern(row, col, 4, false);
-      } else {
-        // 左スワイプ
-        changePattern(row, col, 3, false);
-      }
-    } else {
-      // 上下スワイプ
-      if (diffY > 0) {
-        // 下スワイプ
-        changePattern(row, col, 2, false);
-      } else {
-        // 上スワイプ
-        changePattern(row, col, 1, false);
-      }
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+    if (target.closest("[data-corner]")) {
+      e.preventDefault();
+      selectRange({ top: 0, left: 0, bottom: rows - 1, right: cols - 1 });
+      focusInput();
+      return;
     }
+    const header = target.closest<HTMLElement>(
+      "[data-header-row],[data-header-col]",
+    );
+    if (header) {
+      e.preventDefault();
+      const r = header.dataset.headerRow;
+      const c = header.dataset.headerCol;
+      const from = e.shiftKey ? range : null;
+      if (r !== undefined) {
+        const row = Number(r);
+        selectRange({
+          top: Math.min(row, from?.top ?? row),
+          bottom: Math.max(row, from?.bottom ?? row),
+          left: 0,
+          right: cols - 1,
+        });
+      } else if (c !== undefined) {
+        const col = Number(c);
+        selectRange({
+          top: 0,
+          bottom: rows - 1,
+          left: Math.min(col, from?.left ?? col),
+          right: Math.max(col, from?.right ?? col),
+        });
+      }
+      focusInput();
+      return;
+    }
+    const pos = posFromPoint(e.clientX, e.clientY);
+    // タッチは範囲選択モード以外ではスクロールを優先し、タップ確定時に選択する
+    if (!pos || (e.pointerType !== "mouse" && !isRangeMode)) return;
+    e.preventDefault();
+    if (e.shiftKey) setSelection({ anchor, focus: pos });
+    else select(pos);
+    draggingRef.current = true;
+    if (e.pointerType === "mouse") focusInput();
   };
 
-  const handleInputTouchEnd = () => {
-    //スクロールを有効化
-    document.body.style.overflow = "";
-    setDisableScroll(false);
-    setTouchStartPos(null);
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!draggingRef.current) return;
+    const pos = posFromPoint(e.clientX, e.clientY);
+    if (pos) setSelection((prev) => ({ ...prev, focus: pos }));
   };
 
-  const adjustRows = (delta: number) => {
-    setRows((prev) => clampGridSize(prev + delta));
+  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === "mouse" || isRangeMode) return;
+    const pos = posFromPoint(e.clientX, e.clientY);
+    if (!pos) return;
+    select(pos);
+    focusInput();
   };
 
-  const adjustCols = (delta: number) => {
-    setCols((prev) => clampGridSize(prev + delta));
-  };
+  const activeCell = grid[anchor.row][anchor.col];
 
   return (
-    <main className="flex items-center justify-center px-3 py-4 sm:px-4">
-      <div className="relative max-w-3xl rounded-2xl border border-purple-500/20 bg-linear-to-b/srgb from-gray-900 to-gray-800 p-4 shadow-xl sm:p-6">
-        <h1 className="text-3xl font-bold mb-3 text-center text-purple-400">
+    <main className="flex justify-center px-3 py-4 sm:px-4">
+      <div className="w-full max-w-3xl rounded-2xl border border-purple-500/20 bg-linear-to-b/srgb from-gray-900 to-gray-800 p-3 shadow-xl sm:p-6">
+        <h1 className="mb-1 text-center text-3xl font-bold text-purple-400">
           方眼紙
         </h1>
-        {showHelp && (
-          <div className="absolute left-3 right-3 top-[94px] z-20 rounded-xl border border-gray-700 bg-gray-900/95 p-3 text-xs leading-relaxed text-gray-100 shadow-2xl sm:left-6 sm:right-6">
-            {/* ここにヘルプテキストの内容を記述 */}
-            <ul>
-              <li>・＃でマスが黒塗りになります。</li>
-              <li className="md:hidden">
-                ・マス連続タップで色変更ができます。
-              </li>
-              <li className="md:hidden">
-                ・色モードでスワイプで色変更ができます。
-              </li>
-              <li className="hidden md:block">
-                ・ダブルクリックで色変更ができます。
-              </li>
-              <li className="hidden md:block">
-                ・Shift + ↑ 赤色に変更できます。
-              </li>
-              <li className="md:hidden">・↑スワイプ 赤色</li>
-              <li className="hidden md:block">
-                ・Shift + ↓ で緑色に変更できます。
-              </li>
-              <li className="md:hidden">・↓スワイプ 緑色</li>
-              <li className="hidden md:block">
-                ・Shift + ← で青色に変更できます。
-              </li>
-              <li className="md:hidden">・←スワイプ 青色</li>
-              <li className="hidden md:block">
-                ・Shift + → で黄色に変更できます。
-              </li>
-              <li className="md:hidden">・→スワイプ 黄色</li>
-              <li>・「黒(＃)埋め」で＃埋め/解除ができます。</li>
-              <li>・行数と列数は1〜20で設定できます。</li>
-            </ul>
-          </div>
-        )}
-        <p className="mb-3 flex items-center justify-center text-xs text-gray-400">
-          <span>＃でマスが黒塗り。色変更も可能。</span>
-          <button
-            className="text-purple-400 hover:text-purple-300 focus:outline-hidden"
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          </button>
+        <p className="mb-3 text-center text-xs text-gray-400">
+          1マス1文字。＃で黒塗り。範囲を選んでコピー・貼り付け・塗りつぶしができます。
         </p>
 
-        <div className="mb-3 mx-auto w-[320px] sm:w-[410px]">
-          <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
-            <label
-              htmlFor="autoFill"
-              className={`flex h-12 cursor-pointer items-center justify-between rounded-xl border px-2.5 transition focus-within:ring-2 focus-within:ring-purple-400/60 ${
-                isAutoFill
-                  ? "border-purple-400 bg-linear-to-r/srgb from-purple-500/25 to-purple-400/10 shadow-[0_0_18px_rgba(168,85,247,0.22)]"
-                  : "border-gray-700 bg-gray-900/75 hover:border-purple-500/60"
-              }`}
-            >
-              <span className="text-sm font-semibold text-gray-100">
-                黒埋め
-              </span>
-              <span
-                className={`relative h-6 w-11 rounded-full border transition ${
-                  isAutoFill
-                    ? "border-purple-300/80 bg-purple-500/70"
-                    : "border-gray-600 bg-gray-700"
-                }`}
-              >
-                <span
-                  className={`absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-md transition-transform duration-200 ease-out will-change-transform ${
-                    isAutoFill ? "translate-x-5" : "translate-x-0"
-                  }`}
-                />
-              </span>
-              <input
-                id="autoFill"
-                type="checkbox"
-                checked={isAutoFill}
-                onChange={(e) => setIsAutoFill(e.target.checked)}
-                className="sr-only"
-              />
-            </label>
+        <GraphPaperToolbar
+          selectionLabel={rangeLabel(range)}
+          activeColor={activeCell.color}
+          canUndo={past.length > 0}
+          canRedo={future.length > 0}
+          rows={rows}
+          cols={cols}
+          isHashFilled={isHashFilled}
+          isRangeMode={isRangeMode}
+          onColor={(color) => {
+            applyColor(color);
+            if (!isRangeMode) focusInput();
+          }}
+          onCopy={() => copy(false)}
+          onCut={() => copy(true)}
+          onPaste={pasteFromClipboard}
+          onClear={clearValues}
+          onUndo={undo}
+          onRedo={redo}
+          onResize={resize}
+          onHashFill={toggleHashFill}
+          onRangeMode={(checked) => {
+            setIsRangeMode(checked);
+            if (checked) inputRef.current?.blur();
+          }}
+        />
 
-            <label
-              htmlFor="rock"
-              className={`flex h-12 cursor-pointer items-center justify-between rounded-xl border px-2.5 transition focus-within:ring-2 focus-within:ring-purple-400/60 md:hidden ${
-                isColorMode
-                  ? "border-purple-400 bg-linear-to-r/srgb from-purple-500/25 to-purple-400/10 shadow-[0_0_18px_rgba(168,85,247,0.22)]"
-                  : "border-gray-700 bg-gray-900/75 hover:border-purple-500/60"
-              }`}
+        <div className="overflow-x-auto pb-2">
+          <div
+            className="relative mx-auto w-max select-none"
+            style={{ touchAction: isRangeMode ? "none" : undefined }}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+          >
+            <div
+              className="grid gap-px border border-gray-600 bg-gray-600"
+              style={{
+                gridTemplateColumns: `${HEADER}px repeat(${cols}, ${CELL}px)`,
+                gridTemplateRows: `${HEADER}px repeat(${rows}, ${CELL}px)`,
+              }}
             >
-              <span className="text-sm font-semibold text-gray-100">
-                色モード
-              </span>
-              <span
-                className={`relative h-6 w-11 rounded-full border transition ${
-                  isColorMode
-                    ? "border-purple-300/80 bg-purple-500/70"
-                    : "border-gray-600 bg-gray-700"
-                }`}
-              >
-                <span
-                  className={`absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-md transition-transform duration-200 ease-out will-change-transform ${
-                    isColorMode ? "translate-x-5" : "translate-x-0"
-                  }`}
-                />
-              </span>
-              <input
-                id="rock"
-                type="checkbox"
-                checked={isColorMode}
-                onChange={(e) => setColorMode(e.target.checked)}
-                className="sr-only"
+              <div
+                data-corner
+                className="cursor-pointer bg-gray-800"
+                aria-hidden
               />
-            </label>
-
-            <div className="flex h-12 items-center justify-between rounded-xl border border-gray-700 bg-gray-900/75 px-2.5">
-              <label
-                htmlFor="rows"
-                className="text-sm font-medium text-gray-200"
-              >
-                行数
-              </label>
-              <div className="flex items-center overflow-hidden rounded-md border border-gray-600 bg-gray-950/80">
-                <input
-                  id="rows"
-                  type="number"
-                  inputMode="numeric"
-                  min={MIN_GRID_SIZE}
-                  max={MAX_GRID_SIZE}
-                  value={rows}
-                  onChange={(e) => setRows(parseGridSize(e.target.value))}
-                  className="h-9 w-11 bg-transparent px-1 text-center text-base font-semibold text-white [appearance:textfield] focus:outline-hidden sm:text-sm [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                />
-                <div className="flex flex-col border-l border-gray-600">
-                  <button
-                    type="button"
-                    aria-label="行数を増やす"
-                    onClick={() => adjustRows(1)}
-                    disabled={rows >= MAX_GRID_SIZE}
-                    className="flex h-[18px] w-8 items-center justify-center text-[10px] text-gray-300 transition hover:bg-purple-500/30 disabled:cursor-not-allowed disabled:text-gray-600"
-                  >
-                    ▲
-                  </button>
-                  <button
-                    type="button"
-                    aria-label="行数を減らす"
-                    onClick={() => adjustRows(-1)}
-                    disabled={rows <= MIN_GRID_SIZE}
-                    className="flex h-[18px] w-8 items-center justify-center border-t border-gray-600 text-[10px] text-gray-300 transition hover:bg-purple-500/30 disabled:cursor-not-allowed disabled:text-gray-600"
-                  >
-                    ▼
-                  </button>
+              {Array.from({ length: cols }, (_, c) => (
+                <div
+                  key={`h-${c}`}
+                  data-header-col={c}
+                  className={`flex cursor-pointer items-center justify-center text-xs ${
+                    c >= range.left && c <= range.right
+                      ? "bg-gray-700 font-semibold text-purple-300"
+                      : "bg-gray-800 text-gray-400"
+                  }`}
+                >
+                  {columnLabel(c)}
                 </div>
-              </div>
+              ))}
+              {grid.map((row, r) => (
+                <React.Fragment key={`r-${r}`}>
+                  <div
+                    data-header-row={r}
+                    className={`flex cursor-pointer items-center justify-center text-xs ${
+                      r >= range.top && r <= range.bottom
+                        ? "bg-gray-700 font-semibold text-purple-300"
+                        : "bg-gray-800 text-gray-400"
+                    }`}
+                  >
+                    {r + 1}
+                  </div>
+                  {row.map((cell, c) => (
+                    <div
+                      key={`${r}-${c}`}
+                      data-row={r}
+                      data-col={c}
+                      className={`relative flex cursor-cell items-center justify-center text-base ${
+                        isBlack(cell.value)
+                          ? "bg-black text-gray-800"
+                          : CELL_COLORS[cell.color].className
+                      }`}
+                    >
+                      {cell.value}
+                      {!isSingle &&
+                        inRange(range, r, c) &&
+                        !(r === anchor.row && c === anchor.col) && (
+                          <span className="pointer-events-none absolute inset-0 bg-purple-500/30" />
+                        )}
+                    </div>
+                  ))}
+                </React.Fragment>
+              ))}
             </div>
 
-            <div className="flex h-12 items-center justify-between rounded-xl border border-gray-700 bg-gray-900/75 px-2.5">
-              <label
-                htmlFor="cols"
-                className="text-sm font-medium text-gray-200"
-              >
-                列数
-              </label>
-              <div className="flex items-center overflow-hidden rounded-md border border-gray-600 bg-gray-950/80">
-                <input
-                  id="cols"
-                  type="number"
-                  inputMode="numeric"
-                  min={MIN_GRID_SIZE}
-                  max={MAX_GRID_SIZE}
-                  value={cols}
-                  onChange={(e) => setCols(parseGridSize(e.target.value))}
-                  className="h-9 w-11 bg-transparent px-1 text-center text-base font-semibold text-white [appearance:textfield] focus:outline-hidden sm:text-sm [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                />
-                <div className="flex flex-col border-l border-gray-600">
-                  <button
-                    type="button"
-                    aria-label="列数を増やす"
-                    onClick={() => adjustCols(1)}
-                    disabled={cols >= MAX_GRID_SIZE}
-                    className="flex h-[18px] w-8 items-center justify-center text-[10px] text-gray-300 transition hover:bg-purple-500/30 disabled:cursor-not-allowed disabled:text-gray-600"
-                  >
-                    ▲
-                  </button>
-                  <button
-                    type="button"
-                    aria-label="列数を減らす"
-                    onClick={() => adjustCols(-1)}
-                    disabled={cols <= MIN_GRID_SIZE}
-                    className="flex h-[18px] w-8 items-center justify-center border-t border-gray-600 text-[10px] text-gray-300 transition hover:bg-purple-500/30 disabled:cursor-not-allowed disabled:text-gray-600"
-                  >
-                    ▼
-                  </button>
-                </div>
-              </div>
-            </div>
+            {copyRange && (
+              <div
+                className="pointer-events-none absolute border-2 border-dashed border-purple-300"
+                style={rangeStyle(copyRange)}
+              />
+            )}
+            <div
+              className="pointer-events-none absolute border-2 border-purple-400"
+              style={rangeStyle(range)}
+            />
+            <input
+              ref={inputRef}
+              aria-label={`方眼紙 ${rangeLabel(toRange(anchor, anchor))} の入力`}
+              autoComplete="off"
+              autoCapitalize="off"
+              spellCheck={false}
+              className={`absolute h-8 text-center text-base text-gray-900 outline-hidden ${
+                isComposing
+                  ? "z-10 w-auto min-w-8 bg-white px-1 caret-purple-500 shadow-lg ring-2 ring-purple-400"
+                  : "pointer-events-none w-8 bg-transparent caret-transparent opacity-0"
+              }`}
+              style={{ left: cellX(anchor.col), top: cellY(anchor.row) }}
+              size={isComposing ? 6 : 1}
+              onKeyDown={handleKeyDown}
+              onChange={handleInputChange}
+              onCompositionStart={() => {
+                composingRef.current = true;
+                setIsComposing(true);
+              }}
+              onCompositionEnd={handleCompositionEnd}
+              onPaste={(e) => {
+                e.preventDefault();
+                pasteText(e.clipboardData.getData("text/plain"));
+              }}
+            />
           </div>
         </div>
-        <div
-          className="grid gap-1 mx-auto select-none"
-          style={{
-            gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
-            maxWidth: `${cols * 2.25}rem`, // 8px(セル幅) + 1px(gap) × 列数
-          }}
-        >
-          {grid.map((row, i) =>
-            row.map((cell: string, j: number) => (
-              <input
-                onClick={() => setCurrentCell({ row: i, col: j })}
-                key={`${i}-${j}`}
-                ref={(el: HTMLInputElement | null) => {
-                  if (el) {
-                    inputRefs.current[`${i}-${j}`] = el;
-                  }
-                }}
-                className={`w-8 h-8 text-center ${
-                  cell === "#" || cell === "＃"
-                    ? "bg-black text-gray-800"
-                    : getPattern(gridPattern[i][j])
-                } border ${
-                  i === currentCell.row && j === currentCell.col
-                    ? "border-purple-400"
-                    : "border-gray-300"
-                } rounded-sm focus:outline-hidden focus:border-purple-400`}
-                maxLength={1}
-                value={tmpGrid[i][j] || cell}
-                onChange={(e) => handleChange(i, j, e)}
-                onCompositionStart={handleCompositionStart}
-                onCompositionEnd={(e) => handleCompositionEnd(i, j, e)}
-                onKeyDown={(e) => handleKeyDown(i, j, e)}
-                onClickCapture={(e) => handleClickCapture(i, j)}
-                //スマートフォン色変え
-                onTouchStart={(e) =>
-                  isColorMode && handleInputTouchStart(i, j, e)
-                }
-                onTouchMove={(e) =>
-                  isColorMode && handleInputTouchMove(i, j, e)
-                }
-                onTouchEnd={(e) => isColorMode && handleInputTouchEnd()}
-                readOnly={isColorMode}
-              />
-            )),
-          )}
-        </div>
+
+        <details className="mt-3 rounded-xl border border-gray-700 bg-gray-900/75 p-3 text-xs leading-relaxed text-gray-300">
+          <summary className="cursor-pointer text-sm font-semibold text-gray-100">
+            操作方法
+          </summary>
+          <dl className="mt-2 hidden grid-cols-[max-content_1fr] gap-x-4 gap-y-1 md:grid">
+            <dt className="text-purple-300">矢印 / Enter / Tab</dt>
+            <dd>セル移動（Shift で逆方向）</dd>
+            <dt className="text-purple-300">
+              Shift + 矢印・クリック・ドラッグ
+            </dt>
+            <dd>範囲選択。行番号・列記号のクリックで行・列全体</dd>
+            <dt className="text-purple-300">Ctrl/⌘ + 矢印</dt>
+            <dd>入力済みブロックの端へジャンプ（Shift 併用で範囲選択）</dd>
+            <dt className="text-purple-300">Ctrl/⌘ + A / C / X / V</dt>
+            <dd>
+              全選択 / コピー / 切り取り / 貼り付け（切り取り→貼り付けで移動）
+            </dd>
+            <dt className="text-purple-300">Ctrl/⌘ + Z / Shift + Z</dt>
+            <dd>元に戻す / やり直し</dd>
+            <dt className="text-purple-300">Alt/Option + 0〜4</dt>
+            <dd>塗りつぶし（0 なし・1 赤・2 緑・3 青・4 黄）</dd>
+            <dt className="text-purple-300">Delete / Backspace</dt>
+            <dd>選択範囲の文字を消去（色は残る）</dd>
+            <dt className="text-purple-300">Esc</dt>
+            <dd>コピー範囲の点線を解除</dd>
+          </dl>
+          <ul className="mt-2 list-disc space-y-1 pl-4 md:hidden">
+            <li>マスをタップして入力。続けて打つと右のマスへ進みます。</li>
+            <li>「範囲選択」をオンにすると、なぞって複数マスを選べます。</li>
+            <li>選んだ範囲に上のボタンで色・コピー・貼り付けができます。</li>
+          </ul>
+          <p className="mt-2 text-gray-400">
+            コピーはタブ区切りなので Excel
+            やスプレッドシートとも貼り付け合えます。行数・列数は1〜20です。
+          </p>
+        </details>
       </div>
     </main>
   );

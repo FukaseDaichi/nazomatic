@@ -10,7 +10,7 @@
 | サイコロ | `src/components/diceComponent` | `dice-nets.tsx` の展開図定義 |
 | アルファベット変換 | `alphabet-converter.tsx` | クライアント状態 |
 | 都道府県検索 | `prefecture-search-table.tsx` | コンポーネント内定義 |
-| 方眼紙 | `graph-paper-component.tsx` | クライアント状態 |
+| 方眼紙 | `src/components/graphpaper/grid-model.ts` | クライアント状態 |
 | 辞書検索 | `src/class/SearchManager.ts` | `public/dic/*.dic` |
 | 星座検索 | `src/lib/constellation` | `constellations-data.json` |
 | 文字拾い検索 | `src/lib/character-pick-search.ts` | `SearchManager` の辞書 |
@@ -33,6 +33,16 @@
 ## サイコロ
 
 `dice-nets.tsx` の展開図候補と、Three.js 系ライブラリによる 3D 表示を組み合わせます。各面の文字と回転は画面 state です。
+
+## 方眼紙
+
+Excel に近い操作の 1 マス 1 文字グリッドです（最大 20×20）。セルの値・塗り色・範囲操作・クリップボード変換は `grid-model.ts` の純粋関数、選択状態・履歴・入力イベントは `graph-paper-component.tsx`、ツールバーは `graph-paper-toolbar.tsx` が担当します。
+
+- 入力は選択中セルに重ねた 1 つの `<input>` で受け、IME の確定文字列を右方向へ 1 文字ずつ展開します。`#`/`＃` は黒マスとして描画します。
+- 範囲選択は Shift + 矢印・ドラッグ・行列見出し、Ctrl/⌘ + 矢印は入力済みブロックの端へジャンプします。
+- コピーはタブ区切りテキストで書き出し、画面内のコピー内容と一致する貼り付けは塗り色も復元します。切り取り後の貼り付けは移動として元範囲を空にします。
+- 塗りつぶしは Alt/Option + 0〜4 またはツールバー。元に戻す・やり直しは画面内の履歴（100 件）です。
+- タッチはタップで選択し、「範囲選択」オン時だけなぞり選択のためにスクロールを止めます。
 
 ## 星座検索
 
