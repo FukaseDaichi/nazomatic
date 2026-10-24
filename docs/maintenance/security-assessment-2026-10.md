@@ -26,7 +26,7 @@
 - [2026年5月の公式更新](https://vercel.com/changelog/next-js-may-2026-security-release): App Routerの認証迂回やキャッシュ関連の修正を含み、13/14系には更新先として15/16系を案内している。WAFのみを修正の代替にしない。
 - [middleware迂回修正の追加対応](https://github.com/vercel/next.js/security/advisories/GHSA-26hh-7cqf-hhc6): Turbopack等の適用条件がある。今回のEditor API多層認証は、特定CVEへの該当を断定するものではなくmiddlewareのみに依存する境界の改善。
 
-Realtime / X の内部 Route Handler は既存の Bearer + HMAC + 有効期限 + Firestore nonce を呼び出す。今回の点検で認証呼び出し漏れは見つからなかった。`INTERNAL_API_ALLOW_UNSIGNED=true` は通常運用では設定しない。
+Realtime の内部 Route Handler は既存の Bearer + HMAC + 有効期限 + Firestore nonce を呼び出す。今回の点検で認証呼び出し漏れは見つからなかった。`INTERNAL_API_ALLOW_UNSIGNED=true` は通常運用では設定しない。
 
 ## 依存監査の結果と未解消項目
 
@@ -58,7 +58,7 @@ PR #91 時点では Tailwind 4移行と見た目の回帰確認を別作業と�
 
 - `npm ci --no-audit --no-fund`: 通常のpeer検証を有効にしたクリーンインストール成功。`npm ls react react-dom @react-three/fiber @react-three/drei @react-spring/three` も成功。
 - `npm run lint` / `npm run build`: 成功。Next.js 15.5.28で全56静的ページを生成。
-- `npm run test:security`: 2件成功。`npm run test:x-browser-posting`: 105件成功。
+- `npm run test:security`: 2件成功。
 - ローカルproduction server: 認証なし・middleware迂回ヘッダー付きは401、不正Origin / cross-site mutationは403、不許可の画像URLは400。保護ヘッダー、Host転送ヘッダーを偽装したponpoppoの200応答、継承プロパティ名のproductId拒否、レポートの200応答を確認。
 - Playwright Chromium: サイコロのWebGL描画、文字入力の反映、一時停止、ponpoppo表示でページ例外なし。広告リクエストはテスト時のみ遮断。
 - Codex CLIレビューは実行環境の認証エラーで完了できず、別Codexエージェントで差分をレビュー。発見されたReact / fiber非互換を修正し、再レビューで解消を確認。

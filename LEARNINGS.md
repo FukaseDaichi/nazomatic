@@ -15,6 +15,9 @@
 - 2026-10-24: 成功したPR用workflowでもAPIの `pull_requests` が空の場合がある。依存PRの自動マージではopen PRを列挙し、現在のhead SHA・workflowファイル・eventを照合する（運用は `docs/system-design/operations/jobs-and-generated-assets.md`）。
 
 - 2026-10-24: Tailwindのメジャー移行では移行前の画像とDOM寸法を保存して比較すると、廃止クラスだけでなく従来未生成だったクラスの新規適用や行高継承の変化も特定できる。今回の確認項目は `docs/maintenance/tailwind4-verification-2026-10.md` を参照。
+
+- 2026-10-23: ローカル自動化の撤去では、専用プロファイルを指定する実行中ブラウザを停止してから状態・Cookie・生成物を削除する。コード削除だけでは稼働中プロセスや Git 管理外のデータは消えない。
+
 - 2026-08-24: `~/.claude/projects/<slug>/*.jsonl` からユーザーの実発話だけを抜くには、`type=="last-prompt"` と `type=="queue-operation"`(operation=="enqueue") を併用して重複排除する。`type=="user"` だけだと task-notification やスキル本文が大量に混ざり、`last-prompt` だけだと取りこぼす。
 - 2026-08-28: npm脆弱性の棚卸しは `npm audit --omit=dev --json` で severity と `fixAvailable` を機械的に一覧化し、`npm ls <pkg>` で実際の依存ツリーを辿ってから対応方針（そのまま更新／メジャー移行が必要／孫依存で単独修正不可）を切り分けると早い。
 
@@ -34,10 +37,7 @@
 
 （業務・仕様に関する事実）
 
-- 2026-10-23: クラウドの automation 検索で0件でも、手元 PC のローカル登録が削除されたことにはならない。X 自動化の撤去時に残った登録 ID と削除状況は `docs/system-design/operations/jobs-and-generated-assets.md` を参照する。
-
 - 2026-10-20: Vercel の Node.js 版はリポジトリに指定がないと Project Settings に従う。`package.json` の `engines.node`（例: `24.x`）を書けばダッシュボードを変えずに上書きできるので、Node 廃止エラーはコード側で直して PR に含める。
-- 2026-10-19: X投稿の `fetch failed` は接続先をログだけで判別できない。観測ログ・週末サマリでは prepare API、成長計測では起動時のローカルCDP接続も発生源になるため、CLIの実行順と照合する。修正前の Chrome 起動は stderr と子プロセスの error を破棄していたため、過去の CDP timeout だけではプロファイル競合と起動失敗を確定できない。
 
 - 2026-08-28: Codex画像生成をスクリプトから使う契約は `codex exec --sandbox workspace-write --skip-git-repo-check --ephemeral -C <dir> -- "Use the imagegen skill..."`。現行 Codex CLI は `--full-auto` を受け付けない。`SAVED: <絶対パス>` 行は instruction 側で明示要求し、パース後に workDir 配下 realpath・生成時刻・PNG/JPEGマジックバイトを検証してから使う。
 
@@ -52,8 +52,7 @@
 （統合パス専用。ここに直接追記しない）
 
 - 自動化の `memory.md` を更新するときは、ログや台帳を正本として `Current State` / `Active Issues` / `Recent Runs` / `References` に再要約し、保存プロンプトで保持件数と容量上限を定めよ。
-- 新しい X ブラウザ投稿 CLI に永続 state を持たせるときは、account ownership を内容検証より先に確認し、pending の遷移を曜日・schedule 判定より先に処理し、破損時は fail-closed、保存は atomic write とせよ。
-- 外部由来のテキストを公開物へ流すときは、入力種別に応じた境界を設けよ。無監修辞書は全候補で一意性を判定してから answer / display に denylist を適用し、X の第三者投稿は会話境界で候補を切り、公開側には正規化 URL と handle だけを出す。
+- 外部由来のテキストを公開物へ流すときは、入力種別に応じた境界を設けよ。無監修辞書は全候補で一意性を判定してから answer / display に denylist を適用する。
 - 状態や差分の異常を調べるときは、時系列の履歴から発生日を絞り、該当期間の `git log` / `git show` で原因や取り込み先を確認せよ。
 
 <!--
@@ -62,5 +61,4 @@
 - 結論の機械的検証 → AGENTS.md「作業スタイル」
 - 外部スキルの参照・API適合確認 → AGENTS.md「共有 Agent Skill」
 - design-sync README の生成境界と auxSha → .design-sync/NOTES.md
-- X運用のオーナー制約 → docs/system-design/subsystems/x-posting.md「運用上の前提」
 -->
