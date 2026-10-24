@@ -1,13 +1,30 @@
 {
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/guard-main-branch.sh\"",
+            "statusMessage": "main 直接コミットの確認"
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Write|Edit",
         "hooks": [
           {
             "type": "command",
-            "command": "jq -r '.tool_input.file_path // empty' | grep -q 'artifacts/shift-search/reports' && { echo 'Shift Search レポートを変更しました。npm run shift:report:meta と npm run shift:report:view-assets を実行し、src/generated/shift-search/* を同期してください。' >&2; exit 2; } || exit 0",
-            "statusMessage": "Shift Search 同期チェック"
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/sync-shift-search-report.sh\"",
+            "statusMessage": "Shift Search 同期"
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/sync-agent-skills.sh\"",
+            "statusMessage": "スキルスタブ同期"
           }
         ]
       }

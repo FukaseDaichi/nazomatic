@@ -33,6 +33,8 @@
 - 2026-08-28: macOS（BSD date）は `date +%s%3N` の `%3N` を解釈せず `1787…N` のような不正値を返す。epoch ミリ秒が要るときは `node -e 'console.log(Date.now())'` を使う（automation.toml の created_at 等に不正値が入ると読み込みが壊れる）。
 - 2026-10-20: cleanup 前に `future` を push しても、`origin/main` がその commit を含まない間は ancestry guard が働くため、手動 merge で回避せず cleanup を停止して報告する。
 - 2026-10-24: zsh の Bash ツールで区切り線として echo ===== を書くと、= で始まる単語がコマンドのパスに展開されて「===== not found」で失敗する。区切りは '-----' のように引用符で囲む
+- 2026-10-24: コマンド文字列を正規表現で検査する PreToolUse(Bash) hook は、テストケースを Bash にインラインで書くとその文字列自体に反応してブロックされる。テスト用のコマンドはスクリプトファイルに書き出し、bash でそのファイルを実行する
+- 2026-10-24: サブエージェント定義の本文で git diff などのコマンド実行を指示しているのに、tools に Bash が無いと実行できない。本文の指示と frontmatter の tools が噛み合っているかを確認し、Bash を足すなら用途を読み取り専用の git に限ると本文に明記する
 
 ## Domain Knowledge
 
