@@ -123,11 +123,11 @@ git ls-tree -r $(git write-tree) -- .claude
 
 Codex が更新を表示しない場合、または Claude Code のセッション開始時に `.claude/skills` 自体が存在しなかった場合は、同期後にセッションを再起動します。
 
-### LEARNINGS.md ループ
+### 学びの記録（learnings-loop プラグイン）
 
-各セッションの開始時にリポジトリ直下の `LEARNINGS.md` を読み、内容を1〜3行で要約します。セッション終了時は Claude Code では `/update-learnings`、Codex では `$update-learnings` または `/skills` から同スキルを実行し、再利用価値のある新しい洞察だけを日付付きで追記します。
+リポジトリ直下の `LEARNINGS.md` への学びの記録は、user スコープで導入した Claude Code の learnings-loop プラグインが自動で行います。リポジトリ内に手動の記録スキルや Codex 向けの手順は置きません。
 
-週1回、または `Consolidated Principles` を除く生の観察が80〜100件に達したときは、Claude Code では `/consolidate-learnings`、Codex では `$consolidate-learnings` または `/skills` から同スキルを実行します。統合時に指示ファイルや別スキルへの転記が必要になった場合は、変更差分への承認を得てから適用します。
+週1回、または `Consolidated Principles` を除く生の観察が80件程度に達したときは、`/learnings-loop:consolidate-learnings` で棚卸し・統合します。統合時に指示ファイルや別スキルへの転記が必要になった場合は、変更差分への承認を得てから適用します。
 
 ## 広告表示
 
