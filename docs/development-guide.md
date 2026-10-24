@@ -51,7 +51,7 @@ Claude Code へは、`.claude/skills/<name>/SKILL.md` を**参照スタブ**と�
 
 Claude Code はディレクトリ名からコマンド名を決めるため、`.claude/skills/<name>/` に置けば `/<name>` で呼び出せます。スタブは `npm run skills:sync` が生成するので、手書きしません。
 
-`CLAUDE.md` は `@AGENTS.md` を読み込み、`AGENTS.md` の「共有 Agent Skill」がこの節を参照します。したがって Codex と Claude Code のどちらでスキルを作成・インストール・更新しても同じ手順が適用されます。 リポジトリ内の指示の優先順位は、ユーザーの明示指示、`AGENTS.md`、スキルの運用指針の順です。文書同期スキルの編集対象制限は同期作業に適用し、学びの記録は `AGENTS.md` の運用に従います。
+`CLAUDE.md` は `@AGENTS.md` を読み込み、`AGENTS.md` の「共有 Agent Skill」がこの節を参照します。したがって Codex と Claude Code のどちらでスキルを作成・インストール・更新しても同じ手順が適用されます。 リポジトリ内の指示の優先順位は、ユーザーの明示指示、`AGENTS.md`、スキルの運用指針の順です。文書同期スキルの編集対象制限は同期作業に適用し、学びの記録は learnings-loop プラグインが担います。
 
 ### 参照スタブを採用する理由
 
@@ -123,11 +123,11 @@ git ls-tree -r $(git write-tree) -- .claude
 
 Codex が更新を表示しない場合、または Claude Code のセッション開始時に `.claude/skills` 自体が存在しなかった場合は、同期後にセッションを再起動します。
 
-### LEARNINGS.md ループ
+### 学びの記録（learnings-loop プラグイン）
 
-各セッションの開始時にリポジトリ直下の `LEARNINGS.md` を読み、内容を1〜3行で要約します。セッション終了時は Claude Code では `/update-learnings`、Codex では `$update-learnings` または `/skills` から同スキルを実行し、再利用価値のある新しい洞察だけを日付付きで追記します。
+リポジトリ直下の `LEARNINGS.md` への学びの記録は、user スコープで導入した Claude Code の learnings-loop プラグインが自動で行います。リポジトリ内に手動の記録スキルや Codex 向けの手順は置きません。
 
-週1回、または `Consolidated Principles` を除く生の観察が80〜100件に達したときは、Claude Code では `/consolidate-learnings`、Codex では `$consolidate-learnings` または `/skills` から同スキルを実行します。統合時に指示ファイルや別スキルへの転記が必要になった場合は、変更差分への承認を得てから適用します。
+週1回、または `Consolidated Principles` を除く生の観察が80件程度に達したときは、`/learnings-loop:consolidate-learnings` で棚卸し・統合します。統合時に指示ファイルや別スキルへの転記が必要になった場合は、変更差分への承認を得てから適用します。
 
 ## 広告表示
 

@@ -2,12 +2,6 @@
 
 このファイルは短く運用的に保つ。プロジェクトの詳細な仕様は `docs/` 配下の日本語ドキュメントに置き、ここには置かない。
 
-## LEARNINGS.md ループ
-
-各セッションの開始時に、リポジトリ直下の LEARNINGS.md を読め。
-読んだ内容を1〜3行で要約して提示し、読み込みが行われたことを可視化せよ。
-実質的なリポジトリ作業を完了して最終回答を返す前に、`update-learnings` スキルを1回だけ実行せよ。雑談、単純な質問、変更や再利用可能な学びがない作業では実行不要とする。
-
 ## 応答言語
 
 - ユーザーへの返信（計画・進捗・要約・完了報告）は常に日本語で行う。
@@ -79,8 +73,6 @@ npm run shift:report:view-assets
 | `sync-docs-from-code`                | `docs/**` とルート `README.md` を実装に合わせて整合       |
 | `sync-main-and-clean-worktrees`      | マージ後の後片付け（ブランチ同期・worktree/ブランチ削除） |
 | `nazomatic-mobile-first-ux-overhaul` | ページ・コンポーネントの再設計、モバイルファーストUX改修  |
-| `update-learnings`                   | セッション終了時、LEARNINGS.md への追記                   |
-| `consolidate-learnings`              | 週1回、または生の観察が80〜100件に達したときの棚卸し      |
 
 ## ドキュメントのライフサイクル
 

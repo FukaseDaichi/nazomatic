@@ -28,11 +28,11 @@ npmとGitHub ActionsのDependabot PRを、メジャー更新も含めて自動�
 
 Vercel完了や再実行を拾うため定期的にも再確認します。手動起動の `dry_run` は既定でtrueです。停止する場合はこのworkflowを無効化します。`GITHUB_TOKEN` によるマージでは通常、追加のpush用Actionsは起動しないため、マージ前のPR用Security checksを必須にしています。本番デプロイ完了はこのworkflowのマージ条件とは別です。
 
-## 廃止した X 自動化の外部登録
+## 廃止した X 自動化の撤去確認
 
-X 投稿・週次レビュー・成長計測・自動改善 PR の実装と専用 workflow は撤去しました。2026-10-23 のクラウド作業では、接続された automation 検索は0件で、手元 PC のローカル登録にはアクセスできず、登録の削除は未完了です。
+X 投稿・週次レビュー・成長計測・自動改善 PR の実装と専用 workflow は撤去済みです。2026-10-23 に手元 PC で、対象の automation 8件（`nazomatic`、`nazomatic-x`、`nazomatic-x-2`〜`nazomatic-x-6`、`nazomatic-x-pr`）がアプリとローカル設定ディレクトリの両方に存在しないことを確認しました。
 
-削除対象は `~/.codex/automations/` 内の `nazomatic`（週末サマリ）、`nazomatic-x`、`nazomatic-x-2`、`nazomatic-x-3`、`nazomatic-x-4`、`nazomatic-x-5`、`nazomatic-x-6`、`nazomatic-x-pr` です。登録 ID と実際の内容を照合して削除し、無関係の `nazomatic-git-cleanup` は維持します。コード撤去だけで手元の登録が削除されたとは扱いません。
+投稿専用 Chrome を停止し、ローカルの実行ログ、投稿台帳・状態・計測データ・生成画像、専用 Chrome プロファイル、専用環境設定、旧実装の作業ログを削除しました。共用 `.env.local` からは廃止した X API 認証情報だけを削除し、Realtime の認証情報は維持しています。
 
 ## Git cleanup
 

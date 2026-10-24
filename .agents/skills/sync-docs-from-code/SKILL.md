@@ -1,6 +1,6 @@
 ---
 name: sync-docs-from-code
-description: NAZOMATIC repository-specific documentation synchronization skill. Use when reviewing, auditing, or updating `docs/**` and the root `README.md` against the current codebase, when documentation feels stale, or when a user asks to sync docs from implementation. Treat `src/` and config as the source of truth, limit synchronization edits to docs/README/report files, leave `src/` and `AGENTS.md` unchanged, and overwrite the Japanese audit report with fixes, judgment calls, and noticed system issues. Follow AGENTS.md for session learnings.
+description: NAZOMATIC repository-specific documentation synchronization skill. Use when reviewing, auditing, or updating `docs/**` and the root `README.md` against the current codebase, when documentation feels stale, or when a user asks to sync docs from implementation. Treat `src/` and config as the source of truth, limit synchronization edits to docs/README/report files, leave `src/` and `AGENTS.md` unchanged, and overwrite the Japanese audit report with fixes, judgment calls, and noticed system issues.
 ---
 
 # Sync Docs From Code (NAZOMATIC)
@@ -13,7 +13,7 @@ This skill is project-local and specific to the NAZOMATIC repository.
 
 ## Scope
 
-- Limit documentation synchronization edits to `docs/**`, root `README.md`, and the report file `docs/maintenance/doc-audit-report.md`. Session-level `LEARNINGS.md` maintenance follows `AGENTS.md` and is separate from this synchronization scope.
+- Limit documentation synchronization edits to `docs/**`, root `README.md`, and the report file `docs/maintenance/doc-audit-report.md`. `LEARNINGS.md` is maintained by the learnings-loop plugin and is outside this synchronization scope.
 - Read `src/`, config files, scripts, generated assets, and artifacts as sources of truth. Never write to `src/`.
 - Never edit `AGENTS.md`; report proposed changes under "AGENTS.md 推奨修正". It is written in Japanese, like the rest of the documentation.
 - Do not run `npm run` scripts that rewrite tracked artifacts (`skills:sync`, `shift:report:*`, `build`); record those as recommendations in the report instead.
