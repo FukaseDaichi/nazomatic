@@ -11,10 +11,14 @@ interface ShiritoriResultProps {
 export function ShiritoriResultComponent({
   inputText,
 }: ShiritoriResultProps) {
-  const { words, unusedWords } = useMemo(() => {
+  const { words, unusedWords, isOptimal } = useMemo(() => {
     ShiritoriManager.setWordsByText(inputText);
     const words = ShiritoriManager.getLongestShiritoris();
-    return { words, unusedWords: ShiritoriManager.getUnusedWords() };
+    return {
+      words,
+      unusedWords: ShiritoriManager.getUnusedWords(),
+      isOptimal: ShiritoriManager.isOptimal(),
+    };
   }, [inputText]);
 
   return (
@@ -25,6 +29,11 @@ export function ShiritoriResultComponent({
           <span className="text-4xl font-bold tabular-nums text-purple-400">{words.length}</span>
           <span className="ml-2 text-sm">語つながりました</span>
         </p>
+        {!isOptimal && (
+          <p className="mt-2 text-sm leading-relaxed text-gray-400">
+            単語が多いため、時間内に最長と確定できませんでした。見つかった中で最長のしりとりを表示しています。
+          </p>
+        )}
       </div>
 
       <ol aria-label="しりとりの並び順" className="flex flex-wrap items-center gap-x-2 gap-y-3">
