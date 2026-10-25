@@ -24,6 +24,7 @@
 - 2026-10-24: Claude Browser の computer key で cmd+v を送っても input の paste イベントは発火しない。貼り付け処理の検証は DataTransfer に setData して ClipboardEvent('paste') を input へ dispatch すると確認できる
 - 2026-10-25: データを書き換えるトグル（例: 空白を＃埋め）の状態を useState で別に持つと、元に戻す・やり直しとずれる。トグルの状態は履歴に載るデータ（グリッド）から導けば、undo/redo に自動で追従する
 - 2026-10-25: Radix Dialog の DialogClose ボタンは、javascript_tool で .click() しても閉じなかった。computer の left_click（ref 指定）で押すと閉じ、onCloseAutoFocus で指定したボタンにフォーカスが戻ることまで確認できた
+- 2026-10-25: .claude/worktrees 配下のワークツリーで `npm run lint` が親リポジトリの .eslintrc.json と plugin "@next/next" の衝突で落ちるときは、`npx eslint --no-eslintrc -c .eslintrc.json src/` で親設定を読まずに同じ規則で検査できる
 
 ## Mistakes to Avoid
 
