@@ -21,6 +21,8 @@
 - 2026-08-24: `~/.claude/projects/<slug>/*.jsonl` からユーザーの実発話だけを抜くには、`type=="last-prompt"` と `type=="queue-operation"`(operation=="enqueue") を併用して重複排除する。`type=="user"` だけだと task-notification やスキル本文が大量に混ざり、`last-prompt` だけだと取りこぼす。
 - 2026-08-28: npm脆弱性の棚卸しは `npm audit --omit=dev --json` で severity と `fixAvailable` を機械的に一覧化し、`npm ls <pkg>` で実際の依存ツリーを辿ってから対応方針（そのまま更新／メジャー移行が必要／孫依存で単独修正不可）を切り分けると早い。
 - 2026-10-24: codex:rescue（codex-companion）が「Codex CLI is not installed」で失敗しても、~/.local/bin/codex があれば `codex review --uncommitted` を直接実行して未コミット diff のレビューを取れる
+- 2026-10-24: Claude Browser の computer key で cmd+v を送っても input の paste イベントは発火しない。貼り付け処理の検証は DataTransfer に setData して ClipboardEvent('paste') を input へ dispatch すると確認できる
+- 2026-10-25: データを書き換えるトグル（例: 空白を＃埋め）の状態を useState で別に持つと、元に戻す・やり直しとずれる。トグルの状態は履歴に載るデータ（グリッド）から導けば、undo/redo に自動で追従する
 
 ## Mistakes to Avoid
 
@@ -36,6 +38,7 @@
 - 2026-10-24: zsh の Bash ツールで区切り線として echo ===== を書くと、= で始まる単語がコマンドのパスに展開されて「===== not found」で失敗する。区切りは '-----' のように引用符で囲む
 - 2026-10-24: コマンド文字列を正規表現で検査する PreToolUse(Bash) hook は、テストケースを Bash にインラインで書くとその文字列自体に反応してブロックされる。テスト用のコマンドはスクリプトファイルに書き出し、bash でそのファイルを実行する
 - 2026-10-24: サブエージェント定義の本文で git diff などのコマンド実行を指示しているのに、tools に Bash が無いと実行できない。本文の指示と frontmatter の tools が噛み合っているかを確認し、Bash を足すなら用途を読み取り専用の git に限ると本文に明記する
+- 2026-10-25: グリッドの行数などを決める type=number 入力で onChange ごとに確定すると、打ち直しの途中値（空欄→1→12）で一度縮んでデータが消える。入力値は draft として手元に持ち、blur と Enter で確定、Esc で取り消すと防げる
 
 ## Domain Knowledge
 
