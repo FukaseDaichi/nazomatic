@@ -1,128 +1,69 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { X } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { useMemo } from "react";
+import { ArrowRight } from "lucide-react";
 import { ShiritoriManager } from "@/class/ShiritoriManager";
 
 interface ShiritoriResultProps {
   inputText: string;
-  onClose?: () => void;
 }
 
 export function ShiritoriResultComponent({
-  inputText = "",
-  onClose,
+  inputText,
 }: ShiritoriResultProps) {
-  const [displayedWords, setDisplayedWords] = useState<string[]>([]);
-  const [shiritoriWords, setShiritoriWords] = useState<string[]>([]);
-  const [unusedWords, setUnusedWords] = useState<string[]>([]);
-
-  useEffect(() => {
-    setDisplayedWords([]);
+  const { words, unusedWords, isOptimal } = useMemo(() => {
     ShiritoriManager.setWordsByText(inputText);
-    setShiritoriWords(ShiritoriManager.getLongestShiritoris());
-    setUnusedWords(ShiritoriManager.getUnusedWords());
+    const words = ShiritoriManager.getLongestShiritoris();
+    return {
+      words,
+      unusedWords: ShiritoriManager.getUnusedWords(),
+      isOptimal: ShiritoriManager.isOptimal(),
+    };
   }, [inputText]);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      if (displayedWords.length < shiritoriWords.length) {
-        setDisplayedWords((prev) => [...prev, shiritoriWords[prev.length]]);
-      } else {
-        clearInterval(timer);
-      }
-    }, 200);
-
-    return () => clearInterval(timer);
-  }, [shiritoriWords, displayedWords]);
-
   return (
-    <div className="relative w-full px-2 sm:px-4">
-      {/* 閉じるボタン */}
-      {onClose && (
-        <button
-          onClick={onClose}
-          className="absolute right-2 top-0 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:outline-hidden focus:ring-2 focus:ring-gray-950 focus:ring-offset-2"
-          aria-label="閉じる"
-        >
-          <X className="h-5 w-5" />
-        </button>
-      )}
-
-      {/* しりとりチェーン */}
-      <div className="mb-4">
-        <div className="flex items-center gap-1.5 mb-3">
-          <span className="text-sm font-semibold text-purple-700">
-            しりとりチェーン
-          </span>
-          <Badge
-            variant="secondary"
-            className="text-xs px-1.5 py-0 bg-purple-100 text-purple-700 border-none"
-          >
-            {shiritoriWords.length}語
-          </Badge>
-        </div>
-
-        {/* チェーン表示：横並びフロー */}
-        <div className="flex flex-wrap items-center gap-1 sm:gap-1.5">
-          {displayedWords.map((word, index) => (
-            <motion.div
-              key={index}
-              className="flex items-center"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3 }}
-            >
-              <span className="inline-block bg-purple-600 text-white text-sm sm:text-base font-medium px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg shadow-xs">
-                {word}
-              </span>
-              {index < shiritoriWords.length - 1 && (
-                <span className="text-purple-400 mx-0.5 sm:mx-1 text-sm">
-                  &rarr;
-                </span>
-              )}
-            </motion.div>
-          ))}
-        </div>
+    <div className="min-w-0 space-y-6">
+      <div>
+        <p className="text-sm text-gray-300">最長のしりとり</p>
+        <p className="mt-1 text-gray-300">
+          <span className="text-4xl font-bold tabular-nums text-purple-400">{words.length}</span>
+          <span className="ml-2 text-sm">語つながりました</span>
+        </p>
+        {!isOptimal && (
+          <p className="mt-2 text-sm leading-relaxed text-gray-400">
+            単語が多いため、時間内に最長と確定できませんでした。見つかった中で最長のしりとりを表示しています。
+          </p>
+        )}
       </div>
 
-      {/* 区切り線 */}
-      <div className="border-t border-gray-200 my-4" />
+      <ol aria-label="しりとりの並び順" className="flex flex-wrap items-center gap-x-2 gap-y-3">
+        {words.map((word, index) => (
+          <li key={index} className="flex min-w-0 max-w-full items-center gap-2">
+            <div className="flex min-w-0 items-baseline gap-2 rounded-xl border border-purple-400/30 bg-purple-400/10 px-3 py-2.5">
+              <span aria-hidden="true" className="shrink-0 text-xs tabular-nums text-purple-400">{index + 1}</span>
+              <span className="min-w-0 break-all text-base font-medium leading-relaxed text-white">{word}</span>
+            </div>
+            {index < words.length - 1 && <ArrowRight className="h-4 w-4 shrink-0 text-purple-400" aria-hidden="true" />}
+          </li>
+        ))}
+      </ol>
 
-      {/* 未使用単語 */}
-      <div>
-        <div className="flex items-center gap-1.5 mb-3">
-          <span className="text-sm font-semibold text-gray-500">
-            未使用の単語
-          </span>
-          <Badge
-            variant="secondary"
-            className="text-xs px-1.5 py-0 bg-gray-100 text-gray-500 border-none"
-          >
-            {unusedWords.length}語
-          </Badge>
-        </div>
-
+      <div className="border-t border-gray-700 pt-5">
+        <h3 className="flex items-center gap-2 text-sm font-medium text-gray-300">
+          使わなかった単語
+          <span className="rounded-full bg-gray-800 px-2 py-0.5 text-xs tabular-nums">{unusedWords.length}語</span>
+        </h3>
         {unusedWords.length === 0 ? (
-          <p className="text-sm text-gray-400 text-center py-2">
-            すべての単語が使用されました
-          </p>
+          <p className="mt-3 text-sm text-gray-400">すべての単語がつながりました。</p>
         ) : (
-          <div className="flex flex-wrap gap-1.5 sm:gap-2">
-            {unusedWords.map((word, index) => (
-              <motion.span
-                key={index}
-                className="inline-block text-sm px-2 py-0.5 rounded-md border border-gray-300 text-gray-500 bg-gray-50"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.2, delay: index * 0.05 }}
-              >
-                {word}
-              </motion.span>
-            ))}
-          </div>
+          <>
+            <p className="mt-2 text-sm leading-relaxed text-gray-400">今回の並び順には入らなかった単語です。</p>
+            <ul aria-label="使わなかった単語" className="mt-3 flex flex-wrap gap-2">
+              {unusedWords.map((word, index) => (
+                <li key={index} className="max-w-full break-all rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-sm leading-relaxed text-gray-300">{word}</li>
+              ))}
+            </ul>
+          </>
         )}
       </div>
     </div>

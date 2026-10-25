@@ -71,7 +71,6 @@ export default function GraphPaperComponent() {
   });
   const [copyRange, setCopyRange] = useState<Range | null>(null);
   const [isComposing, setIsComposing] = useState(false);
-  const [isHashFilled, setIsHashFilled] = useState(false);
   const [isRangeMode, setIsRangeMode] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const clipRef = useRef<Clip | null>(null);
@@ -85,6 +84,11 @@ export default function GraphPaperComponent() {
   const focus = clampPos(selection.focus, rows, cols);
   const range = toRange(anchor, focus);
   const isSingle = range.top === range.bottom && range.left === range.right;
+  // 元に戻す・入力・サイズ変更と食い違わないよう、トグルの状態はグリッドから決める
+  const cells = grid.flat();
+  const hasEmpty = cells.some((cell) => cell.value === "");
+  const hasBlack = cells.some((cell) => isBlack(cell.value));
+  const isHashFilled = !hasEmpty && hasBlack;
 
   useEffect(() => {
     const stopDrag = () => {
@@ -203,7 +207,8 @@ export default function GraphPaperComponent() {
   };
 
   const toggleHashFill = (checked: boolean) => {
-    setIsHashFilled(checked);
+    // 空白も＃もない状態では変化がないので、空の履歴を積まない
+    if (checked ? !hasEmpty : !hasBlack) return;
     commit(
       grid.map((row) =>
         row.map((cell) => {
@@ -543,7 +548,7 @@ export default function GraphPaperComponent() {
           <summary className="cursor-pointer text-sm font-semibold text-gray-100">
             操作方法
           </summary>
-          <dl className="mt-2 hidden grid-cols-[max-content_1fr] gap-x-4 gap-y-1 md:grid">
+          <dl className="mt-2 grid grid-cols-[max-content_1fr] gap-x-4 gap-y-1 not-any-pointer-fine:hidden">
             <dt className="text-purple-300">矢印 / Enter / Tab</dt>
             <dd>セル移動（Shift で逆方向）</dd>
             <dt className="text-purple-300">
@@ -565,7 +570,7 @@ export default function GraphPaperComponent() {
             <dt className="text-purple-300">Esc</dt>
             <dd>コピー範囲の点線を解除</dd>
           </dl>
-          <ul className="mt-2 list-disc space-y-1 pl-4 md:hidden">
+          <ul className="mt-2 list-disc space-y-1 pl-4 not-any-pointer-coarse:hidden">
             <li>マスをタップして入力。続けて打つと右のマスへ進みます。</li>
             <li>「範囲選択」をオンにすると、なぞって複数マスを選べます。</li>
             <li>選んだ範囲に上のボタンで色・コピー・貼り付けができます。</li>

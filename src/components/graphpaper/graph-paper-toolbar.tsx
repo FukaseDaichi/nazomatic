@@ -1,10 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   ClipboardPaste,
   Copy,
   Eraser,
+  Minus,
+  Plus,
   Redo2,
   Scissors,
   Undo2,
@@ -44,6 +46,9 @@ function ToolButton({
   );
 }
 
+const STEP_BUTTON_CLASS =
+  "flex h-10 w-9 items-center justify-center text-gray-300 transition hover:bg-purple-500/30 hover:text-white focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-purple-400 disabled:cursor-not-allowed disabled:text-gray-600 disabled:hover:bg-transparent";
+
 function SizeStepper({
   id,
   label,
@@ -55,45 +60,63 @@ function SizeStepper({
   value: number;
   onChange: (value: number) => void;
 }) {
+  // 打ち途中の値（空欄や「12」の「1」）でグリッドを縮めて消さないよう、確定まで手元に持つ
+  // 元に戻す等で値が外から変わったら、古い下書きは捨てる
+  const [edit, setEdit] = useState<{ text: string; base: number } | null>(
+    null,
+  );
+  const draft = edit?.base === value ? edit.text : null;
+  const setDraft = (text: string | null) =>
+    setEdit(text === null ? null : { text, base: value });
+
+  const commitDraft = () => {
+    if (draft === null) return;
+    // 「1e1」「2.5」のような整数以外は確定せず元の値に戻す
+    const parsed = Number(draft);
+    setDraft(null);
+    if (draft.trim() !== "" && Number.isInteger(parsed)) onChange(parsed);
+  };
+
   return (
-    <div className="flex h-10 items-center gap-2">
+    <div className="flex items-center gap-1.5">
       <label htmlFor={id} className="text-sm font-medium text-gray-200">
         {label}
       </label>
-      <div className="flex items-center overflow-hidden rounded-md border border-gray-600 bg-gray-950/80">
+      <div className="flex items-stretch overflow-hidden rounded-md border border-gray-600 bg-gray-950/80">
+        <button
+          type="button"
+          aria-label={`${label}を減らす`}
+          onClick={() => onChange(value - 1)}
+          disabled={value <= MIN_GRID_SIZE}
+          className={STEP_BUTTON_CLASS}
+        >
+          <Minus className="h-4 w-4" aria-hidden />
+        </button>
         <input
           id={id}
           type="number"
           inputMode="numeric"
+          enterKeyHint="done"
           min={MIN_GRID_SIZE}
           max={MAX_GRID_SIZE}
-          value={value}
-          onChange={(e) => {
-            const parsed = Number.parseInt(e.target.value, 10);
-            onChange(Number.isNaN(parsed) ? MIN_GRID_SIZE : parsed);
+          value={draft ?? value}
+          onChange={(e) => setDraft(e.target.value)}
+          onBlur={commitDraft}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") commitDraft();
+            if (e.key === "Escape") setDraft(null);
           }}
-          className="h-9 w-11 bg-transparent px-1 text-center text-base font-semibold text-white [appearance:textfield] focus:outline-hidden sm:text-sm [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+          className="w-9 border-x border-gray-600 bg-transparent text-center text-base font-semibold text-white [appearance:textfield] focus:outline-hidden focus-visible:bg-purple-500/15 sm:text-sm [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
         />
-        <div className="flex flex-col border-l border-gray-600">
-          <button
-            type="button"
-            aria-label={`${label}を増やす`}
-            onClick={() => onChange(value + 1)}
-            disabled={value >= MAX_GRID_SIZE}
-            className="flex h-[18px] w-8 items-center justify-center text-[10px] text-gray-300 transition hover:bg-purple-500/30 disabled:cursor-not-allowed disabled:text-gray-600"
-          >
-            ▲
-          </button>
-          <button
-            type="button"
-            aria-label={`${label}を減らす`}
-            onClick={() => onChange(value - 1)}
-            disabled={value <= MIN_GRID_SIZE}
-            className="flex h-[18px] w-8 items-center justify-center border-t border-gray-600 text-[10px] text-gray-300 transition hover:bg-purple-500/30 disabled:cursor-not-allowed disabled:text-gray-600"
-          >
-            ▼
-          </button>
-        </div>
+        <button
+          type="button"
+          aria-label={`${label}を増やす`}
+          onClick={() => onChange(value + 1)}
+          disabled={value >= MAX_GRID_SIZE}
+          className={STEP_BUTTON_CLASS}
+        >
+          <Plus className="h-4 w-4" aria-hidden />
+        </button>
       </div>
     </div>
   );
@@ -187,7 +210,7 @@ export default function GraphPaperToolbar(props: GraphPaperToolbarProps) {
               aria-pressed={props.activeColor === i}
               onMouseDown={keepFocus}
               onClick={() => props.onColor(i)}
-              className={`flex h-8 w-8 items-center justify-center rounded-md border-2 text-xs font-bold transition focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-purple-400 ${color.className} ${
+              className={`flex h-8 w-8 items-center justify-center rounded-md border-2 pointer-coarse:h-10 pointer-coarse:w-9 text-xs font-bold transition focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-purple-400 ${color.className} ${
                 props.activeColor === i
                   ? "border-purple-400 ring-2 ring-purple-400/40"
                   : "border-gray-600 hover:border-purple-300"
@@ -240,7 +263,7 @@ export default function GraphPaperToolbar(props: GraphPaperToolbarProps) {
           />
         </div>
       </div>
-      <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-gray-700 pt-1">
+      <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-gray-700 pt-1">
         <SizeStepper
           id="rows"
           label="行数"
@@ -264,7 +287,7 @@ export default function GraphPaperToolbar(props: GraphPaperToolbarProps) {
           label="範囲選択"
           checked={props.isRangeMode}
           onChange={props.onRangeMode}
-          className="md:hidden"
+          className="not-any-pointer-coarse:hidden"
         />
       </div>
     </div>
