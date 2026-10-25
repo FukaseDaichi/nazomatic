@@ -18,12 +18,14 @@ export function ShiritoriResultComponent({
   const [displayedWords, setDisplayedWords] = useState<string[]>([]);
   const [shiritoriWords, setShiritoriWords] = useState<string[]>([]);
   const [unusedWords, setUnusedWords] = useState<string[]>([]);
+  const [isOptimal, setIsOptimal] = useState(true);
 
   useEffect(() => {
     setDisplayedWords([]);
     ShiritoriManager.setWordsByText(inputText);
     setShiritoriWords(ShiritoriManager.getLongestShiritoris());
     setUnusedWords(ShiritoriManager.getUnusedWords());
+    setIsOptimal(ShiritoriManager.isOptimal());
   }, [inputText]);
 
   useEffect(() => {
@@ -64,6 +66,12 @@ export function ShiritoriResultComponent({
             {shiritoriWords.length}語
           </Badge>
         </div>
+
+        {!isOptimal && (
+          <p className="text-xs text-gray-500 mb-2">
+            単語が多いため、時間内に最長と確定できませんでした。見つかった中で最長のしりとりを表示しています。
+          </p>
+        )}
 
         {/* チェーン表示：横並びフロー */}
         <div className="flex flex-wrap items-center gap-1 sm:gap-1.5">
