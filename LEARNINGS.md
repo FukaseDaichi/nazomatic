@@ -23,6 +23,7 @@
 - 2026-10-24: codex:rescue（codex-companion）が「Codex CLI is not installed」で失敗しても、~/.local/bin/codex があれば `codex review --uncommitted` を直接実行して未コミット diff のレビューを取れる
 - 2026-10-24: Claude Browser の computer key で cmd+v を送っても input の paste イベントは発火しない。貼り付け処理の検証は DataTransfer に setData して ClipboardEvent('paste') を input へ dispatch すると確認できる
 - 2026-10-25: データを書き換えるトグル（例: 空白を＃埋め）の状態を useState で別に持つと、元に戻す・やり直しとずれる。トグルの状態は履歴に載るデータ（グリッド）から導けば、undo/redo に自動で追従する
+- 2026-10-25: Radix Dialog の DialogClose ボタンは、javascript_tool で .click() しても閉じなかった。computer の left_click（ref 指定）で押すと閉じ、onCloseAutoFocus で指定したボタンにフォーカスが戻ることまで確認できた
 
 ## Mistakes to Avoid
 
@@ -47,6 +48,8 @@
 - 2026-10-20: Vercel の Node.js 版はリポジトリに指定がないと Project Settings に従う。`package.json` の `engines.node`（例: `24.x`）を書けばダッシュボードを変えずに上書きできるので、Node 廃止エラーはコード側で直して PR に含める。
 
 - 2026-08-28: Codex画像生成をスクリプトから使う契約は `codex exec --sandbox workspace-write --skip-git-repo-check --ephemeral -C <dir> -- "Use the imagegen skill..."`。現行 Codex CLI は `--full-auto` を受け付けない。`SAVED: <絶対パス>` 行は instruction 側で明示要求し、パース後に workDir 配下 realpath・生成時刻・PNG/JPEGマジックバイトを検証してから使う。
+
+- 2026-10-25: Tailwind CSS 4.3 には pointer-fine/pointer-coarse/any-pointer-* のバリアントがあり、not-any-pointer-coarse:hidden で「タッチがない端末だけ隠す」と書ける。md:hidden のような幅判定の代わりにタブレット対応で使える
 
 ## Open Questions
 
