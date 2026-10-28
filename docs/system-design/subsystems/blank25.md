@@ -48,7 +48,7 @@ branch ref は新 commit へ `force: true` で更新します。同時編集の�
 
 ## 認証
 
-`src/middleware.ts` が `/blank25/editor/:path*` と `/api/internal/blank25/editor/:path*` を Basic 認証します。API はさらに `src/server/blank25/authorization.ts` を各 Route Handler の先頭で呼び、定数時間で Basic credential を再検証します。mutation では Origin がある場合に同一 origin を要求し、不正・空・null Origin と `Sec-Fetch-Site: cross-site` を拒否します。Origin なしの非ブラウザクライアントも Basic 認証が必須です。
+`src/proxy.ts`（Next.js 16 の proxy。Node.js runtime で動く）が `/blank25/editor/:path*` と `/api/internal/blank25/editor/:path*` を Basic 認証します。API はさらに `src/server/blank25/authorization.ts` を各 Route Handler の先頭で呼び、定数時間で Basic credential を再検証します。mutation では Origin がある場合に同一 origin を要求し、不正・空・null Origin と `Sec-Fetch-Site: cross-site` を拒否します。Origin なしの非ブラウザクライアントも Basic 認証が必須です。
 
 ## ゲーム状態
 

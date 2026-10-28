@@ -26,7 +26,7 @@ This skill is project-local and specific to the NAZOMATIC repository.
 Read the relevant implementation for each doc, and always check these canonical inputs when the docs cover them:
 
 - `src/lib/json/features.json`: ordered source of truth for top-page cards, header icon nav, sitemap URLs, and JSON-LD article indexing.
-- `src/middleware.ts`: BLANK25 editor authentication boundary.
+- `src/proxy.ts`: BLANK25 editor authentication boundary.
 - `package.json`: documented scripts and command names.
 - `src/app`: App Router routes and `/api/*` route handlers.
 - Environment variables referenced by the implementation.
@@ -38,7 +38,7 @@ If docs disagree with these rules, fix the docs. If code appears to violate them
 
 - Text-like inputs must be at least 16px on mobile; do not rely on the `text-sm` default in `src/components/ui/input.tsx` or `src/components/ui/textarea.tsx`.
 - `src/lib/json/features.json` is the ordered source of truth for top cards, header nav, sitemap, and JSON-LD.
-- BLANK25 editor routes use HTTP Basic auth in `src/middleware.ts`; Realtime/X internal APIs use `Authorization: Bearer <REALTIME_INTERNAL_API_TOKEN>`.
+- BLANK25 editor routes use HTTP Basic auth in `src/proxy.ts`; Realtime/X internal APIs use `Authorization: Bearer <REALTIME_INTERNAL_API_TOKEN>`.
 - The visual system is dark theme first: `bg-gradient-to-b from-gray-900 to-gray-800 text-white` with `purple-400` as the accent.
 - After Shift Search report artifact changes, `shift:report:meta` and `shift:report:view-assets` must be run and `src/generated/shift-search/*` kept in sync.
 

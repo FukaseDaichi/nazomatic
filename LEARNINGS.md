@@ -27,6 +27,7 @@
 - 2026-10-25: .claude/worktrees 配下のワークツリーで `npm run lint` が親リポジトリの .eslintrc.json と plugin "@next/next" の衝突で落ちるときは、`npx eslint --no-eslintrc -c .eslintrc.json src/` で親設定を読まずに同じ規則で検査できる
 - 2026-10-29: デプロイ失敗の調査では gh api の deployments/{id}/statuses と commits/{sha}/pulls を使い、どの Preview/Production が落ちたかと対応 PR を特定してから gh run view --log-failed で原因を読む
 - 2026-10-29: Vercel のプレビュー URL はログイン画面に飛ばされ確認できないため、worktree でビルドし .claude/launch.json に一時設定 `npm --prefix <worktree> run start -- -p 3105` を足して preview_start でローカル確認し、終わったら launch.json を git checkout で戻す
+- 2026-10-29: @next/codemod（next-lint-to-eslint-cli・middleware-to-proxy）は git の作業ツリーに未コミットの変更があると止まる。--force を付けると実行でき、そのあと生成物を手で整える
 
 ## Mistakes to Avoid
 
@@ -58,6 +59,10 @@
 - 2026-10-29: Next 16 では `next lint` が廃止され、`npm run lint` が `next lint` を呼ぶと「lint」をディレクトリ名と解釈して失敗する。Next 16 へ上げるときは ESLint CLI への移行が必要
 
 - 2026-10-29: framer-motion 14 では Variants の transition.ease が厳密な型になり、`ease: "..."` が string と推論されて next build の型検査で落ちる（as const か Variants 型注釈が必要）
+
+- 2026-10-29: eslint-config-next 16 では React Compiler 系ルール（react-hooks/set-state-in-effect・purity・immutability）がエラーになり、既存コードで37件出た。移行と同時に直さない場合は flat config で warn に下げ、既知の課題として記録する
+
+- 2026-10-29: Next.js 15 は Maintenance LTS で、セキュリティ修正の提供は 2027-01-31 まで（当初の 2026-10-21 から延長）。16 は Active LTS。サポート状況は nextjs.org/support-policy で確認できる
 
 ## Open Questions
 

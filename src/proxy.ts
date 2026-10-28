@@ -42,7 +42,7 @@ const parseBasicAuth = (
   };
 };
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const expectedUser = process.env.BLANK25_EDITOR_USER;
   const expectedPassword = process.env.BLANK25_EDITOR_PASSWORD;
 

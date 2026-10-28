@@ -470,7 +470,6 @@ async function main() {
       limit: options.limit,
     });
 
-    // eslint-disable-next-line no-console
     console.log(
       `[done] length=${length} target=${result.targetWordCount} hits=${result.totalHitRows} file=${result.outputPath}`,
     );
@@ -478,7 +477,6 @@ async function main() {
 }
 
 main().catch((error) => {
-  // eslint-disable-next-line no-console
   console.error(error);
   process.exit(1);
 });

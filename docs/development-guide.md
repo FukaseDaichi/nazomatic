@@ -22,7 +22,7 @@ npm run dev
 | `npm run dev` | 開発サーバーを起動 |
 | `npm run build` | production build |
 | `npm run start` | production server を起動 |
-| `npm run lint` | Agent Skill 参照スタブ検証後に ESLint を実行 |
+| `npm run lint` | Agent Skill 参照スタブ検証後に ESLint CLI（`eslint.config.mjs` の flat config）をリポジトリ全体に実行。`next build` は lint を実行しない |
 | `npm run skills:sync` | `.agents/skills` の正本から `.claude/skills` の参照スタブを再生成 |
 | `npm run skills:check` | Codex / Claude Code 共有 Agent Skill の構成、スタブ一致、パス規約を検証 |
 | `npm run test:security` | Editor APIの認証迂回・CSRFと依存PR自動マージ条件の回帰確認 |

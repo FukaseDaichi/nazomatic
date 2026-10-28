@@ -20,6 +20,10 @@ Yahoo!リアルタイム検索と X syndication endpoint は外部 response の�
 
 ## 優先度: 低
 
+### React Compiler 系 lint ルールを警告に下げている
+
+`eslint-config-next` 16 で追加された `react-hooks/set-state-in-effect`・`react-hooks/purity`・`react-hooks/immutability` は、既存コードに違反が残るため `eslint.config.mjs` で warning に下げています。effect 内の同期 setState や render 中の `Math.random()` などで、余分な再描画や描画結果の不安定さにつながる可能性があります。違反を解消したら error に戻し、この項目を削除します。
+
 ### Shift Search の external report が未解決
 
 現行 `src/generated/shift-search/view-manifest.json` では external 4 件すべてが `unresolvedExternal` です。詳細 page は raw GitHub Markdown の取得導線を出せますが、アプリ内閲覧または専用外部配信 URL はありません。

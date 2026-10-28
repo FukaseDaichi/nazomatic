@@ -2,7 +2,7 @@ import { timingSafeEqual } from "node:crypto";
 
 const MUTATION_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
 
-/** Route Handlers must authenticate even when middleware has not run. */
+/** Route Handlers must authenticate even when the proxy has not run. */
 export function authorizeBlank25Editor(request: Request): Response | null {
   const user = process.env.BLANK25_EDITOR_USER;
   const password = process.env.BLANK25_EDITOR_PASSWORD;

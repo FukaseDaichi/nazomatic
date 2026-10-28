@@ -229,7 +229,6 @@ function main() {
     "utf8",
   );
 
-  // eslint-disable-next-line no-console
   console.log(
     `[done] generated view assets (internal=${internalCount}, external=${externalCount}, unresolvedExternal=${unresolvedExternalCount})`,
   );

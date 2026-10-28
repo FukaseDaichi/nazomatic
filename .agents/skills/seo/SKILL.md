@@ -11,7 +11,7 @@ metadata:
 
 Search engine optimization based on Lighthouse SEO audits and Google Search guidelines. Focus on technical SEO, on-page optimization, and structured data.
 
-## このリポジトリでの適用（NAZOMATIC / Next.js 14 App Router）
+## このリポジトリでの適用（NAZOMATIC / Next.js 16 App Router）
 
 補助資料の生 HTML 例は、以下の実装先に合わせて App Router の API に読み替える。
 
