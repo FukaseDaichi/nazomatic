@@ -30,7 +30,7 @@ npm run dev
 | `npm run shift:report:meta` | Shift Search レポート元成果物から manifest / index を生成 |
 | `npm run shift:report:view-assets` | Shift Search レポート表示用 JSON を `src/generated/shift-search` に生成 |
 
-汎用テストフレームワークは未設定です。セキュリティ回帰確認には Node.js 標準 test runner を使います。Dependabot PRはメジャー更新を含め全チェック成功後に自動マージします。対象・成功条件・停止方法は[定期処理](system-design/operations/jobs-and-generated-assets.md#依存prの自動マージ)を参照してください。変更内容に応じて `npm run test:security`、`npm run lint`、`npm run build`、ブラウザでの手動確認を使い分けます。
+汎用テストフレームワークは未設定です。セキュリティ回帰確認には Node.js 標準 test runner を使います。Dependabot PRはメジャー更新を含め全チェック成功後に自動マージし、CIが落ちたPRはClaude Codeで自動修正します。対象・成功条件・停止方法は[定期処理](system-design/operations/jobs-and-generated-assets.md#依存prの自動マージ)と[自動修正](system-design/operations/jobs-and-generated-assets.md#依存prの自動修正)を参照してください。変更内容に応じて `npm run test:security`、`npm run lint`、`npm run build`、ブラウザでの手動確認を使い分けます。
 
 ## Tailwind CSSの設定
 

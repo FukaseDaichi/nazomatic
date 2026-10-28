@@ -25,6 +25,8 @@
 - 2026-10-25: データを書き換えるトグル（例: 空白を＃埋め）の状態を useState で別に持つと、元に戻す・やり直しとずれる。トグルの状態は履歴に載るデータ（グリッド）から導けば、undo/redo に自動で追従する
 - 2026-10-25: Radix Dialog の DialogClose ボタンは、javascript_tool で .click() しても閉じなかった。computer の left_click（ref 指定）で押すと閉じ、onCloseAutoFocus で指定したボタンにフォーカスが戻ることまで確認できた
 - 2026-10-25: .claude/worktrees 配下のワークツリーで `npm run lint` が親リポジトリの .eslintrc.json と plugin "@next/next" の衝突で落ちるときは、`npx eslint --no-eslintrc -c .eslintrc.json src/` で親設定を読まずに同じ規則で検査できる
+- 2026-10-29: デプロイ失敗の調査では gh api の deployments/{id}/statuses と commits/{sha}/pulls を使い、どの Preview/Production が落ちたかと対応 PR を特定してから gh run view --log-failed で原因を読む
+- 2026-10-29: Vercel のプレビュー URL はログイン画面に飛ばされ確認できないため、worktree でビルドし .claude/launch.json に一時設定 `npm --prefix <worktree> run start -- -p 3105` を足して preview_start でローカル確認し、終わったら launch.json を git checkout で戻す
 
 ## Mistakes to Avoid
 
@@ -52,6 +54,10 @@
 - 2026-08-28: Codex画像生成をスクリプトから使う契約は `codex exec --sandbox workspace-write --skip-git-repo-check --ephemeral -C <dir> -- "Use the imagegen skill..."`。現行 Codex CLI は `--full-auto` を受け付けない。`SAVED: <絶対パス>` 行は instruction 側で明示要求し、パース後に workDir 配下 realpath・生成時刻・PNG/JPEGマジックバイトを検証してから使う。
 
 - 2026-10-25: Tailwind CSS 4.3 には pointer-fine/pointer-coarse/any-pointer-* のバリアントがあり、not-any-pointer-coarse:hidden で「タッチがない端末だけ隠す」と書ける。md:hidden のような幅判定の代わりにタブレット対応で使える
+
+- 2026-10-29: Next 16 では `next lint` が廃止され、`npm run lint` が `next lint` を呼ぶと「lint」をディレクトリ名と解釈して失敗する。Next 16 へ上げるときは ESLint CLI への移行が必要
+
+- 2026-10-29: framer-motion 14 では Variants の transition.ease が厳密な型になり、`ease: "..."` が string と推論されて next build の型検査で落ちる（as const か Variants 型注釈が必要）
 
 ## Open Questions
 

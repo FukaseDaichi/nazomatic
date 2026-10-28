@@ -1,18 +1,29 @@
 import { pathToFileURL } from 'node:url';
 
+// Removing this label from a PR is the human approval that resumes automation.
+export const REVIEW_LABEL = 'dependabot-needs-review';
+
 export function eligiblePull(pull, repository) {
   return pull.state === 'open' && !pull.draft && pull.user?.login === 'dependabot[bot]'
     && pull.user?.id === 49699333 && pull.user?.type === 'Bot'
     && pull.base?.ref === 'main' && pull.base.repo?.full_name === repository
     && pull.head?.repo?.full_name === repository
-    && /^dependabot\/(npm_and_yarn|github_actions)\//.test(pull.head?.ref ?? '');
+    && /^dependabot\/(npm_and_yarn|github_actions)\//.test(pull.head?.ref ?? '')
+    && !(pull.labels ?? []).some(label => label.name === REVIEW_LABEL);
+}
+
+export function latestVerification(pull, runs) {
+  // A successful unrelated workflow or the push run must never replace PR verification.
+  // GITHUB_TOKEN pushes by the auto-fix workflow cannot start pull_request runs, so it
+  // dispatches the same workflow on the PR branch instead.
+  return runs.filter(run => (run.event === 'pull_request'
+    || (run.event === 'workflow_dispatch' && run.head_branch === pull.head.ref))
+    && run.head_sha === pull.head.sha && run.path === '.github/workflows/security-checks.yml')
+    .sort((a, b) => b.id - a.id)[0];
 }
 
 export function readyToMerge(pull, runs, checks, statuses) {
-  // A successful unrelated workflow or the push run must never replace PR verification.
-  const verification = runs.filter(run => run.event === 'pull_request'
-    && run.head_sha === pull.head.sha && run.path === '.github/workflows/security-checks.yml')
-    .sort((a, b) => b.id - a.id)[0];
+  const verification = latestVerification(pull, runs);
   const latestStatuses = new Map();
   for (const status of statuses) {
     const previous = latestStatuses.get(status.context);
@@ -40,7 +51,7 @@ export async function autoMerge({ api, repository, dryRun = false, log = console
       continue;
     }
     const [runs, checks, statuses] = await Promise.all([
-      api.pages(`${prefix}/actions/workflows/security-checks.yml/runs?head_sha=${sha}&event=pull_request&per_page=100`, 'workflow_runs'),
+      api.pages(`${prefix}/actions/workflows/security-checks.yml/runs?head_sha=${sha}&per_page=100`, 'workflow_runs'),
       api.pages(`${prefix}/commits/${sha}/check-runs?filter=latest&per_page=100`, 'check_runs'),
       api.pages(`${prefix}/commits/${sha}/statuses?per_page=100`),
     ]);
@@ -66,7 +77,7 @@ export async function autoMerge({ api, repository, dryRun = false, log = console
   }
 }
 
-function githubApi(token) {
+export function githubApi(token) {
   const origin = 'https://api.github.com';
   async function request(path, method = 'GET', body) {
     const response = await fetch(`${origin}${path}`, {
@@ -78,9 +89,14 @@ function githubApi(token) {
     if (!response.ok) throw new Error(`GitHub ${method} ${path}: HTTP ${response.status}`);
     return response;
   }
+  const json = async response => {
+    const text = await response.text();
+    return text ? JSON.parse(text) : null;
+  };
   return {
-    get: async path => (await request(path)).json(),
-    put: async (path, body) => (await request(path, 'PUT', body)).json(),
+    get: async path => json(await request(path)),
+    put: async (path, body) => json(await request(path, 'PUT', body)),
+    post: async (path, body) => json(await request(path, 'POST', body)),
     pages: async (path, key) => {
       const items = [];
       while (path) {

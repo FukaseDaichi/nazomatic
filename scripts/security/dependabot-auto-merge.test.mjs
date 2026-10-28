@@ -26,6 +26,7 @@ test('only genuine same-repository Dependabot PRs to main are eligible, includin
     { head: { ...pull.head, repo: { full_name: 'someone/fork' } } },
     { base: { ...pull.base, ref: 'future' } },
     { head: { ...pull.head, ref: 'feature/update' } },
+    { labels: [{ name: 'dependabot-needs-review' }] },
   ]) assert.equal(eligiblePull({ ...pull, ...change }, repository), false);
 });
 
@@ -47,6 +48,11 @@ test('requires PR verification and every latest check/status success at the curr
   for (const field of [{ event: 'push' }, { head_sha: 'old' }, { path: '.github/workflows/other.yml' }]) {
     assert.equal(readyToMerge(f.pull, [{ ...f.runs[0], ...field }], f.checks, f.statuses), false);
   }
+  const dispatched = { ...f.runs[0], event: 'workflow_dispatch', head_branch: f.pull.head.ref };
+  assert.equal(readyToMerge(f.pull, [dispatched], f.checks, f.statuses), true);
+  assert.equal(readyToMerge(f.pull, [{ ...dispatched, head_branch: 'main' }], f.checks, f.statuses), false);
+  assert.equal(readyToMerge(f.pull, [f.runs[0], { ...dispatched, id: 2, conclusion: 'failure' }],
+    f.checks, f.statuses), false);
   assert.equal(readyToMerge(f.pull, [], f.checks, f.statuses), false);
   assert.equal(readyToMerge(f.pull, f.runs, [], f.statuses), false);
   assert.equal(readyToMerge(f.pull, f.runs, f.checks, [{ id: 3, context: 'Vercel Preview Comments', state: 'success' }]), false);
