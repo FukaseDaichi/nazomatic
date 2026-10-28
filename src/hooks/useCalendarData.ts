@@ -85,7 +85,10 @@ export function useCalendarData(params: UseCalendarDataParams) {
           setError(err as Error);
         })
         .finally(() => {
-          setIsLoading(false);
+          // 中断された古い取得が、後続の取得の読み込み中表示を消さないようにする
+          if (!controller.signal.aborted) {
+            setIsLoading(false);
+          }
         });
     },
     [key, params.from, params.query, params.rangeDays, params.to],

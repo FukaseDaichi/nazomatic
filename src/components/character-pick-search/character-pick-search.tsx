@@ -226,6 +226,10 @@ export default function CharacterPickSearch() {
 
   // 非同期の検索だけを effect で実行し、結果は then 以降で反映する
   useEffect(() => {
+    // 検索しない条件になった場合も、実行中の古い検索の結果を捨てる
+    const requestId = searchRequestIdRef.current + 1;
+    searchRequestIdRef.current = requestId;
+
     if (
       !searchManager ||
       entries.length === 0 ||
@@ -233,9 +237,6 @@ export default function CharacterPickSearch() {
     ) {
       return;
     }
-
-    const requestId = searchRequestIdRef.current + 1;
-    searchRequestIdRef.current = requestId;
 
     runCharacterPickSearch({
       sourceWords,
