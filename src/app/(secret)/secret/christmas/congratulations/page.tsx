@@ -25,21 +25,35 @@ const ChristmasWinnerPage = () => {
   );
 };
 
+// 描画ごとに配置が変わらず SSR とも一致するよう、固定シードの擬似乱数で雪を並べる
+const seededRandom = (seed: number) => {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+};
+
+const SNOWFLAKE_LAYOUTS = Array.from({ length: 50 }, (_, i) => ({
+  top: seededRandom(i * 5 + 1) * 20 + 10,
+  left: seededRandom(i * 5 + 2) * 100,
+  scale: seededRandom(i * 5 + 3) * 0.5 + 0.5,
+  endLeft: seededRandom(i * 5 + 4) * 100,
+  duration: seededRandom(i * 5 + 5) * 5 + 5,
+}));
+
 const Snowflakes = () => {
-  const snowflakes = Array.from({ length: 50 }).map((_, i) => (
+  const snowflakes = SNOWFLAKE_LAYOUTS.map((flake, i) => (
     <motion.div
       key={i}
       className="absolute text-white/80"
       initial={{
-        top: `-${Math.random() * 20 + 10}%`,
-        left: `${Math.random() * 100}%`,
-        scale: Math.random() * 0.5 + 0.5,
+        top: `-${flake.top}%`,
+        left: `${flake.left}%`,
+        scale: flake.scale,
       }}
       animate={{
         top: "100%",
-        left: `${Math.random() * 100}%`,
+        left: `${flake.endLeft}%`,
         transition: {
-          duration: Math.random() * 5 + 5,
+          duration: flake.duration,
           repeat: Infinity,
           ease: "linear",
         },

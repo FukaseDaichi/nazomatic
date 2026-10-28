@@ -233,29 +233,19 @@ export default function AnagramSearch() {
     return () => window.removeEventListener("resize", updateViewportWidth);
   }, []);
 
-  const loadDictionary = useCallback(
-    async (
-      dictionaryKey: string,
-      options: { updateSelection?: boolean } = {}
-    ) => {
-      const { updateSelection = true } = options;
-      if (updateSelection) {
-        setSelectedDictionary(dictionaryKey);
-      }
-      setSearchManager(null);
-      setErrorMessage(null);
-      setResults([]);
+  // 辞書の読み込み本体（読み込み完了後のコールバックでのみ state を更新する）
+  const fetchDictionary = useCallback((dictionaryKey: string) => {
+    const requestId = dictionaryRequestIdRef.current + 1;
+    dictionaryRequestIdRef.current = requestId;
 
-      const requestId = dictionaryRequestIdRef.current + 1;
-      dictionaryRequestIdRef.current = requestId;
-
-      try {
-        const manager = await SearchManager.create(dictionaryKey);
+    return SearchManager.create(dictionaryKey).then(
+      (manager) => {
         if (dictionaryRequestIdRef.current !== requestId) {
           return;
         }
         setSearchManager(manager);
-      } catch (error) {
+      },
+      (error) => {
         if (dictionaryRequestIdRef.current === requestId) {
           const message =
             error instanceof Error ? error.message : "???????????????";
@@ -264,16 +254,28 @@ export default function AnagramSearch() {
           setResults([]);
         }
       }
+    );
+  }, []);
+
+  const loadDictionary = useCallback(
+    async (dictionaryKey: string) => {
+      setSelectedDictionary(dictionaryKey);
+      setSearchManager(null);
+      setErrorMessage(null);
+      setResults([]);
+
+      await fetchDictionary(dictionaryKey);
     },
-    []
+    [fetchDictionary]
   );
 
+  // 初期 state が読み込み中の状態と一致するため、マウント時はリセットせずに読み込む
   useEffect(() => {
-    loadDictionary(FIRST_DIC, { updateSelection: false });
+    fetchDictionary(FIRST_DIC);
     if (typeof window !== "undefined") {
       window.scrollTo(0, 0);
     }
-  }, [loadDictionary]);
+  }, [fetchDictionary]);
 
   const handleSearch = useCallback(async () => {
     if (!searchManager) {

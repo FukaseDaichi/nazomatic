@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -55,7 +55,6 @@ const getRegexAlphabet = (letter: string) => {
 
 export const AlphabetConverter = () => {
   const [inputText, setInputText] = useState("");
-  const [selectedLetters, setSelectedLetters] = useState<string[]>([]);
 
   const handleNumberInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -79,17 +78,14 @@ export const AlphabetConverter = () => {
     return getViewWordByStr(inputText);
   };
 
-  // inputTextを監視してselectedLettersを更新
-  useEffect(() => {
-    const value = inputText
-      .replace(/[Ａ-Ｚａ-ｚ]/g, (s) =>
-        String.fromCharCode(s.charCodeAt(0) - 0xfee0)
-      )
-      .toUpperCase();
-    setSelectedLetters(
-      value.split("").filter((char) => alphabet.includes(char))
-    );
-  }, [inputText]);
+  // inputTextからselectedLettersを導出
+  const selectedLetters = inputText
+    .replace(/[Ａ-Ｚａ-ｚ]/g, (s) =>
+      String.fromCharCode(s.charCodeAt(0) - 0xfee0)
+    )
+    .toUpperCase()
+    .split("")
+    .filter((char) => alphabet.includes(char));
 
   return (
     <main className="p-8">

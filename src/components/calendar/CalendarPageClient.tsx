@@ -34,6 +34,7 @@ import { HelpTooltip } from "@/components/calendar/HelpTooltip";
 
 const DEFAULT_QUERY = "#謎チケ売ります";
 const HOUR_MS = 60 * 60 * 1000;
+const NOW_TICK_MS = 60 * 1000;
 const queryOptions = [DEFAULT_QUERY, "#謎解き同行者募集", "#謎チケ譲ります"];
 const EMPTY_EVENTS: CalendarEvent[] = [];
 
@@ -52,6 +53,13 @@ export default function CalendarPageClient() {
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [textFilter, setTextFilter] = useState("");
+  // 鮮度判定用の現在時刻。描画中に Date.now() を呼ばないよう定期的に更新する
+  const [now, setNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    const timer = setInterval(() => setNow(Date.now()), NOW_TICK_MS);
+    return () => clearInterval(timer);
+  }, []);
 
   const { fromDate, toDate, rangeDays } = useMemo(
     () => buildRange(focusDate),
@@ -122,7 +130,7 @@ export default function CalendarPageClient() {
 
   const lastUpdated = data?.generatedAt ? new Date(data.generatedAt) : null;
   const isStale = lastUpdated
-    ? Date.now() - lastUpdated.getTime() > HOUR_MS
+    ? now - lastUpdated.getTime() > HOUR_MS
     : false;
   // API 側が取得上限に達したかどうか。可視性フィルタ前の件数で判定するため
   // 取りこぼしは断定できない。テキスト絞込とも無関係。
@@ -157,11 +165,8 @@ export default function CalendarPageClient() {
     }
   };
 
-  useEffect(() => {
-    if (!selectedDateKey && !selectedEventId) {
-      return;
-    }
-
+  // 絞込やデータ更新で選択中の日付・イベントが消えたら、描画中に選択を解除する
+  if (selectedDateKey || selectedEventId) {
     const hasDate = selectedDateKey ? Boolean(grouped[selectedDateKey]) : true;
     const hasEvent = selectedEventId
       ? filteredEvents.some((event) => event.id === selectedEventId)
@@ -172,7 +177,7 @@ export default function CalendarPageClient() {
       setSelectedDateKey(null);
       setSelectedEventId(null);
     }
-  }, [filteredEvents, grouped, selectedDateKey, selectedEventId]);
+  }
 
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-col gap-4 px-4 pb-16 pt-6">

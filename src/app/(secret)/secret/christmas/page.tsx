@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -15,9 +15,7 @@ const goToUrl = (url: string) => {
 export default function GoogleMobileHomepage() {
   const [searchWord, setSearchWord] = useState<string>("");
   const [isListening, setIsListening] = useState<boolean>(false);
-  const [recognition, setRecognition] = useState<SpeechRecognition | null>(
-    null
-  );
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
   const [isSounded, setSounded] = useState<boolean>(false);
   const router = useRouter();
 
@@ -45,10 +43,11 @@ export default function GoogleMobileHomepage() {
       setSounded(true);
     };
 
-    setRecognition(recognitionInstance);
+    recognitionRef.current = recognitionInstance;
   }, []);
 
   const ghostClickHandler = useCallback(() => {
+    const recognition = recognitionRef.current;
     if (!recognition) {
       alert("このブラウザでは音声入力がサポートされていません。");
       return;
@@ -56,7 +55,7 @@ export default function GoogleMobileHomepage() {
     if (!isListening) {
       recognition.start();
     }
-  }, [recognition, isListening]);
+  }, [isListening]);
 
   const search = useCallback(() => {
     if (!searchWord) {

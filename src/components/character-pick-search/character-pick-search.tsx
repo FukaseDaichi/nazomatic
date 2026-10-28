@@ -112,7 +112,8 @@ export default function CharacterPickSearch() {
   const [searchManager, setSearchManager] = useState<SearchManager | null>(
     null,
   );
-  const [dictionaryLoading, setDictionaryLoading] = useState(false);
+  // マウント時に辞書を読み込むため、初期状態から読み込み中とする
+  const [dictionaryLoading, setDictionaryLoading] = useState(true);
   const [searchLoading, setSearchLoading] = useState(false);
   const [inputMessage, setInputMessage] = useState<string | null>(null);
   const [searchMessage, setSearchMessage] = useState<string | null>(null);
@@ -130,15 +131,41 @@ export default function CharacterPickSearch() {
     [entries],
   );
 
+  // 辞書の読み込み本体（読み込み完了後のコールバックでのみ state を更新する）
+  const fetchDictionary = useCallback((dictionaryKey: string) => {
+    const requestId = dictionaryRequestIdRef.current + 1;
+    dictionaryRequestIdRef.current = requestId;
+
+    return SearchManager.create(dictionaryKey)
+      .then(
+        (manager) => {
+          if (dictionaryRequestIdRef.current !== requestId) {
+            return;
+          }
+          setSearchManager(manager);
+        },
+        (error) => {
+          if (dictionaryRequestIdRef.current === requestId) {
+            const message =
+              error instanceof Error
+                ? error.message
+                : "辞書の読み込み中にエラーが発生しました。";
+            setSearchMessage(message);
+            setSearchManager(null);
+            setResults([]);
+          }
+        },
+      )
+      .finally(() => {
+        if (dictionaryRequestIdRef.current === requestId) {
+          setDictionaryLoading(false);
+        }
+      });
+  }, []);
+
   const loadDictionary = useCallback(
-    async (
-      dictionaryKey: string,
-      options: { updateSelection?: boolean } = {},
-    ) => {
-      const { updateSelection = true } = options;
-      if (updateSelection) {
-        setSelectedDictionary(dictionaryKey);
-      }
+    async (dictionaryKey: string) => {
+      setSelectedDictionary(dictionaryKey);
 
       setDictionaryLoading(true);
       setSearchManager(null);
@@ -146,68 +173,69 @@ export default function CharacterPickSearch() {
       setResults([]);
       setLimitReached(false);
 
-      const requestId = dictionaryRequestIdRef.current + 1;
-      dictionaryRequestIdRef.current = requestId;
-
-      try {
-        const manager = await SearchManager.create(dictionaryKey);
-        if (dictionaryRequestIdRef.current !== requestId) {
-          return;
-        }
-        setSearchManager(manager);
-      } catch (error) {
-        if (dictionaryRequestIdRef.current === requestId) {
-          const message =
-            error instanceof Error
-              ? error.message
-              : "辞書の読み込み中にエラーが発生しました。";
-          setSearchMessage(message);
-          setSearchManager(null);
-          setResults([]);
-        }
-      } finally {
-        if (dictionaryRequestIdRef.current === requestId) {
-          setDictionaryLoading(false);
-        }
-      }
+      await fetchDictionary(dictionaryKey);
     },
-    [],
+    [fetchDictionary],
   );
 
   useEffect(() => {
-    loadDictionary(FIRST_DIC, { updateSelection: false });
+    fetchDictionary(FIRST_DIC);
     if (typeof window !== "undefined") {
       window.scrollTo(0, 0);
     }
-  }, [loadDictionary]);
+  }, [fetchDictionary]);
 
+  // 検索条件が変わったら、同期的な state 更新は描画中に済ませる
+  const [prevSearchCondition, setPrevSearchCondition] = useState({
+    searchManager,
+    sourceWords,
+    activeMinPick,
+    activeMaxPick,
+  });
+  if (
+    prevSearchCondition.searchManager !== searchManager ||
+    prevSearchCondition.sourceWords !== sourceWords ||
+    prevSearchCondition.activeMinPick !== activeMinPick ||
+    prevSearchCondition.activeMaxPick !== activeMaxPick
+  ) {
+    setPrevSearchCondition({
+      searchManager,
+      sourceWords,
+      activeMinPick,
+      activeMaxPick,
+    });
+    if (searchManager) {
+      if (entries.length === 0) {
+        setResults([]);
+        setLimitReached(false);
+        setNormalizedSources([]);
+        setSearchMessage(null);
+        setSearchLoading(false);
+      } else if (activeMinPick > activeMaxPick) {
+        setResults([]);
+        setLimitReached(false);
+        setSearchMessage("最小は最大以下にしてください。");
+        setSearchLoading(false);
+      } else {
+        setSearchLoading(true);
+        setSearchMessage(null);
+        setLimitReached(false);
+      }
+    }
+  }
+
+  // 非同期の検索だけを effect で実行し、結果は then 以降で反映する
   useEffect(() => {
-    if (!searchManager) {
-      return;
-    }
-
-    if (entries.length === 0) {
-      setResults([]);
-      setLimitReached(false);
-      setNormalizedSources([]);
-      setSearchMessage(null);
-      setSearchLoading(false);
-      return;
-    }
-
-    if (activeMinPick > activeMaxPick) {
-      setResults([]);
-      setLimitReached(false);
-      setSearchMessage("最小は最大以下にしてください。");
-      setSearchLoading(false);
+    if (
+      !searchManager ||
+      entries.length === 0 ||
+      activeMinPick > activeMaxPick
+    ) {
       return;
     }
 
     const requestId = searchRequestIdRef.current + 1;
     searchRequestIdRef.current = requestId;
-    setSearchLoading(true);
-    setSearchMessage(null);
-    setLimitReached(false);
 
     runCharacterPickSearch({
       sourceWords,

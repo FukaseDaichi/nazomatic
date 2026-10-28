@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Cropper, { type Area, type Size } from "react-easy-crop";
 
 import { Button } from "@/components/ui/button";
@@ -179,17 +179,21 @@ export default function Blank25ImageCropperDialog({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!open) {
-      return;
+  // open / imageUrl が変わった時点で、開いていれば編集状態を初期化する（render 中に調整する）
+  const [prevOpen, setPrevOpen] = useState(open);
+  const [prevImageUrl, setPrevImageUrl] = useState(imageUrl);
+  if (open !== prevOpen || imageUrl !== prevImageUrl) {
+    setPrevOpen(open);
+    setPrevImageUrl(imageUrl);
+    if (open) {
+      setCrop({ x: 0, y: 0 });
+      setZoom(1);
+      setCroppedAreaPixels(null);
+      setCropAreaSize(null);
+      setError(null);
+      setSubmitting(false);
     }
-    setCrop({ x: 0, y: 0 });
-    setZoom(1);
-    setCroppedAreaPixels(null);
-    setCropAreaSize(null);
-    setError(null);
-    setSubmitting(false);
-  }, [open, imageUrl]);
+  }
 
   const canApply = useMemo(
     () => Boolean(imageUrl) && Boolean(croppedAreaPixels) && !submitting,
