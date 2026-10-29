@@ -10,7 +10,7 @@
 
 ### 自動 test の範囲が Editor 認証に限られる
 
-Editor API認証には回帰testがありますが、その他の `src/` 側のtestはありません。timezone 計算、Yahoo response parsing、Firestore transaction、BLANK25 manifest 編集、生成 scripts の回帰は、lint と build と手動確認だけで担保しています。外部仕様依存の多いサブシステムほど、変更検知が遅れる可能性があります。
+Editor の proxy と API の認証には回帰testがありますが、その他の `src/` 側のtestはありません。timezone 計算、Yahoo response parsing、Firestore transaction、BLANK25 manifest 編集、生成 scripts の回帰は、lint と build と手動確認だけで担保しています。外部仕様依存の多いサブシステムほど、変更検知が遅れる可能性があります。
 
 ## 優先度: 中
 

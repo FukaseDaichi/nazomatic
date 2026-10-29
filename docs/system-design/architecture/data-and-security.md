@@ -52,13 +52,13 @@ Firestore document id は `{postId}:{RULESET_VERSION}` です。主要フィー�
 | 対象 | 方式 | 未設定時 |
 |---|---|---|
 | `/blank25/editor/*` | HTTP Basic | 503 |
-| `/api/internal/blank25/editor/*` | middleware と Route Handler の両方で HTTP Basic | 503 |
+| `/api/internal/blank25/editor/*` | proxy と Route Handler の両方で HTTP Basic | 503 |
 | BLANK25 mutation | Basic に加え、Origin がある場合は同一 origin を要求。cross-site Fetch metadata も拒否 | 不正・空・null Origin / cross-site は 403 |
 | `/api/internal/realtime/*` | Bearer token | 500 |
 
 Basic credential は `BLANK25_EDITOR_USER` / `BLANK25_EDITOR_PASSWORD`、Bearer token は `REALTIME_INTERNAL_API_TOKEN` から読みます。
 
-Bearer 認証は `src/server/internal-api/authorization.ts` の `enforceInternalAuthorization()` に集約し、Realtime の全 Route Handler がこれを呼びます。header 比較は `timingSafeEqual` による定数時間比較です。認証仕様を変える場合はこの module だけを変更します。Editor API は `src/server/blank25/authorization.ts` で Basic credential を定数時間比較し、外部データ操作前に検証します。middleware の文字列比較だけには依存しません。
+Bearer 認証は `src/server/internal-api/authorization.ts` の `enforceInternalAuthorization()` に集約し、Realtime の全 Route Handler がこれを呼びます。header 比較は `timingSafeEqual` による定数時間比較です。認証仕様を変える場合はこの module だけを変更します。BLANK25 Editor の Basic 認証は `src/server/blank25/authorization.ts` に集約し、credential を `timingSafeEqual` で定数時間比較します。proxy（`src/proxy.ts`）は Editor ページと API の両方でこの module を呼び、Editor API の Route Handler も外部データ操作前に同じ検証をやり直すため、proxy が動かない経路でも認証は省略されません。503 / 401 / 403 の応答には `Cache-Control: no-store` を付けます。
 
 ### 内部 API の request 署名
 

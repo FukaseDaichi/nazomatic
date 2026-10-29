@@ -225,7 +225,6 @@ function main() {
   writeManifest({ generatedAt, jpReports, enReports });
   writeIndex({ generatedAt, jpReports, enReports });
 
-  // eslint-disable-next-line no-console
   console.log(
     `[done] generated index and manifest (jp=${jpReports.length}, en=${enReports.length}, total=${jpReports.length + enReports.length}, threshold=${EXTERNAL_THRESHOLD})`,
   );

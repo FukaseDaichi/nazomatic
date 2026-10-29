@@ -345,13 +345,18 @@ function ParticipantCard({
   const [nameDraft, setNameDraft] = useState(participant.name);
   const [scoreDraft, setScoreDraft] = useState(String(participant.score));
 
-  useEffect(() => {
+  // 参加者の名前・スコアが外部から変わったら、render 中に下書きを追従させる
+  const [prevName, setPrevName] = useState(participant.name);
+  if (participant.name !== prevName) {
+    setPrevName(participant.name);
     setNameDraft(participant.name);
-  }, [participant.name]);
+  }
 
-  useEffect(() => {
+  const [prevScore, setPrevScore] = useState(participant.score);
+  if (participant.score !== prevScore) {
+    setPrevScore(participant.score);
     setScoreDraft(String(participant.score));
-  }, [participant.score]);
+  }
 
   const commitName = useCallback(() => {
     const trimmed = nameDraft.trim();
@@ -665,17 +670,23 @@ function GmScoreEditorControl({
     [participants],
   );
 
-  useEffect(() => {
-    if (!open) return;
-    setScoreDrafts(
-      Object.fromEntries(
-        participants.map((participant) => [
-          participant.id,
-          String(participant.score),
-        ]),
-      ),
-    );
-  }, [open, participants]);
+  // 開いた時点と、開いている間に参加者が更新された時点で下書きを取り直す（render 中に調整する）
+  const [prevOpen, setPrevOpen] = useState(open);
+  const [prevParticipants, setPrevParticipants] = useState(participants);
+  if (open !== prevOpen || participants !== prevParticipants) {
+    setPrevOpen(open);
+    setPrevParticipants(participants);
+    if (open) {
+      setScoreDrafts(
+        Object.fromEntries(
+          participants.map((participant) => [
+            participant.id,
+            String(participant.score),
+          ]),
+        ),
+      );
+    }
+  }
 
   const updateDraftScore = useCallback(
     (participantId: string, value: string) => {
@@ -1202,8 +1213,10 @@ export default function PartyScoreboard() {
     [],
   );
 
+  // localStorage は SSR では読めず、壊れたデータの削除も伴うため、マウント後に effect で読み込む
   useEffect(() => {
     const loadResult = loadBlank25PartyState();
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage からの復元
     setPartyState(loadResult.state);
     setHydrated(true);
     if (loadResult.recoveredFromInvalidData) {
@@ -1234,6 +1247,7 @@ export default function PartyScoreboard() {
     try {
       saveBlank25PartyState(partyState);
     } catch {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage への保存失敗を表示する
       setStatusMessage("保存に失敗しました。");
     }
   }, [hydrated, partyState]);
@@ -1262,21 +1276,25 @@ export default function PartyScoreboard() {
       );
     });
 
+    // 同点は同順位（先頭の同点者の位置）とする
     let currentRank = 0;
     let previousScore: number | null = null;
+    const ranked: RankedParticipant[] = [];
 
-    return sortedParticipants.map((participant, index) => {
+    for (const [index, participant] of sortedParticipants.entries()) {
       if (participant.score !== previousScore) {
         currentRank = index + 1;
         previousScore = participant.score;
       }
 
-      return {
+      ranked.push({
         ...participant,
         rank: currentRank,
         isTied: (scoreCounts.get(participant.score) ?? 0) > 1,
-      };
-    });
+      });
+    }
+
+    return ranked;
   }, [partyState.participants]);
 
   const participantCount = rankedParticipants.length;

@@ -22,15 +22,15 @@ npm run dev
 | `npm run dev` | 開発サーバーを起動 |
 | `npm run build` | production build |
 | `npm run start` | production server を起動 |
-| `npm run lint` | Agent Skill 参照スタブ検証後に ESLint を実行 |
+| `npm run lint` | Agent Skill 参照スタブ検証後に ESLint CLI（`eslint.config.mjs` の flat config）をリポジトリ全体に実行。`next build` は lint を実行しない |
 | `npm run skills:sync` | `.agents/skills` の正本から `.claude/skills` の参照スタブを再生成 |
 | `npm run skills:check` | Codex / Claude Code 共有 Agent Skill の構成、スタブ一致、パス規約を検証 |
-| `npm run test:security` | Editor APIの認証迂回・CSRFと依存PR自動マージ条件の回帰確認 |
+| `npm run test:security` | Editor proxy・APIの認証、認証迂回・CSRFと依存PR自動マージ条件の回帰確認 |
 | `npm run audit:production` | devを除いた依存監査（Moderate以上で失敗） |
 | `npm run shift:report:meta` | Shift Search レポート元成果物から manifest / index を生成 |
 | `npm run shift:report:view-assets` | Shift Search レポート表示用 JSON を `src/generated/shift-search` に生成 |
 
-汎用テストフレームワークは未設定です。セキュリティ回帰確認には Node.js 標準 test runner を使います。Dependabot PRはメジャー更新を含め全チェック成功後に自動マージします。対象・成功条件・停止方法は[定期処理](system-design/operations/jobs-and-generated-assets.md#依存prの自動マージ)を参照してください。変更内容に応じて `npm run test:security`、`npm run lint`、`npm run build`、ブラウザでの手動確認を使い分けます。
+汎用テストフレームワークは未設定です。セキュリティ回帰確認には Node.js 標準 test runner を使います。Dependabot PRはメジャー更新を含め全チェック成功後に自動マージし、CIが落ちたPRはClaude Codeで自動修正します。対象・成功条件・停止方法は[定期処理](system-design/operations/jobs-and-generated-assets.md#依存prの自動マージ)と[自動修正](system-design/operations/jobs-and-generated-assets.md#依存prの自動修正)を参照してください。変更内容に応じて `npm run test:security`、`npm run lint`、`npm run build`、ブラウザでの手動確認を使い分けます。
 
 ## Tailwind CSSの設定
 

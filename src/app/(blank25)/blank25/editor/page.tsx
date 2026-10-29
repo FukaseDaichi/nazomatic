@@ -77,6 +77,35 @@ type FlatProblem = Blank25Problem & { categoryId: string };
 const ALLOWED_IMAGE_TYPES = new Set(["image/png", "image/jpeg", "image/webp"]);
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 
+type ManifestLoadResult =
+  | { ok: true; categories: Blank25Category[] }
+  | { ok: false; error: string };
+
+const requestEditorManifest = async (): Promise<ManifestLoadResult> => {
+  try {
+    // URL にタイムスタンプを付与してブラウザ / CDN キャッシュを完全に迂回する
+    const response = await fetch(
+      `/api/internal/blank25/editor/manifest?v=${Date.now()}`,
+      { cache: "no-store" },
+    );
+    const json = (await response.json()) as EditorManifestResponse;
+    if (!response.ok || !json.ok) {
+      throw new Error(
+        json.ok ? "Manifest load failed." : json.error ?? "Manifest load failed.",
+      );
+    }
+    return { ok: true, categories: json.manifest.categories };
+  } catch (loadError) {
+    return {
+      ok: false,
+      error:
+        loadError instanceof Error
+          ? loadError.message
+          : "Failed to load editor manifest.",
+    };
+  }
+};
+
 export default function Blank25EditorPage() {
   const [mode, setMode] = useState<EditorMode>("create");
   const [categories, setCategories] = useState<Blank25Category[] | null>(null);
@@ -164,6 +193,22 @@ export default function Blank25EditorPage() {
     setSubmitMessage(null);
   }, []);
 
+  // 取得結果を state に反映する（取得完了後にだけ呼ぶ）
+  const applyManifestResult = useCallback(
+    (result: ManifestLoadResult): Blank25Category[] | null => {
+      if (result.ok) {
+        setCategories(result.categories);
+        setCategoryId((current) => current || result.categories[0]?.id || "");
+      } else {
+        setError(result.error);
+      }
+      setLoading(false);
+      setReloading(false);
+      return result.ok ? result.categories : null;
+    },
+    [],
+  );
+
   const loadManifest = useCallback(
     async (refreshOnly: boolean): Promise<Blank25Category[] | null> => {
       setError(null);
@@ -172,41 +217,15 @@ export default function Blank25EditorPage() {
       } else {
         setReloading(true);
       }
-
-      try {
-        // URL にタイムスタンプを付与してブラウザ / CDN キャッシュを完全に迂回する
-        const response = await fetch(
-          `/api/internal/blank25/editor/manifest?v=${Date.now()}`,
-          { cache: "no-store" },
-        );
-        const json = (await response.json()) as EditorManifestResponse;
-        if (!response.ok || !json.ok) {
-          throw new Error(
-            json.ok ? "Manifest load failed." : json.error ?? "Manifest load failed.",
-          );
-        }
-
-        setCategories(json.manifest.categories);
-        setCategoryId((current) => current || json.manifest.categories[0]?.id || "");
-        return json.manifest.categories;
-      } catch (loadError) {
-        if (loadError instanceof Error) {
-          setError(loadError.message);
-        } else {
-          setError("Failed to load editor manifest.");
-        }
-        return null;
-      } finally {
-        setLoading(false);
-        setReloading(false);
-      }
+      return applyManifestResult(await requestEditorManifest());
     },
-    [],
+    [applyManifestResult],
   );
 
+  // 初期状態が loading=true / error=null なので、マウント時は取得して結果を反映するだけでよい
   useEffect(() => {
-    void loadManifest(false);
-  }, [loadManifest]);
+    void requestEditorManifest().then(applyManifestResult);
+  }, [applyManifestResult]);
 
   const openCropDialog = useCallback(
     (file: File) => {

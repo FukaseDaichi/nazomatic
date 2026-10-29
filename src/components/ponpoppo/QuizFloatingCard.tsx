@@ -36,13 +36,48 @@ const icons = [
   },
 ];
 
+type ParticleLayout = {
+  left: number;
+  top: number;
+  delay: number;
+  duration?: number;
+};
+
+type PremiumEffectLayout = {
+  particles: ParticleLayout[];
+  sparkles: ParticleLayout[];
+  cardParticles: ParticleLayout[];
+};
+
+// 演出の配置は描画中ではなく正解時に一度だけ決め、再描画で位置が飛ばないようにする
+const createPremiumEffectLayout = (): PremiumEffectLayout => ({
+  particles: Array.from({ length: 20 }, () => ({
+    left: Math.random() * 100,
+    top: Math.random() * 100,
+    delay: Math.random() * 2,
+    duration: 3 + Math.random() * 2,
+  })),
+  sparkles: Array.from({ length: 8 }, () => ({
+    left: 20 + Math.random() * 60,
+    top: 20 + Math.random() * 60,
+    delay: Math.random() * 1.5,
+  })),
+  cardParticles: Array.from({ length: 6 }, () => ({
+    left: 20 + Math.random() * 60,
+    top: 20 + Math.random() * 60,
+    delay: Math.random() * 2,
+  })),
+});
+
 const QuizFloatingCard = ({ quiz }: QuizFloatingCardProps) => {
   const [gameState, setGameState] = useState<"quiz" | "correct" | "incorrect">(
     "quiz"
   );
   const [isAnimating, setIsAnimating] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
-  const [showPremiumEffect, setShowPremiumEffect] = useState(false);
+  const [premiumEffect, setPremiumEffect] =
+    useState<PremiumEffectLayout | null>(null);
+  const showPremiumEffect = premiumEffect !== null;
 
   const handleButtonClick = (buttonIndex: number) => {
     if (isAnimating) return;
@@ -58,7 +93,7 @@ const QuizFloatingCard = ({ quiz }: QuizFloatingCardProps) => {
 
         // 正解時に特別演出を開始
         if (result === "correct") {
-          setShowPremiumEffect(true);
+          setPremiumEffect(createPremiumEffectLayout());
         }
       }, 1200);
     }, 500);
@@ -77,15 +112,15 @@ const QuizFloatingCard = ({ quiz }: QuizFloatingCardProps) => {
           <div className="absolute inset-0 bg-linear-to-br/srgb from-purple-600/30 via-pink-500/30 to-yellow-400/30 animate-pulse-rainbow" />
 
           {/* パーティクル群 */}
-          {[...Array(20)].map((_, i) => (
+          {premiumEffect.particles.map((particle, i) => (
             <div
               key={i}
               className="absolute animate-particle"
               style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 2}s`,
-                animationDuration: `${3 + Math.random() * 2}s`,
+                left: `${particle.left}%`,
+                top: `${particle.top}%`,
+                animationDelay: `${particle.delay}s`,
+                animationDuration: `${particle.duration}s`,
               }}
             >
               <Star className="w-4 h-4 text-yellow-300 animate-spin" />
@@ -93,14 +128,14 @@ const QuizFloatingCard = ({ quiz }: QuizFloatingCardProps) => {
           ))}
 
           {/* 大きなスパークル */}
-          {[...Array(8)].map((_, i) => (
+          {premiumEffect.sparkles.map((sparkle, i) => (
             <div
               key={`sparkle-${i}`}
               className="absolute animate-sparkle"
               style={{
-                left: `${20 + Math.random() * 60}%`,
-                top: `${20 + Math.random() * 60}%`,
-                animationDelay: `${Math.random() * 1.5}s`,
+                left: `${sparkle.left}%`,
+                top: `${sparkle.top}%`,
+                animationDelay: `${sparkle.delay}s`,
               }}
             >
               <Sparkles className="w-8 h-8 text-white animate-pulse" />
@@ -136,14 +171,14 @@ const QuizFloatingCard = ({ quiz }: QuizFloatingCardProps) => {
             </div>
 
             {/* カード内パーティクル */}
-            {[...Array(6)].map((_, i) => (
+            {premiumEffect.cardParticles.map((particle, i) => (
               <div
                 key={`card-particle-${i}`}
                 className="absolute animate-card-particle"
                 style={{
-                  left: `${20 + Math.random() * 60}%`,
-                  top: `${20 + Math.random() * 60}%`,
-                  animationDelay: `${Math.random() * 2}s`,
+                  left: `${particle.left}%`,
+                  top: `${particle.top}%`,
+                  animationDelay: `${particle.delay}s`,
                 }}
               >
                 <div className="w-2 h-2 bg-yellow-300 rounded-full animate-pulse" />

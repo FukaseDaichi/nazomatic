@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -346,22 +346,6 @@ const PREFECTURES = [
 export function PrefectureSearchTableComponent() {
   const [prefectureSearch, setPrefectureSearch] = useState("");
   const [capitalSearch, setCapitalSearch] = useState("");
-  const [filteredPrefectures, setFilteredPrefectures] = useState(PREFECTURES);
-
-  useEffect(() => {
-    const filtered = PREFECTURES.filter((prefecture) => {
-      const prefectureMatch = matchSearch(
-        prefecture.hiragana,
-        prefectureSearch
-      );
-      const capitalMatch = matchSearch(
-        prefecture.capitalHiragana,
-        capitalSearch
-      );
-      return prefectureMatch && capitalMatch;
-    });
-    setFilteredPrefectures(filtered);
-  }, [prefectureSearch, capitalSearch]);
 
   // 検索マッチング関数を修正
   const matchSearch = (text: string, search: string) => {
@@ -382,6 +366,16 @@ export function PrefectureSearchTableComponent() {
       return false;
     }
   };
+
+  // 検索条件から絞り込み結果を描画中に算出する
+  const filteredPrefectures = PREFECTURES.filter((prefecture) => {
+    const prefectureMatch = matchSearch(prefecture.hiragana, prefectureSearch);
+    const capitalMatch = matchSearch(
+      prefecture.capitalHiragana,
+      capitalSearch
+    );
+    return prefectureMatch && capitalMatch;
+  });
 
   const handlePrefectureSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value;

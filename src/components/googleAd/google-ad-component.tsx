@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import Script from "next/script";
 import { baseURL } from "@/app/config";
 
@@ -12,29 +12,17 @@ declare global {
 const X_BROWSER_SESSION_KEY = "nazomatic-hide-ads-for-x";
 
 export const AdComponent = () => {
-  const [showAds, setShowAds] = useState(false);
+  // サーバー描画・ハイドレーション時は非表示とし、クライアントで判定する
+  const showAds = useSyncExternalStore(
+    subscribeNoop,
+    shouldShowAds,
+    () => false,
+  );
 
   useEffect(() => {
-    // localhost のときは広告非表示
-    if (baseURL.includes("localhost")) {
-      setShowAds(false);
+    if (!showAds) {
       return;
     }
-
-    // PWA(standalone) で起動しているか判定
-    if (window.matchMedia?.("(display-mode: standalone)").matches) {
-      // PWA のときは広告を表示しない
-      setShowAds(false);
-      return;
-    }
-
-    if (isXBrowserSession()) {
-      setShowAds(false);
-      return;
-    }
-
-    // 通常ブラウザ表示のときだけ広告を出す
-    setShowAds(true);
 
     try {
       window.adsbygoogle = window.adsbygoogle || [];
@@ -42,7 +30,7 @@ export const AdComponent = () => {
     } catch (e) {
       console.error("AdSense initialization error:", e);
     }
-  }, []);
+  }, [showAds]);
 
   if (!showAds) {
     return <></>; // 広告を表示しない
@@ -71,6 +59,31 @@ export const AdComponent = () => {
 };
 
 export default AdComponent;
+
+// 判定に使う値はページ表示中に変化しないため、購読は不要
+function subscribeNoop() {
+  return () => {};
+}
+
+function shouldShowAds() {
+  // localhost のときは広告非表示
+  if (baseURL.includes("localhost")) {
+    return false;
+  }
+
+  // PWA(standalone) で起動しているか判定
+  if (window.matchMedia?.("(display-mode: standalone)").matches) {
+    // PWA のときは広告を表示しない
+    return false;
+  }
+
+  if (isXBrowserSession()) {
+    return false;
+  }
+
+  // 通常ブラウザ表示のときだけ広告を出す
+  return true;
+}
 
 function isXBrowserSession() {
   if (readSessionFlag(X_BROWSER_SESSION_KEY)) {

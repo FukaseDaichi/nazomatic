@@ -10,23 +10,39 @@
 | `realtime-verify-post-visibility.yml` | 毎時 10 分・45 分 | verify visibility |
 | `realtime-prune.yml` | 毎日 00:15 UTC | prune: cutoff 1 日 |
 | `dependabot-auto-merge.yml` | Security checks完了・毎時7/22/37/52分 UTC・手動 | 全チェック成功後にDependabot PRをマージ |
+| `dependabot-auto-fix.yml` | 毎時47分 UTC・手動 | CIが落ちたDependabot PRをClaudeで修正し、修正済みPRを最新の `main` に追従させる |
 
 内部 API を呼ぶ定期実行 Workflow は `REALTIME_API_BASE_URL` と `REALTIME_API_TOKEN` secrets を使います。token 値はアプリの `REALTIME_INTERNAL_API_TOKEN` と一致させます。
 
 ## 依存PRの自動マージ
 
-npmとGitHub ActionsのDependabot PRを、メジャー更新も含めて自動マージします。対象は `dependabot[bot]`（GitHub IDも照合）が同一リポジトリ内に作成した、`main` 向けのopen・非draft PRだけです。通常の開発は引き続き `future → main` で進めます。
+npmとGitHub ActionsのDependabot PRを、メジャー更新も含めて自動マージします。対象は `dependabot[bot]`（GitHub IDも照合）が同一リポジトリ内に作成した、`main` 向けのopen・非draft PRで、`dependabot-needs-review` ラベルが付いていないものだけです。通常の開発は引き続き `future → main` で進めます。
 
 `scripts/dependabot-auto-merge.mjs` は現在のhead SHAについて次のすべてを確認します。
 
 - 現在の `main` を含むこと。遅れている場合はDependabotによるrebaseとCI再実行を待つ。
-- `security-checks.yml` の最新の `pull_request` 実行成功（監査・認証/自動マージ回帰テスト・lint・build）。push実行や別workflowの成功だけでは許可しない。
+- `security-checks.yml` の最新の検証実行が成功（監査・認証/自動マージ/自動修正の回帰テスト・lint・build）。検証実行は `pull_request` 実行か、自動修正がPRブランチに対して起動した `workflow_dispatch` 実行に限る。push実行や別workflowの成功だけでは許可しない。
 - すべての最新check-runと各contextの最新commit statusが成功。失敗・実行中・skipped・neutral・情報不足は待機する。`Vercel` status自体の成功も必須。
 - マージ直前にもhead/base SHAが一致し、PRがマージ可能であること。merge APIにも確認済みhead SHAを渡す。
 
 判定workflowは信頼済みのdefault branchだけをcheckoutし、PRのコードや依存パッケージをmerge権限付きで実行しません。GitHub標準のauto-merge設定や管理権限には依存せず、Actionsのtokenでmerge APIを呼びます。branch protectionなどGitHub側の制限で拒否された場合は強制マージせずworkflowを失敗させます。管理者設定を取得する権限はなく、その保護を新規設定したという意味ではありません。
 
 Vercel完了や再実行を拾うため定期的にも再確認します。手動起動の `dry_run` は既定でtrueです。停止する場合はこのworkflowを無効化します。`GITHUB_TOKEN` によるマージでは通常、追加のpush用Actionsは起動しないため、マージ前のPR用Security checksを必須にしています。本番デプロイ完了はこのworkflowのマージ条件とは別です。
+
+## 依存PRの自動修正
+
+`dependabot-auto-fix.yml` は、Security checks が失敗したDependabot PRを Claude Code で修正し、push までを自動で行います。マージは上記の自動マージに任せます。対象の判定は自動マージと同じで、`main` に追いついていて、最新の検証実行が失敗しているPRを1回の実行で1件だけ扱います。
+
+- 認証: Claude Code は Pro / Max サブスクリプションの OAuth トークンを repository secret `CLAUDE_CODE_OAUTH_TOKEN` から使う（`claude setup-token` で発行）。未設定の間は修正をスキップする。Anthropic API キーは使わない。
+- 修正: 失敗したCIログだけを Claude に渡し、PR本文（外部のリリースノート）は渡さない。使えるツールは `Read`・`Grep`・`Glob`・`Edit` だけで、コマンド実行・Web取得・新規ファイル作成はできない。依存は `npm ci --ignore-scripts` で入れ、トークンと同じジョブで依存パッケージのコードを実行しない。
+- 検証: 別ジョブ（secretなし）でパッチを当て、`test:security`・`lint`・`build` を実行する。
+- 反映: さらに別ジョブで、信頼済みの `main` のスクリプトがパッチの範囲を確認してから push する。許可するのは `src/` 配下（`src/generated/` を除く）の既存ファイルの変更だけで、変更行数は合計150行まで。`GITHUB_TOKEN` のpushでは `pull_request` 実行が起動しないため、PRブランチに対して Security checks を `workflow_dispatch` で起動する。
+- 結果: 試行ごとにPRへコメントする。試行はPRごとに2回まで。使い切ってもCIが通らないPRには `dependabot-needs-review` ラベルを付けて人に渡す。
+- メジャー更新（`0.x` のマイナー更新とタイトルから判定できない更新を含む）は、修正を push する前にラベルを付け、自動マージの対象から外す。ラベルを付けられなければ push しない。差分を確認してラベルを外すと、自動処理に戻る。
+- 追従: 修正コミットが入ったPRはDependabotがrebaseしなくなるため、`main` より遅れたら update-branch API で `main` を取り込む。競合などで取り込めないPRにはラベルを付けて人に渡し、他のPRの処理は続ける。現在のheadに検証実行がなければ Security checks を起動する。
+- 対象外: Vercel だけが失敗したPRは、ログを取得できないため扱わない。`next`・`eslint-config-next`・`react`・`react-dom` とその型定義のメジャー更新は `.github/dependabot.yml` で除外し、計画的な移行として別途対応する。
+
+停止する場合はこのworkflowを無効化します。
 
 ## 廃止した X 自動化の撤去確認
 

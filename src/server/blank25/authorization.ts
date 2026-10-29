@@ -1,16 +1,16 @@
 import { timingSafeEqual } from "node:crypto";
 
 const MUTATION_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
+const NO_STORE = { "Cache-Control": "no-store" };
 
-/** Route Handlers must authenticate even when middleware has not run. */
-export function authorizeBlank25Editor(request: Request): Response | null {
+/** Shared by the proxy and Route Handlers: 503 when unconfigured, 401 on bad Basic credentials. */
+export function authenticateBlank25Editor(request: Request): Response | null {
   const user = process.env.BLANK25_EDITOR_USER;
   const password = process.env.BLANK25_EDITOR_PASSWORD;
-  const headers = { "Cache-Control": "no-store" };
   if (!user || !password) {
     return new Response("BLANK25 editor auth is not configured.", {
       status: 503,
-      headers,
+      headers: NO_STORE,
     });
   }
 
@@ -33,20 +33,29 @@ export function authorizeBlank25Editor(request: Request): Response | null {
     return new Response("Unauthorized", {
       status: 401,
       headers: {
-        ...headers,
+        ...NO_STORE,
         "WWW-Authenticate": 'Basic realm="BLANK25 Editor", charset="UTF-8"',
       },
     });
   }
+  return null;
+}
 
+/** Rejects cross-origin mutations; non-mutation methods always pass. */
+export function rejectCrossOriginMutation(request: Request): Response | null {
   if (MUTATION_METHODS.has(request.method)) {
     const origin = request.headers.get("origin");
     if (
       (origin !== null && origin !== new URL(request.url).origin) ||
       request.headers.get("sec-fetch-site") === "cross-site"
     ) {
-      return new Response("Forbidden", { status: 403, headers });
+      return new Response("Forbidden", { status: 403, headers: NO_STORE });
     }
   }
   return null;
+}
+
+/** Route Handlers must authenticate even when the proxy has not run. */
+export function authorizeBlank25Editor(request: Request): Response | null {
+  return authenticateBlank25Editor(request) ?? rejectCrossOriginMutation(request);
 }

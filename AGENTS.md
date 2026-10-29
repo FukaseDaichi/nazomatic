@@ -25,7 +25,7 @@
 ## プロジェクト概要
 
 - NAZOMATIC は謎解き・イベント運営支援ツール向けの Next.js App Router アプリ。
-- スタック: Next.js 15.5 / React 19 / TypeScript / Tailwind CSS / shadcn/ui / Radix UI。
+- スタック: Next.js 16.4 / React 19 / TypeScript / Tailwind CSS / shadcn/ui / Radix UI。
 - 主要ソース: `src/`。
 - 仕様書: `docs/`。
 - Shift Search の生成ビューアセット: `src/generated/shift-search/`。

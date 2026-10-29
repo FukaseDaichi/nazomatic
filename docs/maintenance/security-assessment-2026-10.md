@@ -16,7 +16,7 @@
 | 中 | ブラウザ側の保護 | nosniff、frame-ancestors none / X-Frame-Options DENY、object-src none、base-uri self、Referrer-Policy。広告・音声入力・WebGL に影響する全面的な script-src 制限は導入していない |
 | 中 | 再発検知 | Editor 認証の回帰テスト、全 PR / main・future push / 毎週の Security checks、Dependabot の npm / Actions 週次更新 |
 
-15.5.28 は調査時点の npm の最新15系。公式の Maintenance LTS として選択したが、15系は長期据え置き先にはしない。公式サポート表と更新版を継続確認し、サポート終了前に16系以降へ移行する。
+15.5.28 は調査時点の npm の最新15系。公式の Maintenance LTS として選択したが、15系は長期据え置き先にはしない。公式サポート表と更新版を継続確認し、サポート終了前に16系以降へ移行する。15系のセキュリティ修正は2027-01-31までのため、2026-10-29に16.4.3へ移行した（`next lint` からESLint 9のCLIとflat configへ、`middleware` から `proxy` へ）。
 
 ## アドバイザリの適用条件
 

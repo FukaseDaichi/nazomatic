@@ -268,6 +268,8 @@ export default function Blank25Game({ problemId }: { problemId: string }) {
   useEffect(() => {
     if (manifestVersion === null || persistenceScope === null) return;
 
+    // モードや問題が URL で切り替わるたびに localStorage から盤面を復元する外部同期のため、effect で state を更新する
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage からの復元
     setHydratedScope(null);
     const now = Date.now();
 

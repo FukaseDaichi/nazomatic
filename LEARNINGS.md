@@ -24,6 +24,13 @@
 - 2026-10-24: Claude Browser の computer key で cmd+v を送っても input の paste イベントは発火しない。貼り付け処理の検証は DataTransfer に setData して ClipboardEvent('paste') を input へ dispatch すると確認できる
 - 2026-10-25: データを書き換えるトグル（例: 空白を＃埋め）の状態を useState で別に持つと、元に戻す・やり直しとずれる。トグルの状態は履歴に載るデータ（グリッド）から導けば、undo/redo に自動で追従する
 - 2026-10-25: Radix Dialog の DialogClose ボタンは、javascript_tool で .click() しても閉じなかった。computer の left_click（ref 指定）で押すと閉じ、onCloseAutoFocus で指定したボタンにフォーカスが戻ることまで確認できた
+- 2026-10-25: .claude/worktrees 配下のワークツリーで `npm run lint` が親リポジトリの .eslintrc.json と plugin "@next/next" の衝突で落ちるときは、`npx eslint --no-eslintrc -c .eslintrc.json src/` で親設定を読まずに同じ規則で検査できる
+- 2026-10-29: デプロイ失敗の調査では gh api の deployments/{id}/statuses と commits/{sha}/pulls を使い、どの Preview/Production が落ちたかと対応 PR を特定してから gh run view --log-failed で原因を読む
+- 2026-10-29: Vercel のプレビュー URL はログイン画面に飛ばされ確認できないため、worktree でビルドし .claude/launch.json に一時設定 `npm --prefix <worktree> run start -- -p 3105` を足して preview_start でローカル確認し、終わったら launch.json を git checkout で戻す
+- 2026-10-29: @next/codemod（next-lint-to-eslint-cli・middleware-to-proxy）は git の作業ツリーに未コミットの変更があると止まる。--force を付けると実行でき、そのあと生成物を手で整える
+- 2026-10-29: eslint-config-next 16 の react-hooks/purity は render 中の Math.random() を検出する。固定シードの擬似乱数でモジュールスコープに配置を作るか、クリック時のハンドラで乱数配置を作って state に入れると、ルールを満たし、再描画での位置ずれや SSR 不一致も防げる
+- 2026-10-29: 設定で warn に下げているルールの違反を一覧にするときは、設定ファイルを変えずに npx eslint src --rule '{"<rule>":"error"}' -f json を node で整形し、ルール名とファイル:行だけを出す
+- 2026-10-29: Next.js 16 の src/proxy.ts は node:test で検証できる。ts.transpileModule で CJS に変換して vm で実行し、require は next/server だけ createRequire の実物に、それ以外はスタブに割り当てる。通過したかは応答ヘッダー x-middleware-next が '1' かで判定する
 
 ## Mistakes to Avoid
 
@@ -40,6 +47,8 @@
 - 2026-10-24: コマンド文字列を正規表現で検査する PreToolUse(Bash) hook は、テストケースを Bash にインラインで書くとその文字列自体に反応してブロックされる。テスト用のコマンドはスクリプトファイルに書き出し、bash でそのファイルを実行する
 - 2026-10-24: サブエージェント定義の本文で git diff などのコマンド実行を指示しているのに、tools に Bash が無いと実行できない。本文の指示と frontmatter の tools が噛み合っているかを確認し、Bash を足すなら用途を読み取り専用の git に限ると本文に明記する
 - 2026-10-25: グリッドの行数などを決める type=number 入力で onChange ごとに確定すると、打ち直しの途中値（空欄→1→12）で一度縮んでデータが消える。入力値は draft として手元に持ち、blur と Enter で確定、Esc で取り消すと防げる
+- 2026-10-25: zsh では一致しないグロブ（例: ls .github/PULL_REQUEST_TEMPLATE*）があると「no matches found」でコマンド全体が終了コード1になり、&& で繋いだ前段の出力も失敗扱いになる。存在確認のグロブは引用するか find/test -e を使い、独立したコマンドに分ける
+- 2026-10-29: vm.runInNewContext で読み込んだモジュールの配列を assert.deepEqual で比べると、別 realm でプロトタイプが違うため構造が同じでも失敗する。[...arr] のようにスプレッドで現 realm の配列にしてから比べる
 
 ## Domain Knowledge
 
@@ -50,6 +59,14 @@
 - 2026-08-28: Codex画像生成をスクリプトから使う契約は `codex exec --sandbox workspace-write --skip-git-repo-check --ephemeral -C <dir> -- "Use the imagegen skill..."`。現行 Codex CLI は `--full-auto` を受け付けない。`SAVED: <絶対パス>` 行は instruction 側で明示要求し、パース後に workDir 配下 realpath・生成時刻・PNG/JPEGマジックバイトを検証してから使う。
 
 - 2026-10-25: Tailwind CSS 4.3 には pointer-fine/pointer-coarse/any-pointer-* のバリアントがあり、not-any-pointer-coarse:hidden で「タッチがない端末だけ隠す」と書ける。md:hidden のような幅判定の代わりにタブレット対応で使える
+
+- 2026-10-29: Next 16 では `next lint` が廃止され、`npm run lint` が `next lint` を呼ぶと「lint」をディレクトリ名と解釈して失敗する。Next 16 へ上げるときは ESLint CLI への移行が必要
+
+- 2026-10-29: framer-motion 14 では Variants の transition.ease が厳密な型になり、`ease: "..."` が string と推論されて next build の型検査で落ちる（as const か Variants 型注釈が必要）
+
+- 2026-10-29: eslint-config-next 16 では React Compiler 系ルール（react-hooks/set-state-in-effect・purity・immutability）がエラーになり、既存コードで37件出た。移行と同時に直さない場合は flat config で warn に下げ、既知の課題として記録する
+
+- 2026-10-29: Next.js 15 は Maintenance LTS で、セキュリティ修正の提供は 2027-01-31 まで（当初の 2026-10-21 から延長）。16 は Active LTS。サポート状況は nextjs.org/support-policy で確認できる
 
 ## Open Questions
 
