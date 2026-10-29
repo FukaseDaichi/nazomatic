@@ -28,7 +28,7 @@
     "@react-spring/three": "^10.1.2",
     "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.2",
-    "@types/three": "^0.169.0",
+    "@types/three": "^0.186.0",
     "@types/webspeechapi": "^0.0.29",
     "@use-gesture/react": "^10.3.1",
     "canvas-confetti": "^1.9.4",
