@@ -40,7 +40,7 @@ Vercel完了や再実行を拾うため定期的にも再確認します。手�
 - 結果: 試行ごとにPRへコメントする。試行はPRごとに2回まで。使い切ってもCIが通らないPRには `dependabot-needs-review` ラベルを付けて人に渡す。
 - メジャー更新（`0.x` のマイナー更新とタイトルから判定できない更新を含む）は、修正を push する前にラベルを付け、自動マージの対象から外す。ラベルを付けられなければ push しない。差分を確認してラベルを外すと、自動処理に戻る。
 - 追従: 修正コミットが入ったPRはDependabotがrebaseしなくなるため、`main` より遅れたら update-branch API で `main` を取り込む。競合などで取り込めないPRにはラベルを付けて人に渡し、他のPRの処理は続ける。現在のheadに検証実行がなければ Security checks を起動する。
-- 対象外: Vercel だけが失敗したPRは、ログを取得できないため扱わない。`next`・`eslint-config-next`・`react`・`react-dom` とその型定義のメジャー更新は `.github/dependabot.yml` で除外し、計画的な移行として別途対応する。
+- 対象外: Vercel だけが失敗したPRは、ログを取得できないため扱わない。`next`・`eslint-config-next`・`react`・`react-dom` とその型定義のメジャー更新は `.github/dependabot.yml` で除外し、計画的な移行として別途対応する。`typescript` 7 以降も同様に除外する。TypeScript 7 の `typescript` パッケージは JS コンパイラ API を持たず、`eslint-config-next` 経由の `typescript-eslint`（peer `<6.1.0`）と `scripts/security/*.test.mjs` の `ts.transpileModule` が動かないため、両者が対応するまで 6.0 系に留める。
 
 停止する場合はこのworkflowを無効化します。
 
