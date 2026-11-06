@@ -100,3 +100,24 @@ Security checks は引き続き全指摘を表示し、失敗条件を `npm audi
 Dependabotのバージョン更新PRとSecurity checksは有効だが、GitHubのDependabotアラートAPIは「無効」の403を返した。有効化APIも連携権限不足の403で失敗したため、管理権限での有効化は未完了。現行CIの週次npm監査とmoderate以上の失敗条件は維持する。
 
 検証: `npm ci --no-audit --no-fund`、全依存監査、本番依存監査、`npm run lint`、`npm run test:security`（2件）、`npm run build`。日本語の日付・時刻、相対日、年跨ぎ、日付でない入力について、実際の `parseJapaneseDate` の7ケースも確認した。
+
+## minimatch / glob アドバイザリへの対応（2026-11-06）
+
+[minimatch の globparts 増幅による DoS（GHSA-g3hv-75wg-m249、Moderate、`>=7.0.0 <11.0.1`）](https://github.com/advisories/GHSA-g3hv-75wg-m249) と [glob の AbortSignal 中断回避（GHSA-3g3m-2fjr-6pw4、Moderate、`>=9.0.0 <=14.0.1`）](https://github.com/advisories/GHSA-3g3m-2fjr-6pw4) の公開で、Security checks の `npm audit --audit-level=moderate` が全 Dependabot PR（#122〜#126）で失敗した。原因は各 PR 共通で、#123 は ESLint 10 自体がさらに経路を追加する。
+
+該当経路と、上流の最新版で解消できない理由:
+
+| 経路 | 上流の状況 |
+|---|---|
+| `eslint-config-next` → `typescript-eslint` → `@typescript-eslint/typescript-estree` → `minimatch@10` | 最新の typescript-estree 8.72.1 も `minimatch ^10.2.2` |
+| `firebase-admin` → `@google-cloud/firestore` → `firestore-api@0.2` → `google-gax@5` → `rimraf@5` → `glob@10` → `minimatch@9` | 最新の firestore 9.4.0 も `firestore-api ^0.2.0`（google-gax 5 系） |
+| ESLint 10（#123）→ `eslint` / `@eslint/config-array@0.23` → `minimatch@10` | 最新の ESLint 10.14.0 も `minimatch ^10.2.6` |
+
+対応として `overrides` に次の2件を追加した。
+
+- `"minimatch@>=7.0.0 <11.0.1": "^11.0.5"`: 脆弱範囲の minimatch だけを修正版へ置き換える。経路ごとに指定せず範囲で指定するため、ESLint 10 への更新後も同じ規則で塞がる。ESLint 9 系が使う `minimatch@3.1.5` は範囲外で、API も異なるため置き換えない。
+- `overrides.rimraf.glob = ^14.0.3`: glob 自体のアドバイザリを解消する。glob 14.0.4 は minimatch ^11.0.5 を使う。
+
+`npm audit fix` では解消せず、`--force` は eslint-config-next 15 系への後退を伴うため使わない。上流が minimatch 11.0.1 以降・glob 14.0.2 以降へ追従したら、それぞれの override を削除する。
+
+検証: `npm ci` から全依存監査 0 件、`npm run test:security`、`npm run lint`（minimatch 11 で ESLint 9 / 10 とも正常動作）、`npm run build`。#122〜#126 の各ブランチへこの修正を取り込んだ状態でも、同じ手順が全て成功することを確認した。
