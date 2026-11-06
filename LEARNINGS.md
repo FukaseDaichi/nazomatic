@@ -31,7 +31,7 @@
 - 2026-10-29: eslint-config-next 16 の react-hooks/purity は render 中の Math.random() を検出する。固定シードの擬似乱数でモジュールスコープに配置を作るか、クリック時のハンドラで乱数配置を作って state に入れると、ルールを満たし、再描画での位置ずれや SSR 不一致も防げる
 - 2026-10-29: 設定で warn に下げているルールの違反を一覧にするときは、設定ファイルを変えずに npx eslint src --rule '{"<rule>":"error"}' -f json を node で整形し、ルール名とファイル:行だけを出す
 - 2026-10-29: Next.js 16 の src/proxy.ts は node:test で検証できる。ts.transpileModule で CJS に変換して vm で実行し、require は next/server だけ createRequire の実物に、それ以外はスタブに割り当てる。通過したかは応答ヘッダー x-middleware-next が '1' かで判定する
-- 2026-10-30: Dependabot PR の CI（Security checks）は test:security → lint → build の順に実行され、最初に失敗した段で止まる。後ろの段の破損は見えないので、PR を worktree に checkout して npm ci し、lint や build も手元で個別に実行して失敗を全部洗い出す
+- 2026-10-30: Dependabot PR の CI（Security checks）は test:security → lint → build の順に実行され、最初に失敗した段で止まる。後ろの段の破損は見えないので、PR を worktree に checkout して npm ci し、lint や build も手元で個別に実行して失敗を全部洗い出す（再観測 1回・最終 2026-11-06）
 
 ## Mistakes to Avoid
 
