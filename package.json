@@ -28,7 +28,7 @@
     "@react-spring/three": "^10.1.2",
     "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.2",
-    "@types/three": "^0.186.0",
+    "@types/three": "^0.187.0",
     "@types/webspeechapi": "^0.0.29",
     "@use-gesture/react": "^10.3.1",
     "canvas-confetti": "^1.9.4",
@@ -46,7 +46,7 @@
     "shadcn-ui": "^0.9.3",
     "tailwind-merge": "^3.7.0",
     "tailwindcss-animate": "^1.0.7",
-    "three": "^0.186.1"
+    "three": "^0.187.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
